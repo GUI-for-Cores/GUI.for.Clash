@@ -1,0 +1,54 @@
+on:
+  workflow_dispatch:
+    #
+  push:
+    tags:
+      - "v*"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.21
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: |
+          go install github.com/wailsapp/wails/v2/cmd/wails@latest
+          cd frontend && npm install
+
+      - name: Build Frontend
+        run: cd frontend && npm run build
+
+      - name: Build App
+        run: env GOOS=windows GOARCH=amd64 $HOME/go/bin/wails build -m -s -trimpath -skipbindings
+
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
+          body: |
+            Auto-generated release from GitHub Actions.
+
+      - name: Upload binaries
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/bin/GUI.for.Clash.exe
+          asset_name: GUI.for.Clash-${{ github.ref_name }}.exe
+          asset_content_type: application/x-msdownload

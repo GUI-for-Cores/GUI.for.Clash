@@ -1,0 +1,8 @@
+build/bin
+node_modules
+frontend/dist
+
+# App Data
+data
+
+GUI.for.Clash.exe

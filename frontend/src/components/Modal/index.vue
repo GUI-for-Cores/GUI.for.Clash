@@ -1,0 +1,106 @@
+<script setup lang="ts">
+import { computed, provide } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+interface Props {
+  open: boolean
+  title?: string
+  footer?: boolean
+  maxHeight?: string
+  maxWidth?: string
+  minWidth?: string
+  cancel?: boolean
+  submit?: boolean
+  cancelText?: string
+  submitText?: string
+  maskClosable?: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  title: '',
+  footer: true,
+  maxHeight: '',
+  maxWidth: '',
+  minWidth: '60',
+  cancel: true,
+  submit: true,
+  cancelText: 'common.cancel',
+  submitText: 'common.save',
+  maskClosable: false
+})
+
+const { t } = useI18n()
+
+const emits = defineEmits(['update:open', 'ok'])
+
+const handleSubmit = () => {
+  emits('update:open', false)
+  emits('ok')
+}
+
+const handleCancel = () => emits('update:open', false)
+
+const onMaskClick = () => props.maskClosable && handleCancel()
+
+const contentStyle = computed(() => ({
+  maxHeight: props.maxHeight + '%',
+  maxWidth: props.maxWidth + '%',
+  minWidth: props.minWidth + '%'
+}))
+
+provide('cancel', handleCancel)
+</script>
+
+<template>
+  <div v-if="open" @click.self="onMaskClick" class="mask" style="--wails-draggable: drag">
+    <div :style="contentStyle" class="modal" style="--wails-draggable: false">
+      <div class="title">{{ title }}</div>
+      <div class="content">
+        <slot />
+      </div>
+      <div v-if="footer" class="action">
+        <slot name="action" />
+        <Button v-if="cancel" @click="handleCancel">{{ t(cancelText) }}</Button>
+        <Button v-if="submit" @click="handleSubmit" type="primary">{{ t(submitText) }}</Button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style lang="less" scoped>
+.mask {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--modal-mask-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+
+  .modal {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--modal-bg);
+    padding: 16px 16px 0 16px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
+    .title {
+      margin: 0 0 8px 0;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    .content {
+      overflow-y: auto;
+      padding: 8px 0 8px 0;
+    }
+    .action {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 8px;
+    }
+  }
+}
+</style>

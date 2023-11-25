@@ -1,0 +1,166 @@
+<script setup lang="ts">
+import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { deepClone } from '@/utils'
+import { generateRule } from '@/utils/generator'
+import { type ProfileType } from '@/stores/profiles'
+import { RulesTypeOptions } from '@/constant/kernel'
+
+type RulesType = ProfileType['rulesConfig']
+
+interface Props {
+  modelValue: RulesType
+  proxyGroups: ProfileType['proxyGroupsConfig']
+  profile: ProfileType
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  modelValue: () => []
+})
+
+const emits = defineEmits(['update:modelValue'])
+
+let dragIndex = -1
+let updateRuleId = 0
+const showModal = ref(false)
+const rules = ref(deepClone(props.modelValue))
+
+const fields = ref({
+  type: 'DOMAIN',
+  payload: '',
+  proxy: '',
+  'no-resolve': false,
+  filter: ''
+})
+
+const proxyOptions = computed(() => [
+  { label: 'DIRECT', value: 'DIRECT' },
+  { label: 'REJECT', value: 'REJECT' },
+  ...props.proxyGroups.map(({ name }) => ({ label: name || '', value: name || '' }))
+])
+
+const supportNoResolve = computed(() =>
+  ['GEOIP', 'IP-CIDR', 'IP-CIDR6', 'SCRIPT'].includes(fields.value.type)
+)
+
+const supportPayload = computed(() => fields.value.type !== 'MATCH')
+
+const { t } = useI18n()
+
+const handleAddRule = () => {
+  updateRuleId = -1
+  fields.value = {
+    type: 'DOMAIN',
+    payload: '',
+    proxy: '',
+    'no-resolve': false,
+    filter: ''
+  }
+  showModal.value = true
+}
+
+const handleDeleteRule = (index: number) => {
+  rules.value.splice(index, 1)
+}
+
+const handleEditRule = (index: number) => {
+  updateRuleId = index
+  fields.value = deepClone(rules.value[index])
+  showModal.value = true
+}
+
+const handleAddEnd = () => {
+  if (updateRuleId !== -1) {
+    rules.value[updateRuleId] = fields.value
+  } else {
+    rules.value.push(fields.value)
+  }
+}
+
+const onDragStart = (e: any, index: number) => {
+  dragIndex = index
+}
+
+const onDragEnter = (e: any, index: number) => {
+  e.preventDefault()
+  if (dragIndex !== index) {
+    const source = rules.value[dragIndex]
+    rules.value.splice(dragIndex, 1)
+    rules.value.splice(index, 0, source)
+    dragIndex = index
+  }
+}
+
+const onDragOver = (e: any) => e.preventDefault()
+
+watch(rules, (v) => emits('update:modelValue', v), { immediate: true })
+</script>
+
+<template>
+  <div>
+    <TransitionGroup name="drag" tag="div">
+      <Card
+        v-for="(r, index) in rules"
+        :key="r.payload"
+        @dragenter="onDragEnter($event, index)"
+        @dragover="onDragOver($event)"
+        @dragstart="onDragStart($event, index)"
+        class="rules-item"
+        draggable="true"
+      >
+        <div class="name">
+          {{ generateRule(r) }}
+        </div>
+        <div class="action">
+          <Button @click="handleEditRule(index)" type="text" size="small">
+            {{ t('common.edit') }}
+          </Button>
+          <Button @click="handleDeleteRule(index)" type="text" size="small">
+            {{ t('common.delete') }}
+          </Button>
+        </div>
+      </Card>
+    </TransitionGroup>
+
+    <div style="display: flex; justify-content: center">
+      <Button type="link" @click="handleAddRule">{{ t('common.add') }}</Button>
+    </div>
+  </div>
+
+  <Modal v-model:open="showModal" @ok="handleAddEnd" max-width="80" max-height="80">
+    <div class="form-item">
+      {{ t('kernel.rules.type.name') }}
+      <Select v-model="fields.type" :options="RulesTypeOptions" />
+    </div>
+    <div v-show="supportPayload" class="form-item">
+      {{ t('kernel.rules.payload') }}
+      <Input v-model="fields.payload" />
+    </div>
+    <div class="form-item">
+      {{ t('kernel.rules.proxy') }}
+      <Select v-model="fields.proxy" :options="proxyOptions" />
+    </div>
+    <div v-show="supportNoResolve" class="form-item">
+      {{ t('kernel.rules.no-resolve') }}
+      <Switch v-model="fields['no-resolve']" />
+    </div>
+  </Modal>
+</template>
+
+<style lang="less" scoped>
+.drag-move {
+  transition: transform 0.4s;
+}
+.rules-item {
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  margin-bottom: 2px;
+  .name {
+    font-weight: bold;
+  }
+  .action {
+    margin-left: auto;
+  }
+}
+</style>

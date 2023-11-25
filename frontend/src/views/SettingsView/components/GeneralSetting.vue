@@ -1,0 +1,128 @@
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+import { useAppSettingsStore } from '@/stores/appSettings'
+import { Theme, Lang, WindowStartState, Color } from '@/constant/app'
+
+const { t } = useI18n()
+const appSettings = useAppSettingsStore()
+
+const themes = [
+  {
+    label: 'settings.theme.dark',
+    value: Theme.Dark
+  },
+  {
+    label: 'settings.theme.light',
+    value: Theme.Light
+  },
+  {
+    label: 'settings.theme.auto',
+    value: Theme.Auto
+  }
+]
+
+const colors = [
+  {
+    label: '默认',
+    value: Color.Default
+  },
+  {
+    label: '橘色',
+    value: Color.Orange
+  },
+  {
+    label: '粉色',
+    value: Color.Pink
+  },
+  {
+    label: '天蓝色',
+    value: Color.Skyblue
+  }
+]
+
+const langs = [
+  {
+    label: 'settings.lang.zh',
+    value: Lang.ZH
+  },
+  {
+    label: 'settings.lang.en',
+    value: Lang.EN
+  }
+]
+
+const windowStates = [
+  { label: 'settings.windowState.normal', value: WindowStartState.Normal },
+  // { label: 'settings.windowState.maximised', value: WindowStartState.Maximised },
+  { label: 'settings.windowState.minimised', value: WindowStartState.Minimised }
+  // { label: 'settings.windowState.fullscreen', value: WindowStartState.Fullscreen }
+]
+</script>
+
+<template>
+  <div class="settings">
+    <div class="settings-item">
+      <div class="title">
+        {{ t('settings.theme.name') }}
+      </div>
+      <Radio v-model="appSettings.app.theme" :options="themes" />
+    </div>
+    <div class="settings-item">
+      <div class="title">
+        {{ t('settings.color.name') }}
+      </div>
+      <Radio v-model="appSettings.app.color" :options="colors" />
+    </div>
+    <div class="settings-item">
+      <div class="title">{{ t('settings.lang.name') }}</div>
+      <Radio v-model="appSettings.app.lang" :options="langs" />
+    </div>
+    <div class="settings-item">
+      <div class="title">
+        {{ t('settings.disableResize') }}
+        <span class="tips">({{ t('settings.needRestart') }})</span>
+      </div>
+      <Switch v-model="appSettings.app.disableResize" />
+    </div>
+    <div class="settings-item">
+      <div class="title">
+        {{ t('settings.exitOnClose') }}
+      </div>
+      <Switch v-model="appSettings.app.exitOnClose" />
+    </div>
+    <div class="settings-item">
+      <div class="title">
+        {{ t('settings.closeKernelOnExit') }}
+      </div>
+      <Switch v-model="appSettings.app.closeKernelOnExit" />
+    </div>
+    <div class="settings-item">
+      <div class="title">
+        {{ t('settings.windowState.name') }}
+        <span class="tips">({{ t('settings.needRestart') }})</span>
+      </div>
+      <Radio v-model="appSettings.app.windowStartState" :options="windowStates" type="number" />
+    </div>
+  </div>
+</template>
+
+<style lang="less" scoped>
+.settings {
+  &-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 8px 16px;
+    .title {
+      align-self: flex-start;
+      font-size: 18px;
+      font-weight: bold;
+      padding: 8px 0 16px 0;
+      .tips {
+        font-weight: normal;
+        font-size: 12px;
+      }
+    }
+  }
+}
+</style>
