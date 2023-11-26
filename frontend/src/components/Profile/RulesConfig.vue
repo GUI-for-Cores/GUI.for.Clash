@@ -1,15 +1,13 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { deepClone } from '@/utils'
+import { deepClone, sampleID } from '@/utils'
 import { generateRule } from '@/utils/generator'
 import { type ProfileType } from '@/stores/profiles'
 import { RulesTypeOptions } from '@/constant/kernel'
 
-type RulesType = ProfileType['rulesConfig']
-
 interface Props {
-  modelValue: RulesType
+  modelValue: ProfileType['rulesConfig']
   proxyGroups: ProfileType['proxyGroupsConfig']
   profile: ProfileType
 }
@@ -26,6 +24,7 @@ const showModal = ref(false)
 const rules = ref(deepClone(props.modelValue))
 
 const fields = ref({
+  id: sampleID(),
   type: 'DOMAIN',
   payload: '',
   proxy: '',
@@ -50,6 +49,7 @@ const { t } = useI18n()
 const handleAddRule = () => {
   updateRuleId = -1
   fields.value = {
+    id: sampleID(),
     type: 'DOMAIN',
     payload: '',
     proxy: '',
@@ -101,7 +101,7 @@ watch(rules, (v) => emits('update:modelValue', v), { immediate: true })
     <TransitionGroup name="drag" tag="div">
       <Card
         v-for="(r, index) in rules"
-        :key="r.payload"
+        :key="r.id"
         @dragenter="onDragEnter($event, index)"
         @dragover="onDragOver($event)"
         @dragstart="onDragStart($event, index)"
