@@ -191,6 +191,8 @@ export const useSubscribesStore = defineStore('subscribes', () => {
     if (needSave) saveSubscribes()
   }
 
+  const getSubscribeByName = (name: string) => subscribes.value.find((v) => v.name === name)
+
   const getSubscribeById = (id: string) => subscribes.value.find((v) => v.id === id)
 
   return {
@@ -201,6 +203,7 @@ export const useSubscribesStore = defineStore('subscribes', () => {
     deleteSubscribe,
     updateSubscribe,
     updateSubscribes,
+    getSubscribeByName,
     getSubscribeById
   }
 })

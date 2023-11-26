@@ -36,7 +36,7 @@ export const generateProxies = async (groups: ProfileType['proxyGroupsConfig']) 
   const proxyMap: Record<string, ProxiesType[]> = {}
 
   for (const subName of subNamesMap) {
-    const sub = subscribesStore.subscribes.find((v) => v.name === subName)
+    const sub = subscribesStore.getSubscribeByName(subName)
     if (sub) {
       try {
         const subStr = await Readfile(sub.path)
@@ -132,7 +132,7 @@ export const generateProxyProviders = async (groups: ProfileType['proxyGroupsCon
   })
   const subscribesStore = useSubscribesStore()
   subs.forEach((name) => {
-    const sub = subscribesStore.subscribes.find((v) => v.name === name)
+    const sub = subscribesStore.getSubscribeByName(name)
     if (sub) {
       providers[name] = {
         type: 'file',
