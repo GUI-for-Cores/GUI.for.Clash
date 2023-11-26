@@ -54,7 +54,7 @@ provide('cancel', handleCancel)
 <template>
   <div v-if="open" @click.self="onMaskClick" class="mask" style="--wails-draggable: drag">
     <div :style="contentStyle" class="modal" style="--wails-draggable: false">
-      <div class="title">{{ title }}</div>
+      <div class="title" style="--wails-draggable: drag">{{ title }}</div>
       <div class="content">
         <slot />
       </div>
@@ -84,22 +84,24 @@ provide('cancel', handleCancel)
     display: flex;
     flex-direction: column;
     background-color: var(--modal-bg);
-    padding: 16px 16px 0 16px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     overflow-y: auto;
     .title {
+      padding: 16px;
       margin: 0 0 8px 0;
       font-size: 14px;
       font-weight: bold;
     }
     .content {
       overflow-y: auto;
-      padding: 8px 0 8px 0;
+      padding: 0 8px 8px 8px;
+      margin: 0 8px;
     }
     .action {
       display: flex;
       justify-content: flex-end;
       margin-bottom: 8px;
+      padding: 8px 16px 0 0;
     }
   }
 }
