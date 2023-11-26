@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { APP_TITLE, APP_VERSION, PROJECT_URL } from '@/utils/env'
+import { APP_TITLE, APP_VERSION, PROJECT_URL, TG_GROUP, TG_CHANNEL } from '@/utils/env'
 import { BrowserOpenURL } from '@/utils/bridge'
-
-const openUrl = () => BrowserOpenURL(PROJECT_URL)
 </script>
 
 <template>
@@ -10,7 +8,11 @@ const openUrl = () => BrowserOpenURL(PROJECT_URL)
     <img src="@/assets/logo.png" draggable="false" />
     <div class="appname">{{ APP_TITLE }}</div>
     <div class="appver">{{ APP_VERSION }}</div>
-    <div @click="openUrl" class="url"><Icon icon="github" />GitHub</div>
+    <div @click="BrowserOpenURL(PROJECT_URL)" class="url"><Icon icon="github" />GitHub</div>
+    <div @click="BrowserOpenURL(TG_GROUP)" class="url"><Icon icon="telegram" />Telegram Group</div>
+    <div @click="BrowserOpenURL(TG_CHANNEL)" class="url">
+      <Icon icon="telegram" />Telegram Channel
+    </div>
   </div>
 </template>
 
@@ -35,6 +37,7 @@ const openUrl = () => BrowserOpenURL(PROJECT_URL)
     align-items: center;
     font-size: 12px;
     text-decoration: underline;
+    line-height: 2;
   }
 }
 </style>

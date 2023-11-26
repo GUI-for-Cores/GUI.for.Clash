@@ -15,6 +15,7 @@ import SpeedTestIcon from './SpeedTestIcon.vue'
 import EmptyIcon from './EmptyIcon.vue'
 import GithubIcon from './GithubIcon.vue'
 import ForbiddenIcon from './ForbiddenIcon.vue'
+import TelegramIcon from './TelegramIcon.vue'
 
 const icons = {
   link: LinkIcon,
@@ -32,7 +33,8 @@ const icons = {
   speedTest: SpeedTestIcon,
   empty: EmptyIcon,
   github: GithubIcon,
-  forbidden: ForbiddenIcon
+  forbidden: ForbiddenIcon,
+  telegram: TelegramIcon
 }
 
 interface Props {
