@@ -258,7 +258,11 @@ export default {
       auto: '跟随系统'
     },
     color: {
-      name: '颜色设置'
+      name: '颜色设置',
+      default: '默认',
+      orange: '橘色',
+      pink: '粉色',
+      skyblue: '天蓝色'
     },
     lang: {
       name: '语言设置',

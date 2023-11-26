@@ -258,7 +258,11 @@ export default {
       auto: 'System'
     },
     color: {
-      name: 'Color'
+      name: 'Color',
+      default: 'Default',
+      orange: 'Orange',
+      pink: 'Pink',
+      skyblue: 'Skyblue'
     },
     lang: {
       name: 'Language',

@@ -2,7 +2,8 @@
 import { ref, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ModeOptions } from '@/constant/kernel'
-import { formatBytes, sleep } from '@/utils'
+import { sleep } from '@/utils'
+import { formatBytes } from '@/utils/format'
 import { getConfigs, setConfigs, getConnections, deleteConnection, getKernelWS } from '@/api/kernel'
 import { type KernelApiConfig } from '@/api/kernel.schema'
 
