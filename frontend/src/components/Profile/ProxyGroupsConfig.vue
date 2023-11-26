@@ -3,7 +3,7 @@ import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { type ProfileType } from '@/stores/profiles'
 import { useSubscribesStore } from '@/stores/subscribes'
-import { deepClone } from '@/utils'
+import { deepClone, sampleID } from '@/utils'
 import { GroupsTypeOptions, StrategyOptions } from '@/constant/kernel'
 
 type GroupsType = ProfileType['proxyGroupsConfig']
@@ -41,6 +41,7 @@ const proxyGroup = ref([
 ])
 
 const fields = ref<GroupsType[0]>({
+  id: sampleID(),
   name: '',
   type: '',
   proxies: [],
@@ -60,6 +61,7 @@ const subscribesStore = useSubscribesStore()
 const handleAddGroup = () => {
   updateGroupId = -1
   fields.value = {
+    id: sampleID(),
     name: '',
     type: 'select',
     proxies: [],
@@ -218,7 +220,7 @@ subscribesStore.subscribes.forEach(async (s) => {
   <TransitionGroup name="drag" tag="div">
     <Card
       v-for="(g, index) in groups"
-      :key="g.name"
+      :key="g.id"
       @dragenter="onDragEnter($event, index)"
       @dragover="onDragOver($event)"
       @dragstart="onDragStart($event, index)"

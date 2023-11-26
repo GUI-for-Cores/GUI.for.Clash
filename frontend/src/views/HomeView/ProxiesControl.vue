@@ -35,7 +35,7 @@ const groups = computed(() => {
   if (!providers.value.default) return []
   return providers.value.default.proxies
     .concat([proxies.value.GLOBAL])
-    .filter((v) => !['Direct', 'Reject'].includes(v.type))
+    .filter((v) => v.all)
     .map((provider) => {
       const all = provider.all
         .filter((v) => {
@@ -66,7 +66,7 @@ const updateGroups = async () => {
 }
 
 const handleUseProxy = async (group: any, proxy: any) => {
-  if (group.type === 'URLTest') return
+  if (group.type !== 'Selector') return
 
   if (group.now === proxy.name) return
 

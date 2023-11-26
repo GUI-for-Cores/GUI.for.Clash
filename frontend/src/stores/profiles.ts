@@ -68,6 +68,7 @@ export type ProfileType = {
     'prefer-h3': boolean
   }
   proxyGroupsConfig: {
+    id: string
     name: string
     type: string
     proxies: {
@@ -84,6 +85,7 @@ export type ProfileType = {
     filter: string
   }[]
   rulesConfig: {
+    id: string
     type: string
     payload: string
     proxy: string

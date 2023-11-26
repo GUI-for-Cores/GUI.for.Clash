@@ -1,4 +1,5 @@
 import type { ProfileType } from '@/stores/profiles'
+import { sampleID } from '@/utils'
 
 export const GeneralConfigDefaults: ProfileType['generalConfig'] = {
   mode: 'rule',
@@ -77,6 +78,7 @@ export const DnsConfigDefaults: ProfileType['dnsConfig'] = {
 
 export const ProxyGroupsConfigDefaults: ProfileType['proxyGroupsConfig'] = [
   {
+    id: sampleID(),
     name: '🚀 节点选择',
     type: 'select',
     proxies: [{ type: 'Built-In', name: '🎈 自动选择' }],
@@ -90,6 +92,7 @@ export const ProxyGroupsConfigDefaults: ProfileType['proxyGroupsConfig'] = [
     filter: ''
   },
   {
+    id: sampleID(),
     name: '🎈 自动选择',
     type: 'url-test',
     proxies: [],
@@ -103,6 +106,7 @@ export const ProxyGroupsConfigDefaults: ProfileType['proxyGroupsConfig'] = [
     filter: ''
   },
   {
+    id: sampleID(),
     name: '🎯 全球直连',
     type: 'select',
     proxies: [
@@ -119,6 +123,7 @@ export const ProxyGroupsConfigDefaults: ProfileType['proxyGroupsConfig'] = [
     filter: ''
   },
   {
+    id: sampleID(),
     name: '🛑 全球拦截',
     type: 'select',
     proxies: [
@@ -135,6 +140,7 @@ export const ProxyGroupsConfigDefaults: ProfileType['proxyGroupsConfig'] = [
     filter: ''
   },
   {
+    id: sampleID(),
     name: '🐟 漏网之鱼',
     type: 'select',
     proxies: [
@@ -154,23 +160,67 @@ export const ProxyGroupsConfigDefaults: ProfileType['proxyGroupsConfig'] = [
 
 export const RulesConfigDefaults: ProfileType['rulesConfig'] = [
   {
+    id: sampleID(),
     type: 'GEOSITE',
     payload: 'category-ads-all',
     proxy: '🛑 全球拦截',
     'no-resolve': false,
     filter: ''
   },
-  { type: 'GEOIP', payload: 'private', proxy: '🎯 全球直连', 'no-resolve': true, filter: '' },
-  { type: 'GEOIP', payload: 'LAN', proxy: '🎯 全球直连', 'no-resolve': true, filter: '' },
-  { type: 'GEOIP', payload: 'CN', proxy: '🎯 全球直连', 'no-resolve': true, filter: '' },
-  { type: 'GEOSITE', payload: 'private', proxy: '🎯 全球直连', 'no-resolve': false, filter: '' },
-  { type: 'GEOSITE', payload: 'CN', proxy: '🎯 全球直连', 'no-resolve': false, filter: '' },
   {
+    id: sampleID(),
+    type: 'GEOIP',
+    payload: 'private',
+    proxy: '🎯 全球直连',
+    'no-resolve': true,
+    filter: ''
+  },
+  {
+    id: sampleID(),
+    type: 'GEOIP',
+    payload: 'LAN',
+    proxy: '🎯 全球直连',
+    'no-resolve': true,
+    filter: ''
+  },
+  {
+    id: sampleID(),
+    type: 'GEOIP',
+    payload: 'CN',
+    proxy: '🎯 全球直连',
+    'no-resolve': true,
+    filter: ''
+  },
+  {
+    id: sampleID(),
+    type: 'GEOSITE',
+    payload: 'private',
+    proxy: '🎯 全球直连',
+    'no-resolve': false,
+    filter: ''
+  },
+  {
+    id: sampleID(),
+    type: 'GEOSITE',
+    payload: 'CN',
+    proxy: '🎯 全球直连',
+    'no-resolve': false,
+    filter: ''
+  },
+  {
+    id: sampleID(),
     type: 'GEOSITE',
     payload: 'geolocation-!cn',
     proxy: '🚀 节点选择',
     'no-resolve': false,
     filter: ''
   },
-  { type: 'MATCH', payload: '', proxy: '🐟 漏网之鱼', 'no-resolve': false, filter: '' }
+  {
+    id: sampleID(),
+    type: 'MATCH',
+    payload: '',
+    proxy: '🐟 漏网之鱼',
+    'no-resolve': false,
+    filter: ''
+  }
 ]
