@@ -23,19 +23,19 @@ const themes = [
 
 const colors = [
   {
-    label: '默认',
+    label: 'settings.color.default',
     value: Color.Default
   },
   {
-    label: '橘色',
+    label: 'settings.color.orange',
     value: Color.Orange
   },
   {
-    label: '粉色',
+    label: 'settings.color.pink',
     value: Color.Pink
   },
   {
-    label: '天蓝色',
+    label: 'settings.color.skyblue',
     value: Color.Skyblue
   }
 ]
