@@ -5,11 +5,12 @@ import { useAppSettingsStore, useProfilesStore } from '@/stores'
 import { ignoredError } from '@/utils'
 import { generateConfigFile } from '@/utils/generator'
 import { KillProcess, KernelRunning, StartKernel } from '@/utils/bridge'
-import { useMessage } from '@/hooks/useMessage'
+import { useMessage, useBool } from '@/hooks'
 import { KernelWorkDirectory, KernelFilePath } from '@/constant/kernel'
 import ProxiesControl from './ProxiesControl.vue'
 import QuickStartView from './QuickStartView.vue'
 import OverView from './OverView.vue'
+import KernelLogs from './KernelLogs.vue'
 
 const kernelLoading = ref(false)
 const stateLoading = ref(false)
@@ -20,6 +21,7 @@ const proxiesControl = ref()
 
 const { t } = useI18n()
 const { message } = useMessage()
+const [showLogs, toggleLogs] = useBool(false)
 const appSettingsStore = useAppSettingsStore()
 const profilesStore = useProfilesStore()
 
@@ -117,7 +119,10 @@ updateState()
           <div class="running">
             {{ t('home.overview.running') }}
           </div>
-          <Button @click="stopKernel" type="link" size="small" class="stop">
+          <Button @click="toggleLogs" type="link" size="small" class="logs">
+            {{ t('home.overview.log') }}
+          </Button>
+          <Button @click="stopKernel" type="link" size="small">
             {{ t('home.overview.stop') }}
           </Button>
         </div>
@@ -139,6 +144,10 @@ updateState()
       </div>
     </template>
   </div>
+
+  <Modal v-model:open="showLogs" :submit="false" max-width="90" max-height="90" title="Logs">
+    <KernelLogs />
+  </Modal>
 </template>
 
 <style lang="less" scoped>
@@ -178,7 +187,7 @@ updateState()
       background: var(--primary-color);
     }
   }
-  .stop {
+  .logs {
     margin-left: auto;
   }
 }

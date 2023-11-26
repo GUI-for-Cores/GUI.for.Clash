@@ -186,6 +186,8 @@ export default {
     overview: {
       start: '启动内核',
       stop: '关闭内核',
+      log: '日志',
+      noLogs: '日志为空',
       traffic: '流量',
       controller: '控制器',
       running: '内核正在运行...',
