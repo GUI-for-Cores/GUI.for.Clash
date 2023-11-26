@@ -186,6 +186,8 @@ export default {
     overview: {
       start: 'Click to Start',
       stop: 'Click to Stop',
+      log: 'Logs',
+      noLogs: 'Log is empty',
       traffic: 'Traffic',
       controller: 'Controller',
       running: 'The kernel is running...',
