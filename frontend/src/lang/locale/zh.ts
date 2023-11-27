@@ -14,7 +14,6 @@ export default {
     prevStep: '上一步',
     disabled: '已禁用',
     enabled: '已启用',
-    notSupported: '不支持',
     preview: '预览',
     warning: '警告',
     disable: '禁用',
@@ -105,7 +104,7 @@ export default {
       tolerance: '容差',
       url: '测速链接',
       filter: '过滤',
-      notFound: '以下订阅或节点已丢失，请清理',
+      notFound: '部分订阅或节点已丢失，请清理',
       type: {
         name: '类型',
         select: '手动选择',
@@ -235,7 +234,6 @@ export default {
     name: '名称',
     generalSettings: '通用设置',
     advancedSettings: '高级设置',
-    notSupported: '该内核不支持高级设置',
     step: {
       name: '输入名称',
       general: '通用设置',
