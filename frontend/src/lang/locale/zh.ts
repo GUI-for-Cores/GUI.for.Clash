@@ -200,9 +200,6 @@ export default {
       receive: '下行速率'
     },
     controller: {
-      refresh: '刷新',
-      expandAll: '全部展开',
-      collapseAll: '全部收缩',
       autoClose: '自动断开连接',
       unAvailable: '展示不可用节点'
     }

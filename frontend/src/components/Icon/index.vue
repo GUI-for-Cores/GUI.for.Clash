@@ -16,6 +16,9 @@ import EmptyIcon from './EmptyIcon.vue'
 import GithubIcon from './GithubIcon.vue'
 import ForbiddenIcon from './ForbiddenIcon.vue'
 import TelegramIcon from './TelegramIcon.vue'
+import ExpandIcon from './ExpandIcon.vue'
+import CollapseIcon from './CollapseIcon.vue'
+import RefreshIcon from './RefreshIcon.vue'
 
 const icons = {
   link: LinkIcon,
@@ -34,7 +37,10 @@ const icons = {
   empty: EmptyIcon,
   github: GithubIcon,
   forbidden: ForbiddenIcon,
-  telegram: TelegramIcon
+  telegram: TelegramIcon,
+  expand: ExpandIcon,
+  collapse: CollapseIcon,
+  refresh: RefreshIcon
 }
 
 interface Props {

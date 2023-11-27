@@ -200,9 +200,6 @@ export default {
       receive: 'Receive'
     },
     controller: {
-      refresh: 'Refresh',
-      expandAll: 'Expand All',
-      collapseAll: 'Collapse All',
       autoClose: 'Auto-close Connections',
       unAvailable: 'Show UnAvailable Proxies'
     }
