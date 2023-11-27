@@ -2,39 +2,24 @@
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useMessage } from '@/hooks/useMessage'
-import { useAppSettingsStore } from '@/stores'
-import { type Proxy } from '@/api/kernel.schema'
-import {
-  getProxies,
-  getProviders,
-  useProxy,
-  getGroupDelay,
-  getConnections,
-  deleteConnection
-} from '@/api/kernel'
+import { useAppSettingsStore, useKernelApiStore } from '@/stores'
+import { useProxy, getGroupDelay, getConnections, deleteConnection } from '@/api/kernel'
+import { ignoredError, sleep } from '@/utils'
 
 const expandedSet = ref<Set<string>>(new Set())
 const loadingSet = ref<Set<string>>(new Set())
 const loading = ref(false)
-const proxies = ref<Record<string, Proxy>>({})
-const providers = ref<
-  Record<
-    string,
-    {
-      name: string
-      proxies: Proxy[]
-    }
-  >
->({})
 
 const { t } = useI18n()
 const { message } = useMessage()
 const appSettings = useAppSettingsStore()
+const kernelApiStore = useKernelApiStore()
 
 const groups = computed(() => {
-  if (!providers.value.default) return []
-  return providers.value.default.proxies
-    .concat([proxies.value.GLOBAL])
+  if (!kernelApiStore.providers.default) return []
+  const { proxies } = kernelApiStore
+  return kernelApiStore.providers.default.proxies
+    .concat([kernelApiStore.proxies.GLOBAL])
     .filter((v) => v.all)
     .map((provider) => {
       const all = provider.all
@@ -42,28 +27,16 @@ const groups = computed(() => {
           return (
             appSettings.app.kernel.unAvailable ||
             ['DIRECT', 'REJECT'].includes(v) ||
-            proxies.value[v].alive
+            kernelApiStore.proxies[v].alive
           )
         })
         .map((v) => {
-          const delay = proxies.value[v].history[proxies.value[v].history.length - 1]?.delay
-          return { ...proxies.value[v], delay }
+          const delay = proxies[v].history[proxies[v].history.length - 1]?.delay
+          return { ...proxies[v], delay }
         })
       return { ...provider, all }
     })
 })
-
-const updateGroups = async () => {
-  loading.value = true
-  try {
-    const [{ providers: a }, { proxies: b }] = await Promise.all([getProviders(), getProxies()])
-    providers.value = a
-    proxies.value = b
-  } catch (error) {
-    // console.log(error)
-  }
-  loading.value = false
-}
 
 const handleUseProxy = async (group: any, proxy: any) => {
   if (group.type !== 'Selector') return
@@ -84,7 +57,7 @@ const handleUseProxy = async (group: any, proxy: any) => {
   try {
     await useProxy(group.name, proxy.name)
     await Promise.all(promises)
-    updateGroups()
+    await kernelApiStore.refreshProviderProxies()
   } catch (error: any) {
     message.info(error)
   }
@@ -110,11 +83,18 @@ const handleGroupDelay = async (group: string) => {
   loadingSet.value.add(group)
   try {
     await getGroupDelay(group)
-    await updateGroups()
+    await kernelApiStore.refreshProviderProxies()
   } catch (error: any) {
     message.info(error)
   }
   loadingSet.value.delete(group)
+}
+
+const handleRefresh = async () => {
+  loading.value = true
+  await ignoredError(kernelApiStore.refreshProviderProxies)
+  await sleep(500)
+  loading.value = false
 }
 
 const delayColor = (delay = 0) => {
@@ -124,8 +104,6 @@ const delayColor = (delay = 0) => {
   if (delay < 500) return '#d4451a'
   return '#bc1212'
 }
-
-defineExpose({ updateGroups })
 </script>
 
 <template>
@@ -143,7 +121,7 @@ defineExpose({ updateGroups })
       <Button @click="collapseAll" type="link">
         {{ t('home.controller.collapseAll') }}
       </Button>
-      <Button @click="updateGroups" :loading="loading" type="link">
+      <Button @click="handleRefresh" :loading="loading" type="link">
         {{ t('home.controller.refresh') }}
       </Button>
     </div>
