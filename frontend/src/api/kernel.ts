@@ -32,14 +32,14 @@ const setupKernelApi = () => {
   const profile = getCurrentProfile()
 
   if (profile) {
-    const controller = profile.advancedConfig?.['external-controller'] || '127.0.0.1:9090'
+    const controller = profile.advancedConfig['external-controller'] || '127.0.0.1:9090'
     // TODO: tls
     if (controller.startsWith(':')) {
       base = 'http://127.0.0.1' + controller
     } else {
       base = 'http://' + controller
     }
-    bearer = profile.advancedConfig?.secret || ''
+    bearer = profile.advancedConfig.secret
   }
 
   request.base = base
@@ -53,13 +53,13 @@ const setupKernelWSApi = () => {
   const profile = getCurrentProfile()
 
   if (profile) {
-    const controller = profile.advancedConfig?.['external-controller'] || '127.0.0.1:9090'
+    const controller = profile.advancedConfig['external-controller'] || '127.0.0.1:9090'
     if (controller.startsWith(':')) {
       base = 'ws://127.0.0.1' + controller
     } else {
       base = 'ws://' + controller
     }
-    bearer = profile.advancedConfig?.secret || ''
+    bearer = profile.advancedConfig.secret
   }
 
   websockets.base = base

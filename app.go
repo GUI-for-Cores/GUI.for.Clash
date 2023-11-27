@@ -215,6 +215,7 @@ func (a *App) UnzipZIPFile(path string, output string) ApiIOResult {
 }
 
 func (a *App) Getcwd() ApiIOResult {
+	fmt.Println("Getcwd:")
 	cwd, err := os.Getwd()
 	if err != nil {
 		return ApiIOResult{false, err.Error()}
@@ -281,6 +282,7 @@ func (a *App) StartKernel(path string, directory string) ApiIOResult {
 }
 
 func (a *App) ProcessInfo(pid int32) ApiIOResult {
+	fmt.Println("ProcessInfo:", pid)
 	proc, err := process.NewProcess(pid)
 	if err != nil {
 		return ApiIOResult{false, err.Error()}
@@ -295,6 +297,7 @@ func (a *App) ProcessInfo(pid int32) ApiIOResult {
 }
 
 func (a *App) KillProcess(pid int) ApiIOResult {
+	fmt.Println("KillProcess:", pid)
 	process, err := os.FindProcess(pid)
 	if err != nil {
 		return ApiIOResult{false, err.Error()}
