@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useI18n, I18nT } from 'vue-i18n'
-import { type SubscribeType, useSubscribesStore } from '@/stores/subscribes'
-import { useAppSettingsStore } from '@/stores/appSettings'
-import { Getcwd } from '@/utils/bridge'
+import { type SubscribeType, useSubscribesStore, useAppSettingsStore } from '@/stores'
 import { formatBytes, formatRelativeTime } from '@/utils/format'
 import { BrowserOpenURL } from '@/utils/bridge'
 import { View } from '@/constant/app'
@@ -67,15 +65,6 @@ const handleDisableSub = async (s: SubscribeType) => {
   message.info('success')
 }
 
-const handleOpenWebsite = async (s: SubscribeType) => {
-  BrowserOpenURL(s.website)
-}
-
-const handleOpenEdit = async (s: SubscribeType) => {
-  const cwd = await Getcwd()
-  BrowserOpenURL(cwd + '/' + s.path)
-}
-
 const noUpdateNeeded = computed(() => subscribeStore.subscribes.every((v) => v.disabled))
 
 const clacTrafficPercent = (s: any) => ((s.upload + s.download) / s.total) * 100
@@ -132,8 +121,7 @@ const clacTrafficStatus = (s: any) => (clacTrafficPercent(s) > 80 ? 'warning' : 
       </template>
 
       <template #title-suffix>
-        <Icon icon="link" @click="handleOpenWebsite(s)" style="cursor: pointer" />
-        <Icon icon="edit" @click="handleOpenEdit(s)" style="cursor: pointer" />
+        <Icon icon="link" @click="BrowserOpenURL(s.website)" style="cursor: pointer" />
       </template>
 
       <template v-if="appSettingsStore.app.subscribesView === View.Grid" #extra>

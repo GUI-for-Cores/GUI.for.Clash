@@ -115,14 +115,14 @@ const delayColor = (delay = 0) => {
       <Switch v-model="appSettings.app.kernel.unAvailable" style="margin-left: 8px">
         {{ t('home.controller.unAvailable') }}
       </Switch>
-      <Button @click="expandAll" type="link" style="margin-left: auto">
-        {{ t('home.controller.expandAll') }}
+      <Button @click="expandAll" type="text" style="margin-left: auto">
+        <Icon icon="expand" />
       </Button>
-      <Button @click="collapseAll" type="link">
-        {{ t('home.controller.collapseAll') }}
+      <Button @click="collapseAll" type="text">
+        <Icon icon="collapse" />
       </Button>
-      <Button @click="handleRefresh" :loading="loading" type="link">
-        {{ t('home.controller.refresh') }}
+      <Button @click="handleRefresh" :loading="loading" type="text">
+        <Icon icon="refresh" />
       </Button>
     </div>
   </div>

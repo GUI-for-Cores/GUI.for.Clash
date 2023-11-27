@@ -2,7 +2,6 @@
 import { computed, ref } from 'vue'
 import { useI18n, I18nT } from 'vue-i18n'
 import { type ProfileType, useProfilesStore, useAppSettingsStore } from '@/stores'
-import { BrowserOpenURL, Getcwd } from '@/utils/bridge'
 import { View } from '@/constant/app'
 import { useMessage } from '@/hooks/useMessage'
 import ProfileForm from './components/ProfileForm.vue'
@@ -26,11 +25,6 @@ const handleEditProfile = (p: ProfileType) => {
   isUpdate.value = true
   profileID.value = p.id
   showForm.value = true
-}
-
-const handleOpenEdit = async () => {
-  const cwd = await Getcwd()
-  BrowserOpenURL(cwd + '/data/profiles.yaml')
 }
 
 const handleDeleteProfile = async (p: ProfileType) => {
@@ -83,10 +77,6 @@ const handleUseProfile = async (p: ProfileType) => {
       @dblclick="handleUseProfile(p)"
       class="profile"
     >
-      <template #title-suffix>
-        <Icon @click="handleOpenEdit" icon="edit" style="cursor: pointer" />
-      </template>
-
       <template v-if="appSettingsStore.app.profilesView === View.Grid" #extra>
         <Dropdown>
           <Button type="link" size="small">
@@ -123,11 +113,23 @@ const handleUseProfile = async (p: ProfileType) => {
         / rules:
         {{ p.rulesConfig.length }}
       </div>
-      <div>
+      <div v-if="p.tunConfig.enable || p.dnsConfig.enable">
         TUN:
         {{ p.tunConfig.enable ? t('common.enabled') : t('common.disabled') }}
         / DNS:
         {{ p.dnsConfig.enable ? t('common.enabled') : t('common.disabled') }}
+      </div>
+      <div
+        v-if="
+          p.generalConfig['mixed-port'] || p.advancedConfig.port || p.advancedConfig['socks-port']
+        "
+      >
+        Port:
+        {{ p.advancedConfig.port }}
+        Socks:
+        {{ p.advancedConfig['socks-port'] }}
+        Mixed:
+        {{ p.generalConfig['mixed-port'] }}
       </div>
     </Card>
   </div>
