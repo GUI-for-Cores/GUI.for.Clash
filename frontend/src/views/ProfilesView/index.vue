@@ -125,9 +125,9 @@ const handleUseProfile = async (p: ProfileType) => {
       </div>
       <div>
         TUN:
-        {{ p.tunConfig?.enable ? t('common.enabled') : t('common.disabled') }}
+        {{ p.tunConfig.enable ? t('common.enabled') : t('common.disabled') }}
         / DNS:
-        {{ p.dnsConfig?.enable ? t('common.enabled') : t('common.disabled') }}
+        {{ p.dnsConfig.enable ? t('common.enabled') : t('common.disabled') }}
       </div>
     </Card>
   </div>

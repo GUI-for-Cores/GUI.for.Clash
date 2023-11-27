@@ -40,7 +40,7 @@ const startKernel = async () => {
 
   const profile = profilesStore.getProfileByName(currentProfile)
   if (!profile) {
-    message.info('Profile does not exist')
+    message.info('Profile does not exist: ' + currentProfile)
     return
   }
 
@@ -50,10 +50,12 @@ const startKernel = async () => {
 
   const { pid } = appSettingsStore.app.kernel
 
-  const running = await ignoredError(KernelRunning, pid)
-  if (running) {
-    await ignoredError(KillProcess, pid)
-    appSettingsStore.app.kernel.running = false
+  if (pid) {
+    const running = await ignoredError(KernelRunning, pid)
+    if (running) {
+      await ignoredError(KillProcess, pid)
+      appSettingsStore.app.kernel.running = false
+    }
   }
 
   try {
@@ -72,20 +74,14 @@ const startKernel = async () => {
   kernelLoading.value = false
 }
 
-const stopKernel = async () => {
-  const { pid } = appSettingsStore.app.kernel
-  const running = await ignoredError(KernelRunning, pid)
-  if (running) {
-    await ignoredError(KillProcess, pid)
-  }
-  await updateState()
-}
+const stopKernel = () => KillProcess(appSettingsStore.app.kernel.pid)
 
 const updateState = async () => {
   stateLoading.value = true
   const running = await ignoredError(KernelRunning, appSettingsStore.app.kernel.pid)
   appSettingsStore.app.kernel.running = !!running
   stateLoading.value = false
+  return !!running
 }
 
 const onMouseWheel = (e: WheelEvent) => {
@@ -105,7 +101,11 @@ watch(showController, (v) => {
 onMounted(() => homeviewRef.value?.addEventListener('wheel', onMouseWheel))
 onUnmounted(() => homeviewRef.value?.removeEventListener('wheel', onMouseWheel))
 
-updateState()
+updateState().then((running) => {
+  if (running) {
+    kernelApiStore.refreshCofig()
+  }
+})
 </script>
 
 <template>
