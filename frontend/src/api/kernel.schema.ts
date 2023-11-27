@@ -2,6 +2,7 @@ export type KernelApiConfig = {
   port: number
   'socks-port': number
   'mixed-port': number
+  'interface-name': string
   tun: {
     enable: boolean
     stack: string
@@ -9,8 +10,8 @@ export type KernelApiConfig = {
     device: string
   }
   'allow-lan': false
-  mode: 'rule'
-  'log-level': 'silent'
+  mode: string
+  'log-level': string
   ipv6: false
 }
 

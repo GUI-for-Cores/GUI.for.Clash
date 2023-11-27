@@ -44,7 +44,7 @@ export const AdvancedConfigDefaults: ProfileType['advancedConfig'] = {
 
 export const TunConfigDefaults: ProfileType['tunConfig'] = {
   enable: true,
-  stack: 'system',
+  stack: 'System',
   'auto-route': true,
   'auto-detect-interface': false,
   'dns-hijack': ['any:53' /* '198.18.0.2:53' */],

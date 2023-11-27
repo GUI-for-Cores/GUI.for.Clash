@@ -1,29 +1,30 @@
 <script setup lang="ts">
 import { computed, ref, watch, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useAppSettingsStore, useProfilesStore } from '@/stores'
-import { ignoredError } from '@/utils'
+import { useAppSettingsStore, useProfilesStore, useKernelApiStore } from '@/stores'
+import { ignoredError, sleep } from '@/utils'
 import { generateConfigFile } from '@/utils/generator'
 import { KillProcess, KernelRunning, StartKernel } from '@/utils/bridge'
 import { useMessage, useBool } from '@/hooks'
 import { KernelWorkDirectory, KernelFilePath } from '@/constant/kernel'
-import ProxiesControl from './ProxiesControl.vue'
 import QuickStartView from './QuickStartView.vue'
 import OverView from './OverView.vue'
 import KernelLogs from './KernelLogs.vue'
+import CommonControl from './CommonControl.vue'
+import ProxiesControl from './ProxiesControl.vue'
 
 const kernelLoading = ref(false)
 const stateLoading = ref(false)
-const isExpanded = ref(false)
+const showController = ref(false)
 const homeviewRef = ref<HTMLElement>()
 const controllerRef = ref<HTMLElement>()
-const proxiesControl = ref()
 
 const { t } = useI18n()
 const { message } = useMessage()
 const [showLogs, toggleLogs] = useBool(false)
 const appSettingsStore = useAppSettingsStore()
 const profilesStore = useProfilesStore()
+const kernelApiStore = useKernelApiStore()
 
 const profileOptions = computed(() =>
   profilesStore.profiles.map(({ name }) => ({ label: name, value: name }))
@@ -64,6 +65,10 @@ const startKernel = async () => {
     return
   }
 
+  await sleep(1000)
+
+  kernelApiStore.refreshCofig()
+
   kernelLoading.value = false
 }
 
@@ -87,12 +92,13 @@ const onMouseWheel = (e: WheelEvent) => {
   if (!appSettingsStore.app.kernel.running) return
   const isDown = e.deltaY > 0
 
-  isExpanded.value = isDown || controllerRef.value?.scrollTop !== 0
+  showController.value = isDown || controllerRef.value?.scrollTop !== 0
 }
 
-watch(isExpanded, (v) => {
-  if (v && proxiesControl.value) {
-    proxiesControl.value.updateGroups()
+watch(showController, (v) => {
+  if (v) {
+    kernelApiStore.refreshCofig()
+    kernelApiStore.refreshProviderProxies()
   }
 })
 
@@ -106,7 +112,7 @@ updateState()
   <div ref="homeviewRef" class="homeview">
     <QuickStartView v-if="profilesStore.profiles.length === 0" />
 
-    <div v-else-if="!appSettingsStore.app.kernel.running" class="center">
+    <div v-else-if="!appSettingsStore.app.kernel.running || kernelLoading" class="center">
       <img src="@/assets/logo.png" draggable="false" style="margin-bottom: 32px" />
       <Select v-model="appSettingsStore.app.kernel.profile" :options="profileOptions" />
       <Button @click="startKernel" :loading="kernelLoading" type="primary" size="large">
@@ -114,7 +120,7 @@ updateState()
       </Button>
     </div>
     <template v-else-if="!stateLoading">
-      <div :class="{ blur: isExpanded }">
+      <div :class="{ blur: showController }">
         <div class="kernel-status">
           <div class="running">
             {{ t('home.overview.running') }}
@@ -128,19 +134,15 @@ updateState()
         </div>
         <OverView />
         <Divider>
-          <Button @click="isExpanded = true" type="link" size="small">
+          <Button @click="showController = true" type="link" size="small">
             {{ t('home.overview.controller') }}
           </Button>
         </Divider>
       </div>
 
-      <div ref="controllerRef" :class="{ expanded: isExpanded }" class="controller">
-        <Divider>
-          <Button @click="isExpanded = false" type="link" size="small">
-            {{ t('home.overview.controller') }}
-          </Button>
-        </Divider>
-        <ProxiesControl ref="proxiesControl" />
+      <div ref="controllerRef" :class="{ expanded: showController }" class="controller">
+        <CommonControl v-if="!false" />
+        <ProxiesControl />
       </div>
     </template>
   </div>

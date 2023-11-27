@@ -2,13 +2,11 @@
 import { ref, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ModeOptions } from '@/constant/kernel'
-import { sleep } from '@/utils'
 import { formatBytes } from '@/utils/format'
-import { getConfigs, setConfigs, getConnections, deleteConnection, getKernelWS } from '@/api/kernel'
-import { type KernelApiConfig } from '@/api/kernel.schema'
+import { useKernelApiStore } from '@/stores'
+import { getConnections, deleteConnection, getKernelWS } from '@/api/kernel'
 
 const trafficHistory = ref<[number[], number[]]>([[], []])
-const config = ref<KernelApiConfig>()
 const statistics = ref({
   upload: 0,
   download: 0,
@@ -19,27 +17,20 @@ const statistics = ref({
 })
 
 const { t } = useI18n()
+const kernelApiStore = useKernelApiStore()
 
-const updateConfig = async () => {
-  try {
-    config.value = await getConfigs()
-  } catch (error) {
-    // console.log(error)
-  }
-}
-
-const isActiveMode = (mode: string) => config.value?.mode === mode
+const isActiveMode = (mode: string) => kernelApiStore.config.mode === mode
 
 const handleChangeMode = async (mode: string) => {
-  if (mode === config.value?.mode) return
+  if (mode === kernelApiStore.config.mode) return
 
-  await setConfigs({ mode })
+  kernelApiStore.updateConfig({ mode })
 
   const { connections } = await getConnections()
   const promises = (connections || []).map((v) => deleteConnection(v.id))
   await Promise.all(promises)
 
-  updateConfig()
+  kernelApiStore.refreshCofig()
 }
 
 const onConnections = (data: any) => {
@@ -69,8 +60,6 @@ const onMemory = (data: any) => {
 const disconnect = getKernelWS({ onConnections, onTraffic, onMemory })
 
 onUnmounted(disconnect)
-
-sleep(1000).then(updateConfig)
 </script>
 
 <template>
@@ -78,15 +67,12 @@ sleep(1000).then(updateConfig)
     <div class="statistics">
       <Card :title="t('home.overview.realtimeTraffic')" class="statistics-card">
         <div class="detail">
-          ↑ {{ formatBytes(statistics.upload) }}/s ↓{{ formatBytes(statistics.download) }}/s
+          ↑ {{ formatBytes(statistics.upload) }}/s ↓ {{ formatBytes(statistics.download) }}/s
         </div>
       </Card>
-      <Card :title="t('home.overview.totalTraffic') + ''" class="statistics-card">
+      <Card :title="t('home.overview.totalTraffic')" class="statistics-card">
         <div class="detail">
-          ↑
-          {{ formatBytes(statistics.uploadTotal) }}
-          ↓
-          {{ formatBytes(statistics.downloadTotal) }}
+          ↑ {{ formatBytes(statistics.uploadTotal) }} ↓ {{ formatBytes(statistics.downloadTotal) }}
         </div>
       </Card>
       <Card :title="t('home.overview.connections')" class="statistics-card">

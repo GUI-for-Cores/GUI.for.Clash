@@ -66,7 +66,8 @@ export default {
       'endpoint-independent-nat': '独立于端点的 NAT',
       system: 'System',
       gvisor: 'Gvisor',
-      lightweight: 'Lightweight'
+      mixed: 'Mixed',
+      lwip: 'LWIP'
     },
     dns: {
       enable: '启用DNS',
