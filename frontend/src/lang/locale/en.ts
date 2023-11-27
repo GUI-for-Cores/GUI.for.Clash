@@ -125,6 +125,7 @@ export default {
       payload: 'Payload',
       proxy: 'Proxy',
       'no-resolve': 'No Resolve',
+      needGeodataMode: 'Please enable the "geodata-mode" option in the advanced settings',
       type: {
         name: 'Type',
         DOMAIN: 'DOMAIN',

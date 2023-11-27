@@ -178,14 +178,6 @@ export const RulesConfigDefaults: ProfileType['rulesConfig'] = [
   {
     id: sampleID(),
     type: 'GEOIP',
-    payload: 'LAN',
-    proxy: '🎯 全球直连',
-    'no-resolve': true,
-    filter: ''
-  },
-  {
-    id: sampleID(),
-    type: 'GEOIP',
     payload: 'CN',
     proxy: '🎯 全球直连',
     'no-resolve': true,

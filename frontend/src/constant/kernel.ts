@@ -164,14 +164,15 @@ export const RulesTypeOptions = [
     label: 'kernel.rules.type.PROCESS-PATH',
     value: 'PROCESS-PATH'
   },
-  {
-    label: 'kernel.rules.type.RULE-SET',
-    value: 'RULE-SET'
-  },
-  {
-    label: 'kernel.rules.type.SCRIPT',
-    value: 'SCRIPT'
-  },
+  // To be realized
+  // {
+  //   label: 'kernel.rules.type.RULE-SET',
+  //   value: 'RULE-SET'
+  // },
+  // {
+  //   label: 'kernel.rules.type.SCRIPT',
+  //   value: 'SCRIPT'
+  // },
   {
     label: 'kernel.rules.type.GEOIP',
     value: 'GEOIP'

@@ -125,6 +125,7 @@ export default {
       payload: '载荷',
       proxy: '代理',
       'no-resolve': '跳过DNS解析',
+      needGeodataMode: '请在高级设置中打开"GEO数据模式"',
       type: {
         name: '类型',
         DOMAIN: '域名',
