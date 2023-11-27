@@ -36,7 +36,7 @@ const downloadCore_Meta = async () => {
 
     await UnzipZIPFile(path, KernelWorkDirectory)
 
-    message.info('Download Successfully')
+    message.info('Download Successful')
   } catch (error: any) {
     message.info(error)
   }

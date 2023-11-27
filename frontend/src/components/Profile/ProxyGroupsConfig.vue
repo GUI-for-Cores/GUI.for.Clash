@@ -3,6 +3,7 @@ import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { type ProfileType } from '@/stores/profiles'
 import { useSubscribesStore } from '@/stores/subscribes'
+import { useMessage } from '@/hooks'
 import { deepClone, sampleID } from '@/utils'
 import { GroupsTypeOptions, StrategyOptions } from '@/constant/kernel'
 
@@ -56,6 +57,7 @@ const fields = ref<GroupsType[0]>({
 })
 
 const { t } = useI18n()
+const { message } = useMessage()
 const subscribesStore = useSubscribesStore()
 
 const handleAddGroup = () => {
@@ -192,6 +194,10 @@ const toggleExpanded = (key: string) => {
 
 const isExpanded = (key: string) => expandedSet.value.has(key)
 
+const showLost = () => {
+  message.info(t('kernel.proxyGroups.notFound'))
+}
+
 const onDragStart = (e: any, index: number) => {
   dragIndex = index
 }
@@ -210,9 +216,9 @@ const onDragOver = (e: any) => e.preventDefault()
 
 watch(groups, (v) => emits('update:modelValue', v), { immediate: true })
 
-subscribesStore.subscribes.forEach(async (s) => {
-  proxyGroup.value[1].proxies.push({ name: s.name, type: 'use' })
-  proxyGroup.value.push({ name: s.name, proxies: s.proxies })
+subscribesStore.subscribes.forEach(async ({ name, proxies }) => {
+  proxyGroup.value[1].proxies.push({ name, type: 'use' })
+  proxyGroup.value.push({ name, proxies })
 })
 </script>
 
@@ -228,7 +234,7 @@ subscribesStore.subscribes.forEach(async (s) => {
       draggable="true"
     >
       <div class="name">
-        <span v-if="hasLost(g)" class="lost"> [ ! ] </span>
+        <span v-if="hasLost(g)" @click="showLost" class="lost"> [ ! ] </span>
         {{ g.name }}
       </div>
       <div class="count">

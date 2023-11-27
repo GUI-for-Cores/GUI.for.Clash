@@ -14,7 +14,6 @@ export default {
     prevStep: 'Prev',
     disabled: 'Disabled',
     enabled: 'Enabled',
-    notSupported: 'Not Supported',
     preview: 'Preview',
     warning: 'Warning',
     disable: 'Disable',
@@ -105,7 +104,7 @@ export default {
       tolerance: 'Tolerance',
       url: 'URL',
       filter: 'Filter',
-      notFound: 'The following subscriptions or proxies have been lost, please clean them up',
+      notFound: 'Some subscriptions or proxies are missing, please clean them up',
       type: {
         name: 'Type',
         select: 'select',
@@ -186,7 +185,7 @@ export default {
     noProfile: 'Welcome to the {0}, click the button to get started.',
     overview: {
       start: 'Click to Start',
-      stop: 'Click to Stop',
+      stop: 'Stop',
       log: 'Logs',
       noLogs: 'Log is empty',
       traffic: 'Traffic',
@@ -235,7 +234,6 @@ export default {
     name: 'Name',
     generalSettings: 'General Settings',
     advancedSettings: 'Advanced Settings',
-    notSupported: 'This kernel does not support advanced settings.',
     step: {
       name: 'Enter Name',
       general: 'General Settings',
