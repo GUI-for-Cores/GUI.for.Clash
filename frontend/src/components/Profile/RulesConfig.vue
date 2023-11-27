@@ -2,6 +2,7 @@
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { deepClone, sampleID } from '@/utils'
+import { useMessage } from '@/hooks'
 import { generateRule } from '@/utils/generator'
 import { type ProfileType } from '@/stores/profiles'
 import { RulesTypeOptions } from '@/constant/kernel'
@@ -35,7 +36,7 @@ const fields = ref({
 const proxyOptions = computed(() => [
   { label: 'DIRECT', value: 'DIRECT' },
   { label: 'REJECT', value: 'REJECT' },
-  ...props.proxyGroups.map(({ name }) => ({ label: name || '', value: name || '' }))
+  ...props.proxyGroups.map(({ name }) => ({ label: name, value: name }))
 ])
 
 const supportNoResolve = computed(() =>
@@ -44,7 +45,14 @@ const supportNoResolve = computed(() =>
 
 const supportPayload = computed(() => fields.value.type !== 'MATCH')
 
+const filteredRulesTypeOptions = computed(() =>
+  RulesTypeOptions.filter(
+    ({ value }) => props.profile.advancedConfig['geodata-mode'] || !value.startsWith('GEO')
+  )
+)
+
 const { t } = useI18n()
+const { message } = useMessage()
 
 const handleAddRule = () => {
   updateRuleId = -1
@@ -75,6 +83,14 @@ const handleAddEnd = () => {
   } else {
     rules.value.push(fields.value)
   }
+}
+
+const notSupport = (r: ProfileType['rulesConfig'][0]) => {
+  return r.type.startsWith('GEO') && !props.profile.advancedConfig['geodata-mode']
+}
+
+const showNotSupport = () => {
+  message.info(t('kernel.rules.needGeodataMode'))
 }
 
 const onDragStart = (e: any, index: number) => {
@@ -109,6 +125,7 @@ watch(rules, (v) => emits('update:modelValue', v), { immediate: true })
         draggable="true"
       >
         <div class="name">
+          <span v-if="notSupport(r)" @click="showNotSupport" class="not-support"> [ ! ] </span>
           {{ generateRule(r) }}
         </div>
         <div class="action">
@@ -130,7 +147,7 @@ watch(rules, (v) => emits('update:modelValue', v), { immediate: true })
   <Modal v-model:open="showModal" @ok="handleAddEnd" max-width="80" max-height="80">
     <div class="form-item">
       {{ t('kernel.rules.type.name') }}
-      <Select v-model="fields.type" :options="RulesTypeOptions" />
+      <Select v-model="fields.type" :options="filteredRulesTypeOptions" />
     </div>
     <div v-show="supportPayload" class="form-item">
       {{ t('kernel.rules.payload') }}
@@ -158,6 +175,10 @@ watch(rules, (v) => emits('update:modelValue', v), { immediate: true })
   margin-bottom: 2px;
   .name {
     font-weight: bold;
+    .not-support {
+      color: rgb(200, 193, 11);
+      cursor: pointer;
+    }
   }
   .action {
     margin-left: auto;
