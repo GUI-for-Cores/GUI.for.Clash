@@ -160,8 +160,12 @@ export const generateConfigFile = async (profile: ProfileType) => {
     dns: profile.dnsConfig
   }
 
-  if (config?.dns?.['default-nameserver']?.length === 0) {
+  if (config.dns['default-nameserver'].length === 0) {
     delete config.dns['default-nameserver']
+  }
+
+  if (config.dns['nameserver'].length === 0) {
+    delete config.dns['nameserver']
   }
 
   config['proxy-providers'] = await generateProxyProviders(profile.proxyGroupsConfig)
