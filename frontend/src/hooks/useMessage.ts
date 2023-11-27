@@ -25,7 +25,7 @@ class Message {
       transition: all .2s;
       display: block;
       color: var(--color);
-      background: var(--bg-color);
+      background: var(--toast-bg);
       padding: 8px;
       border-radius: 8px;
       margin: 4px 0;
