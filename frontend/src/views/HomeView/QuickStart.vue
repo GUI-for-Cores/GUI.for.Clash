@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { inject, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useMessage } from '@/hooks/useMessage'
 import { sampleID } from '@/utils'
-import { APP_TITLE } from '@/utils/env'
 import * as Defaults from '@/constant/profile'
 import {
   useProfilesStore,
@@ -14,7 +13,7 @@ import {
 } from '@/stores'
 
 const url = ref('')
-const showModal = ref(false)
+const loading = ref(false)
 
 const { t } = useI18n()
 const { message } = useMessage()
@@ -22,14 +21,17 @@ const subscribeStore = useSubscribesStore()
 const profilesStore = useProfilesStore()
 const appSettingsStore = useAppSettingsStore()
 
-const handleCancel = () => (showModal.value = false)
+const handleCancel = inject('cancel') as any
 
 const handleSubmit = async () => {
   if (!url.value || !url.value.toLocaleLowerCase().startsWith('http')) return
 
+  const profileID = sampleID()
+  const subscribeID = sampleID()
+
   const profile: ProfileType = {
-    id: sampleID(),
-    name: 'Default',
+    id: profileID,
+    name: profileID,
     generalConfig: Defaults.GeneralConfigDefaults,
     advancedConfig: Defaults.AdvancedConfigDefaults,
     tunConfig: Defaults.TunConfigDefaults,
@@ -38,9 +40,12 @@ const handleSubmit = async () => {
     rulesConfig: Defaults.RulesConfigDefaults
   }
 
+  profile.proxyGroupsConfig[0].use = [subscribeID]
+  profile.proxyGroupsConfig[1].use = [subscribeID]
+
   const subscribe: SubscribeType = {
-    id: sampleID(),
-    name: 'Default',
+    id: subscribeID,
+    name: subscribeID,
     url: url.value,
     upload: 0,
     download: 0,
@@ -49,12 +54,14 @@ const handleSubmit = async () => {
     updateTime: '',
     type: 'Http',
     website: '',
-    path: 'data/subscribes/default.yaml',
+    path: `data/subscribes/${subscribeID}.yaml`,
     include: '',
     exclude: '',
     disabled: false,
     proxies: []
   }
+
+  loading.value = true
 
   try {
     await subscribeStore.addSubscribe(subscribe)
@@ -62,57 +69,41 @@ const handleSubmit = async () => {
     await profilesStore.addProfile(profile)
 
     appSettingsStore.app.kernel.profile = profile.name
-
-    await subscribeStore.updateSubscribe(subscribe.id)
   } catch (error: any) {
     console.log(error)
     message.info(error)
     return
   }
 
+  message.info(t('home.initSuccessful'))
+
+  try {
+    await subscribeStore.updateSubscribe(subscribe.id)
+  } catch (error: any) {
+    console.log(error)
+    message.info(error, 10)
+    message.info(t('home.initFailed'), 10)
+  }
+
+  loading.value = false
+
   handleCancel()
 }
 </script>
 
 <template>
-  <div class="quick-start">
-    <img src="@/assets/logo.png" draggable="false" />
-    <p>{{ t('home.noProfile', [APP_TITLE]) }}</p>
-    <Button @click="showModal = true" type="primary">
-      {{ t('home.quickStart') }}
-    </Button>
+  <div class="form-item">
+    <div class="name">* {{ t('subscribe.url') }}</div>
+    <Input v-model="url" auto-size placeholder="http(s)://" autofocus style="width: 90%" />
   </div>
 
-  <Modal v-model:open="showModal" :title="t('subscribes.enterLink')" :footer="false">
-    <div class="form-item">
-      <div class="name">* {{ t('subscribe.url') }}</div>
-      <Input v-model="url" auto-size placeholder="http(s)://" autofocus style="width: 90%" />
-    </div>
-
-    <div class="action">
-      <Button @click="handleCancel">{{ t('common.cancel') }}</Button>
-      <Button @click="handleSubmit" type="primary">{{ t('common.save') }}</Button>
-    </div>
-  </Modal>
+  <div class="action">
+    <Button @click="handleCancel" :disable="loading">{{ t('common.cancel') }}</Button>
+    <Button @click="handleSubmit" :loading="loading" type="primary">{{ t('common.save') }}</Button>
+  </div>
 </template>
 
 <style lang="less" scoped>
-.quick-start {
-  min-height: 70vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.form-item {
-  margin-bottom: 8px;
-  .name {
-    font-size: 14px;
-    padding: 8px 0;
-  }
-}
-
 .action {
   display: flex;
   justify-content: flex-end;
