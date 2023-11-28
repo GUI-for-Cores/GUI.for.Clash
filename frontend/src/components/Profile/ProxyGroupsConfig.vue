@@ -184,6 +184,8 @@ const hasLost = (g: GroupsType[0]) => {
   return isProxiesLost || isUseLost
 }
 
+const needToAdd = (g: GroupsType[0]) => g.use.length === 0 && g.proxies.length === 0
+
 const toggleExpanded = (key: string) => {
   if (expandedSet.value.has(key)) {
     expandedSet.value.delete(key)
@@ -194,9 +196,9 @@ const toggleExpanded = (key: string) => {
 
 const isExpanded = (key: string) => expandedSet.value.has(key)
 
-const showLost = () => {
-  message.info(t('kernel.proxyGroups.notFound'))
-}
+const showLost = () => message.info(t('kernel.proxyGroups.notFound'))
+
+const showNeedToAdd = () => message.info(t('kernel.proxyGroups.needToAdd'))
 
 const onDragStart = (e: any, index: number) => {
   dragIndex = index
@@ -234,7 +236,8 @@ subscribesStore.subscribes.forEach(async ({ name, proxies }) => {
       draggable="true"
     >
       <div class="name">
-        <span v-if="hasLost(g)" @click="showLost" class="lost"> [ ! ] </span>
+        <span v-if="hasLost(g)" @click="showLost" class="warn"> [ ! ] </span>
+        <span v-if="needToAdd(g)" @click="showNeedToAdd" class="warn"> [ ! ] </span>
         {{ g.name }}
       </div>
       <div class="count">
@@ -341,7 +344,7 @@ subscribesStore.subscribes.forEach(async ({ name, proxies }) => {
   margin-bottom: 2px;
   .name {
     font-weight: bold;
-    .lost {
+    .warn {
       color: rgb(200, 193, 11);
       cursor: pointer;
     }
