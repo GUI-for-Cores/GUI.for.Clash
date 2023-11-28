@@ -6,6 +6,15 @@ export enum ProxyGroup {
   LoadBalance = 'load-balance'
 }
 
+// Why not unify the design with the above?
+export enum ProxyGroupType {
+  Selector = 'Selector',
+  UrlTest = 'URLTest',
+  Fallback = 'Fallback',
+  Relay = 'Relay',
+  LoadBalance = 'LoadBalance'
+}
+
 export const KernelWorkDirectory = 'data/Clash.Meta'
 
 export const KernelFilePath = KernelWorkDirectory + '/clash.meta-windows-amd64'
