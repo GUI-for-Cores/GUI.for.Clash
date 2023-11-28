@@ -27,11 +27,11 @@ watch(fields, (v) => emits('update:modelValue', v), { immediate: true })
 <template>
   <div class="form-item">
     {{ t('kernel.port') }}
-    <Input v-model="fields.port" type="number" editable />
+    <Input v-model="fields.port" :min="0" :max="65535" type="number" editable />
   </div>
   <div class="form-item">
     {{ t('kernel.socks-port') }}
-    <Input v-model="fields['socks-port']" type="number" editable />
+    <Input v-model="fields['socks-port']" :min="0" :max="65535" type="number" editable />
   </div>
   <div class="form-item">
     {{ t('kernel.external-controller') }}
