@@ -106,6 +106,7 @@ export default {
       url: '测速链接',
       filter: '过滤',
       notFound: '部分订阅或节点已丢失，请清理',
+      needToAdd: '至少添加一个节点或订阅',
       type: {
         name: '类型',
         select: '手动选择',

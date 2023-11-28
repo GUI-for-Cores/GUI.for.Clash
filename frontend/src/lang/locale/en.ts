@@ -106,6 +106,7 @@ export default {
       url: 'URL',
       filter: 'Filter',
       notFound: 'Some subscriptions or proxies are missing, please clean them up',
+      needToAdd: 'Add at least one `Use` or `Proxies`',
       type: {
         name: 'Type',
         select: 'select',
