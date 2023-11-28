@@ -2,16 +2,16 @@
 import { computed, ref, watch, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAppSettingsStore, useProfilesStore, useKernelApiStore } from '@/stores'
+import { APP_TITLE } from '@/utils/env'
 import { ignoredError, sleep } from '@/utils'
 import { generateConfigFile } from '@/utils/generator'
 import { KillProcess, KernelRunning, StartKernel } from '@/utils/bridge'
 import { useMessage, useBool } from '@/hooks'
 import { KernelWorkDirectory, KernelFilePath } from '@/constant/kernel'
-import QuickStartView from './QuickStartView.vue'
+import QuickStart from './QuickStart.vue'
 import OverView from './OverView.vue'
 import KernelLogs from './KernelLogs.vue'
-import CommonControl from './CommonControl.vue'
-import ProxiesControl from './ProxiesControl.vue'
+import KernelController from './KernelController.vue'
 
 const kernelLoading = ref(false)
 const stateLoading = ref(false)
@@ -22,6 +22,7 @@ const controllerRef = ref<HTMLElement>()
 const { t } = useI18n()
 const { message } = useMessage()
 const [showLogs, toggleLogs] = useBool(false)
+const [showQuickStart, toggleQuickStart] = useBool(false)
 const appSettingsStore = useAppSettingsStore()
 const profilesStore = useProfilesStore()
 const kernelApiStore = useKernelApiStore()
@@ -110,15 +111,25 @@ updateState().then((running) => {
 
 <template>
   <div ref="homeviewRef" class="homeview">
-    <QuickStartView v-if="profilesStore.profiles.length === 0" />
+    <div v-if="!appSettingsStore.app.kernel.running || kernelLoading" class="center">
+      <img src="@/assets/logo.png" draggable="false" style="margin-bottom: 16px" />
 
-    <div v-else-if="!appSettingsStore.app.kernel.running || kernelLoading" class="center">
-      <img src="@/assets/logo.png" draggable="false" style="margin-bottom: 32px" />
-      <Select v-model="appSettingsStore.app.kernel.profile" :options="profileOptions" />
-      <Button @click="startKernel" :loading="kernelLoading" type="primary" size="large">
-        {{ t('home.overview.start') }}
-      </Button>
+      <template v-if="profilesStore.profiles.length === 0">
+        <p>{{ t('home.noProfile', [APP_TITLE]) }}</p>
+        <Button @click="toggleQuickStart" type="primary">{{ t('home.quickStart') }}</Button>
+      </template>
+
+      <template v-else>
+        <Select v-model="appSettingsStore.app.kernel.profile" :options="profileOptions" />
+        <Button @click="startKernel" :loading="kernelLoading" type="primary" size="large">
+          {{ t('home.overview.start') }}
+        </Button>
+        <Button @click="toggleQuickStart" type="link" size="small">
+          {{ t('home.quickStart') }}
+        </Button>
+      </template>
     </div>
+
     <template v-else-if="!stateLoading">
       <div :class="{ blur: showController }">
         <div class="kernel-status">
@@ -141,14 +152,17 @@ updateState().then((running) => {
       </div>
 
       <div ref="controllerRef" :class="{ expanded: showController }" class="controller">
-        <CommonControl v-if="!false" />
-        <ProxiesControl />
+        <KernelController />
       </div>
     </template>
   </div>
 
   <Modal v-model:open="showLogs" :submit="false" max-width="90" max-height="90" title="Logs">
     <KernelLogs />
+  </Modal>
+
+  <Modal v-model:open="showQuickStart" :title="t('subscribes.enterLink')" :footer="false">
+    <QuickStart />
   </Modal>
 </template>
 
