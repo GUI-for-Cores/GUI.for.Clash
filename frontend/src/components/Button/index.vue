@@ -15,7 +15,7 @@ withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <div :class="[type, size, { disable }]" class="btn">
+  <div :class="[type, size, { disable, loading }]" class="btn">
     <Icon v-if="disable" :fill="`var(--btn-${type}-color)`" icon="forbidden" />
     <Icon v-if="loading" :fill="`var(--btn-${type}-color)`" icon="loading" class="rotation" />
     <slot />
@@ -36,7 +36,8 @@ withDefaults(defineProps<Props>(), {
   transition: all 0.2s;
 }
 
-.disable {
+.disable,
+.loading {
   pointer-events: none;
 }
 
