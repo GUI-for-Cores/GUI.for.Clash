@@ -5,6 +5,7 @@ import { useMessage } from '@/hooks/useMessage'
 import { useAppSettingsStore, useKernelApiStore } from '@/stores'
 import { useProxy, getGroupDelay, getConnections, deleteConnection } from '@/api/kernel'
 import { ignoredError, sleep } from '@/utils'
+import { ProxyGroupType } from '@/constant/kernel'
 
 const expandedSet = ref<Set<string>>(new Set())
 const loadingSet = ref<Set<string>>(new Set())
@@ -27,6 +28,7 @@ const groups = computed(() => {
           return (
             appSettings.app.kernel.unAvailable ||
             ['DIRECT', 'REJECT'].includes(v) ||
+            kernelApiStore.proxies[v].all ||
             kernelApiStore.proxies[v].alive
           )
         })
@@ -34,7 +36,15 @@ const groups = computed(() => {
           const delay = proxies[v].history[proxies[v].history.length - 1]?.delay
           return { ...proxies[v], delay }
         })
-      return { ...provider, all }
+
+      const chains = [provider.now]
+      let tmp = proxies[provider.now]
+      while (tmp) {
+        tmp.now && chains.push(tmp.now)
+        tmp = proxies[tmp.now]
+      }
+
+      return { ...provider, all, chains }
     })
 })
 
@@ -97,6 +107,15 @@ const handleRefresh = async () => {
   loading.value = false
 }
 
+const locateGroup = (group: any, chain: string) => {
+  collapseAll()
+  if (kernelApiStore.proxies[chain].all) {
+    toggleExpanded(kernelApiStore.proxies[chain].name)
+  } else {
+    toggleExpanded(group.name)
+  }
+}
+
 const delayColor = (delay = 0) => {
   if (delay === 0) return '#f00'
   if (delay < 100) return '#6ec96e'
@@ -130,9 +149,24 @@ const delayColor = (delay = 0) => {
     <div class="header">
       <div class="group-info">
         <span class="group-name">{{ group.name }}</span>
-        <span class="group-type">{{ group.type }}</span>
+        <span class="group-type">
+          {{
+            t(
+              {
+                [ProxyGroupType.Selector]: 'kernel.proxyGroups.type.Selector',
+                [ProxyGroupType.UrlTest]: 'kernel.proxyGroups.type.UrlTest',
+                [ProxyGroupType.Fallback]: 'kernel.proxyGroups.type.Fallback',
+                [ProxyGroupType.Relay]: 'kernel.proxyGroups.type.Relay',
+                [ProxyGroupType.LoadBalance]: 'kernel.proxyGroups.type.LoadBalance'
+              }[group.type]!
+            )
+          }}
+        </span>
         <span> :: </span>
-        <span class="group-now">{{ group.now }}</span>
+        <template v-for="(chain, index) in group.chains" :key="chain">
+          <span v-if="index !== 0" style="color: gray"> / </span>
+          <Button @click="locateGroup(group, chain)" type="text" size="small">{{ chain }}</Button>
+        </template>
       </div>
       <div class="action">
         <Button @click="handleGroupDelay(group.name)" :loading="isLoading(group.name)" type="text">
@@ -159,7 +193,7 @@ const delayColor = (delay = 0) => {
         <div :style="{ color: delayColor(proxy.delay) }" class="delay">
           {{ proxy.delay && proxy.delay + 'ms' }}
         </div>
-        <div class="type">{{ proxy.type }} {{ proxy.udp && ':: udp' }}</div>
+        <div class="type">{{ proxy.type }} {{ proxy.udp ? ':: udp' : '' }}</div>
       </Card>
     </div>
   </div>
@@ -190,9 +224,6 @@ const delayColor = (delay = 0) => {
       }
 
       .group-type {
-        margin: 0 8px;
-      }
-      .group-now {
         margin: 0 8px;
       }
     }
