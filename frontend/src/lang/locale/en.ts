@@ -112,7 +112,12 @@ export default {
         'url-test': 'url-test',
         fallback: 'fallback',
         relay: 'relay',
-        'load-balance': 'load-balance'
+        'load-balance': 'load-balance',
+        Selector: 'Selector',
+        UrlTest: 'UrlTest',
+        Fallback: 'Fallback',
+        Relay: 'Relay',
+        LoadBalance: 'LoadBalance'
       },
       strategy: {
         name: 'Strategy',
