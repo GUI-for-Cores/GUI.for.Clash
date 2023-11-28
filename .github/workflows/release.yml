@@ -50,5 +50,5 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./build/bin/GUI.for.Clash.exe
-          asset_name: GUI.for.Clash-${{ github.ref_name }}.exe
+          asset_name: GUI.for.Clash.exe
           asset_content_type: application/x-msdownload
