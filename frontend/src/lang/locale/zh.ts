@@ -112,7 +112,12 @@ export default {
         'url-test': '自动测速',
         fallback: '自动回退',
         relay: '链式代理',
-        'load-balance': '负载均衡'
+        'load-balance': '负载均衡',
+        Selector: '手动选择',
+        UrlTest: '自动测速',
+        Fallback: '自动回退',
+        Relay: '链式代理',
+        LoadBalance: '负载均衡'
       },
       strategy: {
         name: '负载均衡策略',
