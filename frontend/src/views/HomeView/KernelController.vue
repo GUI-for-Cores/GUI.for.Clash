@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { useMessage } from '@/hooks/useMessage'
 import { useAppSettingsStore, useKernelApiStore } from '@/stores'
 import { useProxy, getGroupDelay, getConnections, deleteConnection } from '@/api/kernel'
+import { useBool } from '@/hooks'
 import { ignoredError, sleep } from '@/utils'
 import { ProxyGroupType } from '@/constant/kernel'
 
@@ -13,6 +14,7 @@ const loading = ref(false)
 
 const { t } = useI18n()
 const { message } = useMessage()
+const [showCommonConfig, toggleShow] = useBool(false)
 const appSettings = useAppSettingsStore()
 const kernelApiStore = useKernelApiStore()
 
@@ -102,6 +104,7 @@ const handleGroupDelay = async (group: string) => {
 
 const handleRefresh = async () => {
   loading.value = true
+  await ignoredError(kernelApiStore.refreshCofig)
   await ignoredError(kernelApiStore.refreshProviderProxies)
   await sleep(500)
   loading.value = false
@@ -116,6 +119,11 @@ const locateGroup = (group: any, chain: string) => {
   }
 }
 
+const onPortSubmit = (port: number) => kernelApiStore.updateConfig({ port })
+const onSocksPortSubmit = (port: number) => kernelApiStore.updateConfig({ 'socks-port': port })
+const onMixedPortSubmit = (port: number) => kernelApiStore.updateConfig({ 'mixed-port': port })
+const onAllowLanChange = (allow: boolean) => kernelApiStore.updateConfig({ 'allow-lan': allow })
+
 const delayColor = (delay = 0) => {
   if (delay === 0) return '#f00'
   if (delay < 100) return '#6ec96e'
@@ -126,7 +134,7 @@ const delayColor = (delay = 0) => {
 </script>
 
 <template>
-  <div class="group">
+  <div class="groups">
     <div class="header">
       <Switch v-model="appSettings.app.kernel.autoClose">
         {{ t('home.controller.autoClose') }}
@@ -134,7 +142,10 @@ const delayColor = (delay = 0) => {
       <Switch v-model="appSettings.app.kernel.unAvailable" style="margin-left: 8px">
         {{ t('home.controller.unAvailable') }}
       </Switch>
-      <Button @click="expandAll" type="text" style="margin-left: auto">
+      <Button @click="toggleShow" type="link" style="margin-left: auto">
+        {{ t('common.more') }}
+      </Button>
+      <Button @click="expandAll" type="text">
         <Icon icon="expand" />
       </Button>
       <Button @click="collapseAll" type="text">
@@ -144,8 +155,45 @@ const delayColor = (delay = 0) => {
         <Icon icon="refresh" />
       </Button>
     </div>
+    <div v-show="showCommonConfig" class="card-ist">
+      <Card :title="t('kernel.port')" class="card-item">
+        <Input
+          v-model="kernelApiStore.config.port"
+          :min="0"
+          :max="65535"
+          @submit="onPortSubmit"
+          type="number"
+          editable
+        />
+      </Card>
+      <Card :title="t('kernel.socks-port')" class="card-item">
+        <Input
+          v-model="kernelApiStore.config['socks-port']"
+          :min="0"
+          :max="65535"
+          @submit="onSocksPortSubmit"
+          type="number"
+          editable
+        />
+      </Card>
+      <Card :title="t('kernel.mixed-port')" class="card-item">
+        <Input
+          v-model="kernelApiStore.config['mixed-port']"
+          :min="0"
+          :max="65535"
+          @submit="onMixedPortSubmit"
+          type="number"
+          editable
+        />
+      </Card>
+      <Card :title="t('kernel.allow-lan')" class="card-item">
+        <div style="width: 100%; text-align: right">
+          <Switch v-model="kernelApiStore.config['allow-lan']" @change="onAllowLanChange" />
+        </div>
+      </Card>
+    </div>
   </div>
-  <div v-for="group in groups" :key="group.name" class="group">
+  <div v-for="group in groups" :key="group.name" class="groups">
     <div class="header">
       <div class="group-info">
         <span class="group-name">{{ group.name }}</span>
@@ -200,7 +248,7 @@ const delayColor = (delay = 0) => {
 </template>
 
 <style lang="less" scoped>
-.group {
+.groups {
   margin: 8px;
 
   .header {
@@ -214,7 +262,6 @@ const delayColor = (delay = 0) => {
     border-radius: 8px;
     backdrop-filter: blur(2px);
     .group-info {
-      font-weight: normal;
       font-size: 14px;
       display: flex;
       align-items: center;
@@ -230,8 +277,6 @@ const delayColor = (delay = 0) => {
 
     .action {
       margin-left: auto;
-      display: flex;
-      align-items: center;
 
       .rotate-z {
         transform: rotateZ(180deg);
@@ -250,7 +295,6 @@ const delayColor = (delay = 0) => {
       width: calc(20% - 8px);
       margin: 4px 4px;
       .delay {
-        line-height: 1.8;
         height: 20px;
       }
       .type,
@@ -258,6 +302,16 @@ const delayColor = (delay = 0) => {
         font-size: 12px;
       }
     }
+  }
+}
+
+.card-ist {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-top: 8px;
+  .card-item {
+    width: 24%;
   }
 }
 </style>
