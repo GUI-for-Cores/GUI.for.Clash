@@ -43,7 +43,7 @@ watch(fields, (v) => emits('update:modelValue', v), { immediate: true })
   </div>
   <div class="form-item">
     {{ t('kernel.mixed-port') }}
-    <Input v-model="fields['mixed-port']" type="number" editable />
+    <Input v-model="fields['mixed-port']" :min="0" :max="65535" type="number" editable />
   </div>
 </template>
 

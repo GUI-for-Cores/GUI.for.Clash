@@ -10,6 +10,8 @@ interface Props {
   editable?: boolean
   autofocus?: boolean
   width?: string
+  min?: number
+  max?: number
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -20,7 +22,7 @@ const props = withDefaults(defineProps<Props>(), {
   width: ''
 })
 
-const emits = defineEmits(['update:modelValue'])
+const emits = defineEmits(['update:modelValue', 'submit'])
 
 const showEdit = ref(false)
 const inputRef = ref<HTMLElement>()
@@ -31,6 +33,13 @@ const onInput = (e: any) => {
   let val = e.target.value
   if (props.type === 'number') {
     val = Number(val)
+    const { min, max } = props
+    if (min !== undefined) {
+      val = val < min ? min : val
+    }
+    if (max !== undefined) {
+      val = val > max ? max : val
+    }
   }
   emits('update:modelValue', val)
 }
@@ -40,6 +49,11 @@ const showInput = () => {
   nextTick(() => {
     inputRef.value?.focus()
   })
+}
+
+const onSubmit = () => {
+  props.editable && (showEdit.value = false)
+  emits('submit', props.modelValue)
 }
 
 onMounted(() => props.autofocus && inputRef.value?.focus())
@@ -58,7 +72,8 @@ onMounted(() => props.autofocus && inputRef.value?.focus())
       :type="type"
       :style="width && 'width: ' + width"
       @input="($event) => onInput($event)"
-      @blur="editable && (showEdit = false)"
+      @blur="onSubmit"
+      @keydown.enter="inputRef?.blur"
       ref="inputRef"
     />
   </div>
@@ -68,6 +83,7 @@ onMounted(() => props.autofocus && inputRef.value?.focus())
 .input {
   .editable {
     height: 30px;
+    line-height: 30px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
