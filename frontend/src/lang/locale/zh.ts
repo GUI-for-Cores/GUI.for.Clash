@@ -190,6 +190,8 @@ export default {
     direct: '直连',
     quickStart: '快速开始',
     noProfile: '欢迎使用 {0}，点击按钮开始。',
+    initSuccessful: '初始化配置、订阅成功',
+    initFailed: '更新订阅时出错，请手动更新订阅',
     overview: {
       start: '启动内核',
       stop: '关闭内核',

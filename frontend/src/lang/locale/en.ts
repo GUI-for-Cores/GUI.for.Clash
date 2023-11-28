@@ -190,6 +190,8 @@ export default {
     direct: 'Direct',
     quickStart: 'Quick Start',
     noProfile: 'Welcome to the {0}, click the button to get started.',
+    initSuccessful: 'Initialization successful',
+    initFailed: 'Failed to update the subscription, you need to manually update the subscription',
     overview: {
       start: 'Click to Start',
       stop: 'Stop',
