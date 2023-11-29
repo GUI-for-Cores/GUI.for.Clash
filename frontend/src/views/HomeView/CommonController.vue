@@ -1,0 +1,101 @@
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+import { useKernelApiStore } from '@/stores'
+import { StackOptions } from '@/constant/kernel'
+
+const { t } = useI18n()
+const kernelApiStore = useKernelApiStore()
+
+const onPortSubmit = (port: number) => kernelApiStore.updateConfig({ port })
+const onSocksPortSubmit = (port: number) => kernelApiStore.updateConfig({ 'socks-port': port })
+const onMixedPortSubmit = (port: number) => kernelApiStore.updateConfig({ 'mixed-port': port })
+const onAllowLanChange = (allow: boolean) => kernelApiStore.updateConfig({ 'allow-lan': allow })
+const conStackChange = (stack: string) => kernelApiStore.updateConfig({ tun: { stack } })
+const onTunDeviceSubmit = (device: string) => kernelApiStore.updateConfig({ tun: { device } })
+const onInterfaceSubmit = (name: string) => kernelApiStore.updateConfig({ 'interface-name': name })
+</script>
+
+<template>
+  <div class="card-list">
+    <Card :title="t('kernel.port')" class="card-item">
+      <Input
+        v-model="kernelApiStore.config.port"
+        :min="0"
+        :max="65535"
+        @submit="onPortSubmit"
+        type="number"
+        editable
+      />
+    </Card>
+    <Card :title="t('kernel.socks-port')" class="card-item">
+      <Input
+        v-model="kernelApiStore.config['socks-port']"
+        :min="0"
+        :max="65535"
+        @submit="onSocksPortSubmit"
+        type="number"
+        editable
+      />
+    </Card>
+    <Card :title="t('kernel.mixed-port')" class="card-item">
+      <Input
+        v-model="kernelApiStore.config['mixed-port']"
+        :min="0"
+        :max="65535"
+        @submit="onMixedPortSubmit"
+        type="number"
+        editable
+      />
+    </Card>
+    <Card :title="t('kernel.allow-lan')" class="card-item">
+      <div style="width: 100%; text-align: right">
+        <Switch v-model="kernelApiStore.config['allow-lan']" @change="onAllowLanChange" />
+      </div>
+    </Card>
+
+    <div class="w-100 mt-8"></div>
+
+    <Card :title="t('kernel.tun.stack')" class="card-item">
+      <Select
+        v-model="kernelApiStore.config.tun.stack"
+        :options="StackOptions"
+        :border="false"
+        @change="conStackChange"
+      />
+    </Card>
+    <Card :title="t('kernel.tun.device')" class="card-item">
+      <Input
+        v-model="kernelApiStore.config.tun.device"
+        @submit="onTunDeviceSubmit"
+        editable
+        disabled
+      />
+    </Card>
+    <Card :title="t('kernel.interface-name')" class="card-item">
+      <Input
+        v-model="kernelApiStore.config['interface-name']"
+        @submit="onInterfaceSubmit"
+        editable
+      />
+    </Card>
+    <Card class="card-item"> </Card>
+  </div>
+</template>
+
+<style lang="less">
+.card-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  .card-item {
+    width: 24%;
+  }
+}
+
+.w-100 {
+  width: 100%;
+}
+.mt-8 {
+  margin-top: 8px;
+}
+</style>
