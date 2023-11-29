@@ -47,7 +47,7 @@ func main() {
 	err := wails.Run(&options.App{
 		Title:            "GUI.for.Clash",
 		Width:            800,
-		Height:           550,
+		Height:           540,
 		Frameless:        true,
 		DisableResize:    config.DisableResize,
 		StartHidden:      config.WindowStartState == 2,
