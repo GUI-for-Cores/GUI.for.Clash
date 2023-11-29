@@ -9,6 +9,8 @@ interface Props {
   maxHeight?: string
   maxWidth?: string
   minWidth?: string
+  minHeight?: string
+  width?: string
   cancel?: boolean
   submit?: boolean
   cancelText?: string
@@ -22,6 +24,8 @@ const props = withDefaults(defineProps<Props>(), {
   maxHeight: '',
   maxWidth: '',
   minWidth: '60',
+  minHeight: '',
+  width: '',
   cancel: true,
   submit: true,
   cancelText: 'common.cancel',
@@ -45,7 +49,9 @@ const onMaskClick = () => props.maskClosable && handleCancel()
 const contentStyle = computed(() => ({
   maxHeight: props.maxHeight + '%',
   maxWidth: props.maxWidth + '%',
-  minWidth: props.minWidth + '%'
+  minWidth: props.minWidth + '%',
+  minHeight: props.minHeight + '%',
+  width: props.width + '%'
 }))
 
 provide('cancel', handleCancel)
