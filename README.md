@@ -5,6 +5,8 @@
 
 <h4 align="center">A GUI program developed by vue3 + wails.</h4>
 
+# DO NOT FORK, THANKS !
+
 ## Build
 
 1、Build Environment
