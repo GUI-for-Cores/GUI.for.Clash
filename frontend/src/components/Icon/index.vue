@@ -1,57 +1,54 @@
 <script setup lang="ts">
-import LinkIcon from './LinkIcon.vue'
-import EditIcon from './EditIcon.vue'
-import LoadingIcon from './LoadingIcon.vue'
-import SelectedIcon from './SelectedIcon.vue'
-import DisabledIcon from './DisabledIcon.vue'
-import PinIcon from './PinIcon.vue'
-import PinFillIcon from './PinFillIcon.vue'
-import MinimizeIcon from './MinimizeIcon.vue'
-import MaximizeIcon from './MaximizeIcon.vue'
-import Maximize2Icon from './Maximize2Icon.vue'
-import CloseIcon from './CloseIcon.vue'
-import ArrowDownIcon from './ArrowDownIcon.vue'
-import SpeedTestIcon from './SpeedTestIcon.vue'
-import EmptyIcon from './EmptyIcon.vue'
-import GithubIcon from './GithubIcon.vue'
-import ForbiddenIcon from './ForbiddenIcon.vue'
-import TelegramIcon from './TelegramIcon.vue'
-import ExpandIcon from './ExpandIcon.vue'
-import CollapseIcon from './CollapseIcon.vue'
-import RefreshIcon from './RefreshIcon.vue'
+import type { Component } from 'vue'
 
-const icons = {
-  link: LinkIcon,
-  edit: EditIcon,
-  loading: LoadingIcon,
-  selected: SelectedIcon,
-  disabled: DisabledIcon,
-  pin: PinIcon,
-  pinned: PinFillIcon,
-  minimize: MinimizeIcon,
-  maximize: MaximizeIcon,
-  maximize2: Maximize2Icon,
-  close: CloseIcon,
-  arrowDown: ArrowDownIcon,
-  speedTest: SpeedTestIcon,
-  empty: EmptyIcon,
-  github: GithubIcon,
-  forbidden: ForbiddenIcon,
-  telegram: TelegramIcon,
-  expand: ExpandIcon,
-  collapse: CollapseIcon,
-  refresh: RefreshIcon
+type IconFuncType = Record<string, { default: Component }>
+
+const Icons: IconFuncType = import.meta.glob('./*Icon.vue', { eager: true })
+
+const IconsMap: Record<string, Component> = {}
+
+for (const path in Icons) {
+  let name = path.slice(2, path.length - 8)
+  name = name.replace(name[0], name[0].toLowerCase())
+  IconsMap[name] = Icons[path].default
 }
+
+type IconType =
+  | 'link'
+  | 'edit'
+  | 'loading'
+  | 'selected'
+  | 'disabled'
+  | 'pin'
+  | 'pinFill'
+  | 'minimize'
+  | 'maximize'
+  | 'maximize2'
+  | 'close'
+  | 'arrowDown'
+  | 'speedTest'
+  | 'empty'
+  | 'github'
+  | 'forbidden'
+  | 'telegram'
+  | 'expand'
+  | 'collapse'
+  | 'refresh'
+  | 'settings'
+  | 'settings'
+  | 'log'
+  | 'error'
+  | 'stop'
 
 interface Props {
-  icon: keyof typeof icons
+  icon: IconType
 }
 
-withDefaults(defineProps<Props>(), {})
+defineProps<Props>()
 </script>
 
 <template>
-  <component :is="icons[icon]" v-bind="$attrs" fill="var(--color)"></component>
+  <Component :is="IconsMap[icon] || IconsMap['error']" v-bind="$attrs" fill="var(--color)" />
 </template>
 
 <style lang="less" scoped></style>
