@@ -2,11 +2,12 @@
 
 <template>
   <div class="content">
-    <RouterView v-slot="{ Component }">
+    <RouterView />
+    <!-- <RouterView v-slot="{ Component }">
       <KeepAlive>
         <component :is="Component" />
       </KeepAlive>
-    </RouterView>
+    </RouterView> -->
   </div>
 </template>
 

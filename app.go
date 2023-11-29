@@ -342,6 +342,8 @@ func (a *App) SetSystemProxy(enable bool, server string) ApiIOResult {
 }
 
 func (a *App) GetSystemProxy() ApiIOResult {
+	fmt.Println("GetSystemProxy:")
+
 	cmd := exec.Command("reg", "query", "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings", "/v", "ProxyEnable", "/t", "REG_DWORD")
 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 
@@ -350,14 +352,25 @@ func (a *App) GetSystemProxy() ApiIOResult {
 		return ApiIOResult{false, err.Error()}
 	}
 
-	cmd = exec.Command("reg", "add", "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings", "/v", "ProxyServer", "/t", "REG_SZ")
-	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+	fields := strings.Fields(string(out))
 
-	out, err = cmd.CombinedOutput()
-	if err != nil {
-		return ApiIOResult{false, err.Error()}
+	if len(fields) > 4 && fields[4] == "0x1" {
+		cmd = exec.Command("reg", "query", "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings", "/v", "ProxyServer", "/t", "REG_SZ")
+		cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+
+		out, err = cmd.CombinedOutput()
+		if err != nil {
+			return ApiIOResult{false, err.Error()}
+		}
+
+		fields := strings.Fields(string(out))
+
+		if len(fields) > 4 {
+			return ApiIOResult{true, fields[4]}
+		}
+
 	}
 
-	return ApiIOResult{true, string(out)}
+	return ApiIOResult{true, ""}
 
 }
