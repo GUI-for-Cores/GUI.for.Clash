@@ -62,7 +62,6 @@ const toggle = () => {
 }
 
 .small {
-  font-size: 10px;
   height: 20px;
   .dot {
     width: 12px;

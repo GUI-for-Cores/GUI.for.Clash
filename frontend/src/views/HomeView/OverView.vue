@@ -113,21 +113,22 @@ onUnmounted(disconnect)
 
 <style lang="less" scoped>
 .overview {
+  margin-top: 24px;
   .statistics {
     display: flex;
     justify-content: space-between;
-    margin-top: 16px;
     &-card {
       width: calc(100% / 4 - 8px);
       .detail {
         padding: 4px 0;
         font-size: 12px;
+        line-height: 2;
       }
     }
   }
 
   .title {
-    padding: 16px 0;
+    padding: 20px 0;
     font-weight: bold;
   }
   .row {

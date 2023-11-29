@@ -4,21 +4,26 @@ import { useI18n } from 'vue-i18n'
 interface Props {
   modelValue: string
   options: { label: string; value: string }[]
+  border?: boolean
 }
 
 withDefaults(defineProps<Props>(), {
-  options: () => []
+  options: () => [],
+  border: true
 })
 
-const emits = defineEmits(['update:modelValue'])
+const emits = defineEmits(['update:modelValue', 'change'])
 
 const { t } = useI18n()
 
-const handleChange = (e: any) => emits('update:modelValue', e.target.value)
+const handleChange = (e: any) => {
+  emits('update:modelValue', e.target.value)
+  emits('change', e.target.value)
+}
 </script>
 
 <template>
-  <div class="select">
+  <div :class="{ border }" class="select">
     <select :value="modelValue" @change="($event) => handleChange($event)">
       <option v-for="o in options" :key="o.value" :value="o.value">
         {{ t(o.label) }}
@@ -31,7 +36,6 @@ const handleChange = (e: any) => emits('update:modelValue', e.target.value)
 .select {
   min-width: 120px;
   display: inline-block;
-  border: 1px solid var(--primary-color);
   border-radius: 8px;
   font-size: 12px;
   background: var(--select-bg);
@@ -48,5 +52,9 @@ const handleChange = (e: any) => emits('update:modelValue', e.target.value)
       background: var(--select-bg);
     }
   }
+}
+
+.border {
+  border: 1px solid var(--primary-color);
 }
 </style>
