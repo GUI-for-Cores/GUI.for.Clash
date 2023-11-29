@@ -61,7 +61,7 @@ const closeWindow = async () => {
     </div>
     <div class="action" style="--wails-draggable: disabled">
       <Button @click.stop="pinWindow" type="text">
-        <Icon :icon="isPinned ? 'pinned' : 'pin'" />
+        <Icon :icon="isPinned ? 'pinFill' : 'pin'" />
       </Button>
       <Button @click.stop="WindowHide" type="text">
         <Icon icon="minimize" />
