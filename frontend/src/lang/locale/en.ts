@@ -194,17 +194,17 @@ export default {
     initFailed: 'Failed to update the subscription, you need to manually update the subscription',
     overview: {
       start: 'Click to Start',
-      stop: 'Stop',
-      log: 'Logs',
       noLogs: 'Log is empty',
+      systemProxy: 'System Proxy',
+      tunMode: 'TUN Mode',
       traffic: 'Traffic',
-      controller: 'Controller',
       realtimeTraffic: 'Real-time Traffic',
       totalTraffic: 'Total Traffic',
       connections: 'Connections',
       memory: 'Memory',
       transmit: 'Transmit',
-      receive: 'Receive'
+      receive: 'Receive',
+      settings: 'Kernel Settings'
     },
     controller: {
       autoClose: 'Auto-close Connections',
