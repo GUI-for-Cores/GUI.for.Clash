@@ -113,7 +113,7 @@ onUnmounted(disconnect)
 
 <style lang="less" scoped>
 .overview {
-  margin-top: 24px;
+  margin-top: 20px;
   .statistics {
     display: flex;
     justify-content: space-between;
@@ -128,7 +128,7 @@ onUnmounted(disconnect)
   }
 
   .title {
-    padding: 20px 0;
+    padding: 18px 0;
     font-weight: bold;
   }
   .row {
