@@ -214,15 +214,6 @@ func (a *App) UnzipZIPFile(path string, output string) ApiIOResult {
 	return ApiIOResult{true, "Success"}
 }
 
-func (a *App) Getcwd() ApiIOResult {
-	fmt.Println("Getcwd:")
-	cwd, err := os.Getwd()
-	if err != nil {
-		return ApiIOResult{false, err.Error()}
-	}
-	return ApiIOResult{true, cwd}
-}
-
 func (a *App) Exec(path string, args []string) ApiIOResult {
 	fmt.Println("Exec:", path, args)
 	cwd, err := os.Getwd()
@@ -313,7 +304,11 @@ func (a *App) KillProcess(pid int) ApiIOResult {
 
 // Maybe there is a better way
 func (a *App) SetSystemProxy(enable bool, server string) ApiIOResult {
-	fmt.Println("SetSystemProxy:", server)
+	if enable {
+		fmt.Println("SetSystemProxy:", server)
+	} else {
+		fmt.Println("ClearSystemProxy:", server)
+	}
 
 	REG_DWORD, ProxyServer := "0", ""
 

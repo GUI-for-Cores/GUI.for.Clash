@@ -14,10 +14,6 @@ export function GetSystemProxy() {
   return window['go']['main']['App']['GetSystemProxy']();
 }
 
-export function Getcwd() {
-  return window['go']['main']['App']['Getcwd']();
-}
-
 export function HttpGet(arg1, arg2) {
   return window['go']['main']['App']['HttpGet'](arg1, arg2);
 }
