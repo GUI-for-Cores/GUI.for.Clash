@@ -49,14 +49,6 @@ export const HttpGetJSON = async (url: string, headers = {}) => {
   return { header, json: JSON.parse(body) }
 }
 
-export const Getcwd = async () => {
-  const { flag, data } = await App.Getcwd()
-  if (!flag) {
-    throw data
-  }
-  return data
-}
-
 export const Exec = async (path: string, ...args: string[]) => {
   const { flag, data } = await App.Exec(path, args)
   if (!flag) {
