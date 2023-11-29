@@ -18,7 +18,8 @@ import { KernelWorkDirectory, KernelFilePath } from '@/constant/kernel'
 import QuickStart from './QuickStart.vue'
 import OverView from './OverView.vue'
 import KernelLogs from './KernelLogs.vue'
-import KernelController from './KernelController.vue'
+import GroupsController from './GroupsController.vue'
+import CommonController from './CommonController.vue'
 
 const systemProxy = ref(false)
 const kernelLoading = ref(false)
@@ -30,6 +31,7 @@ const controllerRef = ref<HTMLElement>()
 const { t } = useI18n()
 const { message } = useMessage()
 const [showLogs, toggleLogs] = useBool(false)
+const [showSettings, toggleSettingsModal] = useBool(false)
 const [showQuickStart, toggleQuickStart] = useBool(false)
 const appSettingsStore = useAppSettingsStore()
 const profilesStore = useProfilesStore()
@@ -214,32 +216,32 @@ updateKernelState().then((running) => {
     <template v-else-if="!stateLoading">
       <div :class="{ blur: showController }">
         <div class="kernel-status">
-          <Switch v-model="systemProxy" size="small" border="square">System Proxy</Switch>
+          <Button @click="toggleSettingsModal" type="text" size="small">
+            <Icon icon="settings" />
+          </Button>
+          <Switch v-model="systemProxy" size="small" border="square" class="ml-4">
+            {{ t('home.overview.systemProxy') }}
+          </Switch>
           <Switch
             v-model="kernelApiStore.config.tun.enable"
             size="small"
             border="square"
-            style="margin-left: 4px"
+            class="ml-8"
           >
-            TUN Mode
+            {{ t('home.overview.tunMode') }}
           </Switch>
-          <Button @click="toggleLogs" type="link" size="small" class="ml-auto">
-            {{ t('home.overview.log') }}
+          <Button @click="toggleLogs" type="text" size="small" class="ml-auto">
+            <Icon icon="log" />
           </Button>
-          <Button @click="stopKernel" type="link" size="small">
-            {{ t('home.overview.stop') }}
+          <Button @click="stopKernel" type="text" size="small">
+            <Icon icon="stop" />
           </Button>
         </div>
         <OverView />
-        <Divider>
-          <Button @click="showController = true" type="link" size="small">
-            {{ t('home.overview.controller') }}
-          </Button>
-        </Divider>
       </div>
 
       <div ref="controllerRef" :class="{ expanded: showController }" class="controller">
-        <KernelController />
+        <GroupsController />
       </div>
     </template>
   </div>
@@ -250,6 +252,16 @@ updateKernelState().then((running) => {
 
   <Modal v-model:open="showQuickStart" :title="t('subscribes.enterLink')" :footer="false">
     <QuickStart />
+  </Modal>
+
+  <Modal
+    v-model:open="showSettings"
+    :title="t('home.overview.settings')"
+    :submit="false"
+    width="80"
+    mask-closable
+  >
+    <CommonController />
   </Modal>
 </template>
 
@@ -279,6 +291,12 @@ updateKernelState().then((running) => {
   background-color: var(--card-bg);
   padding: 2px 8px;
   border-radius: 8px;
+  .ml-4 {
+    margin-left: 4px;
+  }
+  .ml-8 {
+    margin-left: 8px;
+  }
   .ml-auto {
     margin-left: auto;
   }

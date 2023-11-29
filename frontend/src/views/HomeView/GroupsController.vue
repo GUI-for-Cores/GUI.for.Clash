@@ -4,7 +4,6 @@ import { useI18n } from 'vue-i18n'
 import { useMessage } from '@/hooks/useMessage'
 import { useAppSettingsStore, useKernelApiStore } from '@/stores'
 import { useProxy, getGroupDelay, getConnections, deleteConnection } from '@/api/kernel'
-import { useBool } from '@/hooks'
 import { ignoredError, sleep } from '@/utils'
 import { ProxyGroupType } from '@/constant/kernel'
 
@@ -14,7 +13,6 @@ const loading = ref(false)
 
 const { t } = useI18n()
 const { message } = useMessage()
-const [showCommonConfig, toggleShow] = useBool(false)
 const appSettings = useAppSettingsStore()
 const kernelApiStore = useKernelApiStore()
 
@@ -119,11 +117,6 @@ const locateGroup = (group: any, chain: string) => {
   }
 }
 
-const onPortSubmit = (port: number) => kernelApiStore.updateConfig({ port })
-const onSocksPortSubmit = (port: number) => kernelApiStore.updateConfig({ 'socks-port': port })
-const onMixedPortSubmit = (port: number) => kernelApiStore.updateConfig({ 'mixed-port': port })
-const onAllowLanChange = (allow: boolean) => kernelApiStore.updateConfig({ 'allow-lan': allow })
-
 const delayColor = (delay = 0) => {
   if (delay === 0) return '#f00'
   if (delay < 100) return '#6ec96e'
@@ -142,10 +135,7 @@ const delayColor = (delay = 0) => {
       <Switch v-model="appSettings.app.kernel.unAvailable" style="margin-left: 8px">
         {{ t('home.controller.unAvailable') }}
       </Switch>
-      <Button @click="toggleShow" type="link" style="margin-left: auto">
-        {{ t('common.more') }}
-      </Button>
-      <Button @click="expandAll" type="text">
+      <Button @click="expandAll" type="text" style="margin-left: auto">
         <Icon icon="expand" />
       </Button>
       <Button @click="collapseAll" type="text">
@@ -154,43 +144,6 @@ const delayColor = (delay = 0) => {
       <Button @click="handleRefresh" :loading="loading" type="text">
         <Icon icon="refresh" />
       </Button>
-    </div>
-    <div v-show="showCommonConfig" class="card-ist">
-      <Card :title="t('kernel.port')" class="card-item">
-        <Input
-          v-model="kernelApiStore.config.port"
-          :min="0"
-          :max="65535"
-          @submit="onPortSubmit"
-          type="number"
-          editable
-        />
-      </Card>
-      <Card :title="t('kernel.socks-port')" class="card-item">
-        <Input
-          v-model="kernelApiStore.config['socks-port']"
-          :min="0"
-          :max="65535"
-          @submit="onSocksPortSubmit"
-          type="number"
-          editable
-        />
-      </Card>
-      <Card :title="t('kernel.mixed-port')" class="card-item">
-        <Input
-          v-model="kernelApiStore.config['mixed-port']"
-          :min="0"
-          :max="65535"
-          @submit="onMixedPortSubmit"
-          type="number"
-          editable
-        />
-      </Card>
-      <Card :title="t('kernel.allow-lan')" class="card-item">
-        <div style="width: 100%; text-align: right">
-          <Switch v-model="kernelApiStore.config['allow-lan']" @change="onAllowLanChange" />
-        </div>
-      </Card>
     </div>
   </div>
   <div v-for="group in groups" :key="group.name" class="groups">
@@ -302,16 +255,6 @@ const delayColor = (delay = 0) => {
         font-size: 12px;
       }
     }
-  }
-}
-
-.card-ist {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  margin-top: 8px;
-  .card-item {
-    width: 24%;
   }
 }
 </style>
