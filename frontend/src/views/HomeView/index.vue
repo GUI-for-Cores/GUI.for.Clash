@@ -4,14 +4,14 @@ import { useI18n } from 'vue-i18n'
 import { useAppSettingsStore, useProfilesStore, useKernelApiStore } from '@/stores'
 import { APP_TITLE } from '@/utils/env'
 import { ignoredError, sleep } from '@/utils'
-import { ProxyMode, ProxyModeOptions } from '@/constant/app'
 import { generateConfigFile } from '@/utils/generator'
 import {
   KillProcess,
   KernelRunning,
   StartKernel,
   SetSystemProxy,
-  ClearSystemProxy
+  ClearSystemProxy,
+  GetSystemProxy
 } from '@/utils/bridge'
 import { useMessage, useBool } from '@/hooks'
 import { KernelWorkDirectory, KernelFilePath } from '@/constant/kernel'
@@ -20,9 +20,9 @@ import OverView from './OverView.vue'
 import KernelLogs from './KernelLogs.vue'
 import KernelController from './KernelController.vue'
 
-const proxyMode = ref<ProxyMode>(ProxyMode.None)
+const systemProxy = ref(false)
 const kernelLoading = ref(false)
-const stateLoading = ref(false)
+const stateLoading = ref(true)
 const showController = ref(false)
 const homeviewRef = ref<HTMLElement>()
 const controllerRef = ref<HTMLElement>()
@@ -80,6 +80,8 @@ const startKernel = async () => {
 
   kernelApiStore.refreshCofig()
 
+  updateSystemProxyState()
+
   kernelLoading.value = false
 }
 
@@ -100,14 +102,15 @@ const setSystemProxy = async () => {
   }
 
   if (!port) {
+    systemProxy.value = false
     message.info('请先设置代理端口')
     return
   }
 
   try {
     await SetSystemProxy(type, port)
-    message.info('设置代理成功')
   } catch (error: any) {
+    systemProxy.value = false
     message.info(error)
     console.log(error)
   }
@@ -116,39 +119,37 @@ const setSystemProxy = async () => {
 const clearSystemProxy = async () => {
   try {
     await ClearSystemProxy()
-    message.info('清除代理成功')
   } catch (error: any) {
+    systemProxy.value = true
     message.info(error)
     console.log(error)
   }
 }
 
-const setTunnelMode = async () => {
-  try {
-    await kernelApiStore.updateConfig({ tun: { enable: true } })
-    message.info('设置TUN成功')
-  } catch (error: any) {
-    console.log(error)
-    message.info(error)
-  }
-}
-
-const clearTunnelMode = async () => {
-  try {
-    await kernelApiStore.updateConfig({ tun: { enable: false } })
-    message.info('关闭TUN成功')
-  } catch (error: any) {
-    console.log(error)
-    message.info(error)
-  }
-}
-
-const updateState = async () => {
+const updateKernelState = async () => {
   stateLoading.value = true
   const running = await ignoredError(KernelRunning, appSettingsStore.app.kernel.pid)
   appSettingsStore.app.kernel.running = !!running
   stateLoading.value = false
   return !!running
+}
+
+const updateSystemProxyState = async () => {
+  const proxyServer = await GetSystemProxy()
+  if (!proxyServer) {
+    systemProxy.value = false
+    return
+  }
+
+  const { port: _port, 'socks-port': socksPort, 'mixed-port': mixedPort } = kernelApiStore.config
+
+  const proxyServerList = [
+    `127.0.0.1:${_port}`,
+    `socks=127.0.0.1:${socksPort}`,
+    `127.0.0.1:${mixedPort}`
+  ]
+
+  systemProxy.value = proxyServerList.includes(proxyServer)
 }
 
 const onMouseWheel = (e: WheelEvent) => {
@@ -165,28 +166,16 @@ watch(showController, (v) => {
   }
 })
 
-watch(proxyMode, (mode) => {
-  if (mode === ProxyMode.System) {
-    clearTunnelMode()
-    setSystemProxy()
-    return
-  }
-
-  if (mode === ProxyMode.Tunnel) {
-    clearSystemProxy()
-    setTunnelMode()
-    return
-  }
-
-  clearSystemProxy()
-  clearTunnelMode()
+watch(systemProxy, (enable) => {
+  if (enable) setSystemProxy()
+  else clearSystemProxy()
 })
 
 watch(
   () => kernelApiStore.config.tun.enable,
-  (enable) => {
-    if (enable) {
-      proxyMode.value = ProxyMode.Tunnel
+  async (enable, ov) => {
+    if (enable !== ov) {
+      await kernelApiStore.updateConfig({ tun: { enable } })
     }
   }
 )
@@ -194,7 +183,7 @@ watch(
 onMounted(() => homeviewRef.value?.addEventListener('wheel', onMouseWheel))
 onUnmounted(() => homeviewRef.value?.removeEventListener('wheel', onMouseWheel))
 
-updateState().then((running) => {
+updateKernelState().then((running) => {
   if (running) {
     kernelApiStore.refreshCofig()
   }
@@ -225,7 +214,15 @@ updateState().then((running) => {
     <template v-else-if="!stateLoading">
       <div :class="{ blur: showController }">
         <div class="kernel-status">
-          <Radio v-model="proxyMode" :options="ProxyModeOptions" size="small" />
+          <Switch v-model="systemProxy" size="small" border="square">System Proxy</Switch>
+          <Switch
+            v-model="kernelApiStore.config.tun.enable"
+            size="small"
+            border="square"
+            style="margin-left: 4px"
+          >
+            TUN Mode
+          </Switch>
           <Button @click="toggleLogs" type="link" size="small" class="ml-auto">
             {{ t('home.overview.log') }}
           </Button>

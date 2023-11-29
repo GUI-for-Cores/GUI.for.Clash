@@ -74,6 +74,7 @@ export const StartKernel = async (path: string, directory: string) => {
 }
 
 export const KernelRunning = async (pid: number) => {
+  if (pid === 0) return false
   const { flag, data } = await App.ProcessInfo(pid)
   if (!flag) {
     throw data
@@ -100,6 +101,14 @@ export const SetSystemProxy = async (type: 'http' | 'socks', port: number) => {
 
 export const ClearSystemProxy = async () => {
   const { flag, data } = await App.SetSystemProxy(false, '')
+  if (!flag) {
+    throw data
+  }
+  return data
+}
+
+export const GetSystemProxy = async () => {
+  const { flag, data } = await App.GetSystemProxy()
   if (!flag) {
     throw data
   }

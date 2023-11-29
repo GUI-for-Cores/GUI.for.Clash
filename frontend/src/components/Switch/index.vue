@@ -1,10 +1,14 @@
 <script setup lang="ts">
 interface Props {
   modelValue?: boolean
+  size?: 'default' | 'small'
+  border?: 'default' | 'square'
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  modelValue: false
+  modelValue: false,
+  size: 'default',
+  border: 'default'
 })
 
 const emits = defineEmits(['update:modelValue', 'change'])
@@ -20,7 +24,7 @@ const toggle = () => {
   <div
     @click="toggle"
     :style="{ 'justify-content': !modelValue ? 'flex-start' : 'flex-end' }"
-    :class="modelValue ? 'on' : 'off'"
+    :class="[size, border, modelValue ? 'on' : 'off']"
     class="switch"
   >
     <div v-if="$slots.default && !modelValue" class="slot">
@@ -54,6 +58,23 @@ const toggle = () => {
   }
   .slot {
     padding: 0 4px;
+  }
+}
+
+.small {
+  font-size: 10px;
+  height: 20px;
+  .dot {
+    width: 12px;
+    height: 12px;
+  }
+}
+
+.square {
+  border-radius: 4px;
+  .dot {
+    width: 4px;
+    border-radius: 2px;
   }
 }
 

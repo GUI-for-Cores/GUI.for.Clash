@@ -199,11 +199,6 @@ export default {
       noLogs: 'Log is empty',
       traffic: 'Traffic',
       controller: 'Controller',
-      proxyMode: {
-        system: 'Proxy',
-        none: 'None',
-        tunnel: 'Tunnel'
-      },
       realtimeTraffic: 'Real-time Traffic',
       totalTraffic: 'Total Traffic',
       connections: 'Connections',
