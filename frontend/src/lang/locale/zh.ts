@@ -194,18 +194,17 @@ export default {
     initFailed: '更新订阅时出错，请手动更新订阅',
     overview: {
       start: '启动内核',
-      stop: '关闭内核',
-      log: '日志',
       noLogs: '日志为空',
+      systemProxy: '系统代理',
+      tunMode: 'TUN模式',
       traffic: '流量',
-      controller: '控制器',
-      running: '内核正在运行...',
       realtimeTraffic: '实时流量',
       totalTraffic: '总流量',
       connections: '连接数',
       memory: '内存',
       transmit: '上行速率',
-      receive: '下行速率'
+      receive: '下行速率',
+      settings: '内核设置'
     },
     controller: {
       autoClose: '自动断开连接',
