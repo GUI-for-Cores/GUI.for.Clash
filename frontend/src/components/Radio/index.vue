@@ -4,10 +4,12 @@ import { useI18n } from 'vue-i18n'
 interface Props {
   modelValue: string | number
   options: { label: string; value: string | number }[]
+  size?: 'default' | 'small'
 }
 
 withDefaults(defineProps<Props>(), {
-  options: () => []
+  options: () => [],
+  size: 'default'
 })
 
 const emits = defineEmits(['update:modelValue'])
@@ -18,7 +20,7 @@ const handleChange = (val: string | number) => emits('update:modelValue', val)
 </script>
 
 <template>
-  <div class="radio">
+  <div :class="[size]" class="radio">
     <div
       v-for="o in options"
       :key="o.value"
@@ -61,6 +63,13 @@ const handleChange = (val: string | number) => emits('update:modelValue', val)
     &:active {
       background-color: var(--radio-primary-active-bg);
     }
+  }
+}
+
+.small {
+  .radio-button {
+    font-size: 10px;
+    padding: 4px 8px;
   }
 }
 </style>

@@ -4,8 +4,15 @@ import { useI18n } from 'vue-i18n'
 import { useAppSettingsStore, useProfilesStore, useKernelApiStore } from '@/stores'
 import { APP_TITLE } from '@/utils/env'
 import { ignoredError, sleep } from '@/utils'
+import { ProxyMode, ProxyModeOptions } from '@/constant/app'
 import { generateConfigFile } from '@/utils/generator'
-import { KillProcess, KernelRunning, StartKernel } from '@/utils/bridge'
+import {
+  KillProcess,
+  KernelRunning,
+  StartKernel,
+  SetSystemProxy,
+  ClearSystemProxy
+} from '@/utils/bridge'
 import { useMessage, useBool } from '@/hooks'
 import { KernelWorkDirectory, KernelFilePath } from '@/constant/kernel'
 import QuickStart from './QuickStart.vue'
@@ -13,6 +20,7 @@ import OverView from './OverView.vue'
 import KernelLogs from './KernelLogs.vue'
 import KernelController from './KernelController.vue'
 
+const proxyMode = ref<ProxyMode>(ProxyMode.None)
 const kernelLoading = ref(false)
 const stateLoading = ref(false)
 const showController = ref(false)
@@ -77,6 +85,64 @@ const startKernel = async () => {
 
 const stopKernel = () => KillProcess(appSettingsStore.app.kernel.pid)
 
+const setSystemProxy = async () => {
+  let type: 'http' | 'socks' = 'http'
+  let port = 0
+  const { port: _port, 'socks-port': socksPort, 'mixed-port': mixedPort } = kernelApiStore.config
+
+  if (_port) {
+    port = _port
+  } else if (socksPort) {
+    port = socksPort
+    type = 'socks'
+  } else if (mixedPort) {
+    port = mixedPort
+  }
+
+  if (!port) {
+    message.info('请先设置代理端口')
+    return
+  }
+
+  try {
+    await SetSystemProxy(type, port)
+    message.info('设置代理成功')
+  } catch (error: any) {
+    message.info(error)
+    console.log(error)
+  }
+}
+
+const clearSystemProxy = async () => {
+  try {
+    await ClearSystemProxy()
+    message.info('清除代理成功')
+  } catch (error: any) {
+    message.info(error)
+    console.log(error)
+  }
+}
+
+const setTunnelMode = async () => {
+  try {
+    await kernelApiStore.updateConfig({ tun: { enable: true } })
+    message.info('设置TUN成功')
+  } catch (error: any) {
+    console.log(error)
+    message.info(error)
+  }
+}
+
+const clearTunnelMode = async () => {
+  try {
+    await kernelApiStore.updateConfig({ tun: { enable: false } })
+    message.info('关闭TUN成功')
+  } catch (error: any) {
+    console.log(error)
+    message.info(error)
+  }
+}
+
 const updateState = async () => {
   stateLoading.value = true
   const running = await ignoredError(KernelRunning, appSettingsStore.app.kernel.pid)
@@ -98,6 +164,32 @@ watch(showController, (v) => {
     kernelApiStore.refreshProviderProxies()
   }
 })
+
+watch(proxyMode, (mode) => {
+  if (mode === ProxyMode.System) {
+    clearTunnelMode()
+    setSystemProxy()
+    return
+  }
+
+  if (mode === ProxyMode.Tunnel) {
+    clearSystemProxy()
+    setTunnelMode()
+    return
+  }
+
+  clearSystemProxy()
+  clearTunnelMode()
+})
+
+watch(
+  () => kernelApiStore.config.tun.enable,
+  (enable) => {
+    if (enable) {
+      proxyMode.value = ProxyMode.Tunnel
+    }
+  }
+)
 
 onMounted(() => homeviewRef.value?.addEventListener('wheel', onMouseWheel))
 onUnmounted(() => homeviewRef.value?.removeEventListener('wheel', onMouseWheel))
@@ -133,10 +225,8 @@ updateState().then((running) => {
     <template v-else-if="!stateLoading">
       <div :class="{ blur: showController }">
         <div class="kernel-status">
-          <div class="running">
-            {{ t('home.overview.running') }}
-          </div>
-          <Button @click="toggleLogs" type="link" size="small" class="logs">
+          <Radio v-model="proxyMode" :options="ProxyModeOptions" size="small" />
+          <Button @click="toggleLogs" type="link" size="small" class="ml-auto">
             {{ t('home.overview.log') }}
           </Button>
           <Button @click="stopKernel" type="link" size="small">
@@ -192,18 +282,7 @@ updateState().then((running) => {
   background-color: var(--card-bg);
   padding: 2px 8px;
   border-radius: 8px;
-  .running {
-    &:before {
-      content: '';
-      display: inline-block;
-      width: 12px;
-      height: 12px;
-      margin: 0 8px;
-      border-radius: 8px;
-      background: var(--primary-color);
-    }
-  }
-  .logs {
+  .ml-auto {
     margin-left: auto;
   }
 }

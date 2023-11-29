@@ -46,3 +46,15 @@ export const Colors = {
     secondary: '#0ca4e2'
   }
 }
+
+export enum ProxyMode {
+  System = 'system',
+  None = 'none',
+  Tunnel = 'tunnel'
+}
+
+export const ProxyModeOptions = [
+  { label: 'home.overview.proxyMode.system', value: ProxyMode.System },
+  { label: 'home.overview.proxyMode.none', value: ProxyMode.None },
+  { label: 'home.overview.proxyMode.tunnel', value: ProxyMode.Tunnel }
+]
