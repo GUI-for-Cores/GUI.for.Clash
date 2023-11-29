@@ -10,6 +10,10 @@ export function Exec(arg1, arg2) {
   return window['go']['main']['App']['Exec'](arg1, arg2);
 }
 
+export function GetSystemProxy() {
+  return window['go']['main']['App']['GetSystemProxy']();
+}
+
 export function Getcwd() {
   return window['go']['main']['App']['Getcwd']();
 }
@@ -28,6 +32,10 @@ export function ProcessInfo(arg1) {
 
 export function Readfile(arg1) {
   return window['go']['main']['App']['Readfile'](arg1);
+}
+
+export function SetSystemProxy(arg1, arg2) {
+  return window['go']['main']['App']['SetSystemProxy'](arg1, arg2);
 }
 
 export function StartKernel(arg1, arg2) {

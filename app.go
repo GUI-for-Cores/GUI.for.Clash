@@ -310,3 +310,54 @@ func (a *App) KillProcess(pid int) ApiIOResult {
 
 	return ApiIOResult{true, "Success"}
 }
+
+// Maybe there is a better way
+func (a *App) SetSystemProxy(enable bool, server string) ApiIOResult {
+	fmt.Println("SetSystemProxy:", server)
+
+	REG_DWORD, ProxyServer := "0", ""
+
+	if enable {
+		REG_DWORD = "1"
+		ProxyServer = server
+	}
+
+	cmd := exec.Command("reg", "add", "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings", "/v", "ProxyEnable", "/t", "REG_DWORD", "/d", REG_DWORD, "/f")
+	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		return ApiIOResult{false, err.Error()}
+	}
+
+	cmd = exec.Command("reg", "add", "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings", "/v", "ProxyServer", "/d", ProxyServer, "/f")
+	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+
+	out, err = cmd.CombinedOutput()
+	if err != nil {
+		return ApiIOResult{false, err.Error()}
+	}
+
+	return ApiIOResult{true, string(out)}
+}
+
+func (a *App) GetSystemProxy() ApiIOResult {
+	cmd := exec.Command("reg", "query", "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings", "/v", "ProxyEnable", "/t", "REG_DWORD")
+	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		return ApiIOResult{false, err.Error()}
+	}
+
+	cmd = exec.Command("reg", "add", "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings", "/v", "ProxyServer", "/t", "REG_SZ")
+	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+
+	out, err = cmd.CombinedOutput()
+	if err != nil {
+		return ApiIOResult{false, err.Error()}
+	}
+
+	return ApiIOResult{true, string(out)}
+
+}
