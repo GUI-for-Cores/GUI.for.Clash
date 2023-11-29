@@ -198,7 +198,7 @@ export const RulesTypeOptions = [
 
 export const StackOptions = [
   { label: 'kernel.tun.system', value: 'System' },
-  { label: 'kernel.tun.gvisor', value: 'Gvisor' },
+  { label: 'kernel.tun.gvisor', value: 'gVisor' },
   { label: 'kernel.tun.mixed', value: 'Mixed' },
   { label: 'kernel.tun.lwip', value: 'LWIP' }
 ]
