@@ -261,13 +261,13 @@ export default {
   settings: {
     general: '通用',
     theme: {
-      name: '主题设置',
+      name: '主题',
       light: '浅色',
       dark: '深色',
       auto: '跟随系统'
     },
     color: {
-      name: '颜色设置',
+      name: '颜色',
       default: '默认',
       orange: '橘色',
       pink: '粉色',
@@ -275,7 +275,7 @@ export default {
     },
     fontFamily: '字体',
     lang: {
-      name: '语言设置',
+      name: '语言',
       zh: '简体中文',
       en: 'English'
     },
