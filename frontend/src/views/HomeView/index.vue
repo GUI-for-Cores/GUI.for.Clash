@@ -87,7 +87,10 @@ const startKernel = async () => {
   updateSystemProxyState()
 }
 
-const stopKernel = () => KillProcess(appSettingsStore.app.kernel.pid)
+const stopKernel = async () => {
+  await ignoredError(KillProcess, appSettingsStore.app.kernel.pid)
+  appSettingsStore.app.kernel.running = false
+}
 
 const setSystemProxy = async () => {
   let port = 0
