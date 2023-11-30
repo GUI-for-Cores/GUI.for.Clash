@@ -7,7 +7,9 @@ interface Props {
   border?: boolean
 }
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  border: true
+})
 
 const emits = defineEmits(['update:modelValue', 'change'])
 
