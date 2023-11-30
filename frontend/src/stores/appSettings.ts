@@ -10,6 +10,7 @@ type AppSettings = {
   lang: Lang
   theme: Theme
   color: Color
+  'font-family': string
   profilesView: View
   subscribesView: View
   disableResize: boolean
@@ -33,6 +34,7 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
     lang: Lang.EN,
     theme: Theme.Auto,
     color: Color.Default,
+    'font-family': '"Microsoft Yahei", "Arial", sans-serif, "Twemoji Mozilla"',
     profilesView: View.Grid,
     subscribesView: View.Grid,
     disableResize: true,
@@ -83,6 +85,7 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
     const { primary, secondary } = Colors[v.color]
     document.documentElement.style.setProperty('--primary-color', primary)
     document.documentElement.style.setProperty('--secondary-color', secondary)
+    document.body.style.fontFamily = v['font-family']
     setAppTheme(mode)
   }
 
