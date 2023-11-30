@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { type ProfileType } from '@/stores/profiles'
 import { ModeOptions, LogLevelOptions } from '@/constant/kernel'
 import { deepClone } from '@/utils'
+import InterfaceSelect from '@/components/Profile/InterfaceSelect.vue'
 
 interface Props {
   modelValue: ProfileType['generalConfig']
@@ -39,7 +40,7 @@ watch(fields, (v) => emits('update:modelValue', v), { immediate: true })
   </div>
   <div class="form-item">
     {{ t('kernel.interface-name') }}
-    <Input v-model="fields['interface-name']" />
+    <InterfaceSelect v-model="fields['interface-name']" />
   </div>
   <div class="form-item">
     {{ t('kernel.mixed-port') }}
