@@ -204,7 +204,10 @@ export default {
       memory: 'Memory',
       transmit: 'Transmit',
       receive: 'Receive',
-      settings: 'Kernel Settings'
+      settings: 'Kernel Settings',
+      settingsTips: 'Effective temporarily, for persistence, please modify the `profile` settings.',
+      notSupportSocks: 'Does not support socks proxy',
+      needPort: 'Please set the proxy port first'
     },
     controller: {
       autoClose: 'Auto-close Connections',

@@ -78,39 +78,39 @@ const startKernel = async () => {
     return
   }
 
-  await sleep(1000)
-
-  kernelApiStore.refreshCofig()
-
-  updateSystemProxyState()
+  await sleep(2000)
 
   kernelLoading.value = false
+
+  await kernelApiStore.refreshCofig()
+
+  updateSystemProxyState()
 }
 
 const stopKernel = () => KillProcess(appSettingsStore.app.kernel.pid)
 
 const setSystemProxy = async () => {
-  let type: 'http' | 'socks' = 'http'
   let port = 0
   const { port: _port, 'socks-port': socksPort, 'mixed-port': mixedPort } = kernelApiStore.config
 
-  if (_port) {
+  if (mixedPort) {
+    port = mixedPort
+  } else if (_port) {
     port = _port
   } else if (socksPort) {
-    port = socksPort
-    type = 'socks'
-  } else if (mixedPort) {
-    port = mixedPort
+    systemProxy.value = false
+    message.info(t('home.overview.notSupportSocks'))
+    return
   }
 
   if (!port) {
     systemProxy.value = false
-    message.info('请先设置代理端口')
+    message.info(t('home.overview.needPort'))
     return
   }
 
   try {
-    await SetSystemProxy(type, port)
+    await SetSystemProxy(port)
   } catch (error: any) {
     systemProxy.value = false
     message.info(error)
@@ -143,13 +143,9 @@ const updateSystemProxyState = async () => {
     return
   }
 
-  const { port: _port, 'socks-port': socksPort, 'mixed-port': mixedPort } = kernelApiStore.config
+  const { port: _port, 'mixed-port': mixedPort } = kernelApiStore.config
 
-  const proxyServerList = [
-    `127.0.0.1:${_port}`,
-    `socks=127.0.0.1:${socksPort}`,
-    `127.0.0.1:${mixedPort}`
-  ]
+  const proxyServerList = [`127.0.0.1:${_port}`, `127.0.0.1:${mixedPort}`]
 
   systemProxy.value = proxyServerList.includes(proxyServer)
 }
@@ -163,8 +159,9 @@ const onMouseWheel = (e: WheelEvent) => {
 
 watch(showController, (v) => {
   if (v) {
-    kernelApiStore.refreshCofig()
     kernelApiStore.refreshProviderProxies()
+  } else {
+    kernelApiStore.refreshCofig()
   }
 })
 
