@@ -17,6 +17,20 @@ const onInterfaceSubmit = (name: string) => kernelApiStore.updateConfig({ 'inter
 
 <template>
   <div class="card-list">
+    <Divider class="w-100 mb-8">
+      {{ t('home.overview.settingsTips') }}
+    </Divider>
+
+    <Card :title="t('kernel.mixed-port')" class="card-item">
+      <Input
+        v-model="kernelApiStore.config['mixed-port']"
+        :min="0"
+        :max="65535"
+        @submit="onMixedPortSubmit"
+        type="number"
+        editable
+      />
+    </Card>
     <Card :title="t('kernel.port')" class="card-item">
       <Input
         v-model="kernelApiStore.config.port"
@@ -33,16 +47,6 @@ const onInterfaceSubmit = (name: string) => kernelApiStore.updateConfig({ 'inter
         :min="0"
         :max="65535"
         @submit="onSocksPortSubmit"
-        type="number"
-        editable
-      />
-    </Card>
-    <Card :title="t('kernel.mixed-port')" class="card-item">
-      <Input
-        v-model="kernelApiStore.config['mixed-port']"
-        :min="0"
-        :max="65535"
-        @submit="onMixedPortSubmit"
         type="number"
         editable
       />
@@ -97,5 +101,8 @@ const onInterfaceSubmit = (name: string) => kernelApiStore.updateConfig({ 'inter
 }
 .mt-8 {
   margin-top: 8px;
+}
+.mb-8 {
+  margin-bottom: 8px;
 }
 </style>
