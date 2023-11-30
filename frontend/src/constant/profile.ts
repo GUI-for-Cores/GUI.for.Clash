@@ -4,7 +4,8 @@ import { sampleID } from '@/utils'
 export const GeneralConfigDefaults: ProfileType['generalConfig'] = {
   mode: 'rule',
   ipv6: false,
-  'mixed-port': 0,
+  // a meaningful port
+  'mixed-port': 20112,
   'allow-lan': false,
   'log-level': 'info',
   'interface-name': 'WLAN'
@@ -43,7 +44,9 @@ export const AdvancedConfigDefaults: ProfileType['advancedConfig'] = {
 }
 
 export const TunConfigDefaults: ProfileType['tunConfig'] = {
-  enable: true,
+  // System proxy is supported, which is simpler than tun mode
+  // Of course I prefer tun mode (*v*)
+  enable: false,
   stack: 'System',
   'auto-route': true,
   'auto-detect-interface': false,
