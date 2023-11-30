@@ -204,7 +204,10 @@ export default {
       memory: '内存',
       transmit: '上行速率',
       receive: '下行速率',
-      settings: '内核设置'
+      settings: '内核设置',
+      settingsTips: '暂时生效，持久化请修改配置文件',
+      notSupportSocks: '不支持socks代理',
+      needPort: '请先设置代理端口'
     },
     controller: {
       autoClose: '自动断开连接',

@@ -82,8 +82,8 @@ export const KillProcess = async (pid: number) => {
   return data
 }
 
-export const SetSystemProxy = async (type: 'http' | 'socks', port: number) => {
-  const proxyServer = { http: '127.0.0.1', socks: 'socks=127.0.0.1' }[type] + ':' + port
+export const SetSystemProxy = async (port: number) => {
+  const proxyServer = '127.0.0.1' + ':' + port
   const { flag, data } = await App.SetSystemProxy(true, proxyServer)
   if (!flag) {
     throw data
