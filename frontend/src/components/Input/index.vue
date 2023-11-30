@@ -85,14 +85,12 @@ onMounted(() => props.autofocus && inputRef.value?.focus())
 <style lang="less" scoped>
 .input {
   .editable {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
     line-height: 30px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
     max-width: 220px;
+    text-align: right;
   }
   input {
     width: 100%;
