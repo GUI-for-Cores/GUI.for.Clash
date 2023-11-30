@@ -2,7 +2,10 @@ package main
 
 import (
 	"embed"
+	"errors"
+	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/getlantern/systray"
@@ -30,11 +33,20 @@ var assets embed.FS
 //go:embed frontend/dist/favicon.ico
 var icon []byte
 
+var basePath string
+
 var config = &Config{
 	DisableResize: true,
 }
 
 func main() {
+	exePath, err := os.Executable()
+	if err != nil {
+		panic(err)
+	}
+
+	basePath = filepath.Dir(exePath)
+
 	// Read Config file
 	InitConfig()
 
@@ -44,7 +56,7 @@ func main() {
 	CreateTray(app)
 
 	// Create application with options
-	err := wails.Run(&options.App{
+	err = wails.Run(&options.App{
 		Title:            "GUI.for.Clash",
 		Width:            800,
 		Height:           540,
@@ -75,7 +87,7 @@ func main() {
 }
 
 func InitConfig() {
-	b, err := os.ReadFile("data/user.yaml")
+	b, err := os.ReadFile(basePath + "/data/user.yaml")
 	if err != nil {
 		println("InitConfig Error:", err.Error())
 		return
@@ -126,4 +138,14 @@ func CreateTray(a *App) {
 			}
 		}, nil)
 	}()
+}
+
+func GetPath(path string) (string, error) {
+	path = filepath.Join(basePath, path)
+	path = filepath.Clean(path)
+	if !strings.HasPrefix(path, basePath) {
+		fmt.Println("Error Path: " + path)
+		return "", errors.New("Path error:" + path)
+	}
+	return path, nil
 }

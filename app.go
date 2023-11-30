@@ -46,33 +46,38 @@ type ApiIOResult struct {
 
 func (a *App) Writefile(path string, content string) ApiIOResult {
 	fmt.Println("Writefile:", path)
-	cwd, err := os.Getwd()
+
+	path, err := GetPath(path)
 	if err != nil {
 		return ApiIOResult{false, err.Error()}
 	}
-	path = filepath.Join(cwd, path)
+
 	err = os.MkdirAll(filepath.Dir(path), os.ModePerm)
 	if err != nil {
 		return ApiIOResult{false, err.Error()}
 	}
+
 	err = os.WriteFile(path, []byte(content), 0644)
 	if err != nil {
 		return ApiIOResult{false, err.Error()}
 	}
+
 	return ApiIOResult{true, "Success"}
 }
 
 func (a *App) Readfile(path string) ApiIOResult {
 	fmt.Println("Readfile:", path)
-	cwd, err := os.Getwd()
+
+	path, err := GetPath(path)
 	if err != nil {
 		return ApiIOResult{false, err.Error()}
 	}
-	path = filepath.Join(cwd, path)
+
 	b, err := os.ReadFile(path)
 	if err != nil {
 		return ApiIOResult{false, err.Error()}
 	}
+
 	return ApiIOResult{true, string(b)}
 }
 
@@ -84,6 +89,7 @@ type ApiHTTPResult struct {
 
 func (a *App) HttpGet(url string, headers map[string]string) ApiHTTPResult {
 	fmt.Println("HttpGet:", url, headers)
+
 	client := &http.Client{
 		Timeout: 15 * time.Second,
 	}
@@ -119,11 +125,12 @@ func (a *App) HttpGet(url string, headers map[string]string) ApiHTTPResult {
 
 func (a *App) Download(url string, path string) ApiIOResult {
 	fmt.Println("Download:", url, path)
-	cwd, err := os.Getwd()
+
+	path, err := GetPath(path)
 	if err != nil {
 		return ApiIOResult{false, err.Error()}
 	}
-	path = filepath.Join(cwd, path)
+
 	err = os.MkdirAll(filepath.Dir(path), os.ModePerm)
 	if err != nil {
 		return ApiIOResult{false, err.Error()}
@@ -166,12 +173,16 @@ func (a *App) Download(url string, path string) ApiIOResult {
 
 func (a *App) UnzipZIPFile(path string, output string) ApiIOResult {
 	fmt.Println("UnzipZIPFile:", path, output)
-	cwd, err := os.Getwd()
+
+	path, err := GetPath(path)
 	if err != nil {
 		return ApiIOResult{false, err.Error()}
 	}
-	path = filepath.Join(cwd, path)
-	output = filepath.Join(cwd, output)
+
+	output, err = GetPath(output)
+	if err != nil {
+		return ApiIOResult{false, err.Error()}
+	}
 
 	archive, err := zip.OpenReader(path)
 	if err != nil {
@@ -216,11 +227,11 @@ func (a *App) UnzipZIPFile(path string, output string) ApiIOResult {
 
 func (a *App) Exec(path string, args []string) ApiIOResult {
 	fmt.Println("Exec:", path, args)
-	cwd, err := os.Getwd()
+
+	path, err := GetPath(path)
 	if err != nil {
 		return ApiIOResult{false, err.Error()}
 	}
-	path = filepath.Join(cwd, path)
 
 	cmd := exec.Command(path, args...)
 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
@@ -235,12 +246,16 @@ func (a *App) Exec(path string, args []string) ApiIOResult {
 
 func (a *App) StartKernel(path string, directory string) ApiIOResult {
 	fmt.Println("StartKernel:", path, directory)
-	cwd, err := os.Getwd()
+
+	path, err := GetPath(path)
 	if err != nil {
 		return ApiIOResult{false, err.Error()}
 	}
-	path = filepath.Join(cwd, path)
-	directory = filepath.Join(cwd, directory)
+
+	directory, err = GetPath(directory)
+	if err != nil {
+		return ApiIOResult{false, err.Error()}
+	}
 
 	cmd := exec.Command(path, "-d", directory)
 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
@@ -274,6 +289,7 @@ func (a *App) StartKernel(path string, directory string) ApiIOResult {
 
 func (a *App) ProcessInfo(pid int32) ApiIOResult {
 	fmt.Println("ProcessInfo:", pid)
+
 	proc, err := process.NewProcess(pid)
 	if err != nil {
 		return ApiIOResult{false, err.Error()}
@@ -289,6 +305,7 @@ func (a *App) ProcessInfo(pid int32) ApiIOResult {
 
 func (a *App) KillProcess(pid int) ApiIOResult {
 	fmt.Println("KillProcess:", pid)
+
 	process, err := os.FindProcess(pid)
 	if err != nil {
 		return ApiIOResult{false, err.Error()}
