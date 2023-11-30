@@ -273,6 +273,7 @@ export default {
       pink: '粉色',
       skyblue: '天蓝色'
     },
+    fontFamily: '字体',
     lang: {
       name: '语言设置',
       zh: '简体中文',

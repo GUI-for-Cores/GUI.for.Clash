@@ -39,6 +39,7 @@ type IconType =
   | 'log'
   | 'error'
   | 'stop'
+  | 'reset'
 
 interface Props {
   icon: IconType

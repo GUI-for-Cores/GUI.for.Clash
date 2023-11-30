@@ -57,6 +57,10 @@ const windowStates = [
   { label: 'settings.windowState.minimised', value: WindowStartState.Minimised }
   // { label: 'settings.windowState.fullscreen', value: WindowStartState.Fullscreen }
 ]
+
+const resetFontFamily = () => {
+  appSettings.app['font-family'] = '"Microsoft Yahei", "Arial", sans-serif, "Twemoji Mozilla"'
+}
 </script>
 
 <template>
@@ -76,6 +80,15 @@ const windowStates = [
     <div class="settings-item">
       <div class="title">{{ t('settings.lang.name') }}</div>
       <Radio v-model="appSettings.app.lang" :options="langs" />
+    </div>
+    <div class="settings-item">
+      <div class="title">{{ t('settings.fontFamily') }}</div>
+      <div style="display: flex; align-items: center">
+        <Button @click="resetFontFamily" type="text">
+          <Icon icon="reset" />
+        </Button>
+        <Input v-model="appSettings.app['font-family']" editable style="margin-left: 8px" />
+      </div>
     </div>
     <div class="settings-item">
       <div class="title">
