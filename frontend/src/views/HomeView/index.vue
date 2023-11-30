@@ -187,6 +187,8 @@ updateKernelState().then((running) => {
     kernelApiStore.refreshCofig()
   }
 })
+
+updateSystemProxyState()
 </script>
 
 <template>
