@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
 	"os"
 	"os/exec"
@@ -384,5 +385,19 @@ func (a *App) GetSystemProxy() ApiIOResult {
 	}
 
 	return ApiIOResult{true, ""}
+}
 
+func (a *App) GetInterfaces() ApiIOResult {
+	interfaces, err := net.Interfaces()
+	if err != nil {
+		return ApiIOResult{false, err.Error()}
+	}
+
+	var interfaceNames []string
+
+	for _, inter := range interfaces {
+		interfaceNames = append(interfaceNames, inter.Name)
+	}
+
+	return ApiIOResult{true, strings.Join(interfaceNames, "|")}
 }

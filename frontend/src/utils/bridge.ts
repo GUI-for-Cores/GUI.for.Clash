@@ -106,3 +106,11 @@ export const GetSystemProxy = async () => {
   }
   return data
 }
+
+export const GetInterfaces = async () => {
+  const { flag, data } = await App.GetInterfaces()
+  if (!flag) {
+    throw data
+  }
+  return data.split('|')
+}

@@ -2,6 +2,7 @@
 import { useI18n } from 'vue-i18n'
 import { useKernelApiStore } from '@/stores'
 import { StackOptions } from '@/constant/kernel'
+import InterfaceSelect from '@/components/Profile/InterfaceSelect.vue'
 
 const { t } = useI18n()
 const kernelApiStore = useKernelApiStore()
@@ -12,7 +13,7 @@ const onMixedPortSubmit = (port: number) => kernelApiStore.updateConfig({ 'mixed
 const onAllowLanChange = (allow: boolean) => kernelApiStore.updateConfig({ 'allow-lan': allow })
 const conStackChange = (stack: string) => kernelApiStore.updateConfig({ tun: { stack } })
 const onTunDeviceSubmit = (device: string) => kernelApiStore.updateConfig({ tun: { device } })
-const onInterfaceSubmit = (name: string) => kernelApiStore.updateConfig({ 'interface-name': name })
+const onInterfaceChange = (name: string) => kernelApiStore.updateConfig({ 'interface-name': name })
 </script>
 
 <template>
@@ -76,10 +77,10 @@ const onInterfaceSubmit = (name: string) => kernelApiStore.updateConfig({ 'inter
       />
     </Card>
     <Card :title="t('kernel.interface-name')" class="card-item">
-      <Input
+      <InterfaceSelect
         v-model="kernelApiStore.config['interface-name']"
-        @submit="onInterfaceSubmit"
-        editable
+        @change="onInterfaceChange"
+        :border="false"
       />
     </Card>
     <Card class="card-item"> </Card>

@@ -10,6 +10,10 @@ export function Exec(arg1, arg2) {
   return window['go']['main']['App']['Exec'](arg1, arg2);
 }
 
+export function GetInterfaces() {
+  return window['go']['main']['App']['GetInterfaces']();
+}
+
 export function GetSystemProxy() {
   return window['go']['main']['App']['GetSystemProxy']();
 }
