@@ -113,6 +113,8 @@ func CreateTray(a *App) {
 	go func() {
 		systray.Run(func() {
 			systray.SetIcon(icon)
+			systray.SetTitle("GUI.for.Clash")
+			systray.SetTooltip("GUI.for.Clash")
 			mShow := systray.AddMenuItem(menu["Show"][0], menu["Show"][1])
 			mHide := systray.AddMenuItem(menu["Hide"][0], menu["Hide"][1])
 			systray.AddSeparator()
