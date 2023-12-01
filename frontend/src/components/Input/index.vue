@@ -90,7 +90,6 @@ onMounted(() => props.autofocus && inputRef.value?.focus())
     white-space: nowrap;
     text-overflow: ellipsis;
     max-width: 220px;
-    text-align: right;
   }
   input {
     width: 100%;

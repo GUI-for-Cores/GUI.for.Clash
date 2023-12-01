@@ -9,9 +9,12 @@ type TabItemType = {
 interface Props {
   activeKey: string
   items: TabItemType[]
+  height?: string
 }
 
-const props = withDefaults(defineProps<Props>(), {})
+const props = withDefaults(defineProps<Props>(), {
+  height: ''
+})
 
 const emits = defineEmits(['update:activeKey'])
 
@@ -36,7 +39,7 @@ const isActive = ({ key }: TabItemType) => key === props.activeKey
       <slot name="extra" />
     </div>
 
-    <div class="slot">
+    <div :style="{ height }" class="slot">
       <slot :name="activeKey"></slot>
     </div>
   </div>
@@ -56,5 +59,6 @@ const isActive = ({ key }: TabItemType) => key === props.activeKey
   width: 80%;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
 }
 </style>

@@ -15,7 +15,7 @@ const isActive = (r: RouteRecordRaw) => route.name === r.name
 <template>
   <div class="nav">
     <div v-for="r in routes" :key="r.path">
-      <RouterLink :to="r.path">
+      <RouterLink :to="r.path" draggable="false">
         <Button :type="isActive(r) ? 'link' : 'text'">
           {{ (r.meta && t(r.meta.name)) || r.name }}
         </Button>
