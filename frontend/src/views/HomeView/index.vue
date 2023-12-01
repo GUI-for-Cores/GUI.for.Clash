@@ -274,7 +274,7 @@ updateSystemProxyState()
 .homeview {
   position: relative;
   overflow: hidden;
-  min-height: calc(100vh - 100px);
+  height: 100%;
 }
 
 .center {

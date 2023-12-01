@@ -26,7 +26,7 @@ const isActive = ({ key }: TabItemType) => key === props.activeKey
 </script>
 
 <template>
-  <div class="tabs">
+  <div :style="{ height }" class="tabs">
     <div class="tab">
       <Button
         v-for="tab in items"
@@ -39,7 +39,7 @@ const isActive = ({ key }: TabItemType) => key === props.activeKey
       <slot name="extra" />
     </div>
 
-    <div :style="{ height }" class="slot">
+    <div class="slot">
       <slot :name="activeKey"></slot>
     </div>
   </div>

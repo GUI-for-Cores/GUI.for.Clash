@@ -11,6 +11,7 @@ interface Props {
   minWidth?: string
   minHeight?: string
   width?: string
+  height?: string
   cancel?: boolean
   submit?: boolean
   cancelText?: string
@@ -26,6 +27,7 @@ const props = withDefaults(defineProps<Props>(), {
   minWidth: '60',
   minHeight: '',
   width: '',
+  height: '',
   cancel: true,
   submit: true,
   cancelText: 'common.cancel',
@@ -51,7 +53,8 @@ const contentStyle = computed(() => ({
   maxWidth: props.maxWidth + '%',
   minWidth: props.minWidth + '%',
   minHeight: props.minHeight + '%',
-  width: props.width + '%'
+  width: props.width + '%',
+  height: props.height + '%'
 }))
 
 provide('cancel', handleCancel)
@@ -91,7 +94,6 @@ provide('cancel', handleCancel)
     flex-direction: column;
     background-color: var(--modal-bg);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    overflow-y: auto;
     .title {
       padding: 16px;
       margin: 0 0 8px 0;
@@ -100,14 +102,15 @@ provide('cancel', handleCancel)
     }
     .content {
       overflow-y: auto;
-      padding: 0 8px 8px 8px;
-      margin: 0 8px;
+      margin: 0 8px 8px 8px;
+      padding: 0 8px;
+      flex: 1;
     }
     .action {
       display: flex;
       justify-content: flex-end;
       margin-bottom: 8px;
-      padding: 8px 16px 0 0;
+      padding: 0 16px 0 0;
     }
   }
 }

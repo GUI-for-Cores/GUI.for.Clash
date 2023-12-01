@@ -16,5 +16,8 @@
   overflow-y: auto;
   margin-top: 8px;
   padding: 0 8px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 </style>

@@ -78,7 +78,7 @@ const handleUseProfile = async (p: ProfileType) => {
       class="profile"
     >
       <template v-if="appSettingsStore.app.profilesView === View.Grid" #extra>
-        <Dropdown>
+        <Dropdown :trigger="['hover', 'click']">
           <Button type="link" size="small">
             {{ t('common.more') }}
           </Button>
@@ -144,6 +144,7 @@ const handleUseProfile = async (p: ProfileType) => {
   display: flex;
   align-items: center;
   padding: 0 8px;
+  z-index: 9;
 }
 
 .empty {
@@ -155,23 +156,22 @@ const handleUseProfile = async (p: ProfileType) => {
 }
 
 .profiles {
+  flex: 1;
   margin-top: 8px;
   overflow-y: auto;
-  display: flex;
-  flex-wrap: wrap;
   font-size: 12px;
   line-height: 1.6;
 }
 
 .grid {
   .profile {
+    display: inline-block;
     width: calc(33.333333% - 16px);
     margin: 8px;
   }
 }
 .list {
   .profile {
-    width: 100%;
     margin: 8px;
   }
 }
