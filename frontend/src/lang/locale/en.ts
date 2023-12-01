@@ -236,7 +236,12 @@ export default {
     website: 'Website',
     empty: 'The subscription list is empty. Please {action} a subscription first.',
     enterLink: 'Enter subscription link',
-    proxyCount: 'Proxy Count'
+    proxyCount: 'Proxy Count',
+    proxies: {
+      type: 'Type',
+      name: 'Name',
+      reset: 'Reset'
+    }
   },
   profile: {
     name: 'Name',

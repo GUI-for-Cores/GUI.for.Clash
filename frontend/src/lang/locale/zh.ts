@@ -236,7 +236,12 @@ export default {
     website: '官网',
     empty: '订阅列表为空，请先{action}订阅。',
     enterLink: '输入订阅链接',
-    proxyCount: '代理数量'
+    proxyCount: '代理数量',
+    proxies: {
+      type: '类型',
+      name: '名称',
+      reset: '重置'
+    }
   },
   profile: {
     name: '名称',
