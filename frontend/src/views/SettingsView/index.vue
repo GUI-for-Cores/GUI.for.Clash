@@ -19,7 +19,7 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <Tabs v-model:active-key="activeKey" :items="settings">
+  <Tabs v-model:active-key="activeKey" :items="settings" height="calc(100vh - 108px)">
     <template #general>
       <GeneralSetting />
     </template>
@@ -39,7 +39,7 @@ const { t } = useI18n()
     </template>
   </Tabs>
 
-  <Modal v-model:open="showAbout" :cancel="false" :submit="false" mask-closable>
+  <Modal v-model:open="showAbout" :cancel="false" :submit="false" min-width="50" mask-closable>
     <AboutView />
   </Modal>
 </template>

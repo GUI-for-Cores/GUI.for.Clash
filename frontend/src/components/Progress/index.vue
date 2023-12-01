@@ -46,6 +46,7 @@ const circleStyle = computed(() => {
   height: 10px;
   background-color: var(--progress-bg);
   border-radius: 8px;
+  overflow: hidden;
   .inner {
     height: 100%;
     border-radius: 8px;

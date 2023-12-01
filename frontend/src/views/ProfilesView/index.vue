@@ -125,11 +125,11 @@ const handleUseProfile = async (p: ProfileType) => {
         "
       >
         Port:
-        {{ p.advancedConfig.port }}
+        {{ p.advancedConfig.port || '--' }}
         Socks:
-        {{ p.advancedConfig['socks-port'] }}
+        {{ p.advancedConfig['socks-port'] || '--' }}
         Mixed:
-        {{ p.generalConfig['mixed-port'] }}
+        {{ p.generalConfig['mixed-port'] || '--' }}
       </div>
     </Card>
   </div>
@@ -155,6 +155,7 @@ const handleUseProfile = async (p: ProfileType) => {
 }
 
 .profiles {
+  margin-top: 8px;
   overflow-y: auto;
   display: flex;
   flex-wrap: wrap;

@@ -18,7 +18,7 @@ const onInterfaceChange = (name: string) => kernelApiStore.updateConfig({ 'inter
 
 <template>
   <div class="card-list">
-    <Divider class="w-100 mb-8">
+    <Divider class="w-100 mb-18">
       {{ t('home.overview.settingsTips') }}
     </Divider>
 
@@ -53,9 +53,7 @@ const onInterfaceChange = (name: string) => kernelApiStore.updateConfig({ 'inter
       />
     </Card>
     <Card :title="t('kernel.allow-lan')" class="card-item">
-      <div style="width: 100%; text-align: right">
-        <Switch v-model="kernelApiStore.config['allow-lan']" @change="onAllowLanChange" />
-      </div>
+      <Switch v-model="kernelApiStore.config['allow-lan']" @change="onAllowLanChange" />
     </Card>
 
     <div class="w-100 mt-8"></div>
@@ -103,7 +101,7 @@ const onInterfaceChange = (name: string) => kernelApiStore.updateConfig({ 'inter
 .mt-8 {
   margin-top: 8px;
 }
-.mb-8 {
-  margin-bottom: 8px;
+.mb-18 {
+  margin-bottom: 18px;
 }
 </style>

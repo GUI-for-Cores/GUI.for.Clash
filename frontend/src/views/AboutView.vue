@@ -26,9 +26,10 @@ import { BrowserOpenURL } from '@/utils/bridge'
   .appname {
     font-weight: bold;
     font-size: 16px;
-    line-height: 4;
+    padding: 8px 0;
   }
   .appver {
+    font-size: 12px;
     margin-bottom: 12px;
   }
   .url {
@@ -37,7 +38,6 @@ import { BrowserOpenURL } from '@/utils/bridge'
     align-items: center;
     font-size: 12px;
     text-decoration: underline;
-    line-height: 2;
   }
 }
 </style>

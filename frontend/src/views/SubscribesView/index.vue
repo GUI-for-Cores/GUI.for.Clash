@@ -177,15 +177,15 @@ const clacTrafficStatus = (s: any) => (clacTrafficPercent(s) > 80 ? 'warning' : 
         <div>
           {{ t('subscribes.upload') }}
           :
-          {{ formatBytes(s.upload) }}
+          {{ s.upload ? formatBytes(s.upload) : '--' }}
           /
           {{ t('subscribes.download') }}
           :
-          {{ formatBytes(s.download) }}
+          {{ s.download ? formatBytes(s.download) : '--' }}
           /
           {{ t('subscribes.total') }}
           :
-          {{ formatBytes(s.total) }}
+          {{ s.total ? formatBytes(s.total) : '--' }}
         </div>
         <div>
           {{ t('subscribes.expire') }}
@@ -199,7 +199,11 @@ const clacTrafficStatus = (s: any) => (clacTrafficPercent(s) > 80 ? 'warning' : 
       </template>
       <template v-else>
         <div class="traffic-detail">
-          <div>{{ formatBytes(s.upload + s.download) }} / {{ formatBytes(s.total) }}</div>
+          <div>
+            {{ s.upload + s.download ? formatBytes(s.upload + s.download) : '--' }}
+            /
+            {{ s.total ? formatBytes(s.total) : '--' }}
+          </div>
           <Progress
             :percent="clacTrafficPercent(s)"
             :status="clacTrafficStatus(s)"
@@ -247,6 +251,7 @@ const clacTrafficStatus = (s: any) => (clacTrafficPercent(s) > 80 ? 'warning' : 
 }
 
 .subscribes {
+  margin-top: 8px;
   overflow-y: auto;
   display: flex;
   flex-wrap: wrap;
