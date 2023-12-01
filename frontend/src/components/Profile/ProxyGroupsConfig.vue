@@ -270,7 +270,7 @@ subscribesStore.subscribes.forEach(async ({ name, proxies }) => {
   <Modal v-model:open="showModal" @ok="handleAddEnd" max-width="80" max-height="80">
     <div class="form-item">
       {{ t('kernel.proxyGroups.name') }}
-      <Input v-model="fields.name" />
+      <Input v-model="fields.name" autofocus />
     </div>
     <div class="form-item">
       {{ t('kernel.proxyGroups.filter') }}

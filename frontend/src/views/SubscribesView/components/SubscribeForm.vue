@@ -107,7 +107,7 @@ if (props.isUpdate) {
     </div>
     <div class="form-item">
       <div class="name">* {{ t('subscribe.name') }}</div>
-      <Input v-model="sub.name" auto-size class="input" />
+      <Input v-model="sub.name" auto-size autofocus class="input" />
     </div>
     <div class="form-item">
       <div class="name">* {{ t('subscribe.url') }}</div>
