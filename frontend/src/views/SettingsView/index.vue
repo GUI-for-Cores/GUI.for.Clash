@@ -19,7 +19,7 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <Tabs v-model:active-key="activeKey" :items="settings" height="calc(100vh - 108px)">
+  <Tabs v-model:active-key="activeKey" :items="settings" height="100%">
     <template #general>
       <GeneralSetting />
     </template>

@@ -13,6 +13,7 @@ interface Props {
   min?: number
   max?: number
   disabled?: boolean
+  border?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -21,7 +22,8 @@ const props = withDefaults(defineProps<Props>(), {
   editable: false,
   autofocus: false,
   width: '',
-  disabled: false
+  disabled: false,
+  border: true
 })
 
 const emits = defineEmits(['update:modelValue', 'submit'])
@@ -62,7 +64,7 @@ onMounted(() => props.autofocus && inputRef.value?.focus())
 </script>
 
 <template>
-  <div :class="{ disabled }" class="input">
+  <div :class="{ disabled, border }" class="input">
     <div v-if="editable && !showEdit" @click="showInput" class="editable">
       <Icon v-if="disabled" icon="forbidden" />
       {{ modelValue || t('common.none') }}
@@ -98,7 +100,6 @@ onMounted(() => props.autofocus && inputRef.value?.focus())
     padding: 6px 8px;
     border: none;
     border-radius: 4px;
-    outline: 1px solid var(--primary-color);
     background: var(--input-bg);
     margin: 1px;
   }
@@ -109,5 +110,11 @@ onMounted(() => props.autofocus && inputRef.value?.focus())
 
 .disabled {
   pointer-events: none;
+}
+
+.border {
+  input {
+    outline: 1px solid var(--primary-color);
+  }
 }
 </style>
