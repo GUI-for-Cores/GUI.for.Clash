@@ -34,6 +34,7 @@ var assets embed.FS
 var icon []byte
 
 var basePath string
+var appName string
 
 var config = &Config{
 	DisableResize: true,
@@ -46,6 +47,7 @@ func main() {
 	}
 
 	basePath = filepath.Dir(exePath)
+	appName = filepath.Base(exePath)
 
 	// Read Config file
 	InitConfig()

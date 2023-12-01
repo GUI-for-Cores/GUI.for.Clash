@@ -296,6 +296,15 @@ export default {
     exitOnClose: '关闭窗口时退出程序',
     closeKernelOnExit: '退出程序时同时关闭内核'
   },
+  about: {
+    new: '新版本',
+    restart: '请重启软件',
+    noNeedUpdate: '已经是最新版本，无需更新',
+    noDownloadLink: '没有发现下载链接',
+    updateSuccessful: '更新完成，请重启软件',
+    newVersion: '发现新版本',
+    latestVersion: '已经是最新版本了'
+  },
   format: {
     seconds: '秒',
     minutes: '分钟',

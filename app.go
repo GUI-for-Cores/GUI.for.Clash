@@ -82,6 +82,31 @@ func (a *App) Readfile(path string) ApiIOResult {
 	return ApiIOResult{true, string(b)}
 }
 
+func (a *App) Movefile(source string, target string) ApiIOResult {
+	fmt.Println("Movefile:", source, target)
+
+	source, err := GetPath(source)
+	if err != nil {
+		return ApiIOResult{false, err.Error()}
+	}
+
+	target, err = GetPath(target)
+	if err != nil {
+		return ApiIOResult{false, err.Error()}
+	}
+
+	err = os.Rename(source, target)
+	if err != nil {
+		return ApiIOResult{false, err.Error()}
+	}
+
+	return ApiIOResult{true, "Success"}
+}
+
+func (a *App) GetAppName() ApiIOResult {
+	return ApiIOResult{true, appName}
+}
+
 type ApiHTTPResult struct {
 	Flag   bool        `json:"flag"`
 	Header http.Header `json:"header"`

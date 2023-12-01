@@ -6,6 +6,8 @@ export function Download(arg1:string,arg2:string):Promise<main.ApiIOResult>;
 
 export function Exec(arg1:string,arg2:Array<string>):Promise<main.ApiIOResult>;
 
+export function GetAppName():Promise<main.ApiIOResult>;
+
 export function GetInterfaces():Promise<main.ApiIOResult>;
 
 export function GetSystemProxy():Promise<main.ApiIOResult>;
@@ -13,6 +15,8 @@ export function GetSystemProxy():Promise<main.ApiIOResult>;
 export function HttpGet(arg1:string,arg2:{[key: string]: string}):Promise<main.ApiHTTPResult>;
 
 export function KillProcess(arg1:number):Promise<main.ApiIOResult>;
+
+export function Movefile(arg1:string,arg2:string):Promise<main.ApiIOResult>;
 
 export function ProcessInfo(arg1:number):Promise<main.ApiIOResult>;
 
