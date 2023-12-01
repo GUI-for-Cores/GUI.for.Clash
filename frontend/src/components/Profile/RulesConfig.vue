@@ -151,7 +151,7 @@ watch(rules, (v) => emits('update:modelValue', v), { immediate: true })
     </div>
     <div v-show="supportPayload" class="form-item">
       {{ t('kernel.rules.payload') }}
-      <Input v-model="fields.payload" />
+      <Input v-model="fields.payload" autofocus />
     </div>
     <div class="form-item">
       {{ t('kernel.rules.proxy') }}

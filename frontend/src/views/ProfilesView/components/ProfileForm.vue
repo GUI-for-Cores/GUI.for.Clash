@@ -115,7 +115,7 @@ if (props.isUpdate) {
   <div v-show="currentStep === 0" class="step1">
     <div class="form-item">
       <div class="name">* {{ t('profile.name') }}</div>
-      <Input v-model="profile.name" auto-size style="flex: 1; margin-left: 8px" />
+      <Input v-model="profile.name" auto-size autofocus style="flex: 1; margin-left: 8px" />
     </div>
   </div>
 
