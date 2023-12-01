@@ -10,6 +10,10 @@ export function Exec(arg1, arg2) {
   return window['go']['main']['App']['Exec'](arg1, arg2);
 }
 
+export function GetAppName() {
+  return window['go']['main']['App']['GetAppName']();
+}
+
 export function GetInterfaces() {
   return window['go']['main']['App']['GetInterfaces']();
 }
@@ -24,6 +28,10 @@ export function HttpGet(arg1, arg2) {
 
 export function KillProcess(arg1) {
   return window['go']['main']['App']['KillProcess'](arg1);
+}
+
+export function Movefile(arg1, arg2) {
+  return window['go']['main']['App']['Movefile'](arg1, arg2);
 }
 
 export function ProcessInfo(arg1) {

@@ -17,6 +17,19 @@ export const Readfile = async (path: string) => {
   return data
 }
 
+export const Movefile = async (source: string, target: string) => {
+  const { flag, data } = await App.Movefile(source, target)
+  if (!flag) {
+    throw data
+  }
+  return data
+}
+
+export const GetAppName = async () => {
+  const { data } = await App.GetAppName()
+  return data
+}
+
 export const UnzipZIPFile = async (path: string, output: string) => {
   const { flag, data } = await App.UnzipZIPFile(path, output)
   if (!flag) {

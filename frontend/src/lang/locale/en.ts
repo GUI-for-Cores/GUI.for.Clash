@@ -296,6 +296,15 @@ export default {
     exitOnClose: 'Exit On Close',
     closeKernelOnExit: 'Close Kernel On Exit'
   },
+  about: {
+    new: 'New',
+    restart: 'Please restart the APP',
+    noNeedUpdate: 'It is already the latest version, no need to update',
+    noDownloadLink: 'No download link found',
+    updateSuccessful: 'Update completed, please restart the App',
+    newVersion: 'New version found',
+    latestVersion: 'Already the latest version'
+  },
   format: {
     seconds: 'Seconds',
     minutes: 'Minutes',
