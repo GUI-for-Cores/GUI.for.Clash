@@ -7,8 +7,11 @@ import { BrowserOpenURL } from '@/utils/bridge'
 import { View } from '@/constant/app'
 import { useMessage } from '@/hooks/useMessage'
 import SubscribeForm from './components/SubscribeForm.vue'
+import ProxiesView from './components/ProxiesView.vue'
 
 const showSubForm = ref(false)
+const showProxies = ref(false)
+const proxiesTitle = ref('')
 const subFormSubID = ref()
 const subFormIsUpdate = ref(false)
 const subFormTitle = computed(() => (subFormIsUpdate.value ? t('common.edit') : t('common.add')))
@@ -37,6 +40,12 @@ const handleEditSub = (s: SubscribeType) => {
   subFormIsUpdate.value = true
   subFormSubID.value = s.id
   showSubForm.value = true
+}
+
+const handleEditProxies = (s: SubscribeType) => {
+  subFormSubID.value = s.id
+  proxiesTitle.value = s.name
+  showProxies.value = true
 }
 
 const handleUpdateSub = async (s: SubscribeType) => {
@@ -125,7 +134,7 @@ const clacTrafficStatus = (s: any) => (clacTrafficPercent(s) > 80 ? 'warning' : 
       </template>
 
       <template v-if="appSettingsStore.app.subscribesView === View.Grid" #extra>
-        <Dropdown>
+        <Dropdown :trigger="['hover', 'click']">
           <Button type="link" size="small">
             {{ t('common.more') }}
           </Button>
@@ -172,7 +181,9 @@ const clacTrafficStatus = (s: any) => (clacTrafficPercent(s) > 80 ? 'warning' : 
         <div>
           {{ t('subscribes.proxyCount') }}
           :
-          {{ s.proxies.length }}
+          <Button type="text" size="small" @click="handleEditProxies(s)">
+            {{ s.proxies.length }}
+          </Button>
         </div>
         <div>
           {{ t('subscribes.upload') }}
@@ -233,6 +244,10 @@ const clacTrafficStatus = (s: any) => (clacTrafficPercent(s) > 80 ? 'warning' : 
   <Modal v-model:open="showSubForm" :title="subFormTitle" max-height="80" :footer="false">
     <SubscribeForm :is-update="subFormIsUpdate" :id="subFormSubID" />
   </Modal>
+
+  <Modal v-model:open="showProxies" :title="proxiesTitle" :footer="false" height="80" width="80">
+    <ProxiesView :id="subFormSubID" />
+  </Modal>
 </template>
 
 <style lang="less" scoped>
@@ -240,6 +255,7 @@ const clacTrafficStatus = (s: any) => (clacTrafficPercent(s) > 80 ? 'warning' : 
   display: flex;
   align-items: center;
   padding: 0 8px;
+  z-index: 9;
 }
 
 .empty {
@@ -251,10 +267,9 @@ const clacTrafficStatus = (s: any) => (clacTrafficPercent(s) > 80 ? 'warning' : 
 }
 
 .subscribes {
+  flex: 1;
   margin-top: 8px;
   overflow-y: auto;
-  display: flex;
-  flex-wrap: wrap;
   font-size: 12px;
   line-height: 1.6;
 
@@ -267,13 +282,13 @@ const clacTrafficStatus = (s: any) => (clacTrafficPercent(s) > 80 ? 'warning' : 
 
 .grid {
   .subscribe {
+    display: inline-block;
     width: calc(33.333333% - 16px);
     margin: 8px;
   }
 }
 .list {
   .subscribe {
-    width: 100%;
     margin: 8px;
   }
 }

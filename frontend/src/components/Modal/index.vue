@@ -88,6 +88,7 @@ provide('cancel', handleCancel)
   align-items: center;
   justify-content: center;
   backdrop-filter: blur(4px);
+  z-index: 999;
 
   .modal {
     display: flex;

@@ -213,3 +213,54 @@ export const EnhancedModeOptions = [
     value: 'redir-host'
   }
 ]
+
+export const ProxyTypeOptions = [
+  {
+    label: 'direct',
+    value: 'direct'
+  },
+  {
+    label: 'http',
+    value: 'http'
+  },
+  {
+    label: 'socks5',
+    value: 'socks5'
+  },
+  {
+    label: 'ss',
+    value: 'ss'
+  },
+  {
+    label: 'ssr',
+    value: 'ssr'
+  },
+  {
+    label: 'vmess',
+    value: 'vmess'
+  },
+  {
+    label: 'vless',
+    value: 'vless'
+  },
+  {
+    label: 'trojan',
+    value: 'trojan'
+  },
+  {
+    label: 'hysteria',
+    value: 'hysteria'
+  },
+  {
+    label: 'hysteria2',
+    value: 'hysteria2'
+  },
+  {
+    label: 'tuic',
+    value: 'tuic'
+  },
+  {
+    label: 'wireguard',
+    value: 'wireguard'
+  }
+]
