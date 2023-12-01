@@ -14,8 +14,8 @@ export const GeneralConfigDefaults: ProfileType['generalConfig'] = {
 export const AdvancedConfigDefaults: ProfileType['advancedConfig'] = {
   port: 0,
   'socks-port': 0,
-  secret: '',
-  'external-controller': '127.0.0.1:9090',
+  secret: sampleID(),
+  'external-controller': '127.0.0.1:20113',
   'external-ui': '',
   'keep-alive-interval': 30,
   'find-process-mode': 'strict',
