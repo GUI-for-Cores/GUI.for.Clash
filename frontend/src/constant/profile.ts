@@ -38,7 +38,7 @@ export const AdvancedConfigDefaults: ProfileType['advancedConfig'] = {
     geosite: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geosite.dat',
     mmdb: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/country.mmdb'
   },
-  'global-ua': 'clash.meta',
+  'global-ua': 'GUI.for.Clash',
   profile: {
     'store-selected': true,
     'store-fake-ip': true
