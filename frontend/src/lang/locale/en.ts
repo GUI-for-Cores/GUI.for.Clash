@@ -52,6 +52,8 @@ export default {
     'external-ui-url': 'external-ui-url',
     'unified-delay': 'unified-delay',
     'tcp-concurrent': 'tcp-concurrent',
+    authentication: 'Http/Socks Auth',
+    'skip-auth-prefixes': 'Skip Auth Prefixes',
     'store-selected': 'store-selected',
     'store-fake-ip': 'store-fake-ip',
     tun: {

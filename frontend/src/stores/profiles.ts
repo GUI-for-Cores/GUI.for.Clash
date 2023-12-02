@@ -28,6 +28,8 @@ export type ProfileType = {
     'external-ui-url': string
     'unified-delay': boolean
     'tcp-concurrent': boolean
+    authentication: string[]
+    'skip-auth-prefixes': string[]
     tls: {
       certificate: string
       'private-key': string
