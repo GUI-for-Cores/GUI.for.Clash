@@ -41,6 +41,14 @@ watch(fields, (v) => emits('update:modelValue', v), { immediate: true })
     {{ t('kernel.secret') }}
     <Input v-model="fields.secret" editable />
   </div>
+  <div class="form-item" :class="{ 'flex-start': fields.authentication.length !== 0 }">
+    {{ t('kernel.authentication') }}
+    <InputList v-model="fields.authentication" placeholder="username:password" />
+  </div>
+  <div class="form-item" :class="{ 'flex-start': fields['skip-auth-prefixes'].length !== 0 }">
+    {{ t('kernel.skip-auth-prefixes') }}
+    <InputList v-model="fields['skip-auth-prefixes']" placeholder="127.0.0.1/8" />
+  </div>
   <div class="form-item">
     {{ t('kernel.external-ui') }}
     <Input v-model="fields['external-ui']" placeholder="ui" editable />
@@ -122,4 +130,8 @@ watch(fields, (v) => emits('update:modelValue', v), { immediate: true })
   </div>
 </template>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.flex-start {
+  align-items: flex-start;
+}
+</style>

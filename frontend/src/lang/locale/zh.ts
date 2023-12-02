@@ -52,6 +52,8 @@ export default {
     'external-ui-url': '自定义外部用户界面下载地址',
     'unified-delay': '统一延迟',
     'tcp-concurrent': 'TCP并发',
+    authentication: 'Http/Socks 验证用户',
+    'skip-auth-prefixes': '跳过验证的IP段',
     'store-selected': '持久化选择',
     'store-fake-ip': '持久化Fake-IP',
     tun: {
