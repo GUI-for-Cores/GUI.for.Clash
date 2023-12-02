@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useI18n, I18nT } from 'vue-i18n'
-import { type ProfileType, useProfilesStore, useAppSettingsStore } from '@/stores'
+import { type ProfileType, type Menu, useProfilesStore, useAppSettingsStore } from '@/stores'
 import { View } from '@/constant/app'
 import { useMessage } from '@/hooks/useMessage'
 import ProfileForm from './components/ProfileForm.vue'
 
 const profileID = ref()
+const profileStep = ref(0)
 const showForm = ref(false)
 const isUpdate = ref(false)
 const formTitle = computed(() => (isUpdate.value ? t('common.edit') : t('common.add')))
@@ -16,14 +17,42 @@ const { message } = useMessage()
 const profilesStore = useProfilesStore()
 const appSettingsStore = useAppSettingsStore()
 
+const menuList: Menu[] = [
+  {
+    label: 'profile.step.name',
+    handler: (p: ProfileType) => handleEditProfile(p, 0)
+  },
+  {
+    label: 'profile.step.general',
+    handler: (p: ProfileType) => handleEditProfile(p, 1)
+  },
+  {
+    label: 'profile.step.tun',
+    handler: (p: ProfileType) => handleEditProfile(p, 2)
+  },
+  {
+    label: 'profile.step.dns',
+    handler: (p: ProfileType) => handleEditProfile(p, 3)
+  },
+  {
+    label: 'profile.step.groups',
+    handler: (p: ProfileType) => handleEditProfile(p, 4)
+  },
+  {
+    label: 'profile.step.rules',
+    handler: (p: ProfileType) => handleEditProfile(p, 5)
+  }
+]
+
 const handleAddProfile = async () => {
   isUpdate.value = false
   showForm.value = true
 }
 
-const handleEditProfile = (p: ProfileType) => {
+const handleEditProfile = (p: ProfileType, step = 0) => {
   isUpdate.value = true
   profileID.value = p.id
+  profileStep.value = step
   showForm.value = true
 }
 
@@ -75,6 +104,7 @@ const handleUseProfile = async (p: ProfileType) => {
       :title="p.name"
       :selected="appSettingsStore.app.kernel.profile === p.name"
       @dblclick="handleUseProfile(p)"
+      v-menu="menuList.map((v) => ({ ...v, handler: () => v.handler?.(p) }))"
       class="profile"
     >
       <template v-if="appSettingsStore.app.profilesView === View.Grid" #extra>
@@ -135,7 +165,7 @@ const handleUseProfile = async (p: ProfileType) => {
   </div>
 
   <Modal v-model:open="showForm" :title="formTitle" :footer="false" max-height="80">
-    <ProfileForm :is-update="isUpdate" :id="profileID" />
+    <ProfileForm :is-update="isUpdate" :id="profileID" :step="profileStep" />
   </Modal>
 </template>
 
