@@ -237,6 +237,8 @@ export default {
     empty: 'The subscription list is empty. Please {action} a subscription first.',
     enterLink: 'Enter subscription link',
     proxyCount: 'Proxy Count',
+    editProxies: 'Edit Proxies',
+    disableAndEnable: 'Enable/Disable',
     proxies: {
       type: 'Type',
       name: 'Name',
@@ -248,12 +250,12 @@ export default {
     generalSettings: 'General Settings',
     advancedSettings: 'Advanced Settings',
     step: {
-      name: 'Enter Name',
-      general: 'General Settings',
-      tun: 'TUN Settings',
-      dns: 'DNS Settings',
-      groups: 'Proxy Groups Settings',
-      rules: 'Rules Settings'
+      name: 'Name',
+      general: 'General',
+      tun: 'TUN',
+      dns: 'DNS',
+      groups: 'Proxy Groups',
+      rules: 'Rules'
     },
     proxies: 'Proxies',
     use: 'Use',

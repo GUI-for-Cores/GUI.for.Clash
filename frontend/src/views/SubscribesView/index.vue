@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useI18n, I18nT } from 'vue-i18n'
-import { type SubscribeType, useSubscribesStore, useAppSettingsStore } from '@/stores'
+import { type SubscribeType, type Menu, useSubscribesStore, useAppSettingsStore } from '@/stores'
 import { formatBytes, formatRelativeTime } from '@/utils/format'
 import { BrowserOpenURL } from '@/utils/bridge'
 import { View } from '@/constant/app'
@@ -15,6 +15,29 @@ const proxiesTitle = ref('')
 const subFormSubID = ref()
 const subFormIsUpdate = ref(false)
 const subFormTitle = computed(() => (subFormIsUpdate.value ? t('common.edit') : t('common.add')))
+
+const menuList: Menu[] = [
+  {
+    label: 'common.update',
+    handler: (p: SubscribeType) => handleUpdateSub(p)
+  },
+  {
+    label: 'subscribes.disableAndEnable',
+    handler: (p: SubscribeType) => handleDisableSub(p)
+  },
+  {
+    label: 'subscribes.editProxies',
+    handler: (p: SubscribeType) => handleEditProxies(p)
+  },
+  {
+    label: 'common.edit',
+    handler: (p: SubscribeType) => handleEditSub(p)
+  },
+  {
+    label: 'common.delete',
+    handler: (p: SubscribeType) => handleDeleteSub(p)
+  }
+]
 
 const { t } = useI18n()
 const { message } = useMessage()
@@ -121,6 +144,7 @@ const clacTrafficStatus = (s: any) => (clacTrafficPercent(s) > 80 ? 'warning' : 
       :key="s.name"
       :title="s.name"
       :disabled="s.disabled"
+      v-menu="menuList.map((v) => ({ ...v, handler: () => v.handler?.(s) }))"
       class="subscribe"
     >
       <template #title-prefix>
@@ -142,9 +166,6 @@ const clacTrafficStatus = (s: any) => (clacTrafficPercent(s) > 80 ? 'warning' : 
             <Button v-if="!s.disabled" type="link" size="small" @click="handleUpdateSub(s)">
               {{ t('common.update') }}
             </Button>
-            <Button type="link" size="small" @click="handleDisableSub(s)">
-              {{ s.disabled ? t('common.enable') : t('common.disable') }}
-            </Button>
             <Button type="link" size="small" @click="handleEditSub(s)">
               {{ t('common.edit') }}
             </Button>
@@ -158,9 +179,6 @@ const clacTrafficStatus = (s: any) => (clacTrafficPercent(s) > 80 ? 'warning' : 
       <template v-else #extra>
         <Button v-if="!s.disabled" type="link" size="small" @click="handleUpdateSub(s)">
           {{ t('common.update') }}
-        </Button>
-        <Button type="link" size="small" @click="handleDisableSub(s)">
-          {{ s.disabled ? t('common.enable') : t('common.disable') }}
         </Button>
         <Button type="link" size="small" @click="handleEditSub(s)">
           {{ t('common.edit') }}

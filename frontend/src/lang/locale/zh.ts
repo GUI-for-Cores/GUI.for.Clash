@@ -237,6 +237,8 @@ export default {
     empty: '订阅列表为空，请先{action}订阅。',
     enterLink: '输入订阅链接',
     proxyCount: '代理数量',
+    editProxies: '编辑节点',
+    disableAndEnable: '启用/禁用',
     proxies: {
       type: '类型',
       name: '名称',
@@ -248,7 +250,7 @@ export default {
     generalSettings: '通用设置',
     advancedSettings: '高级设置',
     step: {
-      name: '输入名称',
+      name: '名称设置',
       general: '通用设置',
       tun: 'TUN 设置',
       dns: 'DNS 设置',
