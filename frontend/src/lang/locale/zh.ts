@@ -154,7 +154,7 @@ export default {
         'SRC-IP-CIDR': '源IP段地址'
       }
     },
-    name: 'Clash.Meta',
+    name: 'mihomo',
     standard: '标准',
     memconservative: '适用小内存设备',
     chrome: 'Chrome',
