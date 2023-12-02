@@ -5,7 +5,7 @@ import { Download, UnzipZIPFile, HttpGetJSON, Exec } from '@/utils/bridge'
 import { KernelWorkDirectory, KernelFilePath } from '@/constant/kernel'
 import { useMessage } from '@/hooks/useMessage'
 
-const apiUrl = 'https://api.github.com/repos/MetaCubeX/Clash.Meta/releases/latest'
+const releaseUrl = 'https://api.github.com/repos/MetaCubeX/mihomo/releases/latest'
 
 const loading = ref(true)
 const downloadLoading = ref(false)
@@ -20,14 +20,14 @@ const needUpdates = computed(() => localVersion.value !== remoteVersion.value)
 const { t } = useI18n()
 const { message } = useMessage()
 
-const downloadCore_Meta = async () => {
+const downloadCore = async () => {
   if (!needUpdates.value) return
   downloadLoading.value = true
   try {
-    const { json } = await HttpGetJSON(apiUrl)
+    const { json } = await HttpGetJSON(releaseUrl)
     const { assets, tag_name } = json
 
-    const asset = assets.find((v: any) => v.name === `clash.meta-windows-amd64-${tag_name}.zip`)
+    const asset = assets.find((v: any) => v.name === `mihomo-windows-amd64-${tag_name}.zip`)
     if (!asset) throw 'Asset Not Found'
 
     const path = KernelWorkDirectory + `/${tag_name}.zip`
@@ -42,10 +42,10 @@ const downloadCore_Meta = async () => {
   }
   downloadLoading.value = false
 
-  updateLocalVersion_Meta()
+  updateLocalVersion()
 }
 
-const getLocalVersion_Meta = async () => {
+const getLocalVersion = async () => {
   getLocalVersionLoading.value = true
   try {
     const res = await Exec(KernelFilePath, '-v')
@@ -59,10 +59,10 @@ const getLocalVersion_Meta = async () => {
   return ''
 }
 
-const getRemoteVersion_Meta = async () => {
+const getRemoteVersion = async () => {
   getRemoteVersionLoading.value = true
   try {
-    const { json } = await HttpGetJSON(apiUrl)
+    const { json } = await HttpGetJSON(releaseUrl)
     const { tag_name } = json
     return tag_name as string
   } catch (error) {
@@ -73,18 +73,18 @@ const getRemoteVersion_Meta = async () => {
   return ''
 }
 
-const updateLocalVersion_Meta = async () => {
-  localVersion.value = await getLocalVersion_Meta()
+const updateLocalVersion = async () => {
+  localVersion.value = await getLocalVersion()
 }
 
-const updateRemoteVersion_Meta = async () => {
-  remoteVersion.value = await getRemoteVersion_Meta()
+const updateRemoteVersion = async () => {
+  remoteVersion.value = await getRemoteVersion()
 }
 
 const initVersion = async () => {
   loading.value = true
-  const lv = await getLocalVersion_Meta()
-  const rv = await getRemoteVersion_Meta()
+  const lv = await getLocalVersion()
+  const rv = await getRemoteVersion()
   localVersion.value = lv
   remoteVersion.value = rv
   loading.value = false
@@ -97,12 +97,12 @@ initVersion()
   <div class="kernel">
     <div class="item">
       <h3>{{ t('kernel.name') }}</h3>
-      <Tag @click="updateLocalVersion_Meta" style="cursor: pointer">
+      <Tag @click="updateLocalVersion" style="cursor: pointer">
         {{ t('kernel.local') }}
         :
         {{ getLocalVersionLoading || loading ? 'Loading' : localVersion || t('kernel.notFound') }}
       </Tag>
-      <Tag @click="updateRemoteVersion_Meta" style="cursor: pointer">
+      <Tag @click="updateRemoteVersion" style="cursor: pointer">
         {{ t('kernel.remote') }}
         :
         {{
@@ -113,7 +113,7 @@ initVersion()
       </Tag>
       <Button
         v-show="remoteVersion && needUpdates"
-        @click="downloadCore_Meta"
+        @click="downloadCore"
         :loading="downloadLoading"
         type="primary"
       >

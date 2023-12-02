@@ -15,9 +15,9 @@ export enum ProxyGroupType {
   LoadBalance = 'LoadBalance'
 }
 
-export const KernelWorkDirectory = 'data/Clash.Meta'
+export const KernelWorkDirectory = 'data/mihoho'
 
-export const KernelFilePath = KernelWorkDirectory + '/clash.meta-windows-amd64'
+export const KernelFilePath = KernelWorkDirectory + '/mihomo-windows-amd64.exe'
 
 export const KernelConfigFilePath = KernelWorkDirectory + '/config.yaml'
 

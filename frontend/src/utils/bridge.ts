@@ -84,7 +84,7 @@ export const KernelRunning = async (pid: number) => {
   if (!flag) {
     throw data
   }
-  return data.startsWith('clash')
+  return data.startsWith('mihomo')
 }
 
 export const KillProcess = async (pid: number) => {
