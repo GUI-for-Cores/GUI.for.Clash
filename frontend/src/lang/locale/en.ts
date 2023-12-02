@@ -152,7 +152,7 @@ export default {
         'SRC-IP-CIDR': 'SRC-IP-CIDR'
       }
     },
-    name: 'Clash.Meta',
+    name: 'mihomo',
     standard: 'Standard',
     memconservative: 'Memconservative',
     chrome: 'Chrome',
