@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useAppSettingsStore, useProfilesStore, useSubscribesStore } from '@/stores'
+import { useAppSettingsStore, useProfilesStore, useSubscribesStore, useApp } from '@/stores'
 import { ignoredError, sleep } from '@/utils'
 import { useEvents } from '@/hooks/useEvents'
 import { NavigationBar, MainPage, TitleBar } from '@/components'
@@ -8,6 +8,7 @@ import SplashView from '@/views/SplashView.vue'
 
 const loading = ref(true)
 
+const appStore = useApp()
 const appSettings = useAppSettingsStore()
 const profilesStore = useProfilesStore()
 const subscribesStore = useSubscribesStore()
@@ -31,6 +32,12 @@ appSettings.setupAppSettings().then(async () => {
       <MainPage />
     </div>
   </template>
+
+  <Menu
+    :menu-list="appStore.menuList"
+    :position="appStore.menuPosition"
+    v-model="appStore.menuShow"
+  />
 </template>
 
 <style scoped>
