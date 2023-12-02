@@ -132,7 +132,7 @@ func CreateTray(a *App) {
 					InitConfig()
 					if config.CloseKernelOnExit {
 						info := a.ProcessInfo(config.Kernel.Pid)
-						if info.Flag && strings.HasPrefix(info.Data, "clash") {
+						if info.Flag && strings.HasPrefix(info.Data, "mihomo") {
 							a.KillProcess(int(config.Kernel.Pid))
 						}
 					}
