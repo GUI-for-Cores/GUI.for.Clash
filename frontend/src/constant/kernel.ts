@@ -15,7 +15,7 @@ export enum ProxyGroupType {
   LoadBalance = 'LoadBalance'
 }
 
-export const KernelWorkDirectory = 'data/mihoho'
+export const KernelWorkDirectory = 'data/mihomo'
 
 export const KernelFilePath = KernelWorkDirectory + '/mihomo-windows-amd64.exe'
 
