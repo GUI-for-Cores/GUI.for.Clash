@@ -71,6 +71,7 @@ onUnmounted(() => {
 <style lang="less" scoped>
 .dropdown {
   position: relative;
+  word-break: keep-all;
 }
 .overlay {
   position: absolute;

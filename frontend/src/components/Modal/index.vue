@@ -97,7 +97,6 @@ provide('cancel', handleCancel)
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     .title {
       padding: 16px;
-      margin: 0 0 8px 0;
       font-size: 14px;
       font-weight: bold;
     }
