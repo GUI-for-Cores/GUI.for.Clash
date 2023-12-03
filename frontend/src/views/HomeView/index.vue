@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { computed, ref, watch, onMounted, onUnmounted } from 'vue'
+import { ref, watch, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useAppSettingsStore, useProfilesStore, useKernelApiStore } from '@/stores'
-import { APP_TITLE } from '@/utils/env'
+import { useAppSettingsStore, useProfilesStore, useKernelApiStore, useLogsStore } from '@/stores'
 import { ignoredError, sleep } from '@/utils'
 import { generateConfigFile } from '@/utils/generator'
 import {
@@ -18,6 +17,7 @@ import { KernelWorkDirectory, KernelFilePath } from '@/constant/kernel'
 import QuickStart from './QuickStart.vue'
 import OverView from './OverView.vue'
 import KernelLogs from './KernelLogs.vue'
+import LogsController from './LogsController.vue'
 import GroupsController from './GroupsController.vue'
 import CommonController from './CommonController.vue'
 
@@ -30,16 +30,14 @@ const controllerRef = ref<HTMLElement>()
 
 const { t } = useI18n()
 const { message } = useMessage()
-const [showLogs, toggleLogs] = useBool(false)
+const [showApiLogs, toggleApiLogs] = useBool(false)
+const [showKernelLogs, toggleKernelLogs] = useBool(false)
 const [showSettings, toggleSettingsModal] = useBool(false)
 const [showQuickStart, toggleQuickStart] = useBool(false)
 const appSettingsStore = useAppSettingsStore()
 const profilesStore = useProfilesStore()
 const kernelApiStore = useKernelApiStore()
-
-const profileOptions = computed(() =>
-  profilesStore.profiles.map(({ name }) => ({ label: name, value: name }))
-)
+const logsStore = useLogsStore()
 
 const startKernel = async () => {
   const { profile: currentProfile } = appSettingsStore.app.kernel
@@ -54,6 +52,8 @@ const startKernel = async () => {
     message.info('Profile does not exist: ' + currentProfile)
     return
   }
+
+  logsStore.clearKernelLog()
 
   kernelLoading.value = true
 
@@ -90,6 +90,7 @@ const startKernel = async () => {
 const stopKernel = async () => {
   await ignoredError(KillProcess, appSettingsStore.app.kernel.pid)
   appSettingsStore.app.kernel.running = false
+  logsStore.clearKernelLog()
 }
 
 const setSystemProxy = async () => {
@@ -198,21 +199,26 @@ updateSystemProxyState()
   <div ref="homeviewRef" class="homeview">
     <div v-if="!appSettingsStore.app.kernel.running || kernelLoading" class="center">
       <img src="@/assets/logo.png" draggable="false" style="margin-bottom: 16px" />
-
-      <template v-if="profilesStore.profiles.length === 0">
-        <p>{{ t('home.noProfile', [APP_TITLE]) }}</p>
-        <Button @click="toggleQuickStart" type="primary">{{ t('home.quickStart') }}</Button>
-      </template>
-
-      <template v-else>
-        <Select v-model="appSettingsStore.app.kernel.profile" :options="profileOptions" />
-        <Button @click="startKernel" :loading="kernelLoading" type="primary" size="large">
-          {{ t('home.overview.start') }}
-        </Button>
-        <Button @click="toggleQuickStart" type="link" size="small">
+      <div class="profiles">
+        <Card
+          v-for="p in profilesStore.profiles.slice(0, 4)"
+          :key="p.id"
+          :selected="appSettingsStore.app.kernel.profile === p.name"
+          @click="appSettingsStore.app.kernel.profile = p.name"
+          class="profiles-card"
+        >
+          {{ p.name }}
+        </Card>
+        <Card @click="toggleQuickStart" class="profiles-card">
           {{ t('home.quickStart') }}
-        </Button>
-      </template>
+        </Card>
+      </div>
+      <Button @click="startKernel" :loading="kernelLoading" type="primary">
+        {{ t('home.overview.start') }}
+      </Button>
+      <Button @click="toggleKernelLogs" type="link" size="small">
+        {{ t('home.overview.viewlog') }}
+      </Button>
     </div>
 
     <template v-else-if="!stateLoading">
@@ -232,7 +238,7 @@ updateSystemProxyState()
           >
             {{ t('home.overview.tunMode') }}
           </Switch>
-          <Button @click="toggleLogs" type="text" size="small" class="ml-auto">
+          <Button @click="toggleApiLogs" type="text" size="small" class="ml-auto">
             <Icon icon="log" />
           </Button>
           <Button @click="stopKernel" type="text" size="small">
@@ -248,8 +254,8 @@ updateSystemProxyState()
     </template>
   </div>
 
-  <Modal v-model:open="showLogs" :submit="false" max-width="90" max-height="90" title="Logs">
-    <KernelLogs />
+  <Modal v-model:open="showApiLogs" :submit="false" max-width="90" max-height="90" title="Logs">
+    <LogsController />
   </Modal>
 
   <Modal v-model:open="showQuickStart" :title="t('subscribes.enterLink')" :footer="false">
@@ -264,6 +270,16 @@ updateSystemProxyState()
     mask-closable
   >
     <CommonController />
+  </Modal>
+
+  <Modal
+    v-model:open="showKernelLogs"
+    :title="t('home.overview.viewlog')"
+    :submit="false"
+    max-width="90"
+    max-height="90"
+  >
+    <KernelLogs />
   </Modal>
 </template>
 
@@ -315,5 +331,24 @@ updateSystemProxyState()
 
 .expanded {
   top: 0;
+}
+
+.profiles {
+  margin-bottom: 16px;
+  display: flex;
+  max-width: 90%;
+  overflow-x: hidden;
+  &-card {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 12px;
+    width: 120px;
+    height: 60px;
+    padding-top: 6px;
+    margin: 8px;
+  }
 }
 </style>
