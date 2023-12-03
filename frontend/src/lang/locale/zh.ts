@@ -20,7 +20,10 @@ export default {
     enable: '启用',
     use: '使用',
     none: '无',
-    close: '关闭'
+    close: '关闭',
+    reset: '重置',
+    pause: '暂停',
+    resume: '恢复'
   },
   kernel: {
     port: 'HTTP(s)代理端口',
@@ -195,8 +198,10 @@ export default {
     initSuccessful: '初始化配置、订阅成功',
     initFailed: '更新订阅时出错，请手动更新订阅',
     overview: {
+      viewlog: '查看日志',
       start: '启动内核',
       noLogs: '日志为空',
+      keywords: '关键词',
       systemProxy: '系统代理',
       tunMode: 'TUN模式',
       traffic: '流量',
@@ -243,8 +248,7 @@ export default {
     disableAndEnable: '启用/禁用',
     proxies: {
       type: '类型',
-      name: '名称',
-      reset: '重置'
+      name: '名称'
     }
   },
   profile: {

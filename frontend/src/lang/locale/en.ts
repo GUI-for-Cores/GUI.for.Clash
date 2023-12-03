@@ -20,7 +20,10 @@ export default {
     enable: 'Enable',
     use: 'Use',
     none: 'none',
-    close: 'Close'
+    close: 'Close',
+    reset: 'Reset',
+    pause: 'Pause',
+    resume: 'Resume'
   },
   kernel: {
     port: 'HTTP(s) Port',
@@ -195,8 +198,10 @@ export default {
     initSuccessful: 'Initialization successful',
     initFailed: 'Failed to update the subscription, you need to manually update the subscription',
     overview: {
+      viewlog: 'view log',
       start: 'Click to Start',
       noLogs: 'Log is empty',
+      keywords: 'Keywords',
       systemProxy: 'System Proxy',
       tunMode: 'TUN Mode',
       traffic: 'Traffic',
@@ -243,8 +248,7 @@ export default {
     disableAndEnable: 'Enable/Disable',
     proxies: {
       type: 'Type',
-      name: 'Name',
-      reset: 'Reset'
+      name: 'Name'
     }
   },
   profile: {
