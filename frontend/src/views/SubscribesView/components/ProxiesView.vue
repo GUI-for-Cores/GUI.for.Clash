@@ -11,11 +11,11 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const keyworkds = ref('')
+const keywords = ref('')
 const proxyType = ref('')
 const proxies = ref<SubscribeType['proxies']>([])
 
-const keywordsRegexp = computed(() => new RegExp(keyworkds.value))
+const keywordsRegexp = computed(() => new RegExp(keywords.value))
 
 const filteredProxyTypeOptions = computed(() => {
   return ProxyTypeOptions.map((v) => {
@@ -55,9 +55,9 @@ if (s) {
         {{ t('subscribes.proxies.name') }}
         :
       </span>
-      <Input v-model="keyworkds" :border="false" />
+      <Input v-model="keywords" :border="false" />
       <Button type="primary" style="margin-left: auto">
-        {{ t('subscribes.proxies.reset') }}
+        {{ t('common.reset') }}
       </Button>
     </div>
     <div class="proxies">
