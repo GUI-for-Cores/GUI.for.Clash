@@ -13,7 +13,6 @@ export const useEvents = () => {
     EventsOn('kernelStatus', (pid) => {
       appSettings.app.kernel.running = !!pid
       appSettings.app.kernel.pid = pid
-      logsStore.clearKernelLog()
     })
   }
 

@@ -302,7 +302,6 @@ func (a *App) StartKernel(path string, directory string) ApiIOResult {
 		for scanner.Scan() {
 			runtime.EventsEmit(a.ctx, "kernelLog", scanner.Text())
 		}
-		runtime.EventsEmit(a.ctx, "kernelLog", "msg=\"The kernel has stopped.\"")
 		runtime.EventsEmit(a.ctx, "kernelStatus", 0)
 	}()
 

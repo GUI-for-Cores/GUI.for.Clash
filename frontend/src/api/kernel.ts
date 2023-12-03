@@ -16,7 +16,8 @@ enum Api {
   Providers = '/providers/proxies',
   GroupDelay = '/group/{0}/delay',
   Connections = '/connections',
-  Traffic = '/traffic'
+  Traffic = '/traffic',
+  Logs = '/logs'
 }
 
 const getCurrentProfile = () => {
@@ -104,5 +105,11 @@ export const getKernelWS = ({ onConnections, onTraffic, onMemory }: KernelWSOpti
     { name: 'Connections', url: Api.Connections, cb: onConnections },
     { name: 'Traffic', url: Api.Traffic, cb: onTraffic },
     { name: 'Memory', url: Api.Memory, cb: onMemory }
+  ])
+}
+
+export const getKernelLogsWS = (onLogs: (data: any) => void) => {
+  return websockets.connect([
+    { name: 'Logs', url: Api.Logs, cb: onLogs, params: { level: 'debug' } }
   ])
 }

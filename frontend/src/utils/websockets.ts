@@ -4,6 +4,8 @@ type WebSocketsOptions = {
   beforeConnect?: () => void
 }
 
+type URLType = { name: string; url: string; cb: (data: any) => void; params?: Record<string, any> }
+
 export class WebSockets {
   public base: string
   public bearer: string
@@ -15,12 +17,21 @@ export class WebSockets {
     this.beforeConnect = options.beforeConnect || (() => 0)
   }
 
-  public connect(urls: { name: string; url: string; cb: (data: any) => void }[]) {
+  public connect(urls: URLType[]) {
     this.beforeConnect()
     const wsMap: Record<string, WebSocket> = {}
-    urls.forEach(({ name, url, cb }) => {
+    urls.forEach(({ name, url, params = {}, cb }) => {
       try {
-        const ws = new WebSocket(this.base + url + '?token=' + this.bearer)
+        const usp = new URLSearchParams()
+        Object.assign(params, { token: this.bearer })
+        Object.entries(params).forEach(([key, value]) => {
+          usp.set(key, value)
+        })
+        const query = usp.toString()
+        if (query) {
+          url += '?' + query
+        }
+        const ws = new WebSocket(this.base + url)
         ws.onmessage = (e) => cb(JSON.parse(e.data))
         ws.onerror = () => delete wsMap[name]
         ws.onclose = () => delete wsMap[name]
