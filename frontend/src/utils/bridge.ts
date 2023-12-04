@@ -25,6 +25,14 @@ export const Movefile = async (source: string, target: string) => {
   return data
 }
 
+export const Removefile = async (path: string) => {
+  const { flag, data } = await App.Removefile(path)
+  if (!flag) {
+    throw data
+  }
+  return data
+}
+
 export const GetAppName = async () => {
   const { data } = await App.GetAppName()
   return data
