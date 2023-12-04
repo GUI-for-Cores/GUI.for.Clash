@@ -59,6 +59,8 @@ export default {
     'skip-auth-prefixes': 'Skip Auth Prefixes',
     'store-selected': 'store-selected',
     'store-fake-ip': 'store-fake-ip',
+    'geo-auto-update': 'GEO Auto Update',
+    'geo-update-interval': 'GEO Update Interval',
     tun: {
       enable: 'Enable',
       stack: 'Stack',
