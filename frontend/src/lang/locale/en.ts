@@ -198,6 +198,11 @@ export default {
     initSuccessful: 'Initialization successful',
     initFailed: 'Failed to update the subscription, you need to manually update the subscription',
     overview: {
+      expandAll: 'Expand All',
+      collapseAll: 'Collapse All',
+      refresh: 'Refresh',
+      delayTest: 'Delay Test',
+      stop: 'Stop Kernel',
       viewlog: 'view log',
       start: 'Click to Start',
       noLogs: 'Log is empty',

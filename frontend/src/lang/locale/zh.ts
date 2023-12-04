@@ -198,6 +198,11 @@ export default {
     initSuccessful: '初始化配置、订阅成功',
     initFailed: '更新订阅时出错，请手动更新订阅',
     overview: {
+      expandAll: '展开全部',
+      collapseAll: '收缩全部',
+      refresh: '刷新',
+      delayTest: '延迟测试',
+      stop: '停止内核',
       viewlog: '查看日志',
       start: '启动内核',
       noLogs: '日志为空',

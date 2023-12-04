@@ -135,13 +135,23 @@ const delayColor = (delay = 0) => {
       <Switch v-model="appSettings.app.kernel.unAvailable" style="margin-left: 8px">
         {{ t('home.controller.unAvailable') }}
       </Switch>
-      <Button @click="expandAll" type="text" style="margin-left: auto">
+      <Button
+        @click="expandAll"
+        v-tips="'home.overview.expandAll'"
+        type="text"
+        style="margin-left: auto"
+      >
         <Icon icon="expand" />
       </Button>
-      <Button @click="collapseAll" type="text">
+      <Button @click="collapseAll" v-tips="'home.overview.collapseAll'" type="text">
         <Icon icon="collapse" />
       </Button>
-      <Button @click="handleRefresh" :loading="loading" type="text">
+      <Button
+        @click="handleRefresh"
+        v-tips="'home.overview.refresh'"
+        :loading="loading"
+        type="text"
+      >
         <Icon icon="refresh" />
       </Button>
     </div>
@@ -170,7 +180,12 @@ const delayColor = (delay = 0) => {
         </template>
       </div>
       <div class="action">
-        <Button @click="handleGroupDelay(group.name)" :loading="isLoading(group.name)" type="text">
+        <Button
+          @click="handleGroupDelay(group.name)"
+          v-tips="'home.overview.delayTest'"
+          :loading="isLoading(group.name)"
+          type="text"
+        >
           <Icon icon="speedTest" />
         </Button>
         <Button @click="toggleExpanded(group.name)" type="text">
