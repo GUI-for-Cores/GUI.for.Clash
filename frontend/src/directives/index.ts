@@ -1,9 +1,11 @@
 import type { Plugin, App } from 'vue'
 
 import menu from './menu'
+import tips from './tips'
 
 const directives: any = {
-  menu
+  menu,
+  tips
 }
 
 export default {
