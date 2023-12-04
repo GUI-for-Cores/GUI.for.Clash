@@ -8,11 +8,18 @@ export type Menu = {
 
 export const useApp = defineStore('app', () => {
   const menuShow = ref(false)
+  const menuList = ref<Menu[]>([])
   const menuPosition = ref({
     x: 0,
     y: 0
   })
-  const menuList = ref<Menu[]>([])
 
-  return { menuShow, menuPosition, menuList }
+  const tipsShow = ref(false)
+  const tipsMessage = ref('')
+  const tipsPosition = ref({
+    x: 0,
+    y: 0
+  })
+
+  return { menuShow, menuPosition, menuList, tipsShow, tipsMessage, tipsPosition }
 })
