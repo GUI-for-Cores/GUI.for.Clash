@@ -34,9 +34,15 @@ appSettings.setupAppSettings().then(async () => {
   </template>
 
   <Menu
-    :menu-list="appStore.menuList"
-    :position="appStore.menuPosition"
     v-model="appStore.menuShow"
+    :position="appStore.menuPosition"
+    :menu-list="appStore.menuList"
+  />
+
+  <Tips
+    v-model="appStore.tipsShow"
+    :position="appStore.tipsPosition"
+    :message="appStore.tipsMessage"
   />
 </template>
 
