@@ -19,6 +19,8 @@ export const KernelWorkDirectory = 'data/mihomo'
 
 export const KernelFilePath = KernelWorkDirectory + '/mihomo-windows-amd64.exe'
 
+export const KernelAlphaFilePath = KernelWorkDirectory + '/mihomo-windows-amd64-alpha.exe'
+
 export const KernelConfigFilePath = KernelWorkDirectory + '/config.yaml'
 
 export const ModeOptions = [
