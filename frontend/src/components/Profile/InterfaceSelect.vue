@@ -30,4 +30,4 @@ GetInterfaces().then((res) => {
   <Select v-model="value" @change="onChange" :options="options" :border="border" />
 </template>
 
-<style lang="less"></style>
+<style lang="less" scoped></style>

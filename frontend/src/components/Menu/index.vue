@@ -40,7 +40,7 @@ onUnmounted(() => document.removeEventListener('click', onClick))
   </div>
 </template>
 
-<style lang="less">
+<style lang="less" scoped>
 .menu {
   position: fixed;
   z-index: 9999;

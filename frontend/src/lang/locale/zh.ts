@@ -292,6 +292,7 @@ export default {
       skyblue: '天蓝色'
     },
     fontFamily: '字体',
+    resetFont: '重置字体',
     lang: {
       name: '语言',
       zh: '简体中文',

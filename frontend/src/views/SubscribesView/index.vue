@@ -154,7 +154,13 @@ const clacTrafficStatus = (s: any) => (clacTrafficPercent(s) > 80 ? 'warning' : 
       </template>
 
       <template #title-suffix>
-        <Icon icon="link" @click="BrowserOpenURL(s.website)" style="cursor: pointer" />
+        <Icon
+          v-if="s.type !== 'File' && s.website"
+          v-tips="'subscribe.website'"
+          icon="link"
+          @click="BrowserOpenURL(s.website)"
+          style="cursor: pointer"
+        />
       </template>
 
       <template v-if="appSettingsStore.app.subscribesView === View.Grid" #extra>
