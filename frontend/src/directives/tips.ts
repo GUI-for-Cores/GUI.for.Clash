@@ -6,10 +6,8 @@ export default {
   mounted(el: HTMLElement, binding: DirectiveBinding) {
     const appStore = useApp()
 
-    let time = 0
-
     const show = debounce((x: number, y: number) => {
-      if (Date.now() - time > 1000) {
+      if (el.dataset.showTips === 'true') {
         appStore.tipsPosition = { x, y }
         appStore.tipsMessage = binding.value
         appStore.tipsShow = true
@@ -17,18 +15,18 @@ export default {
     }, 1000)
 
     el.onmouseenter = (e: MouseEvent) => {
-      time = Date.now()
+      el.dataset.showTips = 'true'
       show(e.clientX, e.clientY)
     }
 
     el.onmouseleave = () => {
       appStore.tipsShow = false
-      show.cancel()
-      time = Date.now()
+      el.dataset.showTips = 'false'
     }
   },
-  unmounted() {
+  beforeUnmount(el: HTMLElement) {
     const appStore = useApp()
     appStore.tipsShow = false
+    el.dataset.showTips = 'false'
   }
 } as Directive
