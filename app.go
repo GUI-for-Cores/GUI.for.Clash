@@ -103,6 +103,23 @@ func (a *App) Movefile(source string, target string) ApiIOResult {
 	return ApiIOResult{true, "Success"}
 }
 
+func (a *App) Removefile(path string) ApiIOResult {
+	fmt.Println("RemoveFile:", path)
+	path, err := GetPath(path)
+	if err != nil {
+		return ApiIOResult{false, err.Error()}
+	}
+
+	fmt.Println(path)
+
+	err = os.RemoveAll(path)
+	if err != nil {
+		return ApiIOResult{false, err.Error()}
+	}
+
+	return ApiIOResult{true, "Success"}
+}
+
 func (a *App) GetAppName() ApiIOResult {
 	return ApiIOResult{true, appName}
 }

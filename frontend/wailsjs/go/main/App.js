@@ -42,6 +42,10 @@ export function Readfile(arg1) {
   return window['go']['main']['App']['Readfile'](arg1);
 }
 
+export function Removefile(arg1) {
+  return window['go']['main']['App']['Removefile'](arg1);
+}
+
 export function SetSystemProxy(arg1, arg2) {
   return window['go']['main']['App']['SetSystemProxy'](arg1, arg2);
 }

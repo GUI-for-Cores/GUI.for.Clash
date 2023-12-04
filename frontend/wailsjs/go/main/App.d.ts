@@ -22,6 +22,8 @@ export function ProcessInfo(arg1:number):Promise<main.ApiIOResult>;
 
 export function Readfile(arg1:string):Promise<main.ApiIOResult>;
 
+export function Removefile(arg1:string):Promise<main.ApiIOResult>;
+
 export function SetSystemProxy(arg1:boolean,arg2:string):Promise<main.ApiIOResult>;
 
 export function StartKernel(arg1:string,arg2:string):Promise<main.ApiIOResult>;
