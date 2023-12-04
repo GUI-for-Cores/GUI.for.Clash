@@ -32,6 +32,8 @@ export const AdvancedConfigDefaults: ProfileType['advancedConfig'] = {
   },
   'global-client-fingerprint': 'chrome',
   'geodata-mode': true,
+  'geo-auto-update': false,
+  'geo-update-interval': 24,
   'geodata-loader': 'standard',
   'geox-url': {
     geoip: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.dat',

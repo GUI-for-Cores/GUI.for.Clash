@@ -36,6 +36,8 @@ export type ProfileType = {
     }
     'global-client-fingerprint': string
     'geodata-mode': boolean
+    'geo-auto-update': boolean
+    'geo-update-interval': number
     'geodata-loader': string
     'geox-url': {
       geoip: string

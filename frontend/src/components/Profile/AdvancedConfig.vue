@@ -108,22 +108,40 @@ watch(fields, (v) => emits('update:modelValue', v), { immediate: true })
     {{ t('kernel.geodata-mode') }}
     <Switch v-model="fields['geodata-mode']" />
   </div>
-  <div v-show="fields['geodata-mode']" class="form-item">
-    {{ t('kernel.geodata-loader') }}
-    <Radio v-model="fields['geodata-loader']" :options="GeodataLoaderOptions" />
-  </div>
-  <div v-show="fields['geodata-mode']" class="form-item">
-    {{ t('kernel.geox-url.geoip') }}
-    <Input v-model="fields['geox-url']['geoip']" editable />
-  </div>
-  <div v-show="fields['geodata-mode']" class="form-item">
-    {{ t('kernel.geox-url.geosite') }}
-    <Input v-model="fields['geox-url']['geosite']" editable />
-  </div>
-  <div v-show="fields['geodata-mode']" class="form-item">
-    {{ t('kernel.geox-url.mmdb') }}
-    <Input v-model="fields['geox-url']['mmdb']" editable />
-  </div>
+  <template v-if="fields['geodata-mode']">
+    <div class="form-item">
+      {{ t('kernel.geodata-loader') }}
+      <Radio v-model="fields['geodata-loader']" :options="GeodataLoaderOptions" />
+    </div>
+    <div class="form-item">
+      {{ t('kernel.geo-auto-update') }}
+      <Switch v-model="fields['geo-auto-update']" />
+    </div>
+    <div v-if="fields['geo-auto-update']" class="form-item">
+      {{ t('kernel.geo-update-interval') }} ({{ t('format.hours') }})
+      <Input
+        v-model="fields['geo-update-interval']"
+        :min="1"
+        :max="24"
+        :placeholder="t('format.hours')"
+        editable
+        type="number"
+      />
+    </div>
+    <div class="form-item">
+      {{ t('kernel.geox-url.geoip') }}
+      <Input v-model="fields['geox-url']['geoip']" editable />
+    </div>
+    <div class="form-item">
+      {{ t('kernel.geox-url.geosite') }}
+      <Input v-model="fields['geox-url']['geosite']" editable />
+    </div>
+    <div class="form-item">
+      {{ t('kernel.geox-url.mmdb') }}
+      <Input v-model="fields['geox-url']['mmdb']" editable />
+    </div>
+  </template>
+
   <div class="form-item">
     {{ t('kernel.global-ua') }}
     <Input v-model="fields['global-ua']" editable />

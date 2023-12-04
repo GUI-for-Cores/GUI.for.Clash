@@ -59,6 +59,8 @@ export default {
     'skip-auth-prefixes': '跳过验证的IP段',
     'store-selected': '持久化选择',
     'store-fake-ip': '持久化Fake-IP',
+    'geo-auto-update': 'GEO 自动更新',
+    'geo-update-interval': 'GEO 自动更新间隔',
     tun: {
       enable: '启用TUN',
       stack: 'TUN模式堆栈',
