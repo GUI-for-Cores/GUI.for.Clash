@@ -85,7 +85,7 @@ const onInterfaceChange = (name: string) => kernelApiStore.updateConfig({ 'inter
   </div>
 </template>
 
-<style lang="less">
+<style lang="less" scoped>
 .card-list {
   display: flex;
   flex-wrap: wrap;

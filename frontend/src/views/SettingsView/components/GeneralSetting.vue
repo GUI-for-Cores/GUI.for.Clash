@@ -85,7 +85,7 @@ const resetFontFamily = () => {
       <div class="title">{{ t('settings.fontFamily') }}</div>
       <div style="display: flex; align-items: center">
         <Button @click="resetFontFamily" type="text">
-          <Icon icon="reset" />
+          <Icon icon="reset" v-tips="'settings.resetFont'" />
         </Button>
         <Input v-model="appSettings.app['font-family']" editable style="margin-left: 8px" />
       </div>

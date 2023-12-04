@@ -26,7 +26,6 @@ watch(
     }
     nextTick(() => {
       if (domRef.value) {
-        console.log(domRef.value.offsetWidth)
         x = x - domRef.value.offsetWidth / 2
         y -= domRef.value.offsetHeight * 2
         fixedPosition.value = { x, y }

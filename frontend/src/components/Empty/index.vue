@@ -17,7 +17,7 @@ withDefaults(defineProps<Props>(), {
   </div>
 </template>
 
-<style lang="less">
+<style lang="less" scoped>
 .empty {
   display: flex;
   flex-direction: column;

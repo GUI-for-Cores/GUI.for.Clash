@@ -17,7 +17,7 @@ const logsStore = useLogsStore()
   </div>
 </template>
 
-<style lang="less">
+<style lang="less" scoped>
 .log {
   font-size: 12px;
   padding: 2px 4px;
