@@ -13,6 +13,7 @@ import {
 import { KernelWorkDirectory, KernelFilePath, KernelAlphaFilePath } from '@/constant/kernel'
 import { useMessage } from '@/hooks/useMessage'
 import { useAppSettingsStore } from '@/stores'
+import { ignoredError } from '@/utils'
 
 const releaseUrl = 'https://api.github.com/repos/MetaCubeX/mihomo/releases/latest'
 const alphaUrl = 'https://api.github.com/repos/MetaCubeX/mihomo/releases/tags/Prerelease-Alpha'
@@ -49,7 +50,7 @@ const downloadCore = async () => {
 
     await Download(asset.browser_download_url, path)
 
-    await Movefile(KernelFilePath, KernelFilePath + '.bak')
+    await ignoredError(Movefile, KernelFilePath, KernelFilePath + '.bak')
 
     await UnzipZIPFile(path, KernelWorkDirectory)
 
@@ -78,7 +79,7 @@ const downloadAlphaCore = async () => {
 
     await Download(asset.browser_download_url, path)
 
-    await Movefile(KernelAlphaFilePath, KernelAlphaFilePath + '.bak')
+    await ignoredError(Movefile, KernelAlphaFilePath, KernelAlphaFilePath + '.bak')
 
     await UnzipZIPFile(path, './data')
 
