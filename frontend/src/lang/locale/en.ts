@@ -310,7 +310,12 @@ export default {
     disableResize: 'Disable Resize',
     needRestart: 'Restart Required',
     exitOnClose: 'Exit On Close',
-    closeKernelOnExit: 'Close Kernel On Exit'
+    closeKernelOnExit: 'Close Kernel On Exit',
+    kernel: {
+      whichOne: 'Which One',
+      main: 'Main branch',
+      alpha: 'Alpha branch'
+    }
   },
   about: {
     new: 'New',
