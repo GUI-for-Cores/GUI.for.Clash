@@ -238,10 +238,16 @@ updateSystemProxyState()
           >
             {{ t('home.overview.tunMode') }}
           </Switch>
-          <Button @click="toggleApiLogs" type="text" size="small" class="ml-auto">
+          <Button
+            @click="toggleApiLogs"
+            v-tips="'home.overview.viewlog'"
+            type="text"
+            size="small"
+            class="ml-auto"
+          >
             <Icon icon="log" />
           </Button>
-          <Button @click="stopKernel" type="text" size="small">
+          <Button @click="stopKernel" v-tips="'home.overview.stop'" type="text" size="small">
             <Icon icon="stop" />
           </Button>
         </div>
