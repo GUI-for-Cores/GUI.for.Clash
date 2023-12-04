@@ -18,6 +18,7 @@ type AppSettings = {
   exitOnClose: boolean
   closeKernelOnExit: boolean
   kernel: {
+    branch: 'main' | 'alpha'
     profile: string
     pid: number
     running: boolean
@@ -42,6 +43,7 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
     exitOnClose: false,
     closeKernelOnExit: false,
     kernel: {
+      branch: 'main',
       profile: '',
       pid: -1,
       running: false,

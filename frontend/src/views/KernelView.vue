@@ -1,9 +1,18 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Download, UnzipZIPFile, HttpGetJSON, HttpGet, Exec, Movefile } from '@/utils/bridge'
+import {
+  Download,
+  UnzipZIPFile,
+  HttpGetJSON,
+  HttpGet,
+  Exec,
+  Movefile,
+  Removefile
+} from '@/utils/bridge'
 import { KernelWorkDirectory, KernelFilePath, KernelAlphaFilePath } from '@/constant/kernel'
 import { useMessage } from '@/hooks/useMessage'
+import { useAppSettingsStore } from '@/stores'
 
 const releaseUrl = 'https://api.github.com/repos/MetaCubeX/mihomo/releases/latest'
 const alphaUrl = 'https://api.github.com/repos/MetaCubeX/mihomo/releases/tags/Prerelease-Alpha'
@@ -25,6 +34,7 @@ const needUpdates = computed(() => [
 
 const { t } = useI18n()
 const { message } = useMessage()
+const appSettings = useAppSettingsStore()
 
 const downloadCore = async () => {
   downloadLoading.value[0] = true
@@ -39,10 +49,15 @@ const downloadCore = async () => {
 
     await Download(asset.browser_download_url, path)
 
+    await Movefile(KernelFilePath, KernelFilePath + '.bak')
+
     await UnzipZIPFile(path, KernelWorkDirectory)
+
+    await Removefile(path)
 
     message.info('Download Successful')
   } catch (error: any) {
+    console.log(error)
     message.info(error)
   }
   downloadLoading.value[0] = false
@@ -63,12 +78,17 @@ const downloadAlphaCore = async () => {
 
     await Download(asset.browser_download_url, path)
 
-    await UnzipZIPFile(path, './data/tmp')
+    await Movefile(KernelAlphaFilePath, KernelAlphaFilePath + '.bak')
 
-    await Movefile('./data/tmp/mihomo-windows-amd64.exe', KernelAlphaFilePath)
+    await UnzipZIPFile(path, './data')
+
+    await Movefile('./data/mihomo-windows-amd64.exe', KernelAlphaFilePath)
+
+    await Removefile(path)
 
     message.info('Download Successful')
   } catch (error: any) {
+    console.log(error)
     message.info(error)
   }
   downloadLoading.value[1] = false
@@ -207,6 +227,7 @@ initVersion()
         {{ versionDetail[0] }}
       </div>
     </div>
+
     <div class="item">
       <h3>Alpha</h3>
       <Tag @click="updateAlphaLocalVersion" style="cursor: pointer">
@@ -231,6 +252,28 @@ initVersion()
         {{ versionDetail[1] }}
       </div>
     </div>
+
+    <div class="item">
+      <h3>{{ t('settings.kernel.whichOne') }}</h3>
+      <div class="branch">
+        <Card
+          :selected="appSettings.app.kernel.branch === 'main'"
+          @click="appSettings.app.kernel.branch = 'main'"
+          title="Main"
+          class="branch-item"
+        >
+          {{ t('settings.kernel.main') }}
+        </Card>
+        <Card
+          :selected="appSettings.app.kernel.branch === 'alpha'"
+          @click="appSettings.app.kernel.branch = 'alpha'"
+          title="Alpha"
+          class="branch-item"
+        >
+          {{ t('settings.kernel.alpha') }}
+        </Card>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -239,6 +282,16 @@ initVersion()
   .detail {
     font-size: 12px;
     padding: 8px 4px;
+  }
+}
+
+.branch {
+  display: flex;
+  &-item {
+    width: 36%;
+    margin-right: 8px;
+    height: 70px;
+    font-size: 12px;
   }
 }
 </style>

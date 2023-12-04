@@ -13,7 +13,7 @@ import {
   GetSystemProxy
 } from '@/utils/bridge'
 import { useMessage, useBool } from '@/hooks'
-import { KernelWorkDirectory, KernelFilePath } from '@/constant/kernel'
+import { KernelWorkDirectory, KernelFilePath, KernelAlphaFilePath } from '@/constant/kernel'
 import QuickStart from './QuickStart.vue'
 import OverView from './OverView.vue'
 import KernelLogs from './KernelLogs.vue'
@@ -40,7 +40,7 @@ const kernelApiStore = useKernelApiStore()
 const logsStore = useLogsStore()
 
 const startKernel = async () => {
-  const { profile: currentProfile } = appSettingsStore.app.kernel
+  const { profile: currentProfile, branch } = appSettingsStore.app.kernel
 
   if (!currentProfile) {
     message.info('Choose a profile first')
@@ -69,8 +69,10 @@ const startKernel = async () => {
     }
   }
 
+  const kernelBin = { main: KernelFilePath, alpha: KernelAlphaFilePath }[branch] || KernelFilePath
+
   try {
-    await StartKernel(KernelFilePath, KernelWorkDirectory)
+    await StartKernel(kernelBin, KernelWorkDirectory)
   } catch (error: any) {
     console.log(error)
     message.info(error)

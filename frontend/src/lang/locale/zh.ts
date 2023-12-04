@@ -310,7 +310,12 @@ export default {
     disableResize: '禁用窗口缩放',
     needRestart: '重启生效',
     exitOnClose: '关闭窗口时退出程序',
-    closeKernelOnExit: '退出程序时同时关闭内核'
+    closeKernelOnExit: '退出程序时同时关闭内核',
+    kernel: {
+      whichOne: '哪一个',
+      main: '主分支',
+      alpha: 'Alpha分支'
+    }
   },
   about: {
     new: '新版本',
