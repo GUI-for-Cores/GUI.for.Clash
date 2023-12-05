@@ -54,12 +54,9 @@ onUnmounted(disconnect)
     </Button>
   </div>
   <div class="logs">
-    <Empty v-if="filteredLogs.length === 0" />
-    <template v-else>
-      <div v-for="(log, i) in filteredLogs" :key="i" class="log">
-        <span class="type">{{ log.type }}</span> {{ log.payload }}
-      </div>
-    </template>
+    <div v-for="(log, i) in filteredLogs" :key="i" class="log">
+      <span class="type">{{ log.type }}</span> {{ log.payload }}
+    </div>
   </div>
 </template>
 

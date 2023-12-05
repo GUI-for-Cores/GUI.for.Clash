@@ -149,12 +149,8 @@ const handleUseProfile = async (p: ProfileType) => {
         / DNS:
         {{ p.dnsConfig.enable ? t('common.enabled') : t('common.disabled') }}
       </div>
-      <div
-        v-if="
-          p.generalConfig['mixed-port'] || p.advancedConfig.port || p.advancedConfig['socks-port']
-        "
-      >
-        Port:
+      <div>
+        Http:
         {{ p.advancedConfig.port || '--' }}
         Socks:
         {{ p.advancedConfig['socks-port'] || '--' }}

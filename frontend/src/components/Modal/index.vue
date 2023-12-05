@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, provide } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { WindowFullscreen, WindowIsFullscreen, WindowUnfullscreen } from '@/utils/bridge'
 
 interface Props {
   open: boolean
@@ -39,6 +40,11 @@ const { t } = useI18n()
 
 const emits = defineEmits(['update:open', 'ok'])
 
+const toggleFullScreen = async () => {
+  const isFull = await WindowIsFullscreen()
+  isFull ? WindowUnfullscreen() : WindowFullscreen()
+}
+
 const handleSubmit = () => {
   emits('update:open', false)
   emits('ok')
@@ -63,7 +69,9 @@ provide('cancel', handleCancel)
 <template>
   <div v-if="open" @click.self="onMaskClick" class="mask" style="--wails-draggable: drag">
     <div :style="contentStyle" class="modal" style="--wails-draggable: false">
-      <div class="title" style="--wails-draggable: drag">{{ title }}</div>
+      <div @dblclick="toggleFullScreen" class="title" style="--wails-draggable: drag">
+        {{ title }}
+      </div>
       <div class="content">
         <slot />
       </div>
