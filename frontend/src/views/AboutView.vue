@@ -64,9 +64,10 @@ const checkUpdate = async (showTips = false) => {
 
   try {
     const { json } = await HttpGetJSON(APP_VERSION_API)
-    const { tag_name, assets } = json
+    const { os, arch } = await GetEnv()
 
-    const asset = assets.find((v: any) => v.name === 'GUI.for.Clash.exe')
+    const { tag_name, assets } = json
+    const asset = assets.find((v: any) => v.name === `GUI.for.Clash-${os}-${arch}.exe`)
     if (asset) {
       remoteVersion.value = tag_name
       downloadUrl = asset.browser_download_url

@@ -1,10 +1,11 @@
 export namespace bridge {
 	
 	export class EnvResult {
-	    baseBath: string;
+	    basePath: string;
 	    appName: string;
 	    UserAgent: string;
 	    os: string;
+	    arch: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new EnvResult(source);
@@ -12,10 +13,11 @@ export namespace bridge {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.baseBath = source["baseBath"];
+	        this.basePath = source["basePath"];
 	        this.appName = source["appName"];
 	        this.UserAgent = source["UserAgent"];
 	        this.os = source["os"];
+	        this.arch = source["arch"];
 	    }
 	}
 	export class FlagResult {
