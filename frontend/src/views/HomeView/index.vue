@@ -271,7 +271,7 @@ updateSystemProxyState()
     </template>
   </div>
 
-  <Modal v-model:open="showApiLogs" :submit="false" max-width="90" max-height="90" title="Logs">
+  <Modal v-model:open="showApiLogs" :submit="false" max-width="90" height="90" title="Logs">
     <LogsController />
   </Modal>
 

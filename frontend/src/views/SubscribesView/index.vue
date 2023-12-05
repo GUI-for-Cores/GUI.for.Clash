@@ -198,11 +198,6 @@ const clacTrafficStatus = (s: any) => (clacTrafficPercent(s) > 80 ? 'warning' : 
           <Progress :percent="clacTrafficPercent(s)" :status="clacTrafficStatus(s)" />
         </div>
         <div>
-          {{ t('subscribes.subtype') }}
-          :
-          {{ s.type }}
-        </div>
-        <div>
           {{ t('subscribes.proxyCount') }}
           :
           <Button type="text" size="small" @click="handleEditProxies(s)">
@@ -245,11 +240,6 @@ const clacTrafficStatus = (s: any) => (clacTrafficPercent(s) > 80 ? 'warning' : 
             type="circle"
             :radius="20"
           />
-        </div>
-        <div>
-          {{ t('subscribes.subtype') }}
-          :
-          {{ s.type }}
         </div>
         <div>
           {{ t('subscribes.expire') }}
