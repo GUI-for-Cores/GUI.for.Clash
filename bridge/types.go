@@ -11,11 +11,11 @@ type App struct {
 }
 
 type EnvResult struct {
-	BasePath  string `json:"baseBath"`
+	BasePath  string `json:"basePath"`
 	AppName   string `json:"appName"`
 	UserAgent string `json:"UserAgent"`
 	OS        string `json:"os"`
-	ARCH      string `json: "arch"`
+	ARCH      string `json:"arch"`
 }
 
 type FlagResult struct {
