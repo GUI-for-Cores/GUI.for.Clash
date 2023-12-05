@@ -17,7 +17,8 @@ enum Api {
   GroupDelay = '/group/{0}/delay',
   Connections = '/connections',
   Traffic = '/traffic',
-  Logs = '/logs'
+  Logs = '/logs',
+  GEO = '/configs/geo'
 }
 
 const getCurrentProfile = () => {
@@ -93,6 +94,8 @@ export const getGroupDelay = (group: string) => {
     timeout: 5000
   })
 }
+
+export const updateGEO = () => request.post<{ message: string } | null>(Api.GEO)
 
 type KernelWSOptions = {
   onConnections: (data: any) => void
