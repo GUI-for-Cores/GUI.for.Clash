@@ -7,6 +7,28 @@
 
 # DO NOT FORK, THANKS !
 
+## Preview
+
+<div>
+  <img src="docs/imgs/1.png" width="400" height="270">
+  <img src="docs/imgs/11.png" width="400" height="270">
+  <br/>
+  <img src="docs/imgs/2.png" width="400" height="270">
+  <img src="docs/imgs/12.png" width="400" height="270">
+  <br/>
+  <img src="docs/imgs/3.png" width="400" height="270">
+  <img src="docs/imgs/13.png" width="400" height="270">
+  <br/>
+  <img src="docs/imgs/6.png" width="400" height="270">
+  <img src="docs/imgs/16.png" width="400" height="270">
+  <br/>
+  <img src="docs/imgs/7.png" width="400" height="270">
+  <img src="docs/imgs/17.png" width="400" height="270">
+  <br/>
+  <img src="docs/imgs/8.png" width="400" height="270">
+  <img src="docs/imgs/18.png" width="400" height="270">
+</div>
+
 ## Build
 
 1、Build Environment
