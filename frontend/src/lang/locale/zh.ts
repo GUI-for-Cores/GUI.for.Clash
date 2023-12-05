@@ -220,6 +220,7 @@ export default {
       receive: '下行速率',
       settings: '内核设置',
       settingsTips: '暂时生效，持久化请修改配置文件',
+      updateGEO: '更新 GEO',
       notSupportSocks: '不支持socks代理',
       needPort: '请先设置代理端口'
     },

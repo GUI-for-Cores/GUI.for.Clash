@@ -220,6 +220,7 @@ export default {
       receive: 'Receive',
       settings: 'Kernel Settings',
       settingsTips: 'Effective temporarily, for persistence, please modify the `profile` settings.',
+      updateGEO: 'Update GEO',
       notSupportSocks: 'Does not support socks proxy',
       needPort: 'Please set the proxy port first'
     },

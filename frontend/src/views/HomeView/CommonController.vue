@@ -2,9 +2,12 @@
 import { useI18n } from 'vue-i18n'
 import { useKernelApiStore } from '@/stores'
 import { StackOptions } from '@/constant/kernel'
+import { updateGEO } from '@/api/kernel'
+import { useMessage } from '@/hooks/useMessage'
 import InterfaceSelect from '@/components/Profile/InterfaceSelect.vue'
 
 const { t } = useI18n()
+const { message } = useMessage()
 const kernelApiStore = useKernelApiStore()
 
 const onPortSubmit = (port: number) => kernelApiStore.updateConfig({ port })
@@ -14,6 +17,16 @@ const onAllowLanChange = (allow: boolean) => kernelApiStore.updateConfig({ 'allo
 const conStackChange = (stack: string) => kernelApiStore.updateConfig({ tun: { stack } })
 const onTunDeviceSubmit = (device: string) => kernelApiStore.updateConfig({ tun: { device } })
 const onInterfaceChange = (name: string) => kernelApiStore.updateConfig({ 'interface-name': name })
+
+const handleUpdateGEO = async () => {
+  try {
+    const res = await updateGEO()
+    message.info((res && res.message) || 'success')
+  } catch (error: any) {
+    console.log(error)
+    message.info(error)
+  }
+}
 </script>
 
 <template>
@@ -81,7 +94,11 @@ const onInterfaceChange = (name: string) => kernelApiStore.updateConfig({ 'inter
         :border="false"
       />
     </Card>
-    <Card class="card-item"> </Card>
+    <Card :title="t('common.update')" class="card-item">
+      <Button @click="handleUpdateGEO" size="small" type="text">
+        {{ t('home.overview.updateGEO') }}
+      </Button>
+    </Card>
   </div>
 </template>
 
