@@ -7,7 +7,7 @@ export const GeneralConfigDefaults: ProfileType['generalConfig'] = {
   // a meaningful port
   'mixed-port': 20112,
   'allow-lan': false,
-  'log-level': 'info',
+  'log-level': 'silent',
   'interface-name': 'WLAN'
 }
 
