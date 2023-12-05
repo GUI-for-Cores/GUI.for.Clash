@@ -40,7 +40,7 @@ export const AdvancedConfigDefaults: ProfileType['advancedConfig'] = {
     geosite: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geosite.dat',
     mmdb: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/country.mmdb'
   },
-  'global-ua': 'GUI.for.Clash',
+  'global-ua': 'chrome',
   profile: {
     'store-selected': true,
     'store-fake-ip': true
@@ -55,7 +55,7 @@ export const TunConfigDefaults: ProfileType['tunConfig'] = {
   'auto-route': true,
   'auto-detect-interface': false,
   'dns-hijack': ['any:53' /* '198.18.0.2:53' */],
-  device: 'ClashTun',
+  device: 'Internet',
   mtu: 9000,
   'strict-route': true,
   'endpoint-independent-nat': false
