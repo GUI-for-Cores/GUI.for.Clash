@@ -9,7 +9,7 @@ import {
   TG_CHANNEL,
   APP_VERSION_API
 } from '@/utils/env'
-import { Download, HttpGetJSON, BrowserOpenURL, Movefile, GetAppName } from '@/utils/bridge'
+import { Download, HttpGetJSON, BrowserOpenURL, Movefile, GetEnv } from '@/utils/bridge'
 import { useMessage } from '@/hooks'
 
 let downloadUrl = ''
@@ -39,7 +39,7 @@ const downloadApp = async () => {
   downloading.value = true
 
   try {
-    const appName = await GetAppName()
+    const { appName } = await GetEnv()
 
     await Download(downloadUrl, appName + '.tmp')
 

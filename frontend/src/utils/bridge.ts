@@ -1,4 +1,4 @@
-import * as App from '@wails/go/main/App'
+import * as App from '@wails/go/bridge/App'
 export * from '@wails/runtime/runtime'
 
 export const Writefile = async (path: string, content: string) => {
@@ -30,11 +30,6 @@ export const Removefile = async (path: string) => {
   if (!flag) {
     throw data
   }
-  return data
-}
-
-export const GetAppName = async () => {
-  const { data } = await App.GetAppName()
   return data
 }
 
@@ -135,3 +130,5 @@ export const GetInterfaces = async () => {
   }
   return data.split('|')
 }
+
+export const GetEnv = App.GetEnv
