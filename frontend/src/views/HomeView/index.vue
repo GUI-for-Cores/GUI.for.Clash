@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { useAppSettingsStore, useProfilesStore, useKernelApiStore, useLogsStore } from '@/stores'
 import { ignoredError, sleep } from '@/utils'
 import { generateConfigFile } from '@/utils/generator'
+import { APP_TITLE } from '@/utils/env'
 import {
   KillProcess,
   KernelRunning,
@@ -201,26 +202,34 @@ updateSystemProxyState()
   <div ref="homeviewRef" class="homeview">
     <div v-if="!appSettingsStore.app.kernel.running || kernelLoading" class="center">
       <img src="@/assets/logo.png" draggable="false" style="margin-bottom: 16px" />
-      <div class="profiles">
-        <Card
-          v-for="p in profilesStore.profiles.slice(0, 4)"
-          :key="p.id"
-          :selected="appSettingsStore.app.kernel.profile === p.name"
-          @click="appSettingsStore.app.kernel.profile = p.name"
-          class="profiles-card"
-        >
-          {{ p.name }}
-        </Card>
-        <Card @click="toggleQuickStart" class="profiles-card">
-          {{ t('home.quickStart') }}
-        </Card>
-      </div>
-      <Button @click="startKernel" :loading="kernelLoading" type="primary">
-        {{ t('home.overview.start') }}
-      </Button>
-      <Button @click="toggleKernelLogs" type="link" size="small">
-        {{ t('home.overview.viewlog') }}
-      </Button>
+
+      <template v-if="profilesStore.profiles.length === 0">
+        <p>{{ t('home.noProfile', [APP_TITLE]) }}</p>
+        <Button @click="toggleQuickStart" type="primary">{{ t('home.quickStart') }}</Button>
+      </template>
+
+      <template v-else>
+        <div class="profiles">
+          <Card
+            v-for="p in profilesStore.profiles.slice(0, 4)"
+            :key="p.id"
+            :selected="appSettingsStore.app.kernel.profile === p.name"
+            @click="appSettingsStore.app.kernel.profile = p.name"
+            class="profiles-card"
+          >
+            {{ p.name }}
+          </Card>
+          <Card @click="toggleQuickStart" class="profiles-card">
+            {{ t('home.quickStart') }}
+          </Card>
+        </div>
+        <Button @click="startKernel" :loading="kernelLoading" type="primary">
+          {{ t('home.overview.start') }}
+        </Button>
+        <Button @click="toggleKernelLogs" type="link" size="small">
+          {{ t('home.overview.viewlog') }}
+        </Button>
+      </template>
     </div>
 
     <template v-else-if="!stateLoading">
