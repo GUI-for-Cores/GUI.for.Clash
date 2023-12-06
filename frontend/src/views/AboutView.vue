@@ -66,12 +66,17 @@ const checkUpdate = async (showTips = false) => {
     const { json } = await HttpGetJSON(APP_VERSION_API)
     const { os, arch } = await GetEnv()
 
-    const { tag_name, assets } = json
-    const asset = assets.find((v: any) => v.name === `GUI.for.Clash-${os}-${arch}.exe`)
-    if (asset) {
-      remoteVersion.value = tag_name
-      downloadUrl = asset.browser_download_url
-    }
+    const { tag_name, assets, message: msg } = json
+    if (msg) throw msg
+
+    const suffix = { windows: '.exe', linux: '' }[os]
+    const assetName = `GUI.for.Clash-${os}-${arch}${suffix}`
+
+    const asset = assets.find((v: any) => v.name === assetName)
+    if (!asset) throw 'Asset Not Found:' + assetName
+
+    remoteVersion.value = tag_name
+    downloadUrl = asset.browser_download_url
 
     if (showTips) {
       message.info(needUpdate.value ? t('about.newVersion') : t('about.latestVersion'))

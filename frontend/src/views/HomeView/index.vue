@@ -14,7 +14,7 @@ import {
   GetSystemProxy
 } from '@/utils/bridge'
 import { useMessage, useBool } from '@/hooks'
-import { KernelWorkDirectory, KernelFilePath, KernelAlphaFilePath } from '@/constant/kernel'
+import { KernelWorkDirectory, getKernelFileName } from '@/constant/kernel'
 import QuickStart from './QuickStart.vue'
 import OverView from './OverView.vue'
 import KernelLogs from './KernelLogs.vue'
@@ -70,10 +70,12 @@ const startKernel = async () => {
     }
   }
 
-  const kernelBin = { main: KernelFilePath, alpha: KernelAlphaFilePath }[branch] || KernelFilePath
+  const fileName = await getKernelFileName(branch === 'alpha')
+
+  const kernelFilePath = KernelWorkDirectory + '/' + fileName
 
   try {
-    await StartKernel(kernelBin, KernelWorkDirectory)
+    await StartKernel(kernelFilePath, KernelWorkDirectory)
   } catch (error: any) {
     console.log(error)
     message.info(error)

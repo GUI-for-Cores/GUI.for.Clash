@@ -1,3 +1,5 @@
+import { GetEnv } from '@/utils/bridge'
+
 export enum ProxyGroup {
   Select = 'select',
   UrlTest = 'url-test',
@@ -16,12 +18,14 @@ export enum ProxyGroupType {
 }
 
 export const KernelWorkDirectory = 'data/mihomo'
-
-export const KernelFilePath = KernelWorkDirectory + '/mihomo-windows-amd64.exe'
-
-export const KernelAlphaFilePath = KernelWorkDirectory + '/mihomo-windows-amd64-alpha.exe'
-
 export const KernelConfigFilePath = KernelWorkDirectory + '/config.yaml'
+
+export const getKernelFileName = async (isAlpha = false) => {
+  const { os, arch } = await GetEnv()
+  const fileSuffix = { windows: '.exe', linux: '' }[os]
+  const alpha = isAlpha ? '-alpha' : ''
+  return `mihomo-${os}-${arch}${alpha}${fileSuffix}`
+}
 
 export const ModeOptions = [
   {

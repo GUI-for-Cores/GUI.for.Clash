@@ -8,9 +8,10 @@ import {
   HttpGet,
   Exec,
   Movefile,
-  Removefile
+  Removefile,
+  GetEnv
 } from '@/utils/bridge'
-import { KernelWorkDirectory, KernelFilePath, KernelAlphaFilePath } from '@/constant/kernel'
+import { KernelWorkDirectory, getKernelFileName } from '@/constant/kernel'
 import { useMessage } from '@/hooks/useMessage'
 import { useAppSettingsStore } from '@/stores'
 import { ignoredError } from '@/utils'
@@ -20,7 +21,6 @@ const alphaUrl = 'https://api.github.com/repos/MetaCubeX/mihomo/releases/tags/Pr
 const alphaVersionUrl =
   'https://github.com/MetaCubeX/mihomo/releases/download/Prerelease-Alpha/version.txt'
 
-const loading = ref([false, false])
 const downloadLoading = ref([false, false])
 const getLocalVersionLoading = ref([false, false])
 const getRemoteVersionLoading = ref([false, false])
@@ -41,20 +41,34 @@ const downloadCore = async () => {
   downloadLoading.value[0] = true
   try {
     const { json } = await HttpGetJSON(releaseUrl)
-    const { assets, tag_name } = json
+    const { os, arch } = await GetEnv()
 
-    const asset = assets.find((v: any) => v.name === `mihomo-windows-amd64-${tag_name}.zip`)
-    if (!asset) throw 'Asset Not Found'
+    const { assets, tag_name, message: msg } = json
+    if (msg) throw msg
 
-    const path = KernelWorkDirectory + `/${tag_name}.zip`
+    const suffix = { windows: '.zip', linux: '.gz' }[os]
+    const assetName = `mihomo-${os}-${arch}-${tag_name}${suffix}`
 
-    await Download(asset.browser_download_url, path)
+    const asset = assets.find((v: any) => v.name === assetName)
+    if (!asset) throw 'Asset Not Found:' + assetName
 
-    await ignoredError(Movefile, KernelFilePath, KernelFilePath + '.bak')
+    const tmp = `data/core${suffix}` // data/core.zip or data/core.gz
 
-    await UnzipZIPFile(path, KernelWorkDirectory)
+    await Download(asset.browser_download_url, tmp)
 
-    await Removefile(path)
+    const fileName = await getKernelFileName()
+
+    const kernelFilePath = KernelWorkDirectory + '/' + fileName
+
+    await ignoredError(Movefile, kernelFilePath, kernelFilePath + '.bak')
+
+    if (suffix === '.zip') {
+      await UnzipZIPFile(tmp, KernelWorkDirectory)
+    } else {
+      // TODO: unzip gz
+    }
+
+    await Removefile(tmp)
 
     message.info('Download Successful')
   } catch (error: any) {
@@ -70,22 +84,37 @@ const downloadAlphaCore = async () => {
   downloadLoading.value[1] = true
   try {
     const { json } = await HttpGetJSON(alphaUrl)
-    const { assets } = json
+    const { os, arch } = await GetEnv()
 
-    const asset = assets.find((v: any) => v.name.includes(`mihomo-windows-amd64-alpha`))
-    if (!asset) throw 'Asset Not Found'
+    const { assets, message: msg } = json
+    if (msg) throw msg
 
-    const path = KernelWorkDirectory + `/alpha.zip`
+    const suffix = { windows: '.zip', linux: '.gz' }[os]
+    const assetName = `mihomo-${os}-${arch}-${remoteVersion.value[1]}${suffix}`
 
-    await Download(asset.browser_download_url, path)
+    const asset = assets.find((v: any) => v.name === assetName)
+    if (!asset) throw 'Asset Not Found:' + assetName
 
-    await ignoredError(Movefile, KernelAlphaFilePath, KernelAlphaFilePath + '.bak')
+    const tmp = `data/core-alpha${suffix}` // data/core-alpha.zip or data/core-alpha.gz
 
-    await UnzipZIPFile(path, './data')
+    await Download(asset.browser_download_url, tmp)
 
-    await Movefile('./data/mihomo-windows-amd64.exe', KernelAlphaFilePath)
+    const fileName = await getKernelFileName() // mihomo-windows-amd64.exe
+    const alphaFileName = await getKernelFileName(true) // mihomo-windows-amd64-alpha.exe
 
-    await Removefile(path)
+    const alphaKernelFilePath = KernelWorkDirectory + '/' + alphaFileName
+
+    await ignoredError(Movefile, alphaKernelFilePath, alphaKernelFilePath + '.bak')
+
+    if (suffix === '.zip') {
+      await UnzipZIPFile(tmp, 'data')
+    } else {
+      // TODO: unzip gz
+    }
+
+    await Movefile('data/' + fileName, alphaKernelFilePath)
+
+    await Removefile(tmp)
 
     message.info('Download Successful')
   } catch (error: any) {
@@ -100,7 +129,9 @@ const downloadAlphaCore = async () => {
 const getLocalVersion = async () => {
   getLocalVersionLoading.value[0] = true
   try {
-    const res = await Exec(KernelFilePath, '-v')
+    const fileName = await getKernelFileName()
+    const kernelFilePath = KernelWorkDirectory + '/' + fileName
+    const res = await Exec(kernelFilePath, '-v')
     versionDetail.value[0] = res.trim()
     return res.trim().match(/v\S+/)?.[0].trim() || ''
   } catch (error) {
@@ -114,7 +145,9 @@ const getLocalVersion = async () => {
 const getAlphaLocalVersion = async () => {
   getLocalVersionLoading.value[1] = true
   try {
-    const res = await Exec(KernelAlphaFilePath, '-v')
+    const fileName = await getKernelFileName(true)
+    const kernelFilePath = KernelWorkDirectory + '/' + fileName
+    const res = await Exec(kernelFilePath, '-v')
     versionDetail.value[1] = res.trim()
     return (
       res
@@ -130,27 +163,29 @@ const getAlphaLocalVersion = async () => {
   return ''
 }
 
-const getRemoteVersion = async () => {
+const getRemoteVersion = async (showTips = false) => {
   getRemoteVersionLoading.value[0] = true
   try {
     const { json } = await HttpGetJSON(releaseUrl)
     const { tag_name } = json
     return tag_name as string
-  } catch (error) {
+  } catch (error: any) {
     console.log(error)
+    showTips && message.info(error)
   } finally {
     getRemoteVersionLoading.value[0] = false
   }
   return ''
 }
 
-const getAlphaRemoteVersion = async () => {
+const getAlphaRemoteVersion = async (showTips = false) => {
   getRemoteVersionLoading.value[1] = true
   try {
     const { body } = await HttpGet(alphaVersionUrl)
     return body.trim()
-  } catch (error) {
+  } catch (error: any) {
     console.log(error)
+    showTips && message.info(error)
   } finally {
     getRemoteVersionLoading.value[1] = false
   }
@@ -165,38 +200,30 @@ const updateAlphaLocalVersion = async () => {
   localVersion.value[1] = await getAlphaLocalVersion()
 }
 
-const updateRemoteVersion = async () => {
-  remoteVersion.value[0] = await getRemoteVersion()
+const updateRemoteVersion = async (showTips = false) => {
+  remoteVersion.value[0] = await getRemoteVersion(showTips)
 }
 
-const updateAlphaRemoteVersion = async () => {
-  remoteVersion.value[1] = await getAlphaRemoteVersion()
+const updateAlphaRemoteVersion = async (showTips = false) => {
+  remoteVersion.value[1] = await getAlphaRemoteVersion(showTips)
 }
 
 const initVersion = async () => {
-  loading.value = [true, true]
+  Promise.all([getLocalVersion(), getAlphaLocalVersion()])
+    .then((versions) => {
+      localVersion.value = versions
+    })
+    .catch((error: any) => {
+      console.log(error)
+    })
 
-  try {
-    const lv = await getLocalVersion()
-    const lv_alpha = await getAlphaLocalVersion()
-
-    localVersion.value[0] = lv
-    localVersion.value[1] = lv_alpha
-  } catch (error: any) {
-    console.log(error)
-  }
-
-  try {
-    const rv = await getRemoteVersion()
-    const rv_alpha = await getAlphaRemoteVersion()
-
-    remoteVersion.value[0] = rv
-    remoteVersion.value[1] = rv_alpha
-  } catch (error: any) {
-    console.log(error)
-  }
-
-  loading.value = [false, false]
+  Promise.all([getRemoteVersion(), getAlphaRemoteVersion()])
+    .then((versions) => {
+      remoteVersion.value = versions
+    })
+    .catch((error: any) => {
+      console.log(error)
+    })
 }
 
 initVersion()
@@ -211,10 +238,10 @@ initVersion()
         :
         {{ getLocalVersionLoading[0] ? 'Loading' : localVersion[0] || t('kernel.notFound') }}
       </Tag>
-      <Tag @click="updateRemoteVersion" style="cursor: pointer">
+      <Tag @click="updateRemoteVersion(true)" style="cursor: pointer">
         {{ t('kernel.remote') }}
         :
-        {{ getRemoteVersionLoading[0] ? 'Loading' : remoteVersion[0] || t('kernel.requestFailed') }}
+        {{ getRemoteVersionLoading[0] ? 'Loading' : remoteVersion[0] }}
       </Tag>
       <Button
         v-show="needUpdates[0]"
@@ -236,10 +263,10 @@ initVersion()
         :
         {{ getLocalVersionLoading[1] ? 'Loading' : localVersion[1] || t('kernel.notFound') }}
       </Tag>
-      <Tag @click="updateAlphaRemoteVersion" style="cursor: pointer">
+      <Tag @click="updateAlphaRemoteVersion(true)" style="cursor: pointer">
         {{ t('kernel.remote') }}
         :
-        {{ getRemoteVersionLoading[1] ? 'Loading' : remoteVersion[1] || t('kernel.requestFailed') }}
+        {{ getRemoteVersionLoading[1] ? 'Loading' : remoteVersion[1] }}
       </Tag>
       <Button
         v-show="needUpdates[1]"
