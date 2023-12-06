@@ -7,7 +7,7 @@
 
 ## Preview
 
-<div>
+<div align="center">
   <img src="docs/imgs/1.png" width="400" height="270">
   <img src="docs/imgs/11.png" width="400" height="270">
   <br/>
@@ -48,3 +48,7 @@ cd GUI.for.Clash
 
 wails build -m -trimpath
 ```
+
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/onejibang/GUI.for.Clash.svg)](https://starchart.cc/onejibang/GUI.for.Clash)
