@@ -1,9 +1,9 @@
-<h1 align="center">
+<div align="center">
   <img src="build/appicon.png" alt="GUI.for.Clash" width="200">
-  <br>GUI.for.Clash<br>
-</h1>
-
-<h4 align="center">A GUI program developed by vue3 + wails.</h4>
+  <h1>GUI.for.Clash</h1>
+  <p>A GUI program developed by vue3 + wails.</p>
+  <img src="https://img.shields.io/github/downloads/onejibang/GUI.for.CLASH/total?color=%239F7AEA&logo=github" />
+</div>
 
 ## Preview
 
