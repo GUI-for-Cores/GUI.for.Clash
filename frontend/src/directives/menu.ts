@@ -7,9 +7,11 @@ export default {
 
     el.oncontextmenu = (e: MouseEvent) => {
       e.preventDefault()
-      appStore.menuPosition = { x: e.clientX, y: e.clientY }
-      appStore.menuList = binding.value
-      appStore.menuShow = true
+      if (binding.value.length) {
+        appStore.menuPosition = { x: e.clientX, y: e.clientY }
+        appStore.menuList = binding.value
+        appStore.menuShow = true
+      }
     }
   }
 } as Directive
