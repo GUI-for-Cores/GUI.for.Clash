@@ -132,3 +132,20 @@ export const GetInterfaces = async () => {
 }
 
 export const GetEnv = App.GetEnv
+
+export const CheckPermissions = async () => {
+  const { basePath, appName } = await GetEnv()
+  const path = basePath + '\\' + appName
+  const { data } = await App.CheckPermissions(path)
+  return data === 'RunAsAdmin'
+}
+
+export const SwitchPermissions = async (enable: boolean) => {
+  const { basePath, appName } = await GetEnv()
+  const path = basePath + '\\' + appName
+  const { flag, data } = await App.SwitchPermissions(enable, path)
+  if (!flag) {
+    throw data
+  }
+  return data
+}

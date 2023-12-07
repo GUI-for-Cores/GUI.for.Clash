@@ -312,6 +312,7 @@ export default {
     needRestart: 'Restart Required',
     exitOnClose: 'Exit On Close',
     closeKernelOnExit: 'Close Kernel On Exit',
+    admin: 'Run As Admin',
     kernel: {
       whichOne: 'Which One',
       main: 'Main branch',
