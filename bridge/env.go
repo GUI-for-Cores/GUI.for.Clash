@@ -84,6 +84,45 @@ func (a *App) GetSystemProxy() FlagResult {
 	return FlagResult{true, ""}
 }
 
+func (a *App) SwitchPermissions(enable bool, path string) FlagResult {
+	fmt.Println("SwitchPermissions:", enable)
+
+	cmd := exec.Command("reg", "delete", "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers", "/v", path, "/f")
+
+	if enable {
+		cmd = exec.Command("reg", "add", "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers", "/v", path, "/t", "REG_SZ", "/d", "RunAsAdmin", "/f")
+	}
+
+	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		return FlagResult{false, err.Error()}
+	}
+
+	return FlagResult{true, string(out)}
+}
+
+func (a *App) CheckPermissions(path string) FlagResult {
+	fmt.Println("CheckPermissions:")
+
+	cmd := exec.Command("reg", "query", "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers", "/v", path, "/t", "REG_SZ")
+	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		return FlagResult{false, err.Error()}
+	}
+
+	fields := strings.Fields(string(out))
+
+	if len(fields) > 4 {
+		return FlagResult{true, fields[4]}
+	}
+
+	return FlagResult{true, "RunAsInvoker"}
+}
+
 func (a *App) GetInterfaces() FlagResult {
 	interfaces, err := net.Interfaces()
 	if err != nil {

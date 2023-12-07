@@ -312,6 +312,7 @@ export default {
     needRestart: '重启生效',
     exitOnClose: '关闭窗口时退出程序',
     closeKernelOnExit: '退出程序时同时关闭内核',
+    admin: '以管理员身份运行',
     kernel: {
       whichOne: '哪一个',
       main: '主分支',

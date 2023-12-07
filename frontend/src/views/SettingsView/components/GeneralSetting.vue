@@ -1,9 +1,15 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAppSettingsStore } from '@/stores/appSettings'
 import { Theme, Lang, WindowStartState, Color } from '@/constant/app'
+import { CheckPermissions, SwitchPermissions } from '@/utils/bridge'
+import { useMessage } from '@/hooks/useMessage'
+
+const isAdmin = ref(false)
 
 const { t } = useI18n()
+const { message } = useMessage()
 const appSettings = useAppSettingsStore()
 
 const themes = [
@@ -61,6 +67,20 @@ const windowStates = [
 const resetFontFamily = () => {
   appSettings.app['font-family'] = '"Microsoft Yahei", "Arial", sans-serif, "Twemoji Mozilla"'
 }
+
+CheckPermissions().then((admin) => {
+  isAdmin.value = admin
+})
+
+const onPermChange = async (v: boolean) => {
+  try {
+    await SwitchPermissions(v)
+    message.info('success')
+  } catch (error: any) {
+    message.info(error)
+    console.log(error)
+  }
+}
 </script>
 
 <template>
@@ -115,6 +135,13 @@ const resetFontFamily = () => {
         <span class="tips">({{ t('settings.needRestart') }})</span>
       </div>
       <Radio v-model="appSettings.app.windowStartState" :options="windowStates" type="number" />
+    </div>
+    <div class="settings-item">
+      <div class="title">
+        {{ t('settings.admin') }}
+        <span class="tips">({{ t('settings.needRestart') }})</span>
+      </div>
+      <Switch v-model="isAdmin" @change="onPermChange" />
     </div>
   </div>
 </template>
