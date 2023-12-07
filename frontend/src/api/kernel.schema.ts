@@ -47,3 +47,35 @@ export type KernelApiConnections = {
     chains: string[]
   }[]
 }
+
+export type KernelConnectionsWS = {
+  connections: {
+    id: string
+    metadata: {
+      network: string
+      type: string
+      sourceIP: string
+      destinationIP: string
+      sourcePort: string
+      destinationPort: string
+      inboundIP: string
+      inboundPort: string
+      inboundName: string
+      inboundUser: string
+      host: string
+      dnsMode: string
+      process: string
+      processPath: string
+      specialProxy: string
+      specialRules: string
+      remoteDestination: string
+      sniffHost: string
+    }
+    upload: number
+    download: number
+    start: string
+    chains: string[]
+    rule: string
+    rulePayload: string
+  }[]
+}
