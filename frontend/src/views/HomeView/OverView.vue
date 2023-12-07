@@ -4,7 +4,9 @@ import { useI18n } from 'vue-i18n'
 import { ModeOptions } from '@/constant/kernel'
 import { formatBytes } from '@/utils/format'
 import { useKernelApiStore } from '@/stores'
+import { useBool } from '@/hooks'
 import { getConnections, deleteConnection, getKernelWS } from '@/api/kernel'
+import ConnectionsController from './ConnectionsController.vue'
 
 const trafficHistory = ref<[number[], number[]]>([[], []])
 const statistics = ref({
@@ -18,6 +20,7 @@ const statistics = ref({
 
 const { t } = useI18n()
 const kernelApiStore = useKernelApiStore()
+const [showKernelConnections, toggleKernelConnections] = useBool(false)
 
 const isActiveMode = (mode: string) => kernelApiStore.config.mode === mode
 
@@ -75,7 +78,11 @@ onUnmounted(disconnect)
           ↑ {{ formatBytes(statistics.uploadTotal) }} ↓ {{ formatBytes(statistics.downloadTotal) }}
         </div>
       </Card>
-      <Card :title="t('home.overview.connections')" class="statistics-card">
+      <Card
+        @click="toggleKernelConnections"
+        :title="t('home.overview.connections')"
+        class="statistics-card"
+      >
         <div class="detail">
           {{ statistics.connections.length }}
         </div>
@@ -109,6 +116,18 @@ onUnmounted(disconnect)
       </div>
     </div>
   </div>
+
+  <Modal
+    v-model:open="showKernelConnections"
+    :title="t('home.overview.connections')"
+    :submit="false"
+    width="90"
+    height="90"
+  >
+    <div @wheel.stop="($event) => 0" style="height: 100%">
+      <ConnectionsController />
+    </div>
+  </Modal>
 </template>
 
 <style lang="less" scoped>
