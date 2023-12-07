@@ -26,7 +26,6 @@ const systemProxy = ref(false)
 const kernelLoading = ref(false)
 const stateLoading = ref(true)
 const showController = ref(false)
-const homeviewRef = ref<HTMLElement>()
 const controllerRef = ref<HTMLElement>()
 
 const { t } = useI18n()
@@ -188,9 +187,6 @@ watch(
   }
 )
 
-onMounted(() => homeviewRef.value?.addEventListener('wheel', onMouseWheel))
-onUnmounted(() => homeviewRef.value?.removeEventListener('wheel', onMouseWheel))
-
 updateKernelState().then((running) => {
   if (running) {
     kernelApiStore.refreshCofig()
@@ -201,7 +197,7 @@ updateSystemProxyState()
 </script>
 
 <template>
-  <div ref="homeviewRef" class="homeview">
+  <div @wheel="onMouseWheel" class="homeview">
     <div v-if="!appSettingsStore.app.kernel.running || kernelLoading" class="center">
       <img src="@/assets/logo.png" draggable="false" style="margin-bottom: 16px" />
 
