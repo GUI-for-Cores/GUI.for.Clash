@@ -6,7 +6,8 @@ import type {
   KernelApiConfig,
   KernelApiProviders,
   KernelApiProxies,
-  KernelApiConnections
+  KernelApiConnections,
+  KernelConnectionsWS
 } from './kernel.schema'
 
 enum Api {
@@ -115,4 +116,8 @@ export const getKernelLogsWS = (onLogs: (data: any) => void) => {
   return websockets.connect([
     { name: 'Logs', url: Api.Logs, cb: onLogs, params: { level: 'debug' } }
   ])
+}
+
+export const getKernelConnectionsWS = (onConnections: (data: KernelConnectionsWS) => void) => {
+  return websockets.connect([{ name: 'Connections', url: Api.Connections, cb: onConnections }])
 }
