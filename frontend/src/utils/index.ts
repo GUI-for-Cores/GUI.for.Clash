@@ -30,3 +30,9 @@ export const ignoredError = async <T>(fn: (...args: any) => Promise<T>, ...args:
 }
 
 export const sampleID = () => 'ID_' + Math.random().toString(36).substring(2, 10)
+
+export const getValue = (obj: Record<string, any>, expr: string) => {
+  return expr.split('.').reduce((value, key) => {
+    return value[key]
+  }, obj)
+}

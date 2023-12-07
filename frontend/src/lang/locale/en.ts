@@ -227,6 +227,15 @@ export default {
     controller: {
       autoClose: 'Auto-close Connections',
       unAvailable: 'Show UnAvailable Proxies'
+    },
+    connections: {
+      host: 'Host',
+      chains: 'Chains',
+      upload: 'Speed',
+      download: 'Speed',
+      time: 'Time',
+      details: 'Details',
+      close: 'Close'
     }
   },
   subscribe: {

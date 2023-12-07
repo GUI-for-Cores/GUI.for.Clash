@@ -214,7 +214,7 @@ export default {
       traffic: '流量',
       realtimeTraffic: '实时流量',
       totalTraffic: '总流量',
-      connections: '连接数',
+      connections: '活动连接',
       memory: '内存',
       transmit: '上行速率',
       receive: '下行速率',
@@ -227,6 +227,15 @@ export default {
     controller: {
       autoClose: '自动断开连接',
       unAvailable: '展示不可用节点'
+    },
+    connections: {
+      host: '主机',
+      chains: '链路',
+      upload: '上行流量',
+      download: '下行流量',
+      time: '连接时间',
+      details: '详情',
+      close: '关闭连接'
     }
   },
   subscribe: {
