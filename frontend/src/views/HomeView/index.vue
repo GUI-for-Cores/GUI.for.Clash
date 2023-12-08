@@ -269,7 +269,7 @@ updateSystemProxyState()
     </template>
   </div>
 
-  <Modal v-model:open="showApiLogs" :submit="false" max-width="90" height="90" title="Logs">
+  <Modal v-model:open="showApiLogs" :submit="false" width="90" height="90" title="Logs">
     <LogsController />
   </Modal>
 
@@ -281,7 +281,7 @@ updateSystemProxyState()
     v-model:open="showSettings"
     :title="t('home.overview.settings')"
     :submit="false"
-    width="80"
+    width="90"
     mask-closable
   >
     <CommonController />
@@ -291,8 +291,8 @@ updateSystemProxyState()
     v-model:open="showKernelLogs"
     :title="t('home.overview.viewlog')"
     :submit="false"
-    max-width="90"
-    max-height="90"
+    width="90"
+    height="90"
   >
     <KernelLogs />
   </Modal>
