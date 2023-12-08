@@ -150,6 +150,20 @@ export const generateProxyProviders = async (groups: ProfileType['proxyGroupsCon
   return providers
 }
 
+const generateRuleProviders = async (rules: ProfileType['rulesConfig']) => {
+  const providers: Record<string, any> = {}
+  rules
+    .filter((rule) => rule.type === 'RULE-SET')
+    .forEach((rule) => {
+      providers[rule.payload] = {
+        type: 'file',
+        behavior: 'classical',
+        path: rule.path.replace('data/', '../')
+      }
+    })
+  return providers
+}
+
 export const generateConfigFile = async (profile: ProfileType) => {
   profile = deepClone(profile)
 
@@ -169,6 +183,8 @@ export const generateConfigFile = async (profile: ProfileType) => {
   }
 
   config['proxy-providers'] = await generateProxyProviders(profile.proxyGroupsConfig)
+
+  config['rule-providers'] = await generateRuleProviders(profile.rulesConfig)
 
   config['proxies'] = await generateProxies(profile.proxyGroupsConfig)
 

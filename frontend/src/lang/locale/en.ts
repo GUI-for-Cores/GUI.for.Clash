@@ -138,6 +138,7 @@ export default {
       payload: 'Payload',
       proxy: 'Proxy',
       'no-resolve': 'No Resolve',
+      ruleset: 'RuleSet',
       needGeodataMode: 'Please enable the "geodata-mode" option in the advanced settings',
       type: {
         name: 'Type',
@@ -231,11 +232,14 @@ export default {
     connections: {
       host: 'Host',
       chains: 'Chains',
-      upload: 'Speed',
-      download: 'Speed',
+      upload: 'Upload',
+      download: 'Download',
       time: 'Time',
       details: 'Details',
-      close: 'Close'
+      close: 'Close',
+      addToDirect: 'Add To DIRECT',
+      addToProxy: 'Add To PROXY',
+      addToReject: 'Add To REJECT'
     }
   },
   subscribe: {
