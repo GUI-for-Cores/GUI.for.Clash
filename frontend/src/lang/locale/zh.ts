@@ -138,6 +138,7 @@ export default {
       payload: '载荷',
       proxy: '代理',
       'no-resolve': '跳过DNS解析',
+      ruleset: '规则组',
       needGeodataMode: '请在高级设置中打开"GEO数据模式"',
       type: {
         name: '类型',
@@ -235,7 +236,10 @@ export default {
       download: '下行流量',
       time: '连接时间',
       details: '详情',
-      close: '关闭连接'
+      close: '关闭连接',
+      addToDirect: '添加到直连',
+      addToProxy: '添加到代理',
+      addToReject: '添加到拦截'
     }
   },
   subscribe: {

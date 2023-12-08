@@ -95,6 +95,7 @@ export type ProfileType = {
     proxy: string
     'no-resolve': boolean
     filter: string
+    path: string
   }[]
 }
 

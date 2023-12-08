@@ -30,7 +30,8 @@ const fields = ref({
   payload: '',
   proxy: '',
   'no-resolve': false,
-  filter: ''
+  filter: '',
+  path: ''
 })
 
 const proxyOptions = computed(() => [
@@ -62,7 +63,8 @@ const handleAddRule = () => {
     payload: '',
     proxy: '',
     'no-resolve': false,
-    filter: ''
+    filter: '',
+    path: ''
   }
   showModal.value = true
 }
@@ -152,6 +154,10 @@ watch(rules, (v) => emits('update:modelValue', v), { immediate: true })
     <div v-show="supportPayload" class="form-item">
       {{ t('kernel.rules.payload') }}
       <Input v-model="fields.payload" autofocus />
+    </div>
+    <div v-show="fields.type === 'RULE-SET'" class="form-item">
+      {{ t('kernel.rules.ruleset') }}
+      <Input v-model="fields['path']" placeholder="data/rulesets/filename.yaml" />
     </div>
     <div class="form-item">
       {{ t('kernel.rules.proxy') }}
