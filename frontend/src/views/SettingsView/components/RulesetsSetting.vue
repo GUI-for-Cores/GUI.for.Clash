@@ -74,7 +74,7 @@ const handleSave = async () => {
   </Modal>
 </template>
 
-<style lang="less">
+<style lang="less" scoped>
 .rulesets {
   .ruleset {
     margin: 8px 0;
