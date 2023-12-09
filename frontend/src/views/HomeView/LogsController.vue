@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { getKernelLogsWS } from '@/api/kernel'
+import { getKernelLogsWS, updateProvidersRules } from '@/api/kernel'
 import { LogLevelOptions } from '@/constant/kernel'
 import { useBool, useMessage } from '@/hooks'
 import type { Menu } from '@/stores'
@@ -30,6 +30,7 @@ const menus: Menu[] = [
     handler: async ({ payload }: any) => {
       try {
         await addToRuleSet(ruleset as any, getDomain(payload))
+        await updateProvidersRules(ruleset)
         message.info('success')
       } catch (error: any) {
         message.info(error)
