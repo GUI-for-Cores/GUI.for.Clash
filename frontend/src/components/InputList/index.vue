@@ -58,7 +58,14 @@ watch(list, (v) => emits('update:modelValue', v), { immediate: true })
     </TransitionGroup>
 
     <div class="add">
-      <Input v-model="value" :placeholder="placeholder" @keyup.enter="handleAdd" type="text" />
+      <Input
+        v-model="value"
+        :placeholder="placeholder"
+        @keyup.enter="handleAdd"
+        type="text"
+        auto-size
+        style="width: 100%"
+      />
       <Button @click="handleAdd" type="primary">+</Button>
     </div>
   </div>
