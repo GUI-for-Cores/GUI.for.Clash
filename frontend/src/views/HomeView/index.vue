@@ -270,8 +270,8 @@ updateSystemProxyState()
 
       <div ref="controllerRef" :class="{ expanded: showController }" class="controller">
         <Divider style="margin: 0 12px">
-          <Button @click="showController = false" type="link" size="small">
-            {{ t('home.controller.name') }}
+          <Button @click="showController = false" type="text" size="small">
+            <Icon icon="close" />
           </Button>
         </Divider>
         <GroupsController />
