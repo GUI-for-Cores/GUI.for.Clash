@@ -122,7 +122,7 @@ if (props.isUpdate) {
   <div v-show="currentStep === 1" class="step2">
     <GeneralConfig v-model="profile.generalConfig" />
     <Divider>
-      <Button type="text" @click="toggleAdvancedSetting">
+      <Button type="text" size="small" @click="toggleAdvancedSetting">
         {{ t('profile.advancedSettings') }}
       </Button>
     </Divider>
