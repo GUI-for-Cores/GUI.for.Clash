@@ -128,7 +128,7 @@ if (props.isUpdate) {
       />
     </div>
     <Divider>
-      <Button @click="toggleShowMore" type="text">
+      <Button @click="toggleShowMore" type="text" size="small">
         {{ t('common.more') }}
       </Button>
     </Divider>
