@@ -127,7 +127,7 @@ const delayColor = (delay = 0) => {
 </script>
 
 <template>
-  <div class="groups">
+  <div class="groups" style="margin-top: 0">
     <div class="header">
       <Switch v-model="appSettings.app.kernel.autoClose">
         {{ t('home.controller.autoClose') }}
