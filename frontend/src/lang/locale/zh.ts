@@ -291,6 +291,7 @@ export default {
     alreadyExists: '已存在'
   },
   profiles: {
+    shouldStop: '请先停止内核',
     empty: '配置列表为空，请先{action}配置。'
   },
   settings: {

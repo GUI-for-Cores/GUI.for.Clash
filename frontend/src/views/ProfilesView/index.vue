@@ -17,32 +17,19 @@ const { message } = useMessage()
 const profilesStore = useProfilesStore()
 const appSettingsStore = useAppSettingsStore()
 
-const menuList: Menu[] = [
-  {
-    label: 'profile.step.name',
-    handler: (p: ProfileType) => handleEditProfile(p, 0)
-  },
-  {
-    label: 'profile.step.general',
-    handler: (p: ProfileType) => handleEditProfile(p, 1)
-  },
-  {
-    label: 'profile.step.tun',
-    handler: (p: ProfileType) => handleEditProfile(p, 2)
-  },
-  {
-    label: 'profile.step.dns',
-    handler: (p: ProfileType) => handleEditProfile(p, 3)
-  },
-  {
-    label: 'profile.step.groups',
-    handler: (p: ProfileType) => handleEditProfile(p, 4)
-  },
-  {
-    label: 'profile.step.rules',
-    handler: (p: ProfileType) => handleEditProfile(p, 5)
+const menus: Menu[] = [
+  'profile.step.name',
+  'profile.step.general',
+  'profile.step.tun',
+  'profile.step.dns',
+  'profile.step.groups',
+  'profile.step.rules'
+].map((v, i) => {
+  return {
+    label: v,
+    handler: (p: ProfileType) => handleEditProfile(p, i)
   }
-]
+})
 
 const handleAddProfile = async () => {
   isUpdate.value = false
@@ -67,6 +54,10 @@ const handleDeleteProfile = async (p: ProfileType) => {
 }
 
 const handleUseProfile = async (p: ProfileType) => {
+  if (appSettingsStore.app.kernel.running) {
+    message.info(t('profiles.shouldStop'))
+    return
+  }
   appSettingsStore.app.kernel.profile = p.name
 }
 </script>
@@ -104,7 +95,7 @@ const handleUseProfile = async (p: ProfileType) => {
       :title="p.name"
       :selected="appSettingsStore.app.kernel.profile === p.name"
       @dblclick="handleUseProfile(p)"
-      v-menu="menuList.map((v) => ({ ...v, handler: () => v.handler?.(p) }))"
+      v-menu="menus.map((v) => ({ ...v, handler: () => v.handler?.(p) }))"
       class="profile"
     >
       <template v-if="appSettingsStore.app.profilesView === View.Grid" #extra>
