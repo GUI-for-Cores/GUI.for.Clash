@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, onMounted, onUnmounted } from 'vue'
+import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAppSettingsStore, useProfilesStore, useKernelApiStore, useLogsStore } from '@/stores'
 import { ignoredError, sleep } from '@/utils'
@@ -261,9 +261,19 @@ updateSystemProxyState()
           </Button>
         </div>
         <OverView />
+        <Divider>
+          <Button @click="showController = true" type="link" size="small">
+            {{ t('home.controller.name') }}
+          </Button>
+        </Divider>
       </div>
 
       <div ref="controllerRef" :class="{ expanded: showController }" class="controller">
+        <Divider style="margin: 0 12px">
+          <Button @click="showController = false" type="link" size="small">
+            {{ t('home.controller.name') }}
+          </Button>
+        </Divider>
         <GroupsController />
       </div>
     </template>
