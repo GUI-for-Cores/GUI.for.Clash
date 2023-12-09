@@ -16,7 +16,7 @@ withDefaults(defineProps<Props>(), {
 
 <template>
   <div :class="[type, size, { disable, loading }]" class="btn">
-    <Icon v-if="disable" :fill="`var(--btn-${type}-color)`" icon="forbidden" />
+    <Icon v-if="disable" :fill="`var(--btn-${type}-color)`" icon="forbidden" class="disabled" />
     <Icon v-if="loading" :fill="`var(--btn-${type}-color)`" icon="loading" class="rotation" />
     <slot />
   </div>
@@ -34,6 +34,10 @@ withDefaults(defineProps<Props>(), {
   padding: 6px 12px;
   margin: 2px;
   transition: all 0.2s;
+
+  .disabled {
+    margin-bottom: -2px;
+  }
 }
 
 .disable,
