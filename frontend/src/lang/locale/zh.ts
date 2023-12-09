@@ -139,6 +139,7 @@ export default {
       proxy: '代理',
       'no-resolve': '跳过DNS解析',
       ruleset: '规则组',
+      rulesets: '规则组列表',
       needGeodataMode: '请在高级设置中打开"GEO数据模式"',
       type: {
         name: '类型',
@@ -294,6 +295,7 @@ export default {
   },
   settings: {
     general: '通用',
+    rulesets: '规则组',
     theme: {
       name: '主题',
       light: '浅色',

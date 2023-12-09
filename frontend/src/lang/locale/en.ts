@@ -139,6 +139,7 @@ export default {
       proxy: 'Proxy',
       'no-resolve': 'No Resolve',
       ruleset: 'RuleSet',
+      rulesets: 'RuleSets',
       needGeodataMode: 'Please enable the "geodata-mode" option in the advanced settings',
       type: {
         name: 'Type',
@@ -294,6 +295,7 @@ export default {
   },
   settings: {
     general: 'General',
+    rulesets: 'RuleSets',
     theme: {
       name: 'Theme',
       light: 'Light Mode',

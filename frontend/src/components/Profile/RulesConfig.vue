@@ -6,6 +6,7 @@ import { useMessage } from '@/hooks'
 import { generateRule } from '@/utils/generator'
 import { type ProfileType } from '@/stores/profiles'
 import { RulesTypeOptions } from '@/constant/kernel'
+import { BuiltInRuleSets, type RuleSet } from '@/constant/profile'
 
 interface Props {
   modelValue: ProfileType['rulesConfig']
@@ -85,6 +86,11 @@ const handleAddEnd = () => {
   } else {
     rules.value.push(fields.value)
   }
+}
+
+const handleUseRuleset = (ruleset: RuleSet) => {
+  fields.value.payload = ruleset.name
+  fields.value.path = ruleset.path
 }
 
 const notSupport = (r: ProfileType['rulesConfig'][0]) => {
@@ -167,6 +173,21 @@ watch(rules, (v) => emits('update:modelValue', v), { immediate: true })
       {{ t('kernel.rules.no-resolve') }}
       <Switch v-model="fields['no-resolve']" />
     </div>
+
+    <template v-if="fields.type === 'RULE-SET'">
+      <Divider>{{ t('kernel.rules.rulesets') }}</Divider>
+      <div class="rulesets">
+        <Card
+          v-for="ruleset in BuiltInRuleSets"
+          :key="ruleset.name"
+          @click="handleUseRuleset(ruleset)"
+          :title="ruleset.name"
+          class="ruleset"
+        >
+          {{ ruleset.path }}
+        </Card>
+      </div>
+    </template>
   </Modal>
 </template>
 
@@ -188,6 +209,15 @@ watch(rules, (v) => emits('update:modelValue', v), { immediate: true })
   }
   .action {
     margin-left: auto;
+  }
+}
+
+.rulesets {
+  display: flex;
+  .ruleset {
+    width: 33.3333%;
+    margin: 0 8px;
+    font-size: 10px;
   }
 }
 </style>
