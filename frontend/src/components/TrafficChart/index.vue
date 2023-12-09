@@ -10,7 +10,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  height: 233,
+  height: 214,
   padding: 50,
   legend: () => ['upload', 'download']
 })

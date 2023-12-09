@@ -147,7 +147,7 @@ onUnmounted(disconnect)
   }
 
   .title {
-    padding: 18px 0;
+    padding: 14px 0;
     font-weight: bold;
   }
   .row {
@@ -163,7 +163,7 @@ onUnmounted(disconnect)
           margin: 12px 0;
         }
         .desp {
-          line-height: 26px;
+          line-height: 20px;
           font-size: 12px;
         }
       }

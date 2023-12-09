@@ -227,6 +227,7 @@ export default {
       needPort: '请先设置代理端口'
     },
     controller: {
+      name: '控制器',
       autoClose: '自动断开连接',
       unAvailable: '展示不可用节点'
     },

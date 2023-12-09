@@ -227,6 +227,7 @@ export default {
       needPort: 'Please set the proxy port first'
     },
     controller: {
+      name: 'Controller',
       autoClose: 'Auto-close Connections',
       unAvailable: 'Show UnAvailable Proxies'
     },
