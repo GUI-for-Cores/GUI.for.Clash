@@ -291,6 +291,7 @@ export default {
     alreadyExists: 'Already Exists'
   },
   profiles: {
+    shouldStop: 'Please stop the kernel first.',
     empty: 'The profiles list is empty, Please {action} a profile first.'
   },
   settings: {
