@@ -12,6 +12,7 @@ const props = withDefaults(defineProps<Props>(), {})
 let dragIndex = -1
 const value = ref('')
 const list = ref(deepClone(props.modelValue))
+const inputRef = ref()
 
 const emits = defineEmits(['update:modelValue'])
 
@@ -19,6 +20,7 @@ const handleAdd = () => {
   if (!value.value) return
   list.value.push(value.value)
   value.value = ''
+  inputRef.value?.focus()
 }
 
 const handleDel = (i: number) => list.value.splice(i, 1)
@@ -59,11 +61,13 @@ watch(list, (v) => emits('update:modelValue', v), { immediate: true })
 
     <div class="add">
       <Input
+        ref="inputRef"
         v-model="value"
         :placeholder="placeholder"
-        @keyup.enter="handleAdd"
+        @keydown.enter="handleAdd"
         type="text"
         auto-size
+        autofocus
         style="width: 100%"
       />
       <Button @click="handleAdd" type="primary">+</Button>

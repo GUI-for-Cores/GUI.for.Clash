@@ -107,7 +107,12 @@ const onPermChange = async (v: boolean) => {
         <Button @click="resetFontFamily" v-tips="'settings.resetFont'" type="text">
           <Icon icon="reset" />
         </Button>
-        <Input v-model="appSettings.app['font-family']" editable style="margin-left: 8px" />
+        <Input
+          v-model="appSettings.app['font-family']"
+          :delay="1000"
+          editable
+          style="margin-left: 8px"
+        />
       </div>
     </div>
     <div class="settings-item">

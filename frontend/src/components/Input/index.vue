@@ -15,6 +15,7 @@ interface Props {
   max?: number
   disabled?: boolean
   border?: boolean
+  delay?: number
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -24,7 +25,8 @@ const props = withDefaults(defineProps<Props>(), {
   autofocus: false,
   width: '',
   disabled: false,
-  border: true
+  border: true,
+  delay: 0
 })
 
 const emits = defineEmits(['update:modelValue', 'submit'])
@@ -47,7 +49,7 @@ const onInput = debounce((e: any) => {
     }
   }
   emits('update:modelValue', val)
-}, 500)
+}, props.delay)
 
 const showInput = () => {
   showEdit.value = true
@@ -62,6 +64,10 @@ const onSubmit = () => {
 }
 
 onMounted(() => props.autofocus && inputRef.value?.focus())
+
+defineExpose({
+  focus: () => inputRef.value?.focus()
+})
 </script>
 
 <template>
