@@ -1,13 +1,11 @@
 <script lang="ts" setup>
 import { ref, onUnmounted } from 'vue'
-import { parse, stringify } from 'yaml'
 import type { KernelConnectionsWS } from '@/api/kernel.schema'
 import { getKernelConnectionsWS, deleteConnection } from '@/api/kernel'
 import type { Menu } from '@/stores'
-import { ignoredError } from '@/utils'
 import { useBool, useMessage } from '@/hooks'
-import { Readfile, Writefile } from '@/utils/bridge'
 import { formatBytes, formatRelativeTime } from '@/utils/format'
+import { addToRuleSet } from '@/utils/generator'
 import type { Column } from '@/components/Table/index.vue'
 
 const columns: Column[] = [
@@ -61,54 +59,30 @@ const menu: Menu[] = [
       }
     }
   },
-  {
-    label: 'home.connections.addToDirect',
-    handler: async (record: Record<string, any>) => {
-      try {
-        await addToRuleSet('direct', record.metadata.host)
-        message.info('success')
-      } catch (error: any) {
-        message.info(error)
+  ...[
+    ['home.connections.addToDirect', 'direct'],
+    ['home.connections.addToProxy', 'proxy'],
+    ['home.connections.addToReject', 'reject']
+  ].map(([label, ruleset]) => {
+    return {
+      label,
+      handler: async (record: Record<string, any>) => {
+        try {
+          await addToRuleSet(ruleset as any, record.metadata.host)
+          message.info('success')
+        } catch (error: any) {
+          message.info(error)
+          console.log(error)
+        }
       }
     }
-  },
-  {
-    label: 'home.connections.addToProxy',
-    handler: async (record: Record<string, any>) => {
-      try {
-        await addToRuleSet('proxy', record.metadata.host)
-        message.info('success')
-      } catch (error: any) {
-        message.info(error)
-      }
-    }
-  },
-  {
-    label: 'home.connections.addToReject',
-    handler: async (record: Record<string, any>) => {
-      try {
-        await addToRuleSet('reject', record.metadata.host)
-        message.info('success')
-      } catch (error: any) {
-        message.info(error)
-      }
-    }
-  }
+  })
 ]
 
 const details = ref()
 const dataSource = ref<KernelConnectionsWS['connections']>([])
 const [showDetails, toggleDetails] = useBool(false)
 const { message } = useMessage()
-
-const addToRuleSet = async (ruleset: 'direct' | 'reject' | 'proxy', domain: string) => {
-  if (!domain) throw 'domain is empty'
-  const path = `data/rulesets/${ruleset}.yaml`
-  const content = (await ignoredError(Readfile, path)) || '{ payload: [] }'
-  const { payload } = parse(content)
-  payload.unshift('DOMAIN,' + domain)
-  await Writefile(path, stringify({ payload: [...new Set(payload)] }))
-}
 
 const onConnections = (data: KernelConnectionsWS) => {
   dataSource.value = data.connections.sort(

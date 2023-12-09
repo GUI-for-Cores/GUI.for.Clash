@@ -3,9 +3,11 @@ import { ref, computed, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { getKernelLogsWS } from '@/api/kernel'
 import { LogLevelOptions } from '@/constant/kernel'
-import { useBool } from '@/hooks'
+import { useBool, useMessage } from '@/hooks'
+import type { Menu } from '@/stores'
+import { addToRuleSet } from '@/utils/generator'
 
-const logType = ref('')
+const logType = ref('info')
 const keywords = ref('')
 const logs = ref<{ type: string; payload: string }[]>([])
 const keywordsRegexp = computed(() => new RegExp(keywords.value))
@@ -18,7 +20,27 @@ const filteredLogs = computed(() => {
   })
 })
 
+const menus: Menu[] = [
+  ['home.connections.addToDirect', 'direct'],
+  ['home.connections.addToProxy', 'proxy'],
+  ['home.connections.addToReject', 'reject']
+].map(([label, ruleset]) => {
+  return {
+    label,
+    handler: async ({ payload }: any) => {
+      try {
+        await addToRuleSet(ruleset as any, getDomain(payload))
+        message.info('success')
+      } catch (error: any) {
+        message.info(error)
+        console.log(error)
+      }
+    }
+  }
+})
+
 const { t } = useI18n()
+const { message } = useMessage()
 const [pause, togglePause] = useBool(false)
 
 const handleReset = () => {
@@ -27,6 +49,14 @@ const handleReset = () => {
 }
 
 const handleClear = () => logs.value.splice(0)
+
+const getDomain = (str = '') => {
+  const regex = /([a-zA-Z0-9.-]+(?=:))/g
+  const matches = str.match(regex)
+  if (matches && matches.length >= 2) {
+    return matches[1]
+  }
+}
 
 const onLogs = (data: any) => {
   pause.value || logs.value.unshift(data)
@@ -54,7 +84,12 @@ onUnmounted(disconnect)
     </Button>
   </div>
   <div class="logs">
-    <div v-for="(log, i) in filteredLogs" :key="i" class="log">
+    <div
+      v-for="log in filteredLogs"
+      v-menu="menus.map((v) => ({ ...v, handler: () => v.handler?.(log) }))"
+      :key="log.payload"
+      class="log"
+    >
       <span class="type">{{ log.type }}</span> {{ log.payload }}
     </div>
   </div>
@@ -66,6 +101,10 @@ onUnmounted(disconnect)
   padding: 2px 4px;
   margin: 4px 0;
   background: var(--card-bg);
+  &:hover {
+    color: #fff;
+    background: var(--primary-color);
+  }
 }
 
 .form {
