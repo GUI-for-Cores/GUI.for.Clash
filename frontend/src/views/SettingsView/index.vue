@@ -3,12 +3,14 @@ import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AboutView from '@/views/AboutView.vue'
 import GeneralSetting from './components/GeneralSetting.vue'
+import RulesetsSetting from './components/RulesetsSetting.vue'
 import KernelView from '@/views/KernelView.vue'
 import ComponentsView from '@/views/ComponentsView.vue'
 
 const settings = [
   { key: 'general', tab: 'settings.general' },
-  { key: 'kernel', tab: 'router.kernel' }
+  { key: 'kernel', tab: 'router.kernel' },
+  { key: 'rulesets', tab: 'settings.rulesets' }
   // { key: 'components', tab: 'router.components' }
 ]
 
@@ -26,6 +28,10 @@ const { t } = useI18n()
 
     <template #kernel>
       <KernelView />
+    </template>
+
+    <template #rulesets>
+      <RulesetsSetting />
     </template>
 
     <template #components>
