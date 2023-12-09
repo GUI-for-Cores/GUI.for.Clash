@@ -19,7 +19,8 @@ enum Api {
   Connections = '/connections',
   Traffic = '/traffic',
   Logs = '/logs',
-  GEO = '/configs/geo'
+  GEO = '/configs/geo',
+  ProvidersRules = '/providers/rules'
 }
 
 const getCurrentProfile = () => {
@@ -97,6 +98,10 @@ export const getGroupDelay = (group: string) => {
 }
 
 export const updateGEO = () => request.post<{ message: string } | null>(Api.GEO)
+
+export const updateProvidersRules = (ruleset: string) => {
+  return request.put<null>(Api.ProvidersRules + '/' + ruleset)
+}
 
 type KernelWSOptions = {
   onConnections: (data: any) => void

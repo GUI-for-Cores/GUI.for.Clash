@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, onUnmounted } from 'vue'
 import type { KernelConnectionsWS } from '@/api/kernel.schema'
-import { getKernelConnectionsWS, deleteConnection } from '@/api/kernel'
+import { getKernelConnectionsWS, deleteConnection, updateProvidersRules } from '@/api/kernel'
 import type { Menu } from '@/stores'
 import { useBool, useMessage } from '@/hooks'
 import { formatBytes, formatRelativeTime } from '@/utils/format'
@@ -69,6 +69,7 @@ const menu: Menu[] = [
       handler: async (record: Record<string, any>) => {
         try {
           await addToRuleSet(ruleset as any, record.metadata.host)
+          await updateProvidersRules(ruleset)
           message.info('success')
         } catch (error: any) {
           message.info(error)
