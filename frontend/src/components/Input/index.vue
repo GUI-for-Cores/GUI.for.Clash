@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { nextTick, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { debounce } from '@/utils'
 
 interface Props {
   modelValue: string | number
@@ -33,7 +34,7 @@ const inputRef = ref<HTMLElement>()
 
 const { t } = useI18n()
 
-const onInput = (e: any) => {
+const onInput = debounce((e: any) => {
   let val = e.target.value
   if (props.type === 'number') {
     val = Number(val)
@@ -46,7 +47,7 @@ const onInput = (e: any) => {
     }
   }
   emits('update:modelValue', val)
-}
+}, 500)
 
 const showInput = () => {
   showEdit.value = true
@@ -66,7 +67,7 @@ onMounted(() => props.autofocus && inputRef.value?.focus())
 <template>
   <div :class="{ disabled, border }" class="input">
     <div v-if="editable && !showEdit" @click="showInput" class="editable">
-      <Icon v-if="disabled" icon="forbidden" />
+      <Icon v-if="disabled" icon="forbidden" class="disabled" />
       {{ modelValue || t('common.none') }}
     </div>
     <input
@@ -92,6 +93,9 @@ onMounted(() => props.autofocus && inputRef.value?.focus())
     white-space: nowrap;
     text-overflow: ellipsis;
     max-width: 220px;
+    .disabled {
+      margin-bottom: -2px;
+    }
   }
   input {
     width: 100%;
