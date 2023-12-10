@@ -42,7 +42,7 @@ const columns: Column[] = [
 
 const menu: Menu[] = [
   {
-    label: 'home.connections.details',
+    label: 'common.details',
     handler: (record: Record<string, any>) => {
       details.value = JSON.stringify(record, null, 4)
       toggleDetails()

@@ -155,6 +155,7 @@ const clacTrafficStatus = (s: any) => (clacTrafficPercent(s) > 80 ? 'warning' : 
           <template #overlay>
             <Button
               :disable="s.disabled"
+              :loading="s.updating"
               :type="s.disabled ? 'text' : 'link'"
               size="small"
               @click="handleUpdateSub(s)"
@@ -177,6 +178,7 @@ const clacTrafficStatus = (s: any) => (clacTrafficPercent(s) > 80 ? 'warning' : 
       <template v-else #extra>
         <Button
           :disable="s.disabled"
+          :loading="s.updating"
           :type="s.disabled ? 'text' : 'link'"
           size="small"
           @click="handleUpdateSub(s)"
