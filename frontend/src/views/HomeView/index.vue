@@ -88,11 +88,17 @@ const startKernel = async () => {
 
   await kernelApiStore.refreshCofig()
 
-  updateSystemProxyState()
+  await updateSystemProxyState()
+
+  // Automatically set system proxy, but the priority is lower than tun mode
+  if (!kernelApiStore.config.tun.enable) {
+    systemProxy.value = true
+  }
 }
 
 const stopKernel = async () => {
   await ignoredError(KillProcess, appSettingsStore.app.kernel.pid)
+  systemProxy.value = false
   appSettingsStore.app.kernel.running = false
   logsStore.clearKernelLog()
 }
