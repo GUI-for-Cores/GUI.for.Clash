@@ -268,7 +268,6 @@ export default {
     enterLink: 'Enter subscription link',
     proxyCount: 'Proxy Count',
     editProxies: 'Edit Proxies',
-    disableAndEnable: 'Enable/Disable',
     proxies: {
       type: 'Type',
       name: 'Name'
@@ -297,7 +296,7 @@ export default {
   },
   settings: {
     general: 'General',
-    rulesets: 'RuleSets',
+    rulesets: 'Rulesets',
     theme: {
       name: 'Theme',
       light: 'Light Mode',

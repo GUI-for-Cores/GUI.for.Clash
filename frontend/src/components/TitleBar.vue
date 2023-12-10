@@ -84,14 +84,14 @@ const closeWindow = async () => {
   align-items: center;
 }
 .logo {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   user-select: none;
 }
 .appname {
   font-size: 14px;
   margin-left: 4px;
-  margin-top: 4px;
+  margin-top: 2px;
   font-weight: bold;
 }
 
