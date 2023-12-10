@@ -45,6 +45,7 @@ func CreateTray(a *App, icon []byte) {
 						if info.Flag && strings.HasPrefix(info.Data, "mihomo") {
 							a.KillProcess(int(Config.Kernel.Pid))
 						}
+						a.SetSystemProxy(false, "")
 					}
 					systray.Quit()
 					runtime.Quit(a.Ctx)
