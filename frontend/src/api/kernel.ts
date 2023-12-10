@@ -103,6 +103,10 @@ export const updateProvidersRules = (ruleset: string) => {
   return request.put<null>(Api.ProvidersRules + '/' + ruleset)
 }
 
+export const updateProvidersProxies = (provider: string) => {
+  return request.put<null>(Api.Providers + '/' + provider)
+}
+
 type KernelWSOptions = {
   onConnections: (data: any) => void
   onTraffic: (data: any) => void

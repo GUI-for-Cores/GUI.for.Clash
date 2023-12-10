@@ -23,7 +23,8 @@ export default {
     close: 'Close',
     reset: 'Reset',
     pause: 'Pause',
-    resume: 'Resume'
+    resume: 'Resume',
+    details: 'Details'
   },
   kernel: {
     port: 'HTTP(s) Port',
@@ -237,7 +238,6 @@ export default {
       upload: 'Upload',
       download: 'Download',
       time: 'Time',
-      details: 'Details',
       close: 'Close',
       addToDirect: 'Add To DIRECT',
       addToProxy: 'Add To PROXY',

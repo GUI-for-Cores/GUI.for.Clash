@@ -23,7 +23,8 @@ export default {
     close: '关闭',
     reset: '重置',
     pause: '暂停',
-    resume: '恢复'
+    resume: '恢复',
+    details: '详情'
   },
   kernel: {
     port: 'HTTP(s)代理端口',
@@ -237,7 +238,6 @@ export default {
       upload: '上行流量',
       download: '下行流量',
       time: '连接时间',
-      details: '详情',
       close: '关闭连接',
       addToDirect: '添加到直连',
       addToProxy: '添加到代理',
