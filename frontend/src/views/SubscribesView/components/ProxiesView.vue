@@ -1,9 +1,19 @@
 <script setup lang="ts">
 import { ref, computed, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { type SubscribeType, useSubscribesStore } from '@/stores'
+import { parse, stringify } from 'yaml'
 import { ProxyTypeOptions } from '@/constant/kernel'
-import { deepClone } from '@/utils'
+import { useMessage } from '@/hooks'
+import { deepClone, ignoredError } from '@/utils'
+import { Readfile, Writefile } from '@/utils/bridge'
+import { updateProvidersProxies } from '@/api/kernel'
+import {
+  type SubscribeType,
+  useSubscribesStore,
+  type Menu,
+  useAppSettingsStore,
+  useProfilesStore
+} from '@/stores'
 
 interface Props {
   id: string
@@ -11,9 +21,11 @@ interface Props {
 
 const props = defineProps<Props>()
 
+const loading = ref(false)
 const keywords = ref('')
 const proxyType = ref('')
-const proxies = ref<SubscribeType['proxies']>([])
+const sub = ref<SubscribeType>()
+const proxies = computed(() => sub.value?.proxies || [])
 
 const keywordsRegexp = computed(() => new RegExp(keywords.value))
 
@@ -32,42 +44,123 @@ const filteredProxies = computed(() => {
   })
 })
 
+const menus: Menu[] = [
+  // {
+  //   label: 'common.details',
+  //   handler: (e: any) => {
+  //     console.log(e)
+  //   }
+  // },
+  // {
+  //   label: 'Copy(clash)',
+  //   handler: (e: any) => {
+  //     console.log(e)
+  //   }
+  // },
+  // {
+  //   label: 'Copy(v2ray)',
+  //   handler: (e: any) => {
+  //     console.log(e)
+  //   }
+  // },
+  {
+    label: 'common.delete',
+    handler: (record: Record<string, any>) => {
+      if (!sub.value) return
+      const idx = proxies.value.findIndex((v) => v.name === record.name)
+      if (idx !== -1) {
+        sub.value.proxies.splice(idx, 1)
+      }
+    }
+  }
+]
+
 const handleCancel = inject('cancel') as any
 
 const { t } = useI18n()
+const { message } = useMessage()
 const subscribeStore = useSubscribesStore()
+const appSettings = useAppSettingsStore()
+const profilesStore = useProfilesStore()
+
+const handleSubmit = async () => {
+  if (!sub.value) return
+  loading.value = true
+  try {
+    const { path, proxies, id } = sub.value
+    const content = (await ignoredError(Readfile, path)) || '{proxies: []}'
+    const { proxies: _proxies } = parse(content)
+    const filteredProxies = _proxies.filter((v: any) => proxies.some((vv) => vv.name === v.name))
+    await Writefile(path, stringify({ proxies: filteredProxies }))
+    await subscribeStore.editSubscribe(id, sub.value)
+
+    await _updateProvidersProxies(sub.value.name)
+
+    handleCancel()
+  } catch (error: any) {
+    console.log(error)
+    message.info(error)
+  }
+  loading.value = false
+}
+
+const resetForm = () => {
+  proxyType.value = ''
+  keywords.value = ''
+}
+
+const _updateProvidersProxies = async (subName: string) => {
+  const { running, profile } = appSettings.app.kernel
+  if (running) {
+    const _profile = profilesStore.getProfileByName(profile)
+    if (!_profile) return
+    const needUpdate = _profile.proxyGroupsConfig.some((v) => v.use.includes(subName))
+    if (needUpdate) {
+      await updateProvidersProxies(subName)
+    }
+  }
+}
 
 const s = subscribeStore.getSubscribeById(props.id)
 if (s) {
-  proxies.value = deepClone(s.proxies)
+  sub.value = deepClone(s)
 }
 </script>
 
 <template>
   <div class="proxies-view">
     <div class="form">
-      <span style="margin: 0 8px">
+      <span class="label">
         {{ t('subscribes.proxies.type') }}
         :
       </span>
       <Select v-model="proxyType" :options="filteredProxyTypeOptions" :border="false" />
-      <span style="margin: 0 8px">
+      <span class="label">
         {{ t('subscribes.proxies.name') }}
         :
       </span>
-      <Input v-model="keywords" :border="false" />
-      <Button type="primary" style="margin-left: auto">
+      <Input v-model="keywords" :border="false" :delay="500" />
+      <Button @click="resetForm" type="primary" style="margin-left: 8px">
         {{ t('common.reset') }}
       </Button>
     </div>
     <div class="proxies">
-      <Card v-for="proxy in filteredProxies" :key="proxy.name" :title="proxy.name" class="proxy">
+      <Card
+        v-for="proxy in filteredProxies"
+        :key="proxy.name"
+        :title="proxy.name"
+        v-menu="menus.map((v) => ({ ...v, handler: () => v.handler?.(proxy) }))"
+        class="proxy"
+      >
         {{ proxy.type }}
       </Card>
     </div>
     <div class="action">
-      <Button @click="handleCancel">
+      <Button @click="handleCancel" :disable="loading">
         {{ t('common.cancel') }}
+      </Button>
+      <Button @click="handleSubmit" :loading="loading" type="primary">
+        {{ t('common.save') }}
       </Button>
     </div>
   </div>
@@ -87,6 +180,10 @@ if (s) {
   align-items: center;
   background-color: var(--modal-bg);
   backdrop-filter: blur(2px);
+  .label {
+    padding: 0 8px;
+    font-size: 12px;
+  }
 }
 .proxies {
   margin-top: 8px;
