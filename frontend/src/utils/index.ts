@@ -3,11 +3,15 @@ export const deepClone = <T>(json: T): T => JSON.parse(JSON.stringify(json))
 export const debounce = (fn: (...args: any) => any, wait: number) => {
   let timer: null | number = null
   const _debuonce = function (...args: any) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       timer && clearTimeout(timer)
-      timer = setTimeout(() => {
-        fn(...args)
-        resolve(null)
+      timer = setTimeout(async () => {
+        try {
+          await fn(...args)
+          resolve(null)
+        } catch (error) {
+          reject(error)
+        }
       }, wait)
     })
   }

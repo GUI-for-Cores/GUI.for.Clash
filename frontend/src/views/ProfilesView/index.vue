@@ -33,6 +33,7 @@ const menus: Menu[] = [
 
 const handleAddProfile = async () => {
   isUpdate.value = false
+  profileStep.value = 0
   showForm.value = true
 }
 

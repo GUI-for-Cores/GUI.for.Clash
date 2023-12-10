@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { stringify, parse } from 'yaml'
-import { deepClone } from '@/utils'
+import { deepClone, debounce } from '@/utils'
 import { Readfile, Writefile, HttpGet } from '@/utils/bridge'
 import { isValidBase64, isValidSubYAML } from '@/utils/is'
 
@@ -36,14 +36,13 @@ export const useSubscribesStore = defineStore('subscribes', () => {
     subscribes.value = parse(data)
   }
 
-  const saveSubscribes = async () => {
+  const saveSubscribes = debounce(async () => {
     const s = deepClone(subscribes.value)
     for (let i = 0; i < s.length; i++) {
       delete s[i].updating
     }
-    const data = await Writefile(subscribesFilePath, stringify(s))
-    return data
-  }
+    await Writefile(subscribesFilePath, stringify(s))
+  }, 500)
 
   const addSubscribe = async (s: SubscribeType) => {
     subscribes.value.push(s)
