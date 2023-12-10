@@ -70,6 +70,7 @@ onUnmounted(() => {
 
 <style lang="less" scoped>
 .dropdown {
+  text-align: center;
   position: relative;
   word-break: keep-all;
 }
