@@ -268,7 +268,6 @@ export default {
     enterLink: '输入订阅链接',
     proxyCount: '代理数量',
     editProxies: '编辑节点',
-    disableAndEnable: '启用/禁用',
     proxies: {
       type: '类型',
       name: '名称'

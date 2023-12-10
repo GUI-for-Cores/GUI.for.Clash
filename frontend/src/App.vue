@@ -53,6 +53,5 @@ appSettings.setupAppSettings().then(async () => {
   display: flex;
   flex-direction: column;
   padding: 8px;
-  background: var(--bg-color);
 }
 </style>

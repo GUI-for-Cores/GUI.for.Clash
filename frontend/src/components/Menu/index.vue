@@ -46,7 +46,7 @@ onUnmounted(() => document.removeEventListener('click', onClick))
   z-index: 9999;
   background: var(--menu-bg);
   padding: 4px;
-  border-radius: 4px;
+  border-radius: 6px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   min-width: 90px;
   text-align: center;
@@ -55,6 +55,7 @@ onUnmounted(() => document.removeEventListener('click', onClick))
   .menu-item {
     padding: 4px;
     margin: 4px 0;
+    border-radius: 6px;
     &:hover {
       background: var(--menu-item-hover);
     }

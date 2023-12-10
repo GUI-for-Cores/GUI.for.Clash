@@ -18,24 +18,8 @@ const subFormTitle = computed(() => (subFormIsUpdate.value ? t('common.edit') : 
 
 const menuList: Menu[] = [
   {
-    label: 'common.update',
-    handler: (p: SubscribeType) => handleUpdateSub(p)
-  },
-  {
-    label: 'subscribes.disableAndEnable',
-    handler: (p: SubscribeType) => handleDisableSub(p)
-  },
-  {
     label: 'subscribes.editProxies',
     handler: (p: SubscribeType) => handleEditProxies(p)
-  },
-  {
-    label: 'common.edit',
-    handler: (p: SubscribeType) => handleEditSub(p)
-  },
-  {
-    label: 'common.delete',
-    handler: (p: SubscribeType) => handleDeleteSub(p)
   }
 ]
 
@@ -169,8 +153,16 @@ const clacTrafficStatus = (s: any) => (clacTrafficPercent(s) > 80 ? 'warning' : 
             {{ t('common.more') }}
           </Button>
           <template #overlay>
-            <Button v-if="!s.disabled" type="link" size="small" @click="handleUpdateSub(s)">
+            <Button
+              :disable="s.disabled"
+              :type="s.disabled ? 'text' : 'link'"
+              size="small"
+              @click="handleUpdateSub(s)"
+            >
               {{ t('common.update') }}
+            </Button>
+            <Button type="link" size="small" @click="handleDisableSub(s)">
+              {{ s.disabled ? t('common.enable') : t('common.disable') }}
             </Button>
             <Button type="link" size="small" @click="handleEditSub(s)">
               {{ t('common.edit') }}
@@ -183,8 +175,16 @@ const clacTrafficStatus = (s: any) => (clacTrafficPercent(s) > 80 ? 'warning' : 
       </template>
 
       <template v-else #extra>
-        <Button v-if="!s.disabled" type="link" size="small" @click="handleUpdateSub(s)">
+        <Button
+          :disable="s.disabled"
+          :type="s.disabled ? 'text' : 'link'"
+          size="small"
+          @click="handleUpdateSub(s)"
+        >
           {{ t('common.update') }}
+        </Button>
+        <Button type="link" size="small" @click="handleDisableSub(s)">
+          {{ s.disabled ? t('common.enable') : t('common.disable') }}
         </Button>
         <Button type="link" size="small" @click="handleEditSub(s)">
           {{ t('common.edit') }}

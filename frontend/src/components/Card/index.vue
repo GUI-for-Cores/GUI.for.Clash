@@ -55,6 +55,8 @@ withDefaults(defineProps<Props>(), {})
       font-weight: bold;
     }
     .extra {
+      display: flex;
+      align-items: center;
       margin-left: auto;
     }
   }
