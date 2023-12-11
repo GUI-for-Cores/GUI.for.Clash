@@ -30,7 +30,7 @@ const fields = ref({
   type: 'DOMAIN',
   payload: '',
   proxy: '',
-  'no-resolve': false,
+  'no-resolve': true,
   filter: '',
   path: ''
 })
@@ -63,7 +63,7 @@ const handleAddRule = () => {
     type: 'DOMAIN',
     payload: '',
     proxy: '',
-    'no-resolve': false,
+    'no-resolve': true,
     filter: '',
     path: ''
   }
