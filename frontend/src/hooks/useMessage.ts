@@ -11,7 +11,7 @@ class Message {
     this.dom.style.cssText = `
       position: fixed;
       z-index: 9999;
-      top: 56px;
+      top: 80px;
       left: 50%;
       transform: translateX(-50%);
     `
