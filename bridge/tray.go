@@ -3,7 +3,7 @@ package bridge
 import (
 	"strings"
 
-	"github.com/getlantern/systray"
+	"github.com/energye/systray"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
@@ -32,25 +32,34 @@ func CreateTray(a *App, icon []byte) {
 			systray.AddSeparator()
 			mQuit := systray.AddMenuItem(menu["Quit"][0], menu["Quit"][1])
 
-			for {
-				select {
-				case <-mShow.ClickedCh:
-					runtime.WindowShow(a.Ctx)
-				case <-mHide.ClickedCh:
-					runtime.WindowHide(a.Ctx)
-				case <-mQuit.ClickedCh:
-					InitBridge()
-					if Config.CloseKernelOnExit {
-						info := a.ProcessInfo(Config.Kernel.Pid)
-						if info.Flag && strings.HasPrefix(info.Data, "mihomo") {
-							a.KillProcess(int(Config.Kernel.Pid))
-						}
-						a.SetSystemProxy(false, "")
+			mShow.Click(func() {
+				runtime.WindowShow(a.Ctx)
+			})
+
+			mHide.Click(func() {
+				runtime.WindowHide(a.Ctx)
+			})
+
+			mQuit.Click(func() {
+				InitBridge()
+				if Config.CloseKernelOnExit {
+					info := a.ProcessInfo(Config.Kernel.Pid)
+					if info.Flag && strings.HasPrefix(info.Data, "mihomo") {
+						a.KillProcess(int(Config.Kernel.Pid))
 					}
-					systray.Quit()
-					runtime.Quit(a.Ctx)
+					a.SetSystemProxy(false, "")
 				}
-			}
+				systray.Quit()
+				runtime.Quit(a.Ctx)
+			})
+
+			systray.SetOnClick(func(menu systray.IMenu) {
+				runtime.WindowShow(a.Ctx)
+			})
+
+			systray.SetOnRClick(func(menu systray.IMenu) {
+				menu.ShowMenu()
+			})
 		}, nil)
 	}()
 }
