@@ -11,7 +11,8 @@ import {
   WindowHide,
   Quit,
   KernelRunning,
-  KillProcess
+  KillProcess,
+  ClearSystemProxy
 } from '@/utils/bridge'
 
 const isPinned = ref(false)
@@ -38,6 +39,7 @@ const closeWindow = async () => {
   } = appSettingsStore.app
 
   if (exitOnClose && closeKernelOnExit) {
+    await ClearSystemProxy()
     const running = await ignoredError<boolean>(KernelRunning, pid)
     if (running) {
       await ignoredError(KillProcess, pid)

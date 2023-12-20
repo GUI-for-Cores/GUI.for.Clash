@@ -98,7 +98,9 @@ const startKernel = async () => {
 
 const stopKernel = async () => {
   await ignoredError(KillProcess, appSettingsStore.app.kernel.pid)
-  systemProxy.value = false
+  if (appSettingsStore.app.autoSetSystemProxy) {
+    systemProxy.value = false
+  }
   appSettingsStore.app.kernel.running = false
   logsStore.clearKernelLog()
 }
