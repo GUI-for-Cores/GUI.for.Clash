@@ -16,6 +16,7 @@ enum Api {
   Proxies = '/proxies',
   Providers = '/providers/proxies',
   GroupDelay = '/group/{0}/delay',
+  ProxyDelay = '/proxies/{0}/delay',
   Connections = '/connections',
   Traffic = '/traffic',
   Logs = '/logs',
@@ -92,6 +93,13 @@ export const useProxy = (group: string, proxy: string) => {
 
 export const getGroupDelay = (group: string) => {
   return request.get<Record<string, number>>(Api.GroupDelay.replace('{0}', group), {
+    url: 'https://www.gstatic.com/generate_204',
+    timeout: 5000
+  })
+}
+
+export const getProxyDelay = (proxy: string) => {
+  return request.get<Record<string, number>>(Api.ProxyDelay.replace('{0}', proxy), {
     url: 'https://www.gstatic.com/generate_204',
     timeout: 5000
   })
