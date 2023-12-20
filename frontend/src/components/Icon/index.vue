@@ -40,6 +40,7 @@ type IconType =
   | 'error'
   | 'stop'
   | 'reset'
+  | 'folder'
 
 interface Props {
   icon: IconType

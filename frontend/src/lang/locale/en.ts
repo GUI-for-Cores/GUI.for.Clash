@@ -312,6 +312,10 @@ export default {
     },
     fontFamily: 'Font-Family',
     resetFont: 'Reset Font-Family',
+    appFolder: {
+      name: 'App Folder',
+      open: 'Open application folder'
+    },
     lang: {
       name: 'Language',
       zh: '简体中文',
@@ -328,6 +332,7 @@ export default {
     needRestart: 'Restart Required',
     exitOnClose: 'Exit On Close',
     closeKernelOnExit: 'Close Kernel On Exit',
+    autoSetSystemProxy: 'Auto Set System Proxy',
     admin: 'Run As Admin',
     kernel: {
       whichOne: 'Which One',
