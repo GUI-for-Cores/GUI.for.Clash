@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch, onActivated } from 'vue'
 import { formatBytes } from '@/utils/format'
 
 interface Props {
@@ -79,6 +79,8 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('resize', updateSvgWidth)
 })
+
+onActivated(updateSvgWidth)
 
 watch(() => props.series, updateChart, { deep: true })
 </script>
