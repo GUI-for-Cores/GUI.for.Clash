@@ -3,9 +3,15 @@ import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useMessage } from '@/hooks/useMessage'
 import { useAppSettingsStore, useKernelApiStore } from '@/stores'
-import { useProxy, getGroupDelay, getConnections, deleteConnection } from '@/api/kernel'
 import { ignoredError, sleep } from '@/utils'
 import { ProxyGroupType } from '@/constant/kernel'
+import {
+  useProxy,
+  getGroupDelay,
+  getConnections,
+  deleteConnection,
+  getProxyDelay
+} from '@/api/kernel'
 
 const expandedSet = ref<Set<string>>(new Set())
 const loadingSet = ref<Set<string>>(new Set())
@@ -98,6 +104,16 @@ const handleGroupDelay = async (group: string) => {
     message.info(error)
   }
   loadingSet.value.delete(group)
+}
+
+const handleProxyDelay = async (proxy: string) => {
+  try {
+    const { delay } = await getProxyDelay(proxy)
+    const _proxy = kernelApiStore.proxies[proxy]
+    _proxy.history[_proxy.history.length - 1].delay = delay
+  } catch (error: any) {
+    message.info(error)
+  }
 }
 
 const handleRefresh = async () => {
@@ -206,9 +222,14 @@ const delayColor = (delay = 0) => {
         @click="handleUseProxy(group, proxy)"
         class="proxy"
       >
-        <div :style="{ color: delayColor(proxy.delay) }" class="delay">
+        <Button
+          @click.stop="handleProxyDelay(proxy.name)"
+          :style="{ color: delayColor(proxy.delay) }"
+          type="text"
+          class="delay"
+        >
           {{ proxy.delay && proxy.delay + 'ms' }}
-        </div>
+        </Button>
         <div class="type">{{ proxy.type }} {{ proxy.udp ? ':: udp' : '' }}</div>
       </Card>
     </div>
@@ -264,6 +285,8 @@ const delayColor = (delay = 0) => {
       margin: 4px 4px;
       .delay {
         height: 20px;
+        margin-left: -4px;
+        padding-left: 4px;
       }
       .type,
       .delay {

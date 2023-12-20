@@ -78,6 +78,11 @@ export class Request {
       return null as T
     }
 
+    if (res.status === 504) {
+      const { message } = await res.json()
+      throw message
+    }
+
     if (this.responseType === ResponseType.TEXT) {
       const text = await res.text()
       return text as T
