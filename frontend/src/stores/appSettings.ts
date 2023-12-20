@@ -17,6 +17,7 @@ type AppSettings = {
   windowStartState: WindowStartState
   exitOnClose: boolean
   closeKernelOnExit: boolean
+  autoSetSystemProxy: boolean
   kernel: {
     branch: 'main' | 'alpha'
     profile: string
@@ -42,6 +43,7 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
     windowStartState: WindowStartState.Normal,
     exitOnClose: false,
     closeKernelOnExit: false,
+    autoSetSystemProxy: false,
     kernel: {
       branch: 'main',
       profile: '',

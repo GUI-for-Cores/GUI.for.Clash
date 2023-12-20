@@ -91,7 +91,7 @@ const startKernel = async () => {
   await updateSystemProxyState()
 
   // Automatically set system proxy, but the priority is lower than tun mode
-  if (!kernelApiStore.config.tun.enable) {
+  if (!kernelApiStore.config.tun.enable && appSettingsStore.app.autoSetSystemProxy) {
     systemProxy.value = true
   }
 }
