@@ -312,6 +312,10 @@ export default {
     },
     fontFamily: '字体',
     resetFont: '重置字体',
+    appFolder: {
+      name: '应用程序文件夹',
+      open: '打开应用程序文件夹'
+    },
     lang: {
       name: '语言',
       zh: '简体中文',
@@ -328,6 +332,7 @@ export default {
     needRestart: '重启生效',
     exitOnClose: '关闭窗口时退出程序',
     closeKernelOnExit: '退出程序时同时关闭内核',
+    autoSetSystemProxy: '自动配置系统代理',
     admin: '以管理员身份运行',
     kernel: {
       whichOne: '哪一个',

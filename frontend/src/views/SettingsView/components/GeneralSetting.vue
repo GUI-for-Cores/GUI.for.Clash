@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAppSettingsStore } from '@/stores/appSettings'
 import { Theme, Lang, WindowStartState, Color } from '@/constant/app'
-import { CheckPermissions, SwitchPermissions } from '@/utils/bridge'
+import { CheckPermissions, SwitchPermissions, BrowserOpenURL, GetEnv } from '@/utils/bridge'
 import { useMessage } from '@/hooks/useMessage'
 
 const isAdmin = ref(false)
@@ -81,6 +81,11 @@ const onPermChange = async (v: boolean) => {
     console.log(error)
   }
 }
+
+const handleOpenFolder = async () => {
+  const { basePath } = await GetEnv()
+  BrowserOpenURL(basePath)
+}
 </script>
 
 <template>
@@ -116,6 +121,13 @@ const onPermChange = async (v: boolean) => {
       </div>
     </div>
     <div class="settings-item">
+      <div class="title">{{ t('settings.appFolder.name') }}</div>
+      <Button @click="handleOpenFolder" type="primary">
+        <Icon icon="folder" />
+        <span style="margin-left: 8px">{{ t('settings.appFolder.open') }}</span>
+      </Button>
+    </div>
+    <div class="settings-item">
       <div class="title">
         {{ t('settings.disableResize') }}
         <span class="tips">({{ t('settings.needRestart') }})</span>
@@ -140,6 +152,12 @@ const onPermChange = async (v: boolean) => {
         <span class="tips">({{ t('settings.needRestart') }})</span>
       </div>
       <Radio v-model="appSettings.app.windowStartState" :options="windowStates" type="number" />
+    </div>
+    <div class="settings-item">
+      <div class="title">
+        {{ t('settings.autoSetSystemProxy') }}
+      </div>
+      <Switch v-model="appSettings.app.autoSetSystemProxy" />
     </div>
     <div class="settings-item">
       <div class="title">
