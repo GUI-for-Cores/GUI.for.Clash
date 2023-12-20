@@ -9,7 +9,8 @@ import {
   Exec,
   Movefile,
   Removefile,
-  GetEnv
+  GetEnv,
+  Makedir
 } from '@/utils/bridge'
 import { KernelWorkDirectory, getKernelFileName } from '@/constant/kernel'
 import { useMessage } from '@/hooks/useMessage'
@@ -54,6 +55,8 @@ const downloadCore = async () => {
 
     const tmp = `data/core${suffix}` // data/core.zip or data/core.gz
 
+    await Makedir('data/mihomo')
+
     await Download(asset.browser_download_url, tmp)
 
     const fileName = await getKernelFileName()
@@ -96,6 +99,8 @@ const downloadAlphaCore = async () => {
     if (!asset) throw 'Asset Not Found:' + assetName
 
     const tmp = `data/core-alpha${suffix}` // data/core-alpha.zip or data/core-alpha.gz
+
+    await Makedir('data/mihomo')
 
     await Download(asset.browser_download_url, tmp)
 
