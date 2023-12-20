@@ -18,6 +18,8 @@ export function HttpGet(arg1:string,arg2:{[key: string]: string}):Promise<bridge
 
 export function KillProcess(arg1:number):Promise<bridge.FlagResult>;
 
+export function Makedir(arg1:string):Promise<bridge.FlagResult>;
+
 export function Movefile(arg1:string,arg2:string):Promise<bridge.FlagResult>;
 
 export function ProcessInfo(arg1:number):Promise<bridge.FlagResult>;

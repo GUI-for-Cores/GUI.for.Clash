@@ -34,6 +34,10 @@ export function KillProcess(arg1) {
   return window['go']['bridge']['App']['KillProcess'](arg1);
 }
 
+export function Makedir(arg1) {
+  return window['go']['bridge']['App']['Makedir'](arg1);
+}
+
 export function Movefile(arg1, arg2) {
   return window['go']['bridge']['App']['Movefile'](arg1, arg2);
 }

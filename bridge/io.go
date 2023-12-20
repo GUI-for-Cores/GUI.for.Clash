@@ -84,6 +84,20 @@ func (a *App) Removefile(path string) FlagResult {
 	return FlagResult{true, "Success"}
 }
 
+func (a *App) Makedir(path string) FlagResult {
+	fmt.Println("Makedir:", path)
+	path, err := GetPath(path)
+	if err != nil {
+		return FlagResult{false, err.Error()}
+	}
+
+	err = os.MkdirAll(path, os.ModePerm)
+	if err != nil {
+		return FlagResult{false, err.Error()}
+	}
+	return FlagResult{true, "Success"}
+}
+
 func (a *App) UnzipZIPFile(path string, output string) FlagResult {
 	fmt.Println("UnzipZIPFile:", path, output)
 
