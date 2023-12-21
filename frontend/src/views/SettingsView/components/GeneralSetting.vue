@@ -3,10 +3,23 @@ import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAppSettingsStore } from '@/stores/appSettings'
 import { Theme, Lang, WindowStartState, Color } from '@/constant/app'
-import { CheckPermissions, SwitchPermissions, BrowserOpenURL, GetEnv } from '@/utils/bridge'
 import { useMessage } from '@/hooks/useMessage'
+import { APP_TITLE } from '@/utils/env'
+import { getTaskSchXmlString } from '@/utils/taskSch'
+import {
+  CheckPermissions,
+  SwitchPermissions,
+  BrowserOpenURL,
+  GetEnv,
+  Writefile,
+  QuerySchTask,
+  CreateSchTask,
+  DeleteSchTask,
+  Removefile
+} from '@/utils/bridge'
 
 const isAdmin = ref(false)
+const isTaskScheduled = ref(false)
 
 const { t } = useI18n()
 const { message } = useMessage()
@@ -68,10 +81,6 @@ const resetFontFamily = () => {
   appSettings.app['font-family'] = '"Microsoft Yahei", "Arial", sans-serif, "Twemoji Mozilla"'
 }
 
-CheckPermissions().then((admin) => {
-  isAdmin.value = admin
-})
-
 const onPermChange = async (v: boolean) => {
   try {
     await SwitchPermissions(v)
@@ -86,6 +95,38 @@ const handleOpenFolder = async () => {
   const { basePath } = await GetEnv()
   BrowserOpenURL(basePath)
 }
+
+const checkSchtask = async () => {
+  try {
+    await QuerySchTask(APP_TITLE)
+    isTaskScheduled.value = true
+  } catch (error) {
+    isTaskScheduled.value = false
+  }
+}
+
+const onTaskSchChange = async (v: boolean) => {
+  try {
+    if (v) {
+      const xmlPath = 'data/tasksch.xml'
+      const xmlContent = await getTaskSchXmlString()
+      await Writefile(xmlPath, xmlContent)
+      await CreateSchTask(APP_TITLE, xmlPath)
+      await Removefile(xmlPath)
+    } else {
+      await DeleteSchTask(APP_TITLE)
+    }
+  } catch (error: any) {
+    message.info(error)
+    isTaskScheduled.value = !v
+  }
+}
+
+CheckPermissions().then((admin) => {
+  isAdmin.value = admin
+})
+
+checkSchtask()
 </script>
 
 <template>
@@ -165,6 +206,12 @@ const handleOpenFolder = async () => {
         <span class="tips">({{ t('settings.needRestart') }})</span>
       </div>
       <Switch v-model="isAdmin" @change="onPermChange" />
+    </div>
+    <div class="settings-item">
+      <div class="title">
+        {{ t('settings.startup.name') }}
+      </div>
+      <Switch v-model="isTaskScheduled" @change="onTaskSchChange" />
     </div>
   </div>
 </template>
