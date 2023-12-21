@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"path/filepath"
 	"strings"
+
+	"golang.org/x/text/encoding/simplifiedchinese"
 )
 
 func GetPath(path string) (string, error) {
@@ -15,4 +17,9 @@ func GetPath(path string) (string, error) {
 		return "", errors.New("Path error:" + path)
 	}
 	return path, nil
+}
+
+func ConvertByte2String(byte []byte) string {
+	decodeBytes, _ := simplifiedchinese.GB18030.NewDecoder().Bytes(byte)
+	return string(decodeBytes)
 }

@@ -6,6 +6,14 @@ export function CheckPermissions(arg1) {
   return window['go']['bridge']['App']['CheckPermissions'](arg1);
 }
 
+export function CreateSchTask(arg1, arg2) {
+  return window['go']['bridge']['App']['CreateSchTask'](arg1, arg2);
+}
+
+export function DeleteSchTask(arg1) {
+  return window['go']['bridge']['App']['DeleteSchTask'](arg1);
+}
+
 export function Download(arg1, arg2) {
   return window['go']['bridge']['App']['Download'](arg1, arg2);
 }
@@ -44,6 +52,10 @@ export function Movefile(arg1, arg2) {
 
 export function ProcessInfo(arg1) {
   return window['go']['bridge']['App']['ProcessInfo'](arg1);
+}
+
+export function QuerySchTask(arg1) {
+  return window['go']['bridge']['App']['QuerySchTask'](arg1);
 }
 
 export function Readfile(arg1) {
