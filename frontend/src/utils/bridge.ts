@@ -157,3 +157,27 @@ export const SwitchPermissions = async (enable: boolean) => {
   }
   return data
 }
+
+export const QuerySchTask = async (taskName: string) => {
+  const { flag, data } = await App.QuerySchTask(taskName)
+  if (!flag) {
+    throw data
+  }
+  return data
+}
+
+export const CreateSchTask = async (taskName: string, xmlPath: string) => {
+  const { flag, data } = await App.CreateSchTask(taskName, xmlPath)
+  if (!flag) {
+    throw data
+  }
+  return data
+}
+
+export const DeleteSchTask = async (taskName: string) => {
+  const { flag, data } = await App.DeleteSchTask(taskName)
+  if (!flag) {
+    throw data
+  }
+  return data
+}

@@ -4,6 +4,10 @@ import {bridge} from '../models';
 
 export function CheckPermissions(arg1:string):Promise<bridge.FlagResult>;
 
+export function CreateSchTask(arg1:string,arg2:string):Promise<bridge.FlagResult>;
+
+export function DeleteSchTask(arg1:string):Promise<bridge.FlagResult>;
+
 export function Download(arg1:string,arg2:string):Promise<bridge.FlagResult>;
 
 export function Exec(arg1:string,arg2:Array<string>):Promise<bridge.FlagResult>;
@@ -23,6 +27,8 @@ export function Makedir(arg1:string):Promise<bridge.FlagResult>;
 export function Movefile(arg1:string,arg2:string):Promise<bridge.FlagResult>;
 
 export function ProcessInfo(arg1:number):Promise<bridge.FlagResult>;
+
+export function QuerySchTask(arg1:string):Promise<bridge.FlagResult>;
 
 export function Readfile(arg1:string):Promise<bridge.FlagResult>;
 
