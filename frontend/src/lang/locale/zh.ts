@@ -334,6 +334,9 @@ export default {
     closeKernelOnExit: '退出程序时同时关闭内核',
     autoSetSystemProxy: '自动配置系统代理',
     admin: '以管理员身份运行',
+    startup: {
+      name: '开机时启动'
+    },
     kernel: {
       whichOne: '哪一个',
       main: '主分支',

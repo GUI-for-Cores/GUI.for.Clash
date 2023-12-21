@@ -334,6 +334,9 @@ export default {
     closeKernelOnExit: 'Close Kernel On Exit',
     autoSetSystemProxy: 'Auto Set System Proxy',
     admin: 'Run As Admin',
+    startup: {
+      name: 'Startup on boot'
+    },
     kernel: {
       whichOne: 'Which One',
       main: 'Main branch',
