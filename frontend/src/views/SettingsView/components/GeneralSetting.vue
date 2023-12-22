@@ -188,6 +188,12 @@ checkSchtask()
     </div>
     <div class="settings-item">
       <div class="title">
+        {{ t('settings.autoStartKernel') }}
+      </div>
+      <Switch v-model="appSettings.app.autoStartKernel" />
+    </div>
+    <div class="settings-item">
+      <div class="title">
         {{ t('settings.admin') }}
         <span class="tips">({{ t('settings.needRestart') }})</span>
       </div>

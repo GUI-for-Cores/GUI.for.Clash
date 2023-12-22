@@ -331,6 +331,7 @@ export default {
     exitOnClose: '关闭窗口时退出程序',
     closeKernelOnExit: '退出程序时同时关闭内核',
     autoSetSystemProxy: '自动配置系统代理',
+    autoStartKernel: '自动启动内核程序',
     admin: '以管理员身份运行',
     startup: {
       name: '开机时启动'
