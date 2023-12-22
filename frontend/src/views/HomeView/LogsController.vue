@@ -72,7 +72,7 @@ onUnmounted(disconnect)
   <div class="form">
     <span class="label"> {{ t('kernel.log-level') }}: </span>
     <Select v-model="logType" :options="LogLevelOptions" :border="false" />
-    <span class="label"> {{ t('home.overview.keywords') }}: </span>
+    <span class="label"> {{ t('common.keywords') }}: </span>
     <Input v-model="keywords" :border="false" style="margin-right: 8px" />
     <Button @click="handleReset" type="primary">
       {{ t('common.reset') }}

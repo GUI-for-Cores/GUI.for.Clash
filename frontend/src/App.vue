@@ -1,8 +1,14 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useAppSettingsStore, useProfilesStore, useSubscribesStore, useApp } from '@/stores'
 import { ignoredError, sleep } from '@/utils'
 import { useEvents } from '@/hooks/useEvents'
+import {
+  useAppSettingsStore,
+  useProfilesStore,
+  useSubscribesStore,
+  useRulesetsStore,
+  useApp
+} from '@/stores'
 import { NavigationBar, MainPage, TitleBar } from '@/components'
 import SplashView from '@/views/SplashView.vue'
 
@@ -12,12 +18,14 @@ const appStore = useApp()
 const appSettings = useAppSettingsStore()
 const profilesStore = useProfilesStore()
 const subscribesStore = useSubscribesStore()
+const rulesetsStore = useRulesetsStore()
 
 useEvents()
 
 appSettings.setupAppSettings().then(async () => {
   await ignoredError(profilesStore.setupProfiles)
   await ignoredError(subscribesStore.setupSubscribes)
+  await ignoredError(rulesetsStore.setupRulesets)
   await sleep(1000)
   loading.value = false
 })

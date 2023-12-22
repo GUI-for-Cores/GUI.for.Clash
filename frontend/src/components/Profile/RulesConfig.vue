@@ -4,9 +4,8 @@ import { useI18n } from 'vue-i18n'
 import { deepClone, sampleID } from '@/utils'
 import { useMessage } from '@/hooks'
 import { generateRule } from '@/utils/generator'
-import { type ProfileType } from '@/stores/profiles'
+import { type ProfileType, useRulesetsStore, type RuleSetType } from '@/stores'
 import { RulesTypeOptions } from '@/constant/kernel'
-import { BuiltInRuleSets, type RuleSet } from '@/constant/profile'
 
 interface Props {
   modelValue: ProfileType['rulesConfig']
@@ -55,6 +54,7 @@ const filteredRulesTypeOptions = computed(() =>
 
 const { t } = useI18n()
 const { message } = useMessage()
+const rulesetsStore = useRulesetsStore()
 
 const handleAddRule = () => {
   updateRuleId = -1
@@ -88,9 +88,10 @@ const handleAddEnd = () => {
   }
 }
 
-const handleUseRuleset = (ruleset: RuleSet) => {
+const handleUseRuleset = (ruleset: RuleSetType) => {
   fields.value.payload = ruleset.name
   fields.value.path = ruleset.path
+  fields.value['no-resolve'] = false
 }
 
 const notSupport = (r: ProfileType['rulesConfig'][0]) => {
@@ -178,7 +179,7 @@ watch(rules, (v) => emits('update:modelValue', v), { immediate: true })
       <Divider>{{ t('kernel.rules.rulesets') }}</Divider>
       <div class="rulesets">
         <Card
-          v-for="ruleset in BuiltInRuleSets"
+          v-for="ruleset in rulesetsStore.rulesets"
           :key="ruleset.name"
           @click="handleUseRuleset(ruleset)"
           :title="ruleset.name"
@@ -214,9 +215,10 @@ watch(rules, (v) => emits('update:modelValue', v), { immediate: true })
 
 .rulesets {
   display: flex;
+  flex-wrap: wrap;
   .ruleset {
-    width: 33.3333%;
-    margin: 0 8px;
+    width: calc(33.3333% - 16px);
+    margin: 8px;
     font-size: 10px;
   }
 }

@@ -270,3 +270,31 @@ export const ProxyTypeOptions = [
     value: 'wireguard'
   }
 ]
+
+export enum RulesetBehavior {
+  Domain = 'domain',
+  Ipcidr = 'ipcidr',
+  Classical = 'classical'
+}
+
+export const RulesetBehaviorOptions = [
+  {
+    label: 'domain',
+    value: RulesetBehavior.Domain
+  },
+  {
+    label: 'ipcidr',
+    value: RulesetBehavior.Ipcidr
+  },
+  {
+    label: 'classical',
+    value: RulesetBehavior.Classical
+  }
+]
+
+export const RulesetFormatOptions = [
+  {
+    label: 'yaml',
+    value: 'yaml'
+  }
+]
