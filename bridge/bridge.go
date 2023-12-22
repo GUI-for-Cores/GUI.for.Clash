@@ -28,9 +28,7 @@ var Env = &EnvResult{
 	ARCH:      runtime.GOARCH,
 }
 
-var Config = &AppConfig{
-	DisableResize: true,
-}
+var Config = &AppConfig{}
 
 func InitBridge() {
 	// step1: Set Env

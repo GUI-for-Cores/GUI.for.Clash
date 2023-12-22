@@ -30,7 +30,7 @@ func main() {
 		Width:            800,
 		Height:           540,
 		Frameless:        true,
-		DisableResize:    bridge.Config.DisableResize,
+		DisableResize:    false,
 		StartHidden:      bridge.Config.WindowStartState == 2,
 		WindowStartState: options.WindowStartState(bridge.Config.WindowStartState),
 		MinWidth:         600,

@@ -31,7 +31,6 @@ type HTTPResult struct {
 
 type AppConfig struct {
 	Lang              string `yaml:"lang"`
-	DisableResize     bool   `yaml:"disableResize"`
 	WindowStartState  int    `yaml:"windowStartState"`
 	CloseKernelOnExit bool   `yaml:"closeKernelOnExit"`
 	Kernel            struct {
