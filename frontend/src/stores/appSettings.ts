@@ -17,6 +17,7 @@ type AppSettings = {
   exitOnClose: boolean
   closeKernelOnExit: boolean
   autoSetSystemProxy: boolean
+  autoStartKernel: boolean
   kernel: {
     branch: 'main' | 'alpha'
     profile: string
@@ -42,6 +43,7 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
     exitOnClose: false,
     closeKernelOnExit: false,
     autoSetSystemProxy: false,
+    autoStartKernel: false,
     kernel: {
       branch: 'main',
       profile: '',

@@ -3,6 +3,7 @@ package main
 import (
 	"embed"
 	"guiforclash/bridge"
+	"os"
 
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
@@ -19,6 +20,13 @@ var icon []byte
 func main() {
 	bridge.InitBridge()
 
+	isFromTaskSch := false
+	for _, v := range os.Args {
+		if v == "tasksch" {
+			isFromTaskSch = true
+		}
+	}
+
 	// Create an instance of the app structure
 	app := bridge.NewApp()
 
@@ -26,15 +34,25 @@ func main() {
 
 	// Create application with options
 	err := wails.Run(&options.App{
-		Title:            "GUI.for.Clash",
-		Width:            800,
-		Height:           540,
-		Frameless:        true,
-		DisableResize:    false,
-		StartHidden:      bridge.Config.WindowStartState == 2,
-		WindowStartState: options.WindowStartState(bridge.Config.WindowStartState),
-		MinWidth:         600,
-		MinHeight:        400,
+		Title:         "GUI.for.Clash",
+		Width:         800,
+		Height:        540,
+		Frameless:     true,
+		DisableResize: false,
+		StartHidden: func() bool {
+			if isFromTaskSch {
+				return bridge.Config.WindowStartState == 2
+			}
+			return false
+		}(),
+		WindowStartState: func() options.WindowStartState {
+			if isFromTaskSch {
+				return options.WindowStartState(bridge.Config.WindowStartState)
+			}
+			return 0
+		}(),
+		MinWidth:  600,
+		MinHeight: 400,
 		Windows: &windows.Options{
 			WebviewIsTransparent: true,
 			WindowIsTranslucent:  true,

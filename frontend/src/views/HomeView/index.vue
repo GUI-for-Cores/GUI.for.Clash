@@ -198,6 +198,11 @@ watch(
 updateKernelState().then((running) => {
   if (running) {
     kernelApiStore.refreshCofig()
+    return
+  }
+
+  if (appSettingsStore.app.autoStartKernel) {
+    startKernel()
   }
 })
 

@@ -328,9 +328,10 @@ export default {
       fullscreen: 'Fullscreen'
     },
     needRestart: 'Restart Required',
-    exitOnClose: 'Exit On Close',
-    closeKernelOnExit: 'Close Kernel On Exit',
+    exitOnClose: 'Exit On Close Window',
+    closeKernelOnExit: 'Close Kernel On Exit App',
     autoSetSystemProxy: 'Auto Set System Proxy',
+    autoStartKernel: 'Auto Start Kernel',
     admin: 'Run As Admin',
     startup: {
       name: 'Startup on boot'
