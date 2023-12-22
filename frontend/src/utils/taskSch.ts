@@ -12,6 +12,7 @@ export const getTaskSchXmlString = async () => {
   <Triggers>
     <LogonTrigger>
       <Enabled>true</Enabled>
+      <Delay>PT30S</Delay>
     </LogonTrigger>
   </Triggers>
   <Principals>
@@ -42,6 +43,7 @@ export const getTaskSchXmlString = async () => {
   <Actions Context="Author">
     <Exec>
       <Command>${basePath}\\${appName}</Command>
+      <Arguments>tasksch</Arguments>
     </Exec>
   </Actions>
 </Task>
