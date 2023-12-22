@@ -13,6 +13,7 @@ type AppSettings = {
   'font-family': string
   profilesView: View
   subscribesView: View
+  rulesetsView: View
   windowStartState: WindowStartState
   exitOnClose: boolean
   closeKernelOnExit: boolean
@@ -39,6 +40,7 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
     'font-family': '"Microsoft Yahei", "Arial", sans-serif, "Twemoji Mozilla"',
     profilesView: View.Grid,
     subscribesView: View.Grid,
+    rulesetsView: View.Grid,
     windowStartState: WindowStartState.Normal,
     exitOnClose: false,
     closeKernelOnExit: false,

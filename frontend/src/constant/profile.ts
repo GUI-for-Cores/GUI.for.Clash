@@ -230,20 +230,3 @@ export const RulesConfigDefaults: ProfileType['rulesConfig'] = [
     path: ''
   }
 ]
-
-export type RuleSet = { name: string; path: string }
-
-export const BuiltInRuleSets: RuleSet[] = [
-  {
-    name: 'direct',
-    path: 'data/rulesets/direct.yaml'
-  },
-  {
-    name: 'proxy',
-    path: 'data/rulesets/proxy.yaml'
-  },
-  {
-    name: 'reject',
-    path: 'data/rulesets/reject.yaml'
-  }
-]

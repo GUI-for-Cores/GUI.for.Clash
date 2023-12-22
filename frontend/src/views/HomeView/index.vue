@@ -304,6 +304,7 @@ updateSystemProxyState()
     v-model:open="showSettings"
     :title="t('home.overview.settings')"
     :submit="false"
+    cancel-text="common.close"
     width="90"
     mask-closable
   >

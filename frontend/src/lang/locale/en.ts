@@ -24,7 +24,10 @@ export default {
     reset: 'Reset',
     pause: 'Pause',
     resume: 'Resume',
-    details: 'Details'
+    details: 'Details',
+    updateAll: 'Update All',
+    updateTime: 'Update Time',
+    keywords: 'Keywords'
   },
   kernel: {
     port: 'HTTP(s) Port',
@@ -186,6 +189,7 @@ export default {
   router: {
     overview: 'OverView',
     subscribes: 'Subscribes',
+    rulesets: 'Rulesets',
     settings: 'Settings',
     debug: 'Debug',
     components: 'Components',
@@ -211,7 +215,6 @@ export default {
       viewlog: 'view log',
       start: 'Click to Start',
       noLogs: 'Log is empty',
-      keywords: 'Keywords',
       systemProxy: 'System Proxy',
       tunMode: 'TUN Mode',
       traffic: 'Traffic',
@@ -256,12 +259,10 @@ export default {
     updating: 'Updating'
   },
   subscribes: {
-    updateAll: 'Update All',
     download: 'Download',
     upload: 'Upload',
     total: 'Total',
     expire: 'Expire',
-    updateTime: 'Update Time',
     subtype: 'Subscribe Type',
     website: 'Website',
     empty: 'The subscription list is empty. Please {action} a subscription first.',
@@ -294,9 +295,30 @@ export default {
     shouldStop: 'Please stop the kernel first.',
     empty: 'The profiles list is empty, Please {action} a profile first.'
   },
+  ruleset: {
+    http: 'HTTP',
+    file: 'FILE',
+    behavior: {
+      name: 'Behavior',
+      classical: 'classical',
+      domain: 'domain',
+      ipcidr: 'ipcidr'
+    },
+    rulesetType: 'Ruleset Type',
+    format: 'format',
+    name: 'Name',
+    url: 'Url',
+    path: 'Save Path',
+    interval: 'Interval',
+    updating: 'Updating'
+  },
+  rulesets: {
+    empty: 'The rulesets list is empty. Please {action} a ruleset first.',
+    rulesetCount: 'Ruleset Count',
+    editRuleset: 'Edit Ruleset List'
+  },
   settings: {
     general: 'General',
-    rulesets: 'Rulesets',
     theme: {
       name: 'Theme',
       light: 'Light Mode',

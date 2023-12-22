@@ -19,3 +19,12 @@ export const isValidSubYAML = (str: string) => {
     return false
   }
 }
+
+export const isValidPaylodYAML = (str: string) => {
+  try {
+    const { payload } = parse(str)
+    return payload
+  } catch (error) {
+    return false
+  }
+}

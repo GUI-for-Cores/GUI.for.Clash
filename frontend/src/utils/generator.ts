@@ -1,6 +1,6 @@
 import { parse, stringify } from 'yaml'
 import { KernelConfigFilePath, ProxyGroup } from '@/constant/kernel'
-import { type ProfileType, useSubscribesStore } from '@/stores'
+import { type ProfileType, useSubscribesStore, useRulesetsStore } from '@/stores'
 import { Readfile, Writefile } from './bridge'
 import { deepClone, ignoredError } from './index'
 import { APP_TITLE } from './env'
@@ -151,14 +151,20 @@ export const generateProxyProviders = async (groups: ProfileType['proxyGroupsCon
 }
 
 const generateRuleProviders = async (rules: ProfileType['rulesConfig']) => {
+  const rulesetsStore = useRulesetsStore()
   const providers: Record<string, any> = {}
   rules
     .filter((rule) => rule.type === 'RULE-SET')
     .forEach((rule) => {
-      providers[rule.payload] = {
-        type: 'file',
-        behavior: 'classical',
-        path: rule.path.replace('data/', '../')
+      const ruleset = rulesetsStore.getRulesetByName(rule.payload)
+      if (ruleset) {
+        providers[rule.payload] = {
+          type: 'file',
+          behavior: ruleset.behavior,
+          path: ruleset.path.replace('data/', '../'),
+          interval: ruleset.interval,
+          format: ruleset.format
+        }
       }
     })
   return providers

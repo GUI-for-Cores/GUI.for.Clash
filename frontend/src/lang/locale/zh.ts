@@ -24,7 +24,10 @@ export default {
     reset: '重置',
     pause: '暂停',
     resume: '恢复',
-    details: '详情'
+    details: '详情',
+    updateAll: '更新全部',
+    updateTime: '更新时间',
+    keywords: '关键词'
   },
   kernel: {
     port: 'HTTP(s)代理端口',
@@ -186,6 +189,7 @@ export default {
   router: {
     overview: '概览',
     subscribes: '订阅',
+    rulesets: '规则组',
     settings: '设置',
     debug: '调试',
     components: '组件预览',
@@ -211,7 +215,6 @@ export default {
       viewlog: '查看日志',
       start: '启动内核',
       noLogs: '日志为空',
-      keywords: '关键词',
       systemProxy: '系统代理',
       tunMode: 'TUN模式',
       traffic: '流量',
@@ -256,12 +259,10 @@ export default {
     updating: '更新中'
   },
   subscribes: {
-    updateAll: '更新全部',
     download: '下行流量',
     upload: '上行流量',
     total: '总流量',
     expire: '过期时间',
-    updateTime: '更新时间',
     subtype: '订阅类型',
     website: '官网',
     empty: '订阅列表为空，请先{action}订阅。',
@@ -294,9 +295,30 @@ export default {
     shouldStop: '请先停止内核',
     empty: '配置列表为空，请先{action}配置。'
   },
+  ruleset: {
+    http: 'HTTP',
+    file: 'FILE',
+    behavior: {
+      name: '匹配行为',
+      classical: '域名 + IP-CIDR',
+      domain: '域名',
+      ipcidr: 'IP-CIDR'
+    },
+    rulesetType: '规则组类型',
+    format: '格式',
+    name: '名称',
+    url: '链接',
+    path: '保存路径',
+    interval: '更新间隔',
+    updating: '更新中'
+  },
+  rulesets: {
+    empty: '规则组列表为空. 请先{action}规则组。',
+    rulesetCount: '规则数量',
+    editRuleset: '编辑规则组列表'
+  },
   settings: {
     general: '通用',
-    rulesets: '规则组',
     theme: {
       name: '主题',
       light: '浅色',

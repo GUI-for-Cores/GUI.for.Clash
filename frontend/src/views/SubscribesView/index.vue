@@ -103,7 +103,7 @@ const clacTrafficStatus = (s: any) => (clacTrafficPercent(s) > 80 ? 'warning' : 
       :type="noUpdateNeeded ? 'text' : 'link'"
       style="margin-left: auto"
     >
-      {{ t('subscribes.updateAll') }}
+      {{ t('common.updateAll') }}
     </Button>
     <Button @click="handleAddSub" type="primary">
       {{ t('common.add') }}
@@ -224,7 +224,7 @@ const clacTrafficStatus = (s: any) => (clacTrafficPercent(s) > 80 ? 'warning' : 
           :
           {{ s.expire || '--' }}
           /
-          {{ t('subscribes.updateTime') }}
+          {{ t('common.updateTime') }}
           :
           {{ s.updateTime || '--' }}
         </div>
@@ -249,7 +249,7 @@ const clacTrafficStatus = (s: any) => (clacTrafficPercent(s) > 80 ? 'warning' : 
           {{ s.expire ? formatRelativeTime(s.expire) : '--' }}
         </div>
         <div>
-          {{ t('subscribes.updateTime') }}
+          {{ t('common.updateTime') }}
           :
           {{ s.updateTime ? formatRelativeTime(s.updateTime) : '--' }}
         </div>

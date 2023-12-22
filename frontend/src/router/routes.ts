@@ -3,6 +3,7 @@ import HomeView from '@/views/HomeView/index.vue'
 import SubscribesView from '@/views/SubscribesView/index.vue'
 import SettingsView from '@/views/SettingsView/index.vue'
 import ProfilesView from '@/views/ProfilesView/index.vue'
+import RulesetsView from '@/views/RulesetsView/index.vue'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -27,6 +28,14 @@ const routes: RouteRecordRaw[] = [
     component: SubscribesView,
     meta: {
       name: 'router.subscribes'
+    }
+  },
+  {
+    path: '/rulesets',
+    name: 'Rulesets',
+    component: RulesetsView,
+    meta: {
+      name: 'router.rulesets'
     }
   },
   {
