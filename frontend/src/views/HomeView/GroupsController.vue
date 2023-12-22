@@ -23,10 +23,10 @@ const appSettings = useAppSettingsStore()
 const kernelApiStore = useKernelApiStore()
 
 const groups = computed(() => {
-  if (!kernelApiStore.providers.default) return []
-  const { proxies } = kernelApiStore
-  return kernelApiStore.providers.default.proxies
-    .concat([kernelApiStore.proxies.GLOBAL])
+  const { providers, proxies } = kernelApiStore
+  if (!providers.default) return []
+  return providers.default.proxies
+    .concat([proxies.GLOBAL])
     .filter((v) => v.all)
     .map((provider) => {
       const all = provider.all
@@ -34,12 +34,13 @@ const groups = computed(() => {
           return (
             appSettings.app.kernel.unAvailable ||
             ['DIRECT', 'REJECT'].includes(v) ||
-            kernelApiStore.proxies[v].all ||
-            kernelApiStore.proxies[v].alive
+            proxies[v].all ||
+            proxies[v].alive
           )
         })
         .map((v) => {
-          const delay = proxies[v].history[proxies[v].history.length - 1]?.delay
+          const history = proxies[v].history || []
+          const delay = history[history.length - 1]?.delay
           return { ...proxies[v], delay }
         })
 
