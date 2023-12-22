@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { useAppSettingsStore } from '@/stores/appSettings'
 import { APP_TITLE, APP_VERSION } from '@/utils/env'
 import { ignoredError } from '@/utils'
+import { type Menu } from '@/stores/app'
 import {
   WindowFullscreen,
   WindowIsFullscreen,
@@ -12,7 +13,9 @@ import {
   Quit,
   KernelRunning,
   KillProcess,
-  ClearSystemProxy
+  ClearSystemProxy,
+  WindowSetSize,
+  WindowCenter
 } from '@/utils/bridge'
 
 const isPinned = ref(false)
@@ -48,6 +51,18 @@ const closeWindow = async () => {
 
   exitOnClose ? Quit() : WindowHide()
 }
+
+const menus: Menu[] = [
+  {
+    label: 'titlebar.resetSize',
+    handler: async () => {
+      WindowUnfullscreen()
+      await WindowSetSize(800, 540)
+      WindowCenter()
+      isFullScreen.value = false
+    }
+  }
+]
 </script>
 
 <template>
@@ -61,6 +76,7 @@ const closeWindow = async () => {
     >
       {{ APP_TITLE }} {{ APP_VERSION }}
     </div>
+    <div v-menu="menus" class="menus"></div>
     <div class="action" style="--wails-draggable: disabled">
       <Button @click.stop="pinWindow" type="text">
         <Icon :icon="isPinned ? 'pinFill' : 'pin'" />
@@ -97,11 +113,14 @@ const closeWindow = async () => {
   font-weight: bold;
 }
 
+.menus {
+  flex: 1;
+  height: 100%;
+}
 .action {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-left: auto;
   font-size: 14px;
   &-btn {
     width: 32px;
