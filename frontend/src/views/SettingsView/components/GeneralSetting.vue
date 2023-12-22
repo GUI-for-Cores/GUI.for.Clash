@@ -164,7 +164,7 @@ checkSchtask()
     <div class="settings-item">
       <div class="title">{{ t('settings.appFolder.name') }}</div>
       <Button @click="handleOpenFolder" type="primary">
-        <Icon icon="folder" />
+        <Icon icon="folder" fill="var(--btn-primary-color)" />
         <span style="margin-left: 8px">{{ t('settings.appFolder.open') }}</span>
       </Button>
     </div>
