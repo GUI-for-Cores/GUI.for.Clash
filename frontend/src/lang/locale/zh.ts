@@ -322,13 +322,11 @@ export default {
       en: 'English'
     },
     windowState: {
-      name: '窗口启动模式',
-      normal: '普通',
+      normal: '以普通窗口启动',
       maximised: '最大化',
-      minimised: '最小化',
+      minimised: '最小化窗口启动',
       fullscreen: '全屏'
     },
-    disableResize: '禁用窗口缩放',
     needRestart: '重启生效',
     exitOnClose: '关闭窗口时退出程序',
     closeKernelOnExit: '退出程序时同时关闭内核',
@@ -351,6 +349,9 @@ export default {
     updateSuccessful: '更新完成，请重启软件',
     newVersion: '发现新版本',
     latestVersion: '已经是最新版本了'
+  },
+  titlebar: {
+    resetSize: '重置窗口'
   },
   format: {
     seconds: '秒',

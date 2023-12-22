@@ -170,13 +170,6 @@ checkSchtask()
     </div>
     <div class="settings-item">
       <div class="title">
-        {{ t('settings.disableResize') }}
-        <span class="tips">({{ t('settings.needRestart') }})</span>
-      </div>
-      <Switch v-model="appSettings.app.disableResize" />
-    </div>
-    <div class="settings-item">
-      <div class="title">
         {{ t('settings.exitOnClose') }}
       </div>
       <Switch v-model="appSettings.app.exitOnClose" />
@@ -186,13 +179,6 @@ checkSchtask()
         {{ t('settings.closeKernelOnExit') }}
       </div>
       <Switch v-model="appSettings.app.closeKernelOnExit" />
-    </div>
-    <div class="settings-item">
-      <div class="title">
-        {{ t('settings.windowState.name') }}
-        <span class="tips">({{ t('settings.needRestart') }})</span>
-      </div>
-      <Radio v-model="appSettings.app.windowStartState" :options="windowStates" type="number" />
     </div>
     <div class="settings-item">
       <div class="title">
@@ -211,7 +197,15 @@ checkSchtask()
       <div class="title">
         {{ t('settings.startup.name') }}
       </div>
-      <Switch v-model="isTaskScheduled" @change="onTaskSchChange" />
+      <div style="display: flex; align-items: center">
+        <Switch v-model="isTaskScheduled" @change="onTaskSchChange" style="margin-right: 16px" />
+        <Radio
+          v-show="isTaskScheduled"
+          v-model="appSettings.app.windowStartState"
+          :options="windowStates"
+          type="number"
+        />
+      </div>
     </div>
   </div>
 </template>

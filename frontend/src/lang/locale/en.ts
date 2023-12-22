@@ -322,13 +322,11 @@ export default {
       en: 'English'
     },
     windowState: {
-      name: 'Window Startup Mode',
-      normal: 'Normal',
+      normal: 'Normal window',
       maximised: 'Maximised',
-      minimised: 'Minimised',
+      minimised: 'Minimize window',
       fullscreen: 'Fullscreen'
     },
-    disableResize: 'Disable Resize',
     needRestart: 'Restart Required',
     exitOnClose: 'Exit On Close',
     closeKernelOnExit: 'Close Kernel On Exit',
@@ -351,6 +349,9 @@ export default {
     updateSuccessful: 'Update completed, please restart the App',
     newVersion: 'New version found',
     latestVersion: 'Already the latest version'
+  },
+  titlebar: {
+    resetSize: 'Reset window'
   },
   format: {
     seconds: 'Seconds',
