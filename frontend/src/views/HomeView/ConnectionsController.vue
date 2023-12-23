@@ -18,6 +18,14 @@ const columns: Column[] = [
     }
   },
   {
+    title: 'home.connections.rule',
+    key: 'rule',
+    align: 'left',
+    customRender: ({ value, record }) => {
+      return value + (record.rulePayload ? '::' + record.rulePayload : '')
+    }
+  },
+  {
     title: 'home.connections.chains',
     key: 'chains',
     align: 'left',
@@ -68,7 +76,9 @@ const menu: Menu[] = [
       label,
       handler: async (record: Record<string, any>) => {
         try {
-          await addToRuleSet(ruleset as any, record.metadata.host)
+          const behavior = record.metadata.host ? 'DOMAIN' : 'IP-CIDR'
+          const payload = record.metadata.host || record.metadata.destinationIP + '/32,no-resolve'
+          await addToRuleSet(ruleset as any, behavior + ',' + payload)
           await updateProvidersRules(ruleset)
           message.info('success')
         } catch (error: any) {
@@ -101,9 +111,21 @@ onUnmounted(disconnect)
     <Table :columns="columns" :menu="menu" :data-source="dataSource" />
   </div>
 
-  <Modal v-model:open="showDetails" max-height="90" max-width="90" :submit="false" mask-closable>
-    <pre>{{ details }}</pre>
+  <Modal
+    v-model:open="showDetails"
+    :submit="false"
+    cancel-text="common.close"
+    max-height="90"
+    max-width="90"
+    mask-closable
+  >
+    <pre class="pre user-select">{{ details }}</pre>
   </Modal>
 </template>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.pre {
+  font-size: 14px;
+  font-family: Menlo, Monaco, Consolas, 'Andale Mono', 'lucida console', 'Courier New', monospace;
+}
+</style>

@@ -237,6 +237,7 @@ export default {
     },
     connections: {
       host: 'Host',
+      rule: 'Rule',
       chains: 'Chains',
       upload: 'Upload',
       download: 'Download',
