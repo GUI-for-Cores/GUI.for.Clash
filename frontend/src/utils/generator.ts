@@ -207,11 +207,10 @@ export const generateConfigFile = async (profile: ProfileType) => {
   await Writefile(KernelConfigFilePath, header + stringify(config))
 }
 
-export const addToRuleSet = async (ruleset: 'direct' | 'reject' | 'proxy', domain = '') => {
-  if (!domain) throw 'Domain Not Found'
+export const addToRuleSet = async (ruleset: 'direct' | 'reject' | 'proxy', payload: string) => {
   const path = `data/rulesets/${ruleset}.yaml`
   const content = (await ignoredError(Readfile, path)) || '{ payload: [] }'
-  const { payload } = parse(content)
-  payload.unshift('DOMAIN,' + domain)
-  await Writefile(path, stringify({ payload: [...new Set(payload)] }))
+  const { payload: p } = parse(content)
+  p.unshift(payload)
+  await Writefile(path, stringify({ payload: [...new Set(p)] }))
 }

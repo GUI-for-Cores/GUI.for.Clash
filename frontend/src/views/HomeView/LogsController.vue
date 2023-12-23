@@ -5,6 +5,7 @@ import { getKernelLogsWS, updateProvidersRules } from '@/api/kernel'
 import { LogLevelOptions } from '@/constant/kernel'
 import { useBool, useMessage } from '@/hooks'
 import type { Menu } from '@/stores'
+import { isValidIPV4 } from '@/utils/is'
 import { addToRuleSet } from '@/utils/generator'
 
 const logType = ref('info')
@@ -27,9 +28,10 @@ const menus: Menu[] = [
 ].map(([label, ruleset]) => {
   return {
     label,
-    handler: async ({ payload }: any) => {
+    handler: async ({ type, payload }: any) => {
       try {
-        await addToRuleSet(ruleset as any, getDomain(payload))
+        if (type !== 'info') throw 'Not Support'
+        await addToRuleSet(ruleset as any, getPayload(payload))
         await updateProvidersRules(ruleset)
         message.info('success')
       } catch (error: any) {
@@ -51,12 +53,18 @@ const handleReset = () => {
 
 const handleClear = () => logs.value.splice(0)
 
-const getDomain = (str = '') => {
+const getPayload = (str = '') => {
   const regex = /([a-zA-Z0-9.-]+(?=:))/g
   const matches = str.match(regex)
   if (matches && matches.length >= 2) {
-    return matches[1]
+    if (isValidIPV4(matches[1])) {
+      return 'IP-CIDR,' + matches[1] + '/32,no-resolve'
+    }
+
+    return 'DOMAIN,' + matches[1]
   }
+
+  throw 'GetPayload Error'
 }
 
 const onLogs = (data: any) => {
@@ -89,7 +97,7 @@ onUnmounted(disconnect)
       v-for="log in filteredLogs"
       v-menu="menus.map((v) => ({ ...v, handler: () => v.handler?.(log) }))"
       :key="log.payload"
-      class="log"
+      class="log user-select"
     >
       <span class="type">{{ log.type }}</span> {{ log.payload }}
     </div>
@@ -105,6 +113,9 @@ onUnmounted(disconnect)
   &:hover {
     color: #fff;
     background: var(--primary-color);
+    .type {
+      color: #fff;
+    }
   }
 }
 

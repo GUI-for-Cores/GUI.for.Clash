@@ -28,3 +28,6 @@ export const isValidPaylodYAML = (str: string) => {
     return false
   }
 }
+
+export const isValidIPV4 = (ip: string) =>
+  /^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$/.test(ip)

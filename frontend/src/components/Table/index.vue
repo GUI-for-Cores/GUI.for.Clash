@@ -52,6 +52,7 @@ const { t } = useI18n()
             v-for="column in columns"
             :key="column.key"
             :style="{ textAlign: column.align || 'center' }"
+            class="user-select"
           >
             {{
               column.customRender
@@ -93,6 +94,7 @@ table {
         background: var(--table-tr-even-bg);
       }
       &:hover {
+        color: #fff;
         background: var(--primary-color);
       }
       td {
