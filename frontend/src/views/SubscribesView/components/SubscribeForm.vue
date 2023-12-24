@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { ref, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useProfilesStore } from '@/stores/profiles'
-import { type SubscribeType, useSubscribesStore } from '@/stores/subscribes'
-import { useMessage } from '@/hooks/useMessage'
-import { useBool } from '@/hooks/useBool'
+
+import { useBool, useMessage } from '@/hooks'
 import { deepClone, sampleID } from '@/utils'
+import { type SubscribeType, useSubscribesStore } from '@/stores'
 
 interface Props {
   id?: string
@@ -17,7 +16,7 @@ const props = withDefaults(defineProps<Props>(), {
   isUpdate: false
 })
 
-let oldSubName = ''
+const loading = ref(false)
 
 const sub = ref<SubscribeType>({
   id: sampleID(),
@@ -41,51 +40,38 @@ const { t } = useI18n()
 const { message } = useMessage()
 const [showMore, toggleShowMore] = useBool(false)
 const subscribeStore = useSubscribesStore()
-const profilesStore = useProfilesStore()
 
 const handleCancel = inject('cancel') as any
 
 const handleSubmit = async () => {
+  loading.value = true
+
   if (props.isUpdate) {
     try {
       await subscribeStore.editSubscribe(props.id, sub.value)
-      updateProfilesReferences()
       handleCancel()
     } catch (error: any) {
       console.error('editSubscribe: ', error)
       message.info(error)
     }
-  } else {
-    try {
-      await subscribeStore.addSubscribe(sub.value)
-      handleCancel()
-    } catch (error: any) {
-      console.error('addSubscribe: ', error)
-      message.info(error)
-    }
+    loading.value = false
+    return
   }
-}
 
-const updateProfilesReferences = () => {
-  profilesStore.profiles.forEach((profile) => {
-    const needUpdate = profile.proxyGroupsConfig.some((group) => group.use.includes(oldSubName))
-    if (needUpdate) {
-      profile.proxyGroupsConfig.forEach((group) => {
-        group.use = group.use.map((v) => (v === oldSubName ? sub.value.name : v))
-      })
-      try {
-        profilesStore.saveProfiles()
-      } catch (error) {
-        console.log(error)
-      }
-    }
-  })
+  try {
+    await subscribeStore.addSubscribe(sub.value)
+    handleCancel()
+  } catch (error: any) {
+    console.error('addSubscribe: ', error)
+    message.info(error)
+  }
+
+  loading.value = false
 }
 
 if (props.isUpdate) {
   const s = subscribeStore.getSubscribeById(props.id)
   if (s) {
-    oldSubName = s.name
     sub.value = deepClone(s)
   }
 }

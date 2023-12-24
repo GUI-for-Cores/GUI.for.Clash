@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { deepClone, sampleID } from '@/utils'
+import { computed, ref, watch } from 'vue'
+
 import { useMessage } from '@/hooks'
-import { generateRule } from '@/utils/generator'
+import { deepClone, sampleID, generateRule } from '@/utils'
+import { RulesTypeOptions, RulesetBehavior } from '@/constant'
 import { type ProfileType, useRulesetsStore, type RuleSetType } from '@/stores'
-import { RulesTypeOptions } from '@/constant/kernel'
 
 interface Props {
   modelValue: ProfileType['rulesConfig']
@@ -30,8 +30,7 @@ const fields = ref({
   payload: '',
   proxy: '',
   'no-resolve': true,
-  filter: '',
-  path: ''
+  filter: ''
 })
 
 const proxyOptions = computed(() => [
@@ -41,10 +40,10 @@ const proxyOptions = computed(() => [
 ])
 
 const supportNoResolve = computed(() =>
-  ['GEOIP', 'IP-CIDR', 'IP-CIDR6', 'SCRIPT'].includes(fields.value.type)
+  ['GEOIP', 'IP-CIDR', 'IP-CIDR6', 'SCRIPT', 'RULE-SET'].includes(fields.value.type)
 )
 
-const supportPayload = computed(() => fields.value.type !== 'MATCH')
+const supportPayload = computed(() => !['MATCH', 'RULE-SET'].includes(fields.value.type))
 
 const filteredRulesTypeOptions = computed(() =>
   RulesTypeOptions.filter(
@@ -64,8 +63,7 @@ const handleAddRule = () => {
     payload: '',
     proxy: '',
     'no-resolve': true,
-    filter: '',
-    path: ''
+    filter: ''
   }
   showModal.value = true
 }
@@ -89,9 +87,8 @@ const handleAddEnd = () => {
 }
 
 const handleUseRuleset = (ruleset: RuleSetType) => {
-  fields.value.payload = ruleset.name
-  fields.value.path = ruleset.path
-  fields.value['no-resolve'] = false
+  fields.value.payload = ruleset.id
+  fields.value['no-resolve'] = ruleset.behavior === RulesetBehavior.Ipcidr
 }
 
 const notSupport = (r: ProfileType['rulesConfig'][0]) => {
@@ -118,7 +115,7 @@ const onDragEnter = (e: any, index: number) => {
 
 const onDragOver = (e: any) => e.preventDefault()
 
-watch(rules, (v) => emits('update:modelValue', v), { immediate: true })
+watch(rules, (v) => emits('update:modelValue', v), { immediate: true, deep: true })
 </script>
 
 <template>
@@ -162,10 +159,6 @@ watch(rules, (v) => emits('update:modelValue', v), { immediate: true })
       {{ t('kernel.rules.payload') }}
       <Input v-model="fields.payload" autofocus />
     </div>
-    <div v-show="fields.type === 'RULE-SET'" class="form-item">
-      {{ t('kernel.rules.ruleset') }}
-      <Input v-model="fields['path']" placeholder="data/rulesets/filename.yaml" />
-    </div>
     <div class="form-item">
       {{ t('kernel.rules.proxy') }}
       <Select v-model="fields.proxy" :options="proxyOptions" />
@@ -182,6 +175,7 @@ watch(rules, (v) => emits('update:modelValue', v), { immediate: true })
           v-for="ruleset in rulesetsStore.rulesets"
           :key="ruleset.name"
           @click="handleUseRuleset(ruleset)"
+          :selected="fields.payload === ruleset.id"
           :title="ruleset.name"
           class="ruleset"
         >

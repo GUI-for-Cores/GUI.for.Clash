@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { type ProfileType } from '@/stores/profiles'
-import { useSubscribesStore } from '@/stores/subscribes'
+
 import { useMessage } from '@/hooks'
 import { deepClone, sampleID } from '@/utils'
-import { GroupsTypeOptions, StrategyOptions } from '@/constant/kernel'
+import { type ProfileType, useSubscribesStore } from '@/stores'
+import { GroupsTypeOptions, StrategyOptions, ProxyGroup } from '@/constant'
 
 type GroupsType = ProfileType['proxyGroupsConfig']
 
@@ -21,21 +21,22 @@ const emits = defineEmits(['update:modelValue'])
 
 let dragIndex = -1
 let updateGroupId = 0
-let oldGroupName = ''
 const showModal = ref(false)
 const groups = ref(deepClone(props.modelValue))
 const expandedSet = ref<Set<string>>(new Set(['Built-In', 'Subscribes']))
 
 const proxyGroup = ref([
   {
+    id: 'Built-In',
     name: 'Built-In',
     proxies: [
-      { name: 'DIRECT', type: 'built-in' },
-      { name: 'REJECT', type: 'built-in' },
-      ...groups.value.map((v) => ({ name: v.name, type: v.type }))
+      { id: 'DIRECT', name: 'DIRECT', type: 'Built-In' },
+      { id: 'REJECT', name: 'REJECT', type: 'Built-In' },
+      ...groups.value.map(({ id, name, type }) => ({ id, name, type }))
     ]
   },
   {
+    id: 'Subscribes',
     name: 'Subscribes',
     proxies: []
   }
@@ -44,7 +45,7 @@ const proxyGroup = ref([
 const fields = ref<GroupsType[0]>({
   id: sampleID(),
   name: '',
-  type: '',
+  type: ProxyGroup.Select,
   proxies: [],
   url: '',
   interval: 0,
@@ -65,7 +66,7 @@ const handleAddGroup = () => {
   fields.value = {
     id: sampleID(),
     name: '',
-    type: 'select',
+    type: ProxyGroup.Select,
     proxies: [],
     url: 'https://www.gstatic.com/generate_204',
     interval: 300,
@@ -76,7 +77,6 @@ const handleAddGroup = () => {
     'disable-udp': false,
     filter: ''
   }
-  oldGroupName = fields.value.name
   showModal.value = true
 }
 
@@ -90,95 +90,94 @@ const handleDeleteGroup = (index: number) => {
 }
 
 const handleClearGroup = async (g: GroupsType[0]) => {
-  g.proxies = g.proxies.filter(({ type, name }) => {
+  g.proxies = g.proxies.filter(({ type, name, id }) => {
     if (type === 'Built-In') {
       if (['DIRECT', 'REJECT'].includes(name)) {
         return true
       }
-      return groups.value.some((v) => v.name === name)
+      return groups.value.some((v) => v.id === id)
     }
-    const sub = proxyGroup.value.find((v) => v.name === type)
+    const sub = subscribesStore.getSubscribeById(type)
     if (!sub) return false
-    return sub.proxies.some((v) => v.name === name)
+    return sub.proxies.some((v) => v.id === id)
   })
 
-  g.use = g.use.filter((v) => subscribesStore.subscribes.some(({ name }) => name === v))
+  g.use = g.use.filter((v) => subscribesStore.subscribes.some(({ id }) => id === v))
 }
 
 const handleEditGroup = (index: number) => {
   updateGroupId = index
   fields.value = deepClone(groups.value[index])
-  oldGroupName = fields.value.name
   showModal.value = true
 }
 
-const handleAddProxy = (groupName: string, proxyName: string) => {
-  if (groupName === 'Built-In' && proxyName === fields.value.name) return
-  if (groupName === 'Subscribes') {
-    const idx = fields.value.use.findIndex((v) => v === proxyName)
+const handleAddProxy = (groupID: string, proxyID: string, proxyName: string) => {
+  // self
+  if (groupID === 'Built-In' && proxyID === fields.value.id) return
+
+  // subscribes
+  if (groupID === 'Subscribes') {
+    const idx = fields.value.use.findIndex((v) => v === proxyID)
     if (idx !== -1) {
       fields.value.use.splice(idx, 1)
     } else {
-      fields.value.use.push(proxyName)
+      fields.value.use.push(proxyID)
     }
     return
   }
-  const idx = fields.value.proxies.findIndex((v) => v.type === groupName && v.name === proxyName)
+
+  // proxy
+  const idx = fields.value.proxies.findIndex((v) => v.id === proxyID)
   if (idx !== -1) {
     fields.value.proxies.splice(idx, 1)
   } else {
-    fields.value.proxies.push({ type: groupName, name: proxyName })
+    fields.value.proxies.push({ id: proxyID, type: groupID, name: proxyName })
   }
 }
 
 const handleAddEnd = () => {
-  const { name, type } = fields.value
-  if (!name) return
+  const { id, name, type } = fields.value
+  // Add
   if (updateGroupId === -1) {
     groups.value.push(fields.value)
-    proxyGroup.value[0].proxies.push({ name, type })
+    proxyGroup.value[0].proxies.push({ id, name, type })
     return
   }
-  if (oldGroupName !== name) updateGroupReferences()
+  // Update
   groups.value[updateGroupId] = fields.value
-  const idx = proxyGroup.value[0].proxies.findIndex((v) => v.name === oldGroupName)
+  const idx = proxyGroup.value[0].proxies.findIndex((v) => v.id === id)
   if (idx !== -1) {
-    proxyGroup.value[0].proxies.splice(idx, 1, { name, type })
+    proxyGroup.value[0].proxies.splice(idx, 1, { id, name, type })
   }
 }
 
-const updateGroupReferences = () => {
-  groups.value.forEach((v) => {
-    v.proxies = v.proxies.map(({ type, name }) => {
-      name = name === oldGroupName ? fields.value.name : name
-      return { type, name }
-    })
-  })
+const isInuse = (groupID: string, proxyID: string) => {
+  if (groupID === 'Subscribes') {
+    return fields.value.use.includes(proxyID)
+  }
+  return fields.value.proxies.find((v) => v.id === proxyID)
 }
 
-const isInuse = (groupName: string, proxyName: string) => {
-  if (groupName === 'Subscribes') {
-    return fields.value.use.includes(proxyName)
-  }
-  return fields.value.proxies.find((v) => v.type === groupName && v.name === proxyName)
-}
+const isSupportInverval = computed(() =>
+  [ProxyGroup.UrlTest, ProxyGroup.Fallback, ProxyGroup.LoadBalance].includes(fields.value.type)
+)
 
 const hasLost = (g: GroupsType[0]) => {
-  const isProxiesLost = g.proxies.some(({ type, name }) => {
+  const isProxiesLost = g.proxies.some(({ type, id }) => {
     if (type === 'Built-In') {
-      if (['DIRECT', 'REJECT'].includes(name)) {
+      if (['DIRECT', 'REJECT'].includes(id)) {
         return false
       }
-      return groups.value.every((v) => v.name !== name)
+      return groups.value.every((v) => v.id !== id)
     }
 
-    const sub = proxyGroup.value.find((v) => v.name === type)
+    const sub = subscribesStore.getSubscribeById(type)
     if (!sub) return true
-    return sub.proxies.every((v) => v.name !== name)
+    return sub.proxies.every((v) => v.id !== id)
   })
 
   const isUseLost = g.use.some((v) => {
-    return subscribesStore.subscribes.every(({ name }) => name !== v)
+    return subscribesStore.subscribes.every(({ id }) => id !== v)
   })
 
   return isProxiesLost || isUseLost
@@ -216,11 +215,11 @@ const onDragEnter = (e: any, index: number) => {
 
 const onDragOver = (e: any) => e.preventDefault()
 
-watch(groups, (v) => emits('update:modelValue', v), { immediate: true })
+watch(groups, (v) => emits('update:modelValue', v), { immediate: true, deep: true })
 
-subscribesStore.subscribes.forEach(async ({ name, proxies }) => {
-  proxyGroup.value[1].proxies.push({ name, type: 'use' })
-  proxyGroup.value.push({ name, proxies })
+subscribesStore.subscribes.forEach(async ({ id, name, proxies }) => {
+  proxyGroup.value[1].proxies.push({ id, name, type: 'use' })
+  proxyGroup.value.push({ id, name, proxies })
 })
 </script>
 
@@ -284,7 +283,7 @@ subscribesStore.subscribes.forEach(async ({ name, proxies }) => {
       {{ t('kernel.proxyGroups.disable-udp') }}
       <Switch v-model="fields['disable-udp']" />
     </div>
-    <template v-if="['url-test', 'fallback', 'load-balance'].includes(fields.type)">
+    <template v-if="isSupportInverval">
       <div class="form-item">
         {{ t('kernel.proxyGroups.lazy') }}
         <Switch v-model="fields.lazy" />
@@ -298,11 +297,11 @@ subscribesStore.subscribes.forEach(async ({ name, proxies }) => {
         <Input v-model="fields.url" />
       </div>
     </template>
-    <div v-show="fields.type === 'url-test'" class="form-item">
+    <div v-show="fields.type === ProxyGroup.UrlTest" class="form-item">
       {{ t('kernel.proxyGroups.tolerance') }}
       <Input v-model="fields.tolerance" type="number" />
     </div>
-    <div v-show="fields.type === 'load-balance'" class="form-item">
+    <div v-show="fields.type === ProxyGroup.LoadBalance" class="form-item">
       {{ t('kernel.proxyGroups.strategy.name') }}
       <Radio v-model="fields.strategy" :options="StrategyOptions" />
     </div>
@@ -310,16 +309,21 @@ subscribesStore.subscribes.forEach(async ({ name, proxies }) => {
     <Divider> {{ t('profile.use') }} & {{ t('profile.proxies') }} </Divider>
 
     <div v-for="group in proxyGroup" :key="group.name" class="group">
-      <Button :type="isExpanded(group.name) ? 'link' : 'text'" @click="toggleExpanded(group.name)">
+      <Button
+        :type="isExpanded(group.name) ? 'link' : 'text'"
+        @click="toggleExpanded(group.name)"
+        class="group-title"
+      >
         {{ group.name }}
+        <div style="margin-left: auto">{{ group.proxies.length }}</div>
       </Button>
       <div v-show="isExpanded(group.name)" class="group-proxies">
         <Empty v-if="group.proxies.length === 0" :description="t('kernel.proxyGroups.empty')" />
         <template v-else>
           <div v-for="proxy in group.proxies" :key="proxy.name" class="group-item">
             <Button
-              @click="handleAddProxy(group.name, proxy.name)"
-              :type="isInuse(group.name, proxy.name) ? 'link' : 'text'"
+              @click="handleAddProxy(group.id, proxy.id, proxy.name)"
+              :type="isInuse(group.id, proxy.id) ? 'link' : 'text'"
             >
               {{ proxy.name }}
               <br />
@@ -358,6 +362,11 @@ subscribesStore.subscribes.forEach(async ({ name, proxies }) => {
 }
 
 .group {
+  .group-title {
+    width: 100%;
+    display: flex;
+    align-items: center;
+  }
   .group-proxies {
     display: flex;
     flex-wrap: wrap;

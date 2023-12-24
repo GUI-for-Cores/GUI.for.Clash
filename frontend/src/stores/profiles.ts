@@ -1,8 +1,10 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { parse, stringify } from 'yaml'
-import { Readfile, Writefile } from '@/utils/bridge'
+
 import { debounce } from '@/utils'
+import { Readfile, Writefile } from '@/utils/bridge'
+import { ProfilesFilePath, ProxyGroup } from '@/constant'
 
 export type ProfileType = {
   id: string
@@ -74,8 +76,9 @@ export type ProfileType = {
   proxyGroupsConfig: {
     id: string
     name: string
-    type: string
+    type: ProxyGroup
     proxies: {
+      id: string
       type: string
       name: string
     }[]
@@ -95,22 +98,19 @@ export type ProfileType = {
     proxy: string
     'no-resolve': boolean
     filter: string
-    path: string
   }[]
 }
-
-const profilesFilePath = './data/profiles.yaml'
 
 export const useProfilesStore = defineStore('profiles', () => {
   const profiles = ref<ProfileType[]>([])
 
   const setupProfiles = async () => {
-    const data = await Readfile(profilesFilePath)
+    const data = await Readfile(ProfilesFilePath)
     profiles.value = parse(data)
   }
 
   const saveProfiles = debounce(async () => {
-    await Writefile(profilesFilePath, stringify(profiles.value))
+    await Writefile(ProfilesFilePath, stringify(profiles.value))
   }, 100)
 
   const addProfile = async (p: ProfileType) => {
@@ -147,8 +147,6 @@ export const useProfilesStore = defineStore('profiles', () => {
     }
   }
 
-  const getProfileByName = (name: string) => profiles.value.find((v) => v.name === name)
-
   const getProfileById = (id: string) => profiles.value.find((v) => v.id === id)
 
   return {
@@ -158,7 +156,6 @@ export const useProfilesStore = defineStore('profiles', () => {
     addProfile,
     editProfile,
     deleteProfile,
-    getProfileByName,
     getProfileById
   }
 })

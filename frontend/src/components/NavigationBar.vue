@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import { useRoute, type RouteRecordRaw } from 'vue-router'
+
 import rawRoutes from '@/router/routes'
 
 const route = useRoute()

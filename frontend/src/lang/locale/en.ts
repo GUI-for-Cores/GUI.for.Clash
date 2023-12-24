@@ -27,7 +27,8 @@ export default {
     details: 'Details',
     updateAll: 'Update All',
     updateTime: 'Update Time',
-    keywords: 'Keywords'
+    keywords: 'Keywords',
+    success: 'Success'
   },
   kernel: {
     port: 'HTTP(s) Port',
@@ -289,12 +290,12 @@ export default {
     },
     proxies: 'Proxies',
     use: 'Use',
-    noSubs: 'There are no available subscriptions.',
-    alreadyExists: 'Already Exists'
+    noSubs: 'There are no available subscriptions.'
   },
   profiles: {
     shouldStop: 'Please stop the kernel first.',
-    empty: 'The profiles list is empty, Please {action} a profile first.'
+    empty: 'The profiles list is empty, Please {action} a profile first.',
+    copy: 'Copy to clipboard'
   },
   ruleset: {
     http: 'HTTP',

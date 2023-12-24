@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
+
 import { GetInterfaces } from '@/utils/bridge'
 
 interface Props {

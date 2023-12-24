@@ -1,13 +1,15 @@
 <script setup lang="ts">
+import { stringify } from 'yaml'
 import { computed, ref } from 'vue'
 import { useI18n, I18nT } from 'vue-i18n'
-import { stringify } from 'yaml'
-import { type RuleSetType, type Menu, useRulesetsStore, useAppSettingsStore } from '@/stores'
+
+import { View } from '@/constant'
+import { useMessage } from '@/hooks'
 import { Writefile } from '@/utils/bridge'
-import { formatRelativeTime } from '@/utils/format'
-import { View } from '@/constant/app'
-import { useMessage } from '@/hooks/useMessage'
+import { formatRelativeTime } from '@/utils'
 import { updateProvidersRules } from '@/api/kernel'
+import { type RuleSetType, type Menu, useRulesetsStore, useAppSettingsStore } from '@/stores'
+
 import RulesetForm from './components/RulesetForm.vue'
 import RulesetView from './components/RulesetView.vue'
 
@@ -44,7 +46,7 @@ const handleAddRuleset = async () => {
 const handleUpdateRulesets = async () => {
   try {
     await rulesetsStore.updateRulesets()
-    message.info('success')
+    message.info('common.success')
   } catch (error: any) {
     console.error('updateRulesets: ', error)
     message.info(error)
@@ -67,7 +69,7 @@ const handleUpdateRuleset = async (r: RuleSetType) => {
   try {
     await rulesetsStore.updateRuleset(r.id)
     await _updateProvidersRules(r.name)
-    message.info('success')
+    message.info('common.success')
   } catch (error: any) {
     console.error('updateRuleset: ', error)
     message.info(error)
@@ -77,7 +79,7 @@ const handleUpdateRuleset = async (r: RuleSetType) => {
 const handleDeleteRuleset = async (s: RuleSetType) => {
   try {
     await rulesetsStore.deleteRuleset(s.id)
-    message.info('success')
+    message.info('common.success')
   } catch (error: any) {
     console.error('deleteRuleset: ', error)
     message.info(error)
@@ -87,7 +89,7 @@ const handleDeleteRuleset = async (s: RuleSetType) => {
 const handleDisableRuleset = async (r: RuleSetType) => {
   r.disabled = !r.disabled
   rulesetsStore.editRuleset(r.id, r)
-  message.info('success')
+  message.info('common.success')
 }
 
 const handleClearRuleset = async (r: RuleSetType) => {
@@ -96,7 +98,7 @@ const handleClearRuleset = async (r: RuleSetType) => {
     await _updateProvidersRules(r.name)
     r.count = 0
     rulesetsStore.editRuleset(r.id, r)
-    message.info('success')
+    message.info('common.success')
   } catch (error: any) {
     message.info(error)
     console.log(error)
@@ -210,12 +212,20 @@ const noUpdateNeeded = computed(() => rulesetsStore.rulesets.every((v) => v.disa
         </Button>
       </template>
 
+      <div>
+        {{ t('rulesets.rulesetCount') }}
+        :
+        <Button type="text" size="small">
+          {{ r.count }}
+        </Button>
+      </div>
+      <div>
+        {{ t('ruleset.behavior.name') }}
+        :
+        {{ r.behavior || '--' }}
+      </div>
+
       <template v-if="appSettingsStore.app.rulesetsView === View.Grid">
-        <div>
-          {{ t('ruleset.behavior.name') }}
-          :
-          {{ r.behavior || '--' }}
-        </div>
         <div>
           {{ t('common.updateTime') }}
           :
@@ -223,22 +233,6 @@ const noUpdateNeeded = computed(() => rulesetsStore.rulesets.every((v) => v.disa
         </div>
       </template>
       <template v-else>
-        <div>
-          {{ t('rulesets.rulesetCount') }}
-          :
-          <Button type="text" size="small">
-            {{ r.count }}
-          </Button>
-        </div>
-        <div>
-          {{ t('ruleset.rulesetType') }}
-          :
-          {{ r.type || '--' }}
-          /
-          {{ t('ruleset.behavior.name') }}
-          :
-          {{ r.behavior || '--' }}
-        </div>
         <div>
           {{ t('common.updateTime') }}
           :

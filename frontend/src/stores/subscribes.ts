@@ -1,9 +1,10 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { stringify, parse } from 'yaml'
-import { deepClone, debounce } from '@/utils'
+
 import { Readfile, Writefile, HttpGet } from '@/utils/bridge'
-import { isValidBase64, isValidSubYAML } from '@/utils/is'
+import { SubscribesFilePath, NodeConverterFilePath } from '@/constant'
+import { deepClone, debounce, isValidBase64, isValidSubYAML, sampleID } from '@/utils'
 
 export type SubscribeType = {
   id: string
@@ -20,19 +21,16 @@ export type SubscribeType = {
   include: string
   exclude: string
   disabled: boolean
-  proxies: { name: string; type: string }[]
+  proxies: { id: string; name: string; type: string }[]
   // Not Config
   updating?: boolean
 }
-
-const subscribesFilePath = './data/subscribes.yaml'
-const nodeConverterFilePath = './data/nodeConverter.js'
 
 export const useSubscribesStore = defineStore('subscribes', () => {
   const subscribes = ref<SubscribeType[]>([])
 
   const setupSubscribes = async () => {
-    const data = await Readfile(subscribesFilePath)
+    const data = await Readfile(SubscribesFilePath)
     subscribes.value = parse(data)
   }
 
@@ -41,7 +39,7 @@ export const useSubscribesStore = defineStore('subscribes', () => {
     for (let i = 0; i < s.length; i++) {
       delete s[i].updating
     }
-    await Writefile(subscribesFilePath, stringify(s))
+    await Writefile(SubscribesFilePath, stringify(s))
   }, 500)
 
   const addSubscribe = async (s: SubscribeType) => {
@@ -99,9 +97,9 @@ export const useSubscribesStore = defineStore('subscribes', () => {
     if (isValidBase64(body)) {
       let converterStr = ''
       try {
-        converterStr = await Readfile(nodeConverterFilePath)
+        converterStr = await Readfile(NodeConverterFilePath)
       } catch {
-        throw nodeConverterFilePath + ' Not Found!'
+        throw NodeConverterFilePath + ' Not Found!'
       }
       const url = URL.createObjectURL(new Blob([converterStr]))
       const worker = new Worker(url)
@@ -153,7 +151,7 @@ export const useSubscribesStore = defineStore('subscribes', () => {
     s.total = Number(total)
     s.expire = expire !== '0' ? new Date(Number(expire) * 1000).toLocaleString() : ''
     s.updateTime = new Date().toLocaleString()
-    s.proxies = proxies.map((v: any) => ({ name: v.name, type: v.type }))
+    s.proxies = proxies.map((v: any) => ({ id: sampleID(), name: v.name, type: v.type }))
   }
 
   const updateSubscribe = async (id: string) => {
@@ -190,8 +188,6 @@ export const useSubscribesStore = defineStore('subscribes', () => {
     if (needSave) saveSubscribes()
   }
 
-  const getSubscribeByName = (name: string) => subscribes.value.find((v) => v.name === name)
-
   const getSubscribeById = (id: string) => subscribes.value.find((v) => v.id === id)
 
   return {
@@ -202,7 +198,6 @@ export const useSubscribesStore = defineStore('subscribes', () => {
     deleteSubscribe,
     updateSubscribe,
     updateSubscribes,
-    getSubscribeByName,
     getSubscribeById
   }
 })

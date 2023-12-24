@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useMessage } from '@/hooks/useMessage'
-import { useAppSettingsStore, useKernelApiStore } from '@/stores'
+
+import { useMessage } from '@/hooks'
+import { ProxyGroupType } from '@/constant'
 import { ignoredError, sleep } from '@/utils'
-import { ProxyGroupType } from '@/constant/kernel'
+import { useAppSettingsStore, useKernelApiStore } from '@/stores'
 import {
   useProxy,
   getGroupDelay,

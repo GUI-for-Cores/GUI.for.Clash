@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { ref, computed, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { getKernelLogsWS, updateProvidersRules } from '@/api/kernel'
-import { LogLevelOptions } from '@/constant/kernel'
-import { useBool, useMessage } from '@/hooks'
+import { ref, computed, onUnmounted } from 'vue'
+
 import type { Menu } from '@/stores'
-import { isValidIPV4 } from '@/utils/is'
-import { addToRuleSet } from '@/utils/generator'
+import { LogLevelOptions } from '@/constant'
+import { useBool, useMessage } from '@/hooks'
+import { isValidIPV4, addToRuleSet } from '@/utils'
+import { getKernelLogsWS, updateProvidersRules } from '@/api/kernel'
 
 const logType = ref('info')
 const keywords = ref('')

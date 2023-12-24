@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+
+import { useMessage, useBool } from '@/hooks'
+import { KernelWorkDirectory, getKernelFileName } from '@/constant/kernel'
+import { ignoredError, sleep, generateConfigFile, APP_TITLE } from '@/utils'
 import { useAppSettingsStore, useProfilesStore, useKernelApiStore, useLogsStore } from '@/stores'
-import { ignoredError, sleep } from '@/utils'
-import { generateConfigFile } from '@/utils/generator'
-import { APP_TITLE } from '@/utils/env'
 import {
   KillProcess,
   KernelRunning,
@@ -13,8 +14,7 @@ import {
   ClearSystemProxy,
   GetSystemProxy
 } from '@/utils/bridge'
-import { useMessage, useBool } from '@/hooks'
-import { KernelWorkDirectory, getKernelFileName } from '@/constant/kernel'
+
 import QuickStart from './QuickStart.vue'
 import OverView from './OverView.vue'
 import KernelLogs from './KernelLogs.vue'
@@ -47,7 +47,7 @@ const startKernel = async () => {
     return
   }
 
-  const profile = profilesStore.getProfileByName(currentProfile)
+  const profile = profilesStore.getProfileById(currentProfile)
   if (!profile) {
     message.info('Profile does not exist: ' + currentProfile)
     return
@@ -224,8 +224,8 @@ updateSystemProxyState()
           <Card
             v-for="p in profilesStore.profiles.slice(0, 4)"
             :key="p.id"
-            :selected="appSettingsStore.app.kernel.profile === p.name"
-            @click="appSettingsStore.app.kernel.profile = p.name"
+            :selected="appSettingsStore.app.kernel.profile === p.id"
+            @click="appSettingsStore.app.kernel.profile = p.id"
             class="profiles-card"
           >
             {{ p.name }}

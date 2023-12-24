@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+
 import { ignoredError, sleep } from '@/utils'
 import { useEvents } from '@/hooks/useEvents'
 import {
@@ -9,8 +10,9 @@ import {
   useRulesetsStore,
   useApp
 } from '@/stores'
-import { NavigationBar, MainPage, TitleBar } from '@/components'
+
 import SplashView from '@/views/SplashView.vue'
+import { NavigationBar, MainPage, TitleBar } from '@/components'
 
 const loading = ref(true)
 

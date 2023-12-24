@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import { ref, onUnmounted } from 'vue'
-import type { KernelConnectionsWS } from '@/api/kernel.schema'
-import { getKernelConnectionsWS, deleteConnection, updateProvidersRules } from '@/api/kernel'
+
 import type { Menu } from '@/stores'
 import { useBool, useMessage } from '@/hooks'
-import { formatBytes, formatRelativeTime } from '@/utils/format'
-import { addToRuleSet } from '@/utils/generator'
+import type { KernelConnectionsWS } from '@/api/kernel.schema'
+import { formatBytes, formatRelativeTime, addToRuleSet } from '@/utils'
+import { getKernelConnectionsWS, deleteConnection, updateProvidersRules } from '@/api/kernel'
+
 import type { Column } from '@/components/Table/index.vue'
 
 const columns: Column[] = [

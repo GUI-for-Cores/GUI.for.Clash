@@ -1,10 +1,10 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { stringify, parse } from 'yaml'
-import { deepClone, debounce } from '@/utils'
-import { isValidPaylodYAML } from '@/utils/is'
+
 import { Readfile, Writefile, HttpGet } from '@/utils/bridge'
-import { RulesetBehavior } from '@/constant/kernel'
+import { RulesetsFilePath, RulesetBehavior } from '@/constant'
+import { deepClone, debounce, isValidPaylodYAML } from '@/utils'
 
 export type RuleSetType = {
   id: string
@@ -22,13 +22,11 @@ export type RuleSetType = {
   updating?: boolean
 }
 
-const rulesetsFilePath = './data/rulesets.yaml'
-
 export const useRulesetsStore = defineStore('rulesets', () => {
   const rulesets = ref<RuleSetType[]>([])
 
   const setupRulesets = async () => {
-    const data = await Readfile(rulesetsFilePath)
+    const data = await Readfile(RulesetsFilePath)
     rulesets.value = parse(data)
   }
 
@@ -37,7 +35,7 @@ export const useRulesetsStore = defineStore('rulesets', () => {
     for (let i = 0; i < r.length; i++) {
       delete r[i].updating
     }
-    await Writefile(rulesetsFilePath, stringify(r))
+    await Writefile(RulesetsFilePath, stringify(r))
   }, 500)
 
   const addRuleset = async (r: RuleSetType) => {
@@ -102,8 +100,7 @@ export const useRulesetsStore = defineStore('rulesets', () => {
 
   const updateRuleset = async (id: string) => {
     const r = rulesets.value.find((v) => v.id === id)
-    if (!r) return
-    if (r.disabled) return
+    if (!r || r.disabled || r.type === 'File') return
     try {
       r.updating = true
       await _doUpdateRuleset(r)
@@ -134,8 +131,6 @@ export const useRulesetsStore = defineStore('rulesets', () => {
     if (needSave) saveRulesets()
   }
 
-  const getRulesetByName = (name: string) => rulesets.value.find((v) => v.name === name)
-
   const getRulesetById = (id: string) => rulesets.value.find((v) => v.id === id)
 
   return {
@@ -146,7 +141,6 @@ export const useRulesetsStore = defineStore('rulesets', () => {
     deleteRuleset,
     updateRuleset,
     updateRulesets,
-    getRulesetByName,
     getRulesetById
   }
 })

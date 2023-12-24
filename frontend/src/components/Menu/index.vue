@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { onMounted, onUnmounted } from 'vue'
+
 import type { Menu } from '@/stores'
 
 interface Props {
@@ -34,9 +35,12 @@ onUnmounted(() => document.removeEventListener('click', onClick))
     :style="{ left: position.x + 'px', top: position.y + 'px' }"
     class="menu"
   >
-    <div v-for="menu in menuList" :key="menu.label" @click="handleClick(menu)" class="menu-item">
-      {{ t(menu.label) }}
-    </div>
+    <template v-for="(menu, idx) in menuList">
+      <Divider v-if="menu.separator" :key="idx">{{ t(menu.label) }}</Divider>
+      <div v-else :key="menu.label" @click="handleClick(menu)" class="menu-item">
+        {{ t(menu.label) }}
+      </div>
+    </template>
   </div>
 </template>
 

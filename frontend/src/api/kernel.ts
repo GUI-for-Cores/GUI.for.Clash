@@ -1,7 +1,6 @@
 import { Request } from '@/utils/request'
 import { WebSockets } from '@/utils/websockets'
-import { useAppSettingsStore } from '@/stores/appSettings'
-import { useProfilesStore } from '@/stores/profiles'
+import { useAppSettingsStore, useProfilesStore } from '@/stores'
 import type {
   KernelApiConfig,
   KernelApiProviders,
@@ -27,17 +26,17 @@ enum Api {
 const getCurrentProfile = () => {
   const appSettingsStore = useAppSettingsStore()
   const profilesStore = useProfilesStore()
-  return profilesStore.getProfileByName(appSettingsStore.app.kernel.profile)
+  return profilesStore.getProfileById(appSettingsStore.app.kernel.profile)
 }
 
 const setupKernelApi = () => {
-  let base = 'http://127.0.0.1:9090'
+  let base = 'http://127.0.0.1:20113'
   let bearer = ''
 
   const profile = getCurrentProfile()
 
   if (profile) {
-    const controller = profile.advancedConfig['external-controller'] || '127.0.0.1:9090'
+    const controller = profile.advancedConfig['external-controller'] || '127.0.0.1:20113'
     // TODO: tls
     if (controller.startsWith(':')) {
       base = 'http://127.0.0.1' + controller
@@ -52,13 +51,13 @@ const setupKernelApi = () => {
 }
 
 const setupKernelWSApi = () => {
-  let base = 'ws://127.0.0.1:9090'
+  let base = 'ws://127.0.0.1:20113'
   let bearer = ''
 
   const profile = getCurrentProfile()
 
   if (profile) {
-    const controller = profile.advancedConfig['external-controller'] || '127.0.0.1:9090'
+    const controller = profile.advancedConfig['external-controller'] || '127.0.0.1:20113'
     if (controller.startsWith(':')) {
       base = 'ws://127.0.0.1' + controller
     } else {

@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { ref, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { type ProfileType, useProfilesStore, useAppSettingsStore } from '@/stores'
+
+import { deepClone, sampleID } from '@/utils'
 import { useMessage, useBool } from '@/hooks'
 import * as Defaults from '@/constant/profile'
-import { deepClone, sampleID } from '@/utils'
+import { type ProfileType, useProfilesStore } from '@/stores'
+
 import GeneralConfig from '@/components/Profile/GeneralConfig.vue'
 import AdvancedConfig from '@/components/Profile/AdvancedConfig.vue'
 import TunConfig from '@/components/Profile/TunConfig.vue'
@@ -14,8 +16,8 @@ import RulesConfig from '@/components/Profile/RulesConfig.vue'
 
 interface Props {
   id?: string
-  isUpdate?: boolean
   step?: number
+  isUpdate?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -24,7 +26,6 @@ const props = withDefaults(defineProps<Props>(), {
   step: 0
 })
 
-let oldProfileName = ''
 const currentStep = ref(props.step)
 
 const stepItems = [
@@ -40,18 +41,17 @@ const profile = ref<ProfileType>({
   id: sampleID(),
   name: '',
   generalConfig: Defaults.GeneralConfigDefaults,
-  advancedConfig: Defaults.AdvancedConfigDefaults,
+  advancedConfig: Defaults.AdvancedConfigDefaults(),
   tunConfig: Defaults.TunConfigDefaults,
   dnsConfig: Defaults.DnsConfigDefaults,
-  proxyGroupsConfig: Defaults.ProxyGroupsConfigDefaults,
-  rulesConfig: Defaults.RulesConfigDefaults
+  proxyGroupsConfig: Defaults.ProxyGroupsConfigDefaults(),
+  rulesConfig: Defaults.RulesConfigDefaults()
 })
 
 const { t } = useI18n()
-const [showAdvancedSetting, toggleAdvancedSetting] = useBool(false)
 const { message } = useMessage()
 const profilesStore = useProfilesStore()
-const appSettings = useAppSettingsStore()
+const [showAdvancedSetting, toggleAdvancedSetting] = useBool(false)
 
 const handleCancel = inject('cancel') as any
 
@@ -59,29 +59,22 @@ const handleSubmit = async () => {
   if (props.isUpdate) {
     try {
       await profilesStore.editProfile(props.id, profile.value)
-      updateAppSettingsReferences(profile.value)
       handleCancel()
     } catch (error: any) {
       console.error('editProfile: ', error)
       message.info(error)
       return
     }
-  } else {
-    try {
-      await profilesStore.addProfile(profile.value)
-      handleCancel()
-    } catch (error: any) {
-      console.error('addProfile: ')
-      message.info(error)
-      return
-    }
+    return
   }
-  return
-}
 
-const updateAppSettingsReferences = (profile: ProfileType) => {
-  if (oldProfileName && oldProfileName === appSettings.app.kernel.profile) {
-    appSettings.app.kernel.profile = profile.name
+  try {
+    await profilesStore.addProfile(profile.value)
+    handleCancel()
+  } catch (error: any) {
+    console.error('addProfile: ')
+    message.info(error)
+    return
   }
 }
 
@@ -90,20 +83,12 @@ const handlePrevStep = () => {
 }
 
 const handleNextStep = async () => {
-  const { name } = profile.value
-
-  if (!props.isUpdate && profilesStore.getProfileByName(name)) {
-    message.info(name + ' ' + t('profile.alreadyExists'))
-    return
-  }
-
   currentStep.value++
 }
 
 if (props.isUpdate) {
   const p = profilesStore.getProfileById(props.id)
   if (p) {
-    oldProfileName = p.name
     profile.value = deepClone(p)
   }
 }

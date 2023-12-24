@@ -1,8 +1,7 @@
 import { onMounted, onUnmounted } from 'vue'
 
-import { useLogsStore } from '@/stores/logs'
-import { useAppSettingsStore } from '@/stores/appSettings'
 import { EventsOff, EventsOn } from '@/utils/bridge'
+import { useLogsStore, useAppSettingsStore } from '@/stores'
 
 export const useEvents = () => {
   const logsStore = useLogsStore()

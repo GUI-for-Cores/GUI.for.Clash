@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed, provide } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { computed, provide } from 'vue'
+
 import { WindowFullscreen, WindowIsFullscreen, WindowUnfullscreen } from '@/utils/bridge'
 
 interface Props {

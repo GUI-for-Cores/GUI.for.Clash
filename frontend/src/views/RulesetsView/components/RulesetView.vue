@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ref, computed, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { parse, stringify } from 'yaml'
+import { ref, computed, inject } from 'vue'
+
 import { useMessage } from '@/hooks'
 import { deepClone, ignoredError } from '@/utils'
-import { Readfile, Writefile } from '@/utils/bridge'
 import { updateProvidersRules } from '@/api/kernel'
+import { Readfile, Writefile } from '@/utils/bridge'
 import { type RuleSetType, type Menu, useRulesetsStore, useAppSettingsStore } from '@/stores'
 
 interface Props {
@@ -56,14 +57,17 @@ const appSettings = useAppSettingsStore()
 
 const handleSave = async () => {
   if (!ruleset.value) return
+  loading.value = true
   try {
     await Writefile(ruleset.value.path, stringify({ payload: rulesetList.value }))
     await _updateProvidersRules(ruleset.value.name)
-    message.info('success')
+    message.info('common.success')
+    handleCancel()
   } catch (error: any) {
     message.info(error)
     console.log(error)
   }
+  loading.value = false
 }
 
 const _updateProvidersRules = async (ruleset: string) => {
@@ -77,10 +81,9 @@ const resetForm = () => {
 }
 
 const initRulesetList = async (r: RuleSetType) => {
-  const content = (await ignoredError(Readfile, r.path)) || '{payload:[]}'
-  const { payload } = parse(content)
+  const content = (await ignoredError(Readfile, r.path)) || '{}'
+  const { payload = [] } = parse(content)
   rulesetList.value = payload
-  console.log(payload)
 }
 
 const r = rulesetsStore.getRulesetById(props.id)

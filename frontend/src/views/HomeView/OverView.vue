@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { ref, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { ModeOptions } from '@/constant/kernel'
-import { formatBytes } from '@/utils/format'
-import { useKernelApiStore } from '@/stores'
+
 import { useBool } from '@/hooks'
+import { formatBytes } from '@/utils'
+import { useKernelApiStore } from '@/stores'
+import { ModeOptions } from '@/constant/kernel'
 import { getConnections, deleteConnection, getKernelWS } from '@/api/kernel'
+
 import ConnectionsController from './ConnectionsController.vue'
 
 const trafficHistory = ref<[number[], number[]]>([[], []])

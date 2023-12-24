@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { nextTick, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { nextTick, onMounted, ref } from 'vue'
+
 import { debounce } from '@/utils'
 
 interface Props {
@@ -83,6 +84,7 @@ defineExpose({
       :placeholder="placeholder"
       :type="type"
       :style="width && 'width: ' + width"
+      :disabled="disabled"
       @input="($event) => onInput($event)"
       @blur="onSubmit"
       @keydown.enter="inputRef?.blur"
@@ -119,7 +121,9 @@ defineExpose({
 }
 
 .disabled {
-  pointer-events: none;
+  input {
+    cursor: not-allowed;
+  }
 }
 
 .border {

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { ref, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { ref, watch, nextTick } from 'vue'
 
 interface Props {
   position: { x: number; y: number }

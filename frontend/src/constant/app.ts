@@ -1,3 +1,11 @@
+export const ProfilesFilePath = './data/profiles.yaml'
+
+export const SubscribesFilePath = './data/subscribes.yaml'
+
+export const NodeConverterFilePath = './data/nodeConverter.js'
+
+export const RulesetsFilePath = './data/rulesets.yaml'
+
 export enum WindowStartState {
   Normal = 0,
   // Maximised = 1,

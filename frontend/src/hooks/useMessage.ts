@@ -1,10 +1,12 @@
-import { APP_TITLE } from '@/utils/env'
+import { useI18n } from 'vue-i18n'
+import { APP_TITLE } from '@/utils'
 
 const ID = APP_TITLE + '-toast'
 
 class Message {
   private dom: HTMLElement
   private instances: { [key: string]: HTMLElement }
+  private t: any
   constructor() {
     this.dom = document.getElementById(ID) || document.createElement('div')
     this.dom.id = ID
@@ -17,6 +19,9 @@ class Message {
     `
     document.body.appendChild(this.dom)
     this.instances = {}
+
+    const { t } = useI18n()
+    this.t = t
   }
 
   public info = (msg: string, duration = 3) => {
@@ -33,7 +38,7 @@ class Message {
     `
     const id = 'ID-' + Math.random()
     info.id = id
-    info.textContent = msg
+    info.textContent = this.t(msg)
 
     this.instances[id] = info
     this.dom.appendChild(info)

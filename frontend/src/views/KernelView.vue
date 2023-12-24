@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+
+import { useMessage } from '@/hooks'
+import { ignoredError } from '@/utils'
+import { useAppSettingsStore } from '@/stores'
+import { KernelWorkDirectory, getKernelFileName } from '@/constant'
 import {
   Download,
   UnzipZIPFile,
@@ -12,10 +17,6 @@ import {
   GetEnv,
   Makedir
 } from '@/utils/bridge'
-import { KernelWorkDirectory, getKernelFileName } from '@/constant/kernel'
-import { useMessage } from '@/hooks/useMessage'
-import { useAppSettingsStore } from '@/stores'
-import { ignoredError } from '@/utils'
 
 const releaseUrl = 'https://api.github.com/repos/MetaCubeX/mihomo/releases/latest'
 const alphaUrl = 'https://api.github.com/repos/MetaCubeX/mihomo/releases/tags/Prerelease-Alpha'

@@ -1,4 +1,5 @@
 import { type Directive, type DirectiveBinding } from 'vue'
+
 import { useApp } from '@/stores'
 import { debounce } from '@/utils'
 

@@ -1,9 +1,10 @@
 import { ref, watch } from 'vue'
 import { defineStore } from 'pinia'
 import { parse, stringify } from 'yaml'
+
 import i18n from '@/lang'
-import { Theme, WindowStartState, Lang, View, Color, Colors } from '@/constant/app'
 import { debounce } from '@/utils'
+import { Theme, WindowStartState, Lang, View, Color, Colors } from '@/constant'
 import { WindowSetDarkTheme, WindowSetLightTheme, Readfile, Writefile } from '@/utils/bridge'
 
 type AppSettings = {

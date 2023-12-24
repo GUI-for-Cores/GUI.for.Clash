@@ -1,4 +1,5 @@
 import { useI18n } from 'vue-i18n'
+
 import i18n from '@/lang'
 
 export function formatBytes(bytes: number, decimals: number = 2): string {
