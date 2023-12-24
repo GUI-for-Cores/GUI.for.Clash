@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { ref, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { type RuleSetType, useRulesetsStore, useProfilesStore } from '@/stores'
-import { useMessage } from '@/hooks/useMessage'
-import { useBool } from '@/hooks/useBool'
+
+import { useBool } from '@/hooks'
+import { useMessage } from '@/hooks'
 import { deepClone, sampleID } from '@/utils'
-import { RulesetBehavior, RulesetFormatOptions } from '@/constant/kernel'
+import { type RuleSetType, useRulesetsStore } from '@/stores'
+import { RulesetBehavior, RulesetFormatOptions, RulesetBehaviorOptions } from '@/constant'
 
 interface Props {
   id?: string
@@ -16,8 +17,6 @@ const props = withDefaults(defineProps<Props>(), {
   id: '',
   isUpdate: false
 })
-
-let oldRulesetName = ''
 
 const ruleset = ref<RuleSetType>({
   id: sampleID(),
@@ -37,7 +36,6 @@ const { t } = useI18n()
 const { message } = useMessage()
 const [showMore, toggleShowMore] = useBool(false)
 const rulesetsStore = useRulesetsStore()
-const profilesStore = useProfilesStore()
 
 const handleCancel = inject('cancel') as any
 
@@ -45,43 +43,26 @@ const handleSubmit = async () => {
   if (props.isUpdate) {
     try {
       await rulesetsStore.editRuleset(props.id, ruleset.value)
-      updateProfilesReferences()
       handleCancel()
     } catch (error: any) {
       console.error('editRuleset: ', error)
       message.info(error)
     }
-  } else {
-    try {
-      await rulesetsStore.addRuleset(ruleset.value)
-      handleCancel()
-    } catch (error: any) {
-      console.error('addRuleset: ', error)
-      message.info(error)
-    }
+    return
   }
-}
 
-const updateProfilesReferences = () => {
-  profilesStore.profiles.forEach((profile) => {
-    const needUpdate = profile.proxyGroupsConfig.some((group) => group.use.includes(oldRulesetName))
-    if (needUpdate) {
-      profile.proxyGroupsConfig.forEach((group) => {
-        group.use = group.use.map((v) => (v === oldRulesetName ? ruleset.value.name : v))
-      })
-      try {
-        profilesStore.saveProfiles()
-      } catch (error) {
-        console.log(error)
-      }
-    }
-  })
+  try {
+    await rulesetsStore.addRuleset(ruleset.value)
+    handleCancel()
+  } catch (error: any) {
+    console.error('addRuleset: ', error)
+    message.info(error)
+  }
 }
 
 if (props.isUpdate) {
   const r = rulesetsStore.getRulesetById(props.id)
   if (r) {
-    oldRulesetName = r.name
     ruleset.value = deepClone(r)
   }
 }
@@ -104,20 +85,13 @@ if (props.isUpdate) {
     <div class="name">
       {{ t('ruleset.behavior.name') }}
     </div>
-    <Radio
-      v-model="ruleset.behavior"
-      :options="[
-        { label: 'ruleset.behavior.classical', value: RulesetBehavior.Classical },
-        { label: 'ruleset.behavior.domain', value: RulesetBehavior.Domain },
-        { label: 'ruleset.behavior.ipcidr', value: RulesetBehavior.Ipcidr }
-      ]"
-    />
+    <Radio v-model="ruleset.behavior" :options="RulesetBehaviorOptions" />
   </div>
   <div class="form-item">
     <div class="name">* {{ t('ruleset.name') }}</div>
     <Input v-model="ruleset.name" auto-size autofocus class="input" />
   </div>
-  <div class="form-item">
+  <div v-show="ruleset.type === 'Http'" class="form-item">
     <div class="name">* {{ t('ruleset.url') }}</div>
     <Input
       v-model="ruleset.url"
@@ -159,7 +133,7 @@ if (props.isUpdate) {
     <Button @click="handleCancel">{{ t('common.cancel') }}</Button>
     <Button
       @click="handleSubmit"
-      :disable="!ruleset.name || !ruleset.url || !ruleset.path"
+      :disable="!ruleset.name || !ruleset.path || (ruleset.type === 'Http' && !ruleset.url)"
       type="primary"
     >
       {{ t('common.save') }}

@@ -27,7 +27,8 @@ export default {
     details: '详情',
     updateAll: '更新全部',
     updateTime: '更新时间',
-    keywords: '关键词'
+    keywords: '关键词',
+    success: '成功'
   },
   kernel: {
     port: 'HTTP(s)代理端口',
@@ -289,12 +290,12 @@ export default {
     },
     proxies: '使用节点',
     use: '使用订阅',
-    noSubs: '没有可用的订阅',
-    alreadyExists: '已存在'
+    noSubs: '没有可用的订阅'
   },
   profiles: {
     shouldStop: '请先停止内核',
-    empty: '配置列表为空，请先{action}配置。'
+    empty: '配置列表为空，请先{action}配置。',
+    copy: '复制到剪切板'
   },
   ruleset: {
     http: 'HTTP',

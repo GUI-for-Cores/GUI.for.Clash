@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import { ref, computed, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { parse, stringify } from 'yaml'
-import { ProxyTypeOptions } from '@/constant/kernel'
+import { ref, computed, inject } from 'vue'
+
 import { useMessage } from '@/hooks'
+import { ProxyTypeOptions } from '@/constant'
 import { deepClone, ignoredError } from '@/utils'
 import { Readfile, Writefile } from '@/utils/bridge'
 import { updateProvidersProxies } from '@/api/kernel'
 import {
+  type Menu,
   type SubscribeType,
   useSubscribesStore,
-  type Menu,
   useAppSettingsStore,
   useProfilesStore
 } from '@/stores'
@@ -88,8 +89,8 @@ const handleSubmit = async () => {
   loading.value = true
   try {
     const { path, proxies, id } = sub.value
-    const content = (await ignoredError(Readfile, path)) || '{proxies: []}'
-    const { proxies: _proxies } = parse(content)
+    const content = (await ignoredError(Readfile, path)) || '{}'
+    const { proxies: _proxies = [] } = parse(content)
     const filteredProxies = _proxies.filter((v: any) => proxies.some((vv) => vv.name === v.name))
     await Writefile(path, stringify({ proxies: filteredProxies }))
     await subscribeStore.editSubscribe(id, sub.value)
@@ -112,7 +113,7 @@ const resetForm = () => {
 const _updateProvidersProxies = async (subName: string) => {
   const { running, profile } = appSettings.app.kernel
   if (running) {
-    const _profile = profilesStore.getProfileByName(profile)
+    const _profile = profilesStore.getProfileById(profile)
     if (!_profile) return
     const needUpdate = _profile.proxyGroupsConfig.some((v) => v.use.includes(subName))
     if (needUpdate) {

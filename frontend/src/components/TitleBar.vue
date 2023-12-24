@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useAppSettingsStore } from '@/stores/appSettings'
-import { APP_TITLE, APP_VERSION } from '@/utils/env'
-import { ignoredError } from '@/utils'
-import { type Menu } from '@/stores/app'
+
+import { type Menu, useAppSettingsStore } from '@/stores'
+import { APP_TITLE, APP_VERSION, ignoredError } from '@/utils'
 import {
   WindowFullscreen,
   WindowIsFullscreen,

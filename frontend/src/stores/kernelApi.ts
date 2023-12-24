@@ -1,7 +1,8 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import { getConfigs, setConfigs, getProxies, getProviders } from '@/api/kernel'
+
 import type { KernelApiConfig, Proxy } from '@/api/kernel.schema'
+import { getConfigs, setConfigs, getProxies, getProviders } from '@/api/kernel'
 
 export const useKernelApiStore = defineStore('kernelApi', () => {
   const config = ref<KernelApiConfig>({

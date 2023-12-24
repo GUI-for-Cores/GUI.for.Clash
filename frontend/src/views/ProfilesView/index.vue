@@ -1,9 +1,14 @@
 <script setup lang="ts">
+import { stringify } from 'yaml'
 import { computed, ref } from 'vue'
 import { useI18n, I18nT } from 'vue-i18n'
-import { type ProfileType, type Menu, useProfilesStore, useAppSettingsStore } from '@/stores'
+
 import { View } from '@/constant/app'
+import { generateConfig } from '@/utils'
 import { useMessage } from '@/hooks/useMessage'
+import { ClipboardSetText } from '@/utils/bridge'
+import { type ProfileType, type Menu, useProfilesStore, useAppSettingsStore } from '@/stores'
+
 import ProfileForm from './components/ProfileForm.vue'
 
 const profileID = ref()
@@ -18,18 +23,40 @@ const profilesStore = useProfilesStore()
 const appSettingsStore = useAppSettingsStore()
 
 const menus: Menu[] = [
-  'profile.step.name',
-  'profile.step.general',
-  'profile.step.tun',
-  'profile.step.dns',
-  'profile.step.groups',
-  'profile.step.rules'
-].map((v, i) => {
-  return {
-    label: v,
-    handler: (p: ProfileType) => handleEditProfile(p, i)
+  ...[
+    'profile.step.name',
+    'profile.step.general',
+    'profile.step.tun',
+    'profile.step.dns',
+    'profile.step.groups',
+    'profile.step.rules'
+  ].map((v, i) => {
+    return {
+      label: v,
+      handler: (id: string) => {
+        const p = profilesStore.getProfileById(id)
+        p && handleEditProfile(p, i)
+      }
+    }
+  }),
+  {
+    label: 'profiles.copy',
+    handler: async (id: string) => {
+      const p = profilesStore.getProfileById(id)
+      if (!p) return
+      try {
+        const config = await generateConfig(p)
+        const str = stringify(config)
+        const ok = await ClipboardSetText(str)
+        if (!ok) throw 'ClipboardSetText Error'
+        console.log(config)
+        message.info('common.success')
+      } catch (error: any) {
+        message.info(error)
+      }
+    }
   }
-})
+]
 
 const handleAddProfile = async () => {
   isUpdate.value = false
@@ -47,7 +74,7 @@ const handleEditProfile = (p: ProfileType, step = 0) => {
 const handleDeleteProfile = async (p: ProfileType) => {
   try {
     await profilesStore.deleteProfile(p.id)
-    message.info('success')
+    message.info('common.success')
   } catch (error: any) {
     console.error('deleteProfile: ', error)
     message.info(error)
@@ -59,7 +86,7 @@ const handleUseProfile = async (p: ProfileType) => {
     message.info(t('profiles.shouldStop'))
     return
   }
-  appSettingsStore.app.kernel.profile = p.name
+  appSettingsStore.app.kernel.profile = p.id
 }
 </script>
 
@@ -94,9 +121,9 @@ const handleUseProfile = async (p: ProfileType) => {
       v-for="p in profilesStore.profiles"
       :key="p.name"
       :title="p.name"
-      :selected="appSettingsStore.app.kernel.profile === p.name"
+      :selected="appSettingsStore.app.kernel.profile === p.id"
       @dblclick="handleUseProfile(p)"
-      v-menu="menus.map((v) => ({ ...v, handler: () => v.handler?.(p) }))"
+      v-menu="menus.map((v) => ({ ...v, handler: () => v.handler?.(p.id) }))"
       class="profile"
     >
       <template v-if="appSettingsStore.app.profilesView === View.Grid" #extra>

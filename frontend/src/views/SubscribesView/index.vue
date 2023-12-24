@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useI18n, I18nT } from 'vue-i18n'
-import { type SubscribeType, type Menu, useSubscribesStore, useAppSettingsStore } from '@/stores'
-import { formatBytes, formatRelativeTime } from '@/utils/format'
+
+import { View } from '@/constant'
+import { useMessage } from '@/hooks'
 import { BrowserOpenURL } from '@/utils/bridge'
-import { View } from '@/constant/app'
-import { useMessage } from '@/hooks/useMessage'
-import SubscribeForm from './components/SubscribeForm.vue'
+import { formatBytes, formatRelativeTime } from '@/utils'
+import { type SubscribeType, type Menu, useSubscribesStore, useAppSettingsStore } from '@/stores'
+
 import ProxiesView from './components/ProxiesView.vue'
+import SubscribeForm from './components/SubscribeForm.vue'
 
 const showSubForm = ref(false)
 const showProxies = ref(false)

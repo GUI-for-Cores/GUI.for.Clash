@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { useKernelApiStore } from '@/stores'
-import { StackOptions } from '@/constant/kernel'
+
+import { useMessage } from '@/hooks'
 import { updateGEO } from '@/api/kernel'
-import { useMessage } from '@/hooks/useMessage'
+import { StackOptions } from '@/constant'
+import { useKernelApiStore } from '@/stores'
+
 import InterfaceSelect from '@/components/Profile/InterfaceSelect.vue'
 
 const { t } = useI18n()

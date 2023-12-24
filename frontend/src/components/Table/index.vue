@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { type CSSProperties } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { type CSSProperties } from 'vue'
+
 import { getValue } from '@/utils'
 import type { Menu } from '@/stores'
 

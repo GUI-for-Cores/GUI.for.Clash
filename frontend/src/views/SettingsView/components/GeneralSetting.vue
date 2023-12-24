@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useAppSettingsStore } from '@/stores/appSettings'
-import { Theme, Lang, WindowStartState, Color } from '@/constant/app'
-import { useMessage } from '@/hooks/useMessage'
-import { APP_TITLE } from '@/utils/env'
-import { getTaskSchXmlString } from '@/utils/taskSch'
+
+import { useMessage } from '@/hooks'
+import { useAppSettingsStore } from '@/stores'
+import { APP_TITLE, getTaskSchXmlString } from '@/utils'
+import { Theme, Lang, WindowStartState, Color } from '@/constant'
 import {
   CheckPermissions,
   SwitchPermissions,

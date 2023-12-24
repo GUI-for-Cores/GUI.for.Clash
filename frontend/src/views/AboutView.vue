@@ -1,16 +1,10 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import {
-  APP_TITLE,
-  APP_VERSION,
-  PROJECT_URL,
-  TG_GROUP,
-  TG_CHANNEL,
-  APP_VERSION_API
-} from '@/utils/env'
-import { Download, HttpGetJSON, BrowserOpenURL, Movefile, GetEnv } from '@/utils/bridge'
+import { ref, computed } from 'vue'
+
 import { useMessage } from '@/hooks'
+import { Download, HttpGetJSON, BrowserOpenURL, Movefile, GetEnv } from '@/utils/bridge'
+import { APP_TITLE, APP_VERSION, PROJECT_URL, TG_GROUP, TG_CHANNEL, APP_VERSION_API } from '@/utils'
 
 let downloadUrl = ''
 

@@ -1,4 +1,5 @@
 import { type RouteRecordRaw } from 'vue-router'
+
 import HomeView from '@/views/HomeView/index.vue'
 import SubscribesView from '@/views/SubscribesView/index.vue'
 import SettingsView from '@/views/SettingsView/index.vue'

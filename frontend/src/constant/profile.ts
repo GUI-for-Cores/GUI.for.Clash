@@ -1,5 +1,6 @@
-import type { ProfileType } from '@/stores/profiles'
 import { sampleID } from '@/utils'
+import type { ProfileType } from '@/stores'
+import { ProxyGroup } from '@/constant'
 
 export const GeneralConfigDefaults: ProfileType['generalConfig'] = {
   mode: 'rule',
@@ -11,7 +12,7 @@ export const GeneralConfigDefaults: ProfileType['generalConfig'] = {
   'interface-name': 'WLAN'
 }
 
-export const AdvancedConfigDefaults: ProfileType['advancedConfig'] = {
+export const AdvancedConfigDefaults = (): ProfileType['advancedConfig'] => ({
   port: 0,
   'socks-port': 0,
   secret: sampleID(),
@@ -45,7 +46,7 @@ export const AdvancedConfigDefaults: ProfileType['advancedConfig'] = {
     'store-selected': true,
     'store-fake-ip': true
   }
-}
+})
 
 export const TunConfigDefaults: ProfileType['tunConfig'] = {
   // System proxy is supported, which is simpler than tun mode
@@ -83,89 +84,97 @@ export const DnsConfigDefaults: ProfileType['dnsConfig'] = {
   'prefer-h3': true
 }
 
-export const ProxyGroupsConfigDefaults: ProfileType['proxyGroupsConfig'] = [
-  {
-    id: sampleID(),
-    name: '🚀 节点选择',
-    type: 'select',
-    proxies: [{ type: 'Built-In', name: '🎈 自动选择' }],
-    url: 'https://www.gstatic.com/generate_204',
-    interval: 300,
-    strategy: 'consistent-hashing',
-    use: [],
-    tolerance: 150,
-    lazy: true,
-    'disable-udp': false,
-    filter: ''
-  },
-  {
-    id: sampleID(),
-    name: '🎈 自动选择',
-    type: 'url-test',
-    proxies: [],
-    url: 'https://www.gstatic.com/generate_204',
-    interval: 300,
-    strategy: 'consistent-hashing',
-    use: [],
-    tolerance: 150,
-    lazy: true,
-    'disable-udp': false,
-    filter: ''
-  },
-  {
-    id: sampleID(),
-    name: '🎯 全球直连',
-    type: 'select',
-    proxies: [
-      { type: 'Built-In', name: 'DIRECT' },
-      { type: 'Built-In', name: 'REJECT' }
-    ],
-    url: 'https://www.gstatic.com/generate_204',
-    interval: 300,
-    strategy: 'consistent-hashing',
-    use: [],
-    tolerance: 150,
-    lazy: true,
-    'disable-udp': false,
-    filter: ''
-  },
-  {
-    id: sampleID(),
-    name: '🛑 全球拦截',
-    type: 'select',
-    proxies: [
-      { type: 'Built-In', name: 'REJECT' },
-      { type: 'Built-In', name: 'DIRECT' }
-    ],
-    url: 'https://www.gstatic.com/generate_204',
-    interval: 300,
-    strategy: 'consistent-hashing',
-    use: [],
-    tolerance: 150,
-    lazy: true,
-    'disable-udp': false,
-    filter: ''
-  },
-  {
-    id: sampleID(),
-    name: '🐟 漏网之鱼',
-    type: 'select',
-    proxies: [
-      { type: 'Built-In', name: '🚀 节点选择' },
-      { type: 'Built-In', name: '🎯 全球直连' }
-    ],
-    url: 'https://www.gstatic.com/generate_204',
-    interval: 300,
-    strategy: 'consistent-hashing',
-    use: [],
-    tolerance: 150,
-    lazy: true,
-    'disable-udp': false,
-    filter: ''
-  }
-]
+export const ProxyGroupsConfigDefaults = (): ProfileType['proxyGroupsConfig'] => {
+  const id1 = sampleID() // 🚀 节点选择
+  const id2 = sampleID() // 🎈 自动选择
+  const id3 = sampleID() // 🎯 全球直连
+  const id4 = sampleID() // 🛑 全球拦截
+  const id5 = sampleID() // 🐟 漏网之鱼
 
-export const RulesConfigDefaults: ProfileType['rulesConfig'] = [
+  return [
+    {
+      id: id1,
+      name: '🚀 节点选择',
+      type: ProxyGroup.Select,
+      proxies: [{ id: id2, type: 'Built-In', name: '🎈 自动选择' }],
+      url: 'https://www.gstatic.com/generate_204',
+      interval: 300,
+      strategy: 'consistent-hashing',
+      use: [],
+      tolerance: 150,
+      lazy: true,
+      'disable-udp': false,
+      filter: ''
+    },
+    {
+      id: id2,
+      name: '🎈 自动选择',
+      type: ProxyGroup.UrlTest,
+      proxies: [],
+      url: 'https://www.gstatic.com/generate_204',
+      interval: 300,
+      strategy: 'consistent-hashing',
+      use: [],
+      tolerance: 150,
+      lazy: true,
+      'disable-udp': false,
+      filter: ''
+    },
+    {
+      id: id3,
+      name: '🎯 全球直连',
+      type: ProxyGroup.Select,
+      proxies: [
+        { id: 'DIRECT', type: 'Built-In', name: 'DIRECT' },
+        { id: 'REJECT', type: 'Built-In', name: 'REJECT' }
+      ],
+      url: 'https://www.gstatic.com/generate_204',
+      interval: 300,
+      strategy: 'consistent-hashing',
+      use: [],
+      tolerance: 150,
+      lazy: true,
+      'disable-udp': false,
+      filter: ''
+    },
+    {
+      id: id4,
+      name: '🛑 全球拦截',
+      type: ProxyGroup.Select,
+      proxies: [
+        { id: 'REJECT', type: 'Built-In', name: 'REJECT' },
+        { id: 'DIRECT', type: 'Built-In', name: 'DIRECT' }
+      ],
+      url: 'https://www.gstatic.com/generate_204',
+      interval: 300,
+      strategy: 'consistent-hashing',
+      use: [],
+      tolerance: 150,
+      lazy: true,
+      'disable-udp': false,
+      filter: ''
+    },
+    {
+      id: id5,
+      name: '🐟 漏网之鱼',
+      type: ProxyGroup.Select,
+      proxies: [
+        { id: id1, type: 'Built-In', name: '🚀 节点选择' },
+        { id: id3, type: 'Built-In', name: '🎯 全球直连' }
+      ],
+      url: 'https://www.gstatic.com/generate_204',
+      interval: 300,
+      strategy: 'consistent-hashing',
+      use: [],
+      tolerance: 150,
+      lazy: true,
+      'disable-udp': false,
+      filter: ''
+    }
+  ]
+}
+
+export const RulesConfigDefaults = (): ProfileType['rulesConfig'] => [
   {
     id: sampleID(),
     type: 'GEOSITE',

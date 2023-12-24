@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { inject, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useMessage } from '@/hooks/useMessage'
+
 import { sampleID } from '@/utils'
-import * as Defaults from '@/constant/profile'
+import { useMessage } from '@/hooks'
+import * as Defaults from '@/constant'
 import {
   useProfilesStore,
   useAppSettingsStore,
@@ -33,11 +34,11 @@ const handleSubmit = async () => {
     id: profileID,
     name: profileID,
     generalConfig: Defaults.GeneralConfigDefaults,
-    advancedConfig: Defaults.AdvancedConfigDefaults,
+    advancedConfig: Defaults.AdvancedConfigDefaults(),
     tunConfig: Defaults.TunConfigDefaults,
     dnsConfig: Defaults.DnsConfigDefaults,
-    proxyGroupsConfig: Defaults.ProxyGroupsConfigDefaults,
-    rulesConfig: Defaults.RulesConfigDefaults
+    proxyGroupsConfig: Defaults.ProxyGroupsConfigDefaults(),
+    rulesConfig: Defaults.RulesConfigDefaults()
   }
 
   profile.proxyGroupsConfig[0].use = [subscribeID]

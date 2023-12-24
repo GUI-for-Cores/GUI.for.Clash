@@ -148,10 +148,6 @@ export const RulesTypeOptions = [
     value: 'DOMAIN-KEYWORD'
   },
   {
-    label: 'kernel.rules.type.GEOIP',
-    value: 'GEOIP'
-  },
-  {
     label: 'kernel.rules.type.IP-CIDR',
     value: 'IP-CIDR'
   },
@@ -278,18 +274,9 @@ export enum RulesetBehavior {
 }
 
 export const RulesetBehaviorOptions = [
-  {
-    label: 'domain',
-    value: RulesetBehavior.Domain
-  },
-  {
-    label: 'ipcidr',
-    value: RulesetBehavior.Ipcidr
-  },
-  {
-    label: 'classical',
-    value: RulesetBehavior.Classical
-  }
+  { label: 'ruleset.behavior.classical', value: RulesetBehavior.Classical },
+  { label: 'ruleset.behavior.domain', value: RulesetBehavior.Domain },
+  { label: 'ruleset.behavior.ipcidr', value: RulesetBehavior.Ipcidr }
 ]
 
 export const RulesetFormatOptions = [
