@@ -66,7 +66,8 @@ const menus: Menu[] = [
 
 <template>
   <div @dblclick="toggleFullScreen" class="titlebar" style="--wails-draggable: drag">
-    <img class="logo" draggable="false" src="@/assets/logo.png" />
+    <!-- <img class="logo" draggable="false" src="@/assets/logo.png" /> -->
+    <Icon icon="hohoho" />
     <div
       :style="{
         color: appSettingsStore.app.kernel.running ? 'var(--primary-color)' : 'var(--color)'
