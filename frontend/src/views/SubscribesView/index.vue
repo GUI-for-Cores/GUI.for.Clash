@@ -4,8 +4,9 @@ import { useI18n, I18nT } from 'vue-i18n'
 
 import { View } from '@/constant'
 import { useMessage } from '@/hooks'
+import { DraggableOptions } from '@/constant'
 import { BrowserOpenURL } from '@/utils/bridge'
-import { formatBytes, formatRelativeTime } from '@/utils'
+import { formatBytes, formatRelativeTime, debounce } from '@/utils'
 import { type SubscribeType, type Menu, useSubscribesStore, useAppSettingsStore } from '@/stores'
 
 import ProxiesView from './components/ProxiesView.vue'
@@ -88,6 +89,8 @@ const noUpdateNeeded = computed(() => subscribeStore.subscribes.every((v) => v.d
 const clacTrafficPercent = (s: any) => ((s.upload + s.download) / s.total) * 100
 
 const clacTrafficStatus = (s: any) => (clacTrafficPercent(s) > 80 ? 'warning' : 'primary')
+
+const onSortUpdate = debounce(subscribeStore.saveSubscribes, 1000)
 </script>
 
 <template>
@@ -124,7 +127,11 @@ const clacTrafficStatus = (s: any) => (clacTrafficPercent(s) > 80 ? 'warning' : 
     </Empty>
   </div>
 
-  <div class="subscribes" :class="appSettingsStore.app.subscribesView">
+  <div
+    v-draggable="[subscribeStore.subscribes, { ...DraggableOptions, onUpdate: onSortUpdate }]"
+    class="subscribes"
+    :class="appSettingsStore.app.subscribesView"
+  >
     <Card
       v-for="s in subscribeStore.subscribes"
       :key="s.name"

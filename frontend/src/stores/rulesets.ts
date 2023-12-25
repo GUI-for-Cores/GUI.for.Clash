@@ -136,6 +136,7 @@ export const useRulesetsStore = defineStore('rulesets', () => {
   return {
     rulesets,
     setupRulesets,
+    saveRulesets,
     addRuleset,
     editRuleset,
     deleteRuleset,
