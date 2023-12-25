@@ -21,9 +21,9 @@ export const generateRule = (rule: ProfileType['rulesConfig'][0]) => {
   }
   ruleStr += ',' + proxy
 
-  const supportPayload = ['GEOIP', 'IP-CIDR', 'IP-CIDR6', 'SCRIPT', 'RULE-SET'].includes(type)
+  const supportNoResolve = ['GEOIP', 'IP-CIDR', 'IP-CIDR6', 'SCRIPT', 'RULE-SET'].includes(type)
 
-  if (noResolve && supportPayload) {
+  if (noResolve && supportNoResolve) {
     ruleStr += ',no-resolve'
   }
   return ruleStr
