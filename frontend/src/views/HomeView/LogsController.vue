@@ -13,9 +13,17 @@ const keywords = ref('')
 const logs = ref<{ type: string; payload: string }[]>([])
 const keywordsRegexp = computed(() => new RegExp(keywords.value))
 
+const LogLevelMap: Record<string, string[]> = {
+  silent: ['silent'],
+  error: ['error'],
+  warning: ['error', 'warning'],
+  info: ['error', 'warning', 'info'],
+  debug: ['error', 'warning', 'info', 'debug']
+}
+
 const filteredLogs = computed(() => {
   return logs.value.filter((v) => {
-    const hitType = logType.value ? logType.value === v.type : true
+    const hitType = LogLevelMap[logType.value].includes(v.type)
     const hitName = keywordsRegexp.value.test(v.payload)
     return hitName && hitType
   })
