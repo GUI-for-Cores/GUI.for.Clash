@@ -66,6 +66,10 @@ export function Removefile(arg1) {
   return window['go']['bridge']['App']['Removefile'](arg1);
 }
 
+export function RestartApp() {
+  return window['go']['bridge']['App']['RestartApp']();
+}
+
 export function SetSystemProxy(arg1, arg2) {
   return window['go']['bridge']['App']['SetSystemProxy'](arg1, arg2);
 }

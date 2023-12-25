@@ -34,6 +34,8 @@ export function Readfile(arg1:string):Promise<bridge.FlagResult>;
 
 export function Removefile(arg1:string):Promise<bridge.FlagResult>;
 
+export function RestartApp():Promise<bridge.FlagResult>;
+
 export function SetSystemProxy(arg1:boolean,arg2:string):Promise<bridge.FlagResult>;
 
 export function StartKernel(arg1:string,arg2:string):Promise<bridge.FlagResult>;

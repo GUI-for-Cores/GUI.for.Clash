@@ -181,3 +181,11 @@ export const DeleteSchTask = async (taskName: string) => {
   }
   return data
 }
+
+export const RestartApp = async () => {
+  const { flag, data } = await App.RestartApp()
+  if (!flag) {
+    throw data
+  }
+  return data
+}
