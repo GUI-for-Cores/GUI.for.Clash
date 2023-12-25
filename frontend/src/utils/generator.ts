@@ -143,7 +143,7 @@ export const generateProxyProviders = async (groups: ProfileType['proxyGroupsCon
   subs.forEach((id) => {
     const sub = subscribesStore.getSubscribeById(id)
     if (sub) {
-      providers[sub.name] = {
+      providers[sub.id] = {
         type: 'file',
         path: sub.path.replace('data/', '../'),
         'health-check': {
