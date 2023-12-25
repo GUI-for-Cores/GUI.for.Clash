@@ -330,16 +330,16 @@ updateSystemProxyState()
   position: relative;
   overflow: hidden;
   height: 100%;
-}
 
-.center {
-  position: absolute;
-  width: 100%;
-  height: 90%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  .center {
+    position: absolute;
+    width: 100%;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
 }
 
 .kernel-status {

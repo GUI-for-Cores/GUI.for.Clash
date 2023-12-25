@@ -7,8 +7,8 @@ const logsStore = useLogsStore()
 </script>
 
 <template>
-  <div class="logs">
-    <Empty v-if="logsStore.isEmpty" :description="t('home.overview.noLogs')" />
+  <div class="logs" :class="{ center: logsStore.isEmpty }">
+    <Empty v-if="logsStore.isEmpty" :description="t('home.overview.noLogs')" class="empty" />
     <template v-else>
       <div v-for="(log, i) in logsStore.kernelLogs" :key="i" class="log">
         {{ log }}
@@ -18,10 +18,20 @@ const logsStore = useLogsStore()
 </template>
 
 <style lang="less" scoped>
-.log {
-  font-size: 12px;
-  padding: 2px 4px;
-  margin: 4px 0;
-  background: var(--card-bg);
+.logs {
+  height: 100%;
+
+  .log {
+    font-size: 12px;
+    padding: 2px 4px;
+    margin: 4px 0;
+    background: var(--card-bg);
+  }
+}
+
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>
