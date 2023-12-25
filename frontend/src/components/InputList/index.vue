@@ -10,7 +10,6 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {})
 
-let dragIndex = -1
 const value = ref('')
 const list = ref(deepClone(props.modelValue))
 const inputRef = ref()
@@ -26,39 +25,24 @@ const handleAdd = () => {
 
 const handleDel = (i: number) => list.value.splice(i, 1)
 
-const onDragStart = (e: any, index: number) => (dragIndex = index)
-
-const onDragEnter = (e: any, index: number) => {
-  e.preventDefault()
-  if (dragIndex !== index) {
-    const source = list.value[dragIndex]
-    list.value.splice(dragIndex, 1)
-    list.value.splice(index, 0, source)
-    dragIndex = index
-  }
-}
-
-const onDragOver = (e: any) => e.preventDefault()
-
 watch(list, (v) => emits('update:modelValue', v), { immediate: true })
 </script>
 
 <template>
   <div class="input-list">
-    <TransitionGroup name="drag" tag="div">
-      <Card
-        v-for="(l, i) in list"
-        @dragenter="onDragEnter($event, i)"
-        @dragover="onDragOver($event)"
-        @dragstart="onDragStart($event, i)"
-        :key="l"
-        class="list-item"
-        draggable="true"
-      >
+    <div
+      v-draggable="[
+        list,
+        {
+          animation: 150
+        }
+      ]"
+    >
+      <Card v-for="(l, i) in list" :key="l" class="list-item">
         <div>{{ l }}</div>
         <Button @click="handleDel(i)" type="text" size="small"> × </Button>
       </Card>
-    </TransitionGroup>
+    </div>
 
     <div class="add">
       <Input
@@ -93,9 +77,5 @@ watch(list, (v) => emits('update:modelValue', v), { immediate: true })
     display: flex;
     align-items: center;
   }
-}
-
-.drag-move {
-  transition: transform 0.2s;
 }
 </style>

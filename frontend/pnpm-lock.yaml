@@ -11,6 +11,9 @@ dependencies:
   vue:
     specifier: ^3.3.13
     version: 3.3.13(typescript@5.3.3)
+  vue-draggable-plus:
+    specifier: ^0.3.3
+    version: 0.3.3(@types/sortablejs@1.15.7)
   vue-i18n:
     specifier: ^9.8.0
     version: 9.8.0(vue@3.3.13)
@@ -576,6 +579,10 @@ packages:
   /@types/semver@7.5.5:
     resolution: {integrity: sha512-+d+WYC1BxJ6yVOgUgzK8gWvp5qF8ssV5r4nsDcZWKRWcDQLQ619tvWAxJQYGgBrO1MnLJC7a5GtiYsAoQ47dJg==}
     dev: true
+
+  /@types/sortablejs@1.15.7:
+    resolution: {integrity: sha512-PvgWCx1Lbgm88FdQ6S7OGvLIjWS66mudKPlfdrWil0TjsO5zmoZmzoKiiwRShs1dwPgrlkr0N4ewuy0/+QUXYQ==}
+    dev: false
 
   /@typescript-eslint/eslint-plugin@6.11.0(@typescript-eslint/parser@6.11.0)(eslint@8.56.0)(typescript@5.3.3):
     resolution: {integrity: sha512-uXnpZDc4VRjY4iuypDBKzW1rz9T5YBBK0snMn8MaTSNd2kMlj50LnLBABELjJiOL5YHk7ZD8hbSpI9ubzqYI0w==}
@@ -2529,6 +2536,18 @@ packages:
         optional: true
     dependencies:
       vue: 3.3.13(typescript@5.3.3)
+    dev: false
+
+  /vue-draggable-plus@0.3.3(@types/sortablejs@1.15.7):
+    resolution: {integrity: sha512-/38M2vkBSQTag9m4TNt20AI/Enfpt1C0OvRN8FT6YYC2LBW6ZIguaMY8ZC0cGhxZXo/XFRmC8ME7LIsSDQJdRg==}
+    peerDependencies:
+      '@types/sortablejs': ^1.15.0
+      '@vue/composition-api': '*'
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
+    dependencies:
+      '@types/sortablejs': 1.15.7
     dev: false
 
   /vue-eslint-parser@9.3.2(eslint@8.56.0):
