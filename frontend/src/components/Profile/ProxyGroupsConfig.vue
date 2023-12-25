@@ -19,7 +19,6 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emits = defineEmits(['update:modelValue'])
 
-let dragIndex = -1
 let updateGroupId = 0
 const showModal = ref(false)
 const groups = ref(deepClone(props.modelValue))
@@ -199,22 +198,6 @@ const showLost = () => message.info(t('kernel.proxyGroups.notFound'))
 
 const showNeedToAdd = () => message.info(t('kernel.proxyGroups.needToAdd'))
 
-const onDragStart = (e: any, index: number) => {
-  dragIndex = index
-}
-
-const onDragEnter = (e: any, index: number) => {
-  e.preventDefault()
-  if (dragIndex !== index) {
-    const source = groups.value[dragIndex]
-    groups.value.splice(dragIndex, 1)
-    groups.value.splice(index, 0, source)
-    dragIndex = index
-  }
-}
-
-const onDragOver = (e: any) => e.preventDefault()
-
 watch(groups, (v) => emits('update:modelValue', v), { immediate: true, deep: true })
 
 subscribesStore.subscribes.forEach(async ({ id, name, proxies }) => {
@@ -224,16 +207,15 @@ subscribesStore.subscribes.forEach(async ({ id, name, proxies }) => {
 </script>
 
 <template>
-  <TransitionGroup name="drag" tag="div">
-    <Card
-      v-for="(g, index) in groups"
-      :key="g.id"
-      @dragenter="onDragEnter($event, index)"
-      @dragover="onDragOver($event)"
-      @dragstart="onDragStart($event, index)"
-      class="groups-item"
-      draggable="true"
-    >
+  <div
+    v-draggable="[
+      groups,
+      {
+        animation: 150
+      }
+    ]"
+  >
+    <Card v-for="(g, index) in groups" :key="g.id" class="groups-item">
       <div class="name">
         <span v-if="hasLost(g)" @click="showLost" class="warn"> [ ! ] </span>
         <span v-if="needToAdd(g)" @click="showNeedToAdd" class="warn"> [ ! ] </span>
@@ -260,7 +242,7 @@ subscribesStore.subscribes.forEach(async ({ id, name, proxies }) => {
         </Button>
       </div>
     </Card>
-  </TransitionGroup>
+  </div>
 
   <div style="display: flex; justify-content: center">
     <Button type="link" @click="handleAddGroup">{{ t('common.add') }}</Button>
@@ -337,10 +319,6 @@ subscribesStore.subscribes.forEach(async ({ id, name, proxies }) => {
 </template>
 
 <style lang="less" scoped>
-.drag-move {
-  transition: transform 0.4s;
-}
-
 .groups-item {
   display: flex;
   align-items: center;

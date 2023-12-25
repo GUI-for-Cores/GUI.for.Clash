@@ -19,7 +19,6 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emits = defineEmits(['update:modelValue'])
 
-let dragIndex = -1
 let updateRuleId = 0
 const showModal = ref(false)
 const rules = ref(deepClone(props.modelValue))
@@ -99,37 +98,20 @@ const showNotSupport = () => {
   message.info(t('kernel.rules.needGeodataMode'))
 }
 
-const onDragStart = (e: any, index: number) => {
-  dragIndex = index
-}
-
-const onDragEnter = (e: any, index: number) => {
-  e.preventDefault()
-  if (dragIndex !== index) {
-    const source = rules.value[dragIndex]
-    rules.value.splice(dragIndex, 1)
-    rules.value.splice(index, 0, source)
-    dragIndex = index
-  }
-}
-
-const onDragOver = (e: any) => e.preventDefault()
-
 watch(rules, (v) => emits('update:modelValue', v), { immediate: true, deep: true })
 </script>
 
 <template>
   <div>
-    <TransitionGroup name="drag" tag="div">
-      <Card
-        v-for="(r, index) in rules"
-        :key="r.id"
-        @dragenter="onDragEnter($event, index)"
-        @dragover="onDragOver($event)"
-        @dragstart="onDragStart($event, index)"
-        class="rules-item"
-        draggable="true"
-      >
+    <div
+      v-draggable="[
+        rules,
+        {
+          animation: 150
+        }
+      ]"
+    >
+      <Card v-for="(r, index) in rules" :key="r.id" class="rules-item">
         <div class="name">
           <span v-if="notSupport(r)" @click="showNotSupport" class="not-support"> [ ! ] </span>
           {{ generateRule(r) }}
@@ -143,7 +125,7 @@ watch(rules, (v) => emits('update:modelValue', v), { immediate: true, deep: true
           </Button>
         </div>
       </Card>
-    </TransitionGroup>
+    </div>
 
     <div style="display: flex; justify-content: center">
       <Button type="link" @click="handleAddRule">{{ t('common.add') }}</Button>
@@ -187,9 +169,6 @@ watch(rules, (v) => emits('update:modelValue', v), { immediate: true, deep: true
 </template>
 
 <style lang="less" scoped>
-.drag-move {
-  transition: transform 0.4s;
-}
 .rules-item {
   display: flex;
   align-items: center;
