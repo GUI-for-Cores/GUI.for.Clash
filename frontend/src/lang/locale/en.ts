@@ -119,6 +119,7 @@ export default {
       filter: 'Filter',
       notFound: 'Some subscriptions or proxies are missing, please clean them up',
       needToAdd: 'Add at least one `Use` or `Proxies`',
+      sort: 'View and Sort',
       type: {
         name: 'Type',
         select: 'select',

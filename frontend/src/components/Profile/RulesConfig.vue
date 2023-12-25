@@ -4,8 +4,8 @@ import { computed, ref, watch } from 'vue'
 
 import { useMessage } from '@/hooks'
 import { deepClone, sampleID, generateRule } from '@/utils'
-import { RulesTypeOptions, RulesetBehavior } from '@/constant'
 import { type ProfileType, useRulesetsStore, type RuleSetType } from '@/stores'
+import { RulesTypeOptions, RulesetBehavior, DraggableOptions } from '@/constant'
 
 interface Props {
   modelValue: ProfileType['rulesConfig']
@@ -103,14 +103,7 @@ watch(rules, (v) => emits('update:modelValue', v), { immediate: true, deep: true
 
 <template>
   <div>
-    <div
-      v-draggable="[
-        rules,
-        {
-          animation: 150
-        }
-      ]"
-    >
+    <div v-draggable="[rules, DraggableOptions]">
       <Card v-for="(r, index) in rules" :key="r.id" class="rules-item">
         <div class="name">
           <span v-if="notSupport(r)" @click="showNotSupport" class="not-support"> [ ! ] </span>

@@ -5,7 +5,7 @@ import { useI18n } from 'vue-i18n'
 import { useMessage } from '@/hooks'
 import { deepClone, sampleID } from '@/utils'
 import { type ProfileType, useSubscribesStore } from '@/stores'
-import { GroupsTypeOptions, StrategyOptions, ProxyGroup } from '@/constant'
+import { GroupsTypeOptions, StrategyOptions, ProxyGroup, DraggableOptions } from '@/constant'
 
 type GroupsType = ProfileType['proxyGroupsConfig']
 
@@ -21,6 +21,7 @@ const emits = defineEmits(['update:modelValue'])
 
 let updateGroupId = 0
 const showModal = ref(false)
+const showSortModal = ref(false)
 const groups = ref(deepClone(props.modelValue))
 const expandedSet = ref<Set<string>>(new Set(['Built-In', 'Subscribes']))
 
@@ -182,6 +183,16 @@ const hasLost = (g: GroupsType[0]) => {
   return isProxiesLost || isUseLost
 }
 
+const handleSortGroup = (index: number) => {
+  updateGroupId = index
+  fields.value = deepClone(groups.value[index])
+  showSortModal.value = true
+}
+
+const handleSortGroupEnd = () => {
+  groups.value[updateGroupId] = fields.value
+}
+
 const needToAdd = (g: GroupsType[0]) => g.use.length === 0 && g.proxies.length === 0
 
 const toggleExpanded = (key: string) => {
@@ -207,14 +218,7 @@ subscribesStore.subscribes.forEach(async ({ id, name, proxies }) => {
 </script>
 
 <template>
-  <div
-    v-draggable="[
-      groups,
-      {
-        animation: 150
-      }
-    ]"
-  >
+  <div v-draggable="[groups, DraggableOptions]">
     <Card v-for="(g, index) in groups" :key="g.id" class="groups-item">
       <div class="name">
         <span v-if="hasLost(g)" @click="showLost" class="warn"> [ ! ] </span>
@@ -222,7 +226,7 @@ subscribesStore.subscribes.forEach(async ({ id, name, proxies }) => {
         {{ g.name }}
       </div>
       <div class="count">
-        <Button type="link" size="small">
+        <Button @click="handleSortGroup(index)" type="link" size="small">
           (
           {{ t('profile.use') }}:{{ g.use.length }}
           /
@@ -247,6 +251,29 @@ subscribesStore.subscribes.forEach(async ({ id, name, proxies }) => {
   <div style="display: flex; justify-content: center">
     <Button type="link" @click="handleAddGroup">{{ t('common.add') }}</Button>
   </div>
+
+  <Modal
+    v-model:open="showSortModal"
+    :title="t('kernel.proxyGroups.sort')"
+    @ok="handleSortGroupEnd"
+    max-width="80"
+    max-height="80"
+  >
+    <div class="group">
+      <Divider>{{ t('profile.proxies') }}</Divider>
+      <div v-draggable="[fields.proxies, DraggableOptions]" class="group-proxies">
+        <Button v-for="proxy in fields.proxies" :key="proxy.id" type="link" class="group-item">
+          {{ proxy.name }}
+        </Button>
+      </div>
+      <Divider>{{ t('profile.use') }}</Divider>
+      <div v-draggable="[fields.use, DraggableOptions]" class="group-proxies">
+        <Button v-for="use in fields.use" :key="use" type="link" class="group-item">
+          {{ use }}
+        </Button>
+      </div>
+    </div>
+  </Modal>
 
   <Modal v-model:open="showModal" @ok="handleAddEnd" max-width="80" max-height="80">
     <div class="form-item">

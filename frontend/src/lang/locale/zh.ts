@@ -119,6 +119,7 @@ export default {
       filter: '过滤',
       notFound: '部分订阅或节点已丢失，请清理',
       needToAdd: '至少添加一个节点或订阅',
+      sort: '查看和排序',
       type: {
         name: '类型',
         select: '手动选择',
