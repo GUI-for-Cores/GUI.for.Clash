@@ -1,7 +1,7 @@
 import { parse, stringify } from 'yaml'
 
 import { Readfile, Writefile } from '@/utils/bridge'
-import { deepClone, ignoredError, APP_TITLE, sampleID } from '@/utils'
+import { deepClone, ignoredError, APP_TITLE } from '@/utils'
 import { KernelConfigFilePath, ProxyGroup } from '@/constant/kernel'
 import { type ProfileType, useSubscribesStore, useRulesetsStore } from '@/stores'
 
@@ -20,7 +20,10 @@ export const generateRule = (rule: ProfileType['rulesConfig'][0]) => {
     }
   }
   ruleStr += ',' + proxy
-  if (noResolve) {
+
+  const supportPayload = ['GEOIP', 'IP-CIDR', 'IP-CIDR6', 'SCRIPT', 'RULE-SET'].includes(type)
+
+  if (noResolve && supportPayload) {
     ruleStr += ',no-resolve'
   }
   return ruleStr

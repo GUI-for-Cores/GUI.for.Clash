@@ -29,7 +29,7 @@ const fields = ref({
   type: 'DOMAIN',
   payload: '',
   proxy: '',
-  'no-resolve': true,
+  'no-resolve': false,
   filter: ''
 })
 
@@ -62,7 +62,7 @@ const handleAddRule = () => {
     type: 'DOMAIN',
     payload: '',
     proxy: '',
-    'no-resolve': true,
+    'no-resolve': false,
     filter: ''
   }
   showModal.value = true
