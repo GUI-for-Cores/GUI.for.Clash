@@ -4,9 +4,10 @@ import { computed, ref } from 'vue'
 import { useI18n, I18nT } from 'vue-i18n'
 
 import { View } from '@/constant/app'
-import { generateConfig } from '@/utils'
+import { DraggableOptions } from '@/constant'
 import { useMessage } from '@/hooks/useMessage'
 import { ClipboardSetText } from '@/utils/bridge'
+import { debounce, generateConfig } from '@/utils'
 import { type ProfileType, type Menu, useProfilesStore, useAppSettingsStore } from '@/stores'
 
 import ProfileForm from './components/ProfileForm.vue'
@@ -88,6 +89,8 @@ const handleUseProfile = async (p: ProfileType) => {
   }
   appSettingsStore.app.kernel.profile = p.id
 }
+
+const onSortUpdate = debounce(profilesStore.saveProfiles, 1000)
 </script>
 
 <template>
@@ -116,7 +119,11 @@ const handleUseProfile = async (p: ProfileType) => {
     </Button>
   </div>
 
-  <div :class="appSettingsStore.app.profilesView" class="profiles">
+  <div
+    v-draggable="[profilesStore.profiles, { ...DraggableOptions, onUpdate: onSortUpdate }]"
+    :class="appSettingsStore.app.profilesView"
+    class="profiles"
+  >
     <Card
       v-for="p in profilesStore.profiles"
       :key="p.name"

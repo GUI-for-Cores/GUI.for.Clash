@@ -193,6 +193,7 @@ export const useSubscribesStore = defineStore('subscribes', () => {
   return {
     subscribes,
     setupSubscribes,
+    saveSubscribes,
     addSubscribe,
     editSubscribe,
     deleteSubscribe,

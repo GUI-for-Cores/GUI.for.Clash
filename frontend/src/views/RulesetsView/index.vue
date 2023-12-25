@@ -6,8 +6,9 @@ import { useI18n, I18nT } from 'vue-i18n'
 import { View } from '@/constant'
 import { useMessage } from '@/hooks'
 import { Writefile } from '@/utils/bridge'
-import { formatRelativeTime } from '@/utils'
+import { DraggableOptions } from '@/constant'
 import { updateProvidersRules } from '@/api/kernel'
+import { debounce, formatRelativeTime } from '@/utils'
 import { type RuleSetType, type Menu, useRulesetsStore, useAppSettingsStore } from '@/stores'
 
 import RulesetForm from './components/RulesetForm.vue'
@@ -112,6 +113,8 @@ const _updateProvidersRules = async (ruleset: string) => {
 }
 
 const noUpdateNeeded = computed(() => rulesetsStore.rulesets.every((v) => v.disabled))
+
+const onSortUpdate = debounce(rulesetsStore.saveRulesets, 1000)
 </script>
 
 <template>
@@ -148,7 +151,11 @@ const noUpdateNeeded = computed(() => rulesetsStore.rulesets.every((v) => v.disa
     </Empty>
   </div>
 
-  <div class="rulesets" :class="appSettingsStore.app.rulesetsView">
+  <div
+    v-draggable="[rulesetsStore.rulesets, { ...DraggableOptions, onUpdate: onSortUpdate }]"
+    :class="appSettingsStore.app.rulesetsView"
+    class="rulesets"
+  >
     <Card
       v-for="r in rulesetsStore.rulesets"
       :key="r.name"
