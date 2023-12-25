@@ -181,8 +181,7 @@ export const RulesConfigDefaults = (): ProfileType['rulesConfig'] => [
     payload: 'category-ads-all',
     proxy: '🛑 全球拦截',
     'no-resolve': false,
-    filter: '',
-    path: ''
+    filter: ''
   },
   {
     id: sampleID(),
@@ -190,8 +189,7 @@ export const RulesConfigDefaults = (): ProfileType['rulesConfig'] => [
     payload: 'private',
     proxy: '🎯 全球直连',
     'no-resolve': true,
-    filter: '',
-    path: ''
+    filter: ''
   },
   {
     id: sampleID(),
@@ -199,8 +197,7 @@ export const RulesConfigDefaults = (): ProfileType['rulesConfig'] => [
     payload: 'CN',
     proxy: '🎯 全球直连',
     'no-resolve': true,
-    filter: '',
-    path: ''
+    filter: ''
   },
   {
     id: sampleID(),
@@ -208,8 +205,7 @@ export const RulesConfigDefaults = (): ProfileType['rulesConfig'] => [
     payload: 'private',
     proxy: '🎯 全球直连',
     'no-resolve': false,
-    filter: '',
-    path: ''
+    filter: ''
   },
   {
     id: sampleID(),
@@ -217,8 +213,7 @@ export const RulesConfigDefaults = (): ProfileType['rulesConfig'] => [
     payload: 'CN',
     proxy: '🎯 全球直连',
     'no-resolve': false,
-    filter: '',
-    path: ''
+    filter: ''
   },
   {
     id: sampleID(),
@@ -226,8 +221,7 @@ export const RulesConfigDefaults = (): ProfileType['rulesConfig'] => [
     payload: 'geolocation-!cn',
     proxy: '🚀 节点选择',
     'no-resolve': false,
-    filter: '',
-    path: ''
+    filter: ''
   },
   {
     id: sampleID(),
@@ -235,7 +229,6 @@ export const RulesConfigDefaults = (): ProfileType['rulesConfig'] => [
     payload: '',
     proxy: '🐟 漏网之鱼',
     'no-resolve': false,
-    filter: '',
-    path: ''
+    filter: ''
   }
 ]
