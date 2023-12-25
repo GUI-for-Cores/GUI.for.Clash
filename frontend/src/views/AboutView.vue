@@ -3,7 +3,7 @@ import { useI18n } from 'vue-i18n'
 import { ref, computed } from 'vue'
 
 import { useMessage } from '@/hooks'
-import { Download, HttpGetJSON, BrowserOpenURL, Movefile, GetEnv } from '@/utils/bridge'
+import { Download, HttpGetJSON, BrowserOpenURL, Movefile, GetEnv, RestartApp } from '@/utils/bridge'
 import { APP_TITLE, APP_VERSION, PROJECT_URL, TG_GROUP, TG_CHANNEL, APP_VERSION_API } from '@/utils'
 
 let downloadUrl = ''
@@ -83,6 +83,14 @@ const checkUpdate = async (showTips = false) => {
   loading.value = false
 }
 
+const handleRestartApp = async () => {
+  try {
+    await RestartApp()
+  } catch (error: any) {
+    message.info(error)
+  }
+}
+
 checkUpdate()
 </script>
 
@@ -91,7 +99,10 @@ checkUpdate()
     <img src="@/assets/logo.png" draggable="false" />
     <div class="appname">{{ APP_TITLE }}</div>
     <div class="appver">
-      <template v-if="needRestart">{{ t('about.restart') }}</template>
+      <Button v-if="needRestart" @click="handleRestartApp" size="small" type="primary">
+        <Icon icon="restartApp" fill="var(--btn-primary-color)" style="margin-top: 1px" />
+        <span style="margin-left: 4px">{{ t('about.restart') }}</span>
+      </Button>
       <template v-else>
         <Button @click="checkUpdate(true)" :loading="loading" type="link" size="small">
           {{ APP_VERSION }}
