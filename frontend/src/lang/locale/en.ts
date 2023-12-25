@@ -368,7 +368,7 @@ export default {
   },
   about: {
     new: 'New',
-    restart: 'Please restart the APP',
+    restart: 'Restart APP',
     noNeedUpdate: 'It is already the latest version, no need to update',
     noDownloadLink: 'No download link found',
     updateSuccessful: 'Update completed, please restart the App',
