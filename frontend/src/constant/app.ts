@@ -54,3 +54,8 @@ export const Colors = {
     secondary: '#0ca4e2'
   }
 }
+
+// vue-draggable-plus config
+export const DraggableOptions = {
+  animation: 150
+}

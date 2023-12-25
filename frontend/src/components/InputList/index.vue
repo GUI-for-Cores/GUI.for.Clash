@@ -2,6 +2,7 @@
 import { ref, watch } from 'vue'
 
 import { deepClone } from '@/utils'
+import { DraggableOptions } from '@/constant'
 
 interface Props {
   modelValue: string[]
@@ -30,14 +31,7 @@ watch(list, (v) => emits('update:modelValue', v), { immediate: true })
 
 <template>
   <div class="input-list">
-    <div
-      v-draggable="[
-        list,
-        {
-          animation: 150
-        }
-      ]"
-    >
+    <div v-draggable="[list, DraggableOptions]">
       <Card v-for="(l, i) in list" :key="l" class="list-item">
         <div>{{ l }}</div>
         <Button @click="handleDel(i)" type="text" size="small"> × </Button>
