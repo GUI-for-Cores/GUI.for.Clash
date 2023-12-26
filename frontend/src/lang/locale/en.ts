@@ -297,7 +297,10 @@ export default {
   profiles: {
     shouldStop: 'Please stop the kernel first.',
     empty: 'The profiles list is empty, Please {action} a profile first.',
-    copy: 'Copy to clipboard'
+    export: 'Export Config',
+    copy: 'Copy as template',
+    paste: 'Paste template',
+    clearClipboard: 'Clear template'
   },
   ruleset: {
     http: 'HTTP',

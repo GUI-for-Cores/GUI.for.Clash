@@ -3,12 +3,17 @@ import { stringify } from 'yaml'
 import { computed, ref } from 'vue'
 import { useI18n, I18nT } from 'vue-i18n'
 
-import { View } from '@/constant/app'
-import { DraggableOptions } from '@/constant'
-import { useMessage } from '@/hooks/useMessage'
+import { useMessage } from '@/hooks'
 import { ClipboardSetText } from '@/utils/bridge'
-import { debounce, generateConfig } from '@/utils'
-import { type ProfileType, type Menu, useProfilesStore, useAppSettingsStore } from '@/stores'
+import { DraggableOptions, View } from '@/constant'
+import { debounce, generateConfig, sampleID } from '@/utils'
+import {
+  type ProfileType,
+  type Menu,
+  useProfilesStore,
+  useAppSettingsStore,
+  useApp
+} from '@/stores'
 
 import ProfileForm from './components/ProfileForm.vue'
 
@@ -20,8 +25,38 @@ const formTitle = computed(() => (isUpdate.value ? t('common.edit') : t('common.
 
 const { t } = useI18n()
 const { message } = useMessage()
+const appStore = useApp()
 const profilesStore = useProfilesStore()
 const appSettingsStore = useAppSettingsStore()
+
+const secondaryMenus: Menu[] = [
+  {
+    label: 'profiles.copy',
+    handler: async (id: string) => {
+      const p = profilesStore.getProfileById(id)
+      if (!p) return
+      appStore.setProfilesClipboard(p)
+      message.info('common.success')
+    }
+  },
+  {
+    label: 'profiles.export',
+    handler: async (id: string) => {
+      const p = profilesStore.getProfileById(id)
+      if (!p) return
+      try {
+        const config = await generateConfig(p)
+        const str = stringify(config)
+        const ok = await ClipboardSetText(str)
+        if (!ok) throw 'ClipboardSetText Error'
+        console.log(config)
+        message.info('common.success')
+      } catch (error: any) {
+        message.info(error)
+      }
+    }
+  }
+]
 
 const menus: Menu[] = [
   ...[
@@ -41,23 +76,22 @@ const menus: Menu[] = [
     }
   }),
   {
-    label: 'profiles.copy',
-    handler: async (id: string) => {
-      const p = profilesStore.getProfileById(id)
-      if (!p) return
-      try {
-        const config = await generateConfig(p)
-        const str = stringify(config)
-        const ok = await ClipboardSetText(str)
-        if (!ok) throw 'ClipboardSetText Error'
-        console.log(config)
-        message.info('common.success')
-      } catch (error: any) {
-        message.info(error)
-      }
-    }
+    label: '',
+    separator: true
+  },
+  {
+    label: 'common.more',
+    children: secondaryMenus
   }
 ]
+
+const handlePasteProfile = () => {
+  const p = appStore.getProfilesClipboard() as ProfileType
+  p.id = sampleID()
+  p.name = p.name + '(Copy)'
+  profilesStore.addProfile(p)
+  appStore.clearProfilesClipboard()
+}
 
 const handleAddProfile = async () => {
   isUpdate.value = false
@@ -113,8 +147,17 @@ const onSortUpdate = debounce(profilesStore.saveProfiles, 1000)
         { label: 'common.grid', value: View.Grid },
         { label: 'common.list', value: View.List }
       ]"
+      style="margin-right: auto"
     />
-    <Button @click="handleAddProfile" type="primary" style="margin-left: auto">
+    <template v-if="appStore.profilesClipboard">
+      <Button @click="handlePasteProfile" type="link">
+        {{ t('profiles.paste') }}
+      </Button>
+      <Button @click="appStore.clearProfilesClipboard" type="link">
+        {{ t('profiles.clearClipboard') }}
+      </Button>
+    </template>
+    <Button @click="handleAddProfile" type="primary">
       {{ t('common.add') }}
     </Button>
   </div>
@@ -130,7 +173,13 @@ const onSortUpdate = debounce(profilesStore.saveProfiles, 1000)
       :title="p.name"
       :selected="appSettingsStore.app.kernel.profile === p.id"
       @dblclick="handleUseProfile(p)"
-      v-menu="menus.map((v) => ({ ...v, handler: () => v.handler?.(p.id) }))"
+      v-menu="
+        menus.map((v) => ({
+          ...v,
+          handler: () => v.handler?.(p.id),
+          children: v.children?.map((vv) => ({ ...vv, handler: () => vv.handler?.(p.id) }))
+        }))
+      "
       class="profile"
     >
       <template v-if="appSettingsStore.app.profilesView === View.Grid" #extra>
