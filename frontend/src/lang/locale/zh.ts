@@ -297,7 +297,10 @@ export default {
   profiles: {
     shouldStop: '请先停止内核',
     empty: '配置列表为空，请先{action}配置。',
-    copy: '复制到剪切板'
+    export: '导出配置',
+    copy: '复制为模板',
+    paste: '粘贴模板',
+    clearClipboard: '清空模板'
   },
   ruleset: {
     http: 'HTTP',
