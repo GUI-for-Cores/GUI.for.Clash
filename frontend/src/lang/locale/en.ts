@@ -186,7 +186,8 @@ export default {
     requestFailed: 'Request Failed',
     local: 'Local',
     remote: 'Remote',
-    update: 'Update'
+    update: 'Update',
+    restart: 'Restart Kernel'
   },
   router: {
     overview: 'OverView',
@@ -362,7 +363,7 @@ export default {
       name: 'Startup on boot'
     },
     kernel: {
-      whichOne: 'Which One',
+      branch: 'Branch',
       main: 'Main branch',
       alpha: 'Alpha branch'
     }

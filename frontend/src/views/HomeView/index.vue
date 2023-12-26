@@ -114,10 +114,12 @@ watch(showController, (v) => {
   }
 })
 
-kernelApiStore.updateKernelStatus().then((running) => {
+kernelApiStore.updateKernelStatus().then(async (running) => {
   stateLoading.value = false
 
-  if (!running && appSettingsStore.app.autoStartKernel) {
+  if (running) {
+    await kernelApiStore.refreshCofig()
+  } else if (appSettingsStore.app.autoStartKernel) {
     handleStartKernel()
   }
 })
