@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"strconv"
+	"strings"
 	"syscall"
 
 	"github.com/shirou/gopsutil/process"
@@ -61,14 +62,18 @@ func (a *App) StartKernel(path string, directory string) FlagResult {
 
 	go func() {
 		for scanner.Scan() {
-			runtime.EventsEmit(a.Ctx, "kernelLog", scanner.Text())
+			text := scanner.Text()
+			runtime.EventsEmit(a.Ctx, "kernelLog", text)
+			if strings.Contains(text, "Start initial compatible provider default") {
+				runtime.EventsEmit(a.Ctx, "kernelStarted", "")
+			}
 		}
-		runtime.EventsEmit(a.Ctx, "kernelStatus", 0)
+		runtime.EventsEmit(a.Ctx, "kernelStopped", "")
 	}()
 
 	pid := cmd.Process.Pid
 
-	runtime.EventsEmit(a.Ctx, "kernelStatus", pid)
+	runtime.EventsEmit(a.Ctx, "kernelPid", pid)
 
 	return FlagResult{true, strconv.Itoa(pid)}
 }

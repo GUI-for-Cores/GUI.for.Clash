@@ -21,11 +21,12 @@ func (a *App) Startup(ctx context.Context) {
 }
 
 var Env = &EnvResult{
-	BasePath:  "",
-	AppName:   "",
-	UserAgent: "GUI.for.Clash/1.0",
-	OS:        runtime.GOOS,
-	ARCH:      runtime.GOARCH,
+	BasePath:    "",
+	AppName:     "",
+	UserAgent:   "GUI.for.Clash/1.0",
+	OS:          runtime.GOOS,
+	ARCH:        runtime.GOARCH,
+	FromTaskSch: false,
 }
 
 var Config = &AppConfig{}
@@ -35,6 +36,13 @@ func InitBridge() {
 	exePath, err := os.Executable()
 	if err != nil {
 		panic(err)
+	}
+
+	for _, v := range os.Args {
+		if v == "tasksch" {
+			Env.FromTaskSch = true
+			break
+		}
 	}
 
 	Env.BasePath = filepath.Dir(exePath)
