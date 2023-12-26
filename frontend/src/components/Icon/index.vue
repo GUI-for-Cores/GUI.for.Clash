@@ -42,7 +42,7 @@ type IconType =
   | 'reset'
   | 'folder'
   | 'restartApp'
-  | 'hohoho'
+  | 'newYear'
 
 interface Props {
   icon: IconType
