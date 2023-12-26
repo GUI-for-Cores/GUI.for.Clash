@@ -2,12 +2,13 @@
 import { ref } from 'vue'
 
 import { ignoredError, sleep } from '@/utils'
-import { useEvents } from '@/hooks/useEvents'
 import {
   useAppSettingsStore,
   useProfilesStore,
   useSubscribesStore,
   useRulesetsStore,
+  useKernelApiStore,
+  useEnvStore,
   useApp
 } from '@/stores'
 
@@ -21,13 +22,15 @@ const appSettings = useAppSettingsStore()
 const profilesStore = useProfilesStore()
 const subscribesStore = useSubscribesStore()
 const rulesetsStore = useRulesetsStore()
-
-useEvents()
+const kernelApiStore = useKernelApiStore()
+const envStore = useEnvStore()
 
 appSettings.setupAppSettings().then(async () => {
+  await ignoredError(envStore.setupEnv)
   await ignoredError(profilesStore.setupProfiles)
   await ignoredError(subscribesStore.setupSubscribes)
   await ignoredError(rulesetsStore.setupRulesets)
+  await ignoredError(kernelApiStore.setupKernelApi)
   await sleep(1000)
   loading.value = false
 })

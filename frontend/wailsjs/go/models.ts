@@ -1,9 +1,8 @@
 export namespace bridge {
 	
 	export class EnvResult {
-	    basePath: string;
 	    appName: string;
-	    UserAgent: string;
+	    basePath: string;
 	    os: string;
 	    arch: string;
 	
@@ -13,9 +12,8 @@ export namespace bridge {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.basePath = source["basePath"];
 	        this.appName = source["appName"];
-	        this.UserAgent = source["UserAgent"];
+	        this.basePath = source["basePath"];
 	        this.os = source["os"];
 	        this.arch = source["arch"];
 	    }

@@ -2,18 +2,9 @@
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
+import { APP_TITLE, sleep } from '@/utils'
 import { useMessage, useBool } from '@/hooks'
-import { KernelWorkDirectory, getKernelFileName } from '@/constant/kernel'
-import { ignoredError, sleep, generateConfigFile, APP_TITLE } from '@/utils'
-import { useAppSettingsStore, useProfilesStore, useKernelApiStore, useLogsStore } from '@/stores'
-import {
-  KillProcess,
-  KernelRunning,
-  StartKernel,
-  SetSystemProxy,
-  ClearSystemProxy,
-  GetSystemProxy
-} from '@/utils/bridge'
+import { useAppSettingsStore, useProfilesStore, useKernelApiStore, useEnvStore } from '@/stores'
 
 import QuickStart from './QuickStart.vue'
 import OverView from './OverView.vue'
@@ -22,7 +13,6 @@ import LogsController from './LogsController.vue'
 import GroupsController from './GroupsController.vue'
 import CommonController from './CommonController.vue'
 
-const systemProxy = ref(false)
 const kernelLoading = ref(false)
 const stateLoading = ref(true)
 const showController = ref(false)
@@ -34,136 +24,53 @@ const [showApiLogs, toggleApiLogs] = useBool(false)
 const [showKernelLogs, toggleKernelLogs] = useBool(false)
 const [showSettings, toggleSettingsModal] = useBool(false)
 const [showQuickStart, toggleQuickStart] = useBool(false)
+
 const appSettingsStore = useAppSettingsStore()
 const profilesStore = useProfilesStore()
 const kernelApiStore = useKernelApiStore()
-const logsStore = useLogsStore()
+const envStore = useEnvStore()
 
-const startKernel = async () => {
-  const { profile: currentProfile, branch } = appSettingsStore.app.kernel
-
-  if (!currentProfile) {
-    message.info('Choose a profile first')
-    return
-  }
-
-  const profile = profilesStore.getProfileById(currentProfile)
-  if (!profile) {
-    message.info('Profile does not exist: ' + currentProfile)
-    return
-  }
-
-  logsStore.clearKernelLog()
-
-  kernelLoading.value = true
-
-  await generateConfigFile(profile)
-
-  const { pid } = appSettingsStore.app.kernel
-
-  if (pid) {
-    const running = await ignoredError(KernelRunning, pid)
-    if (running) {
-      await ignoredError(KillProcess, pid)
-      appSettingsStore.app.kernel.running = false
-    }
-  }
-
-  const fileName = await getKernelFileName(branch === 'alpha')
-
-  const kernelFilePath = KernelWorkDirectory + '/' + fileName
-
-  try {
-    await StartKernel(kernelFilePath, KernelWorkDirectory)
-  } catch (error: any) {
-    console.log(error)
-    message.info(error)
-    kernelLoading.value = false
-    return
-  }
-
-  await sleep(2000)
-
+const onKernelStarted = async () => {
   kernelLoading.value = false
 
   await kernelApiStore.refreshCofig()
-
-  await updateSystemProxyState()
+  await envStore.updateSystemProxyState()
 
   // Automatically set system proxy, but the priority is lower than tun mode
   if (!kernelApiStore.config.tun.enable && appSettingsStore.app.autoSetSystemProxy) {
-    systemProxy.value = true
+    await envStore.setSystemProxy()
   }
 }
 
-const stopKernel = async () => {
-  await ignoredError(KillProcess, appSettingsStore.app.kernel.pid)
+const onKernelStopped = async () => {
   if (appSettingsStore.app.autoSetSystemProxy) {
-    systemProxy.value = false
+    await envStore.clearSystemProxy()
   }
-  appSettingsStore.app.kernel.running = false
-  logsStore.clearKernelLog()
 }
 
-const setSystemProxy = async () => {
-  let port = 0
-  const { port: _port, 'socks-port': socksPort, 'mixed-port': mixedPort } = kernelApiStore.config
-
-  if (mixedPort) {
-    port = mixedPort
-  } else if (_port) {
-    port = _port
-  } else if (socksPort) {
-    systemProxy.value = false
-    message.info(t('home.overview.notSupportSocks'))
-    return
-  }
-
-  if (!port) {
-    systemProxy.value = false
-    message.info(t('home.overview.needPort'))
-    return
-  }
+const handleStartKernel = async () => {
+  kernelLoading.value = true
 
   try {
-    await SetSystemProxy(port)
+    await kernelApiStore.startKernel()
   } catch (error: any) {
-    systemProxy.value = false
+    console.error(error)
     message.info(error)
-    console.log(error)
+    kernelLoading.value = false
   }
+
+  await sleep(4000)
+
+  kernelLoading.value = false
 }
 
-const clearSystemProxy = async () => {
+const handleStopKernel = async () => {
   try {
-    await ClearSystemProxy()
+    await kernelApiStore.stopKernel()
   } catch (error: any) {
-    systemProxy.value = true
+    console.error(error)
     message.info(error)
-    console.log(error)
   }
-}
-
-const updateKernelState = async () => {
-  stateLoading.value = true
-  const running = await ignoredError(KernelRunning, appSettingsStore.app.kernel.pid)
-  appSettingsStore.app.kernel.running = !!running
-  stateLoading.value = false
-  return !!running
-}
-
-const updateSystemProxyState = async () => {
-  const proxyServer = await GetSystemProxy()
-  if (!proxyServer) {
-    systemProxy.value = false
-    return
-  }
-
-  const { port: _port, 'mixed-port': mixedPort } = kernelApiStore.config
-
-  const proxyServerList = [`127.0.0.1:${_port}`, `127.0.0.1:${mixedPort}`]
-
-  systemProxy.value = proxyServerList.includes(proxyServer)
 }
 
 const onMouseWheel = (e: WheelEvent) => {
@@ -173,6 +80,32 @@ const onMouseWheel = (e: WheelEvent) => {
   showController.value = isDown || controllerRef.value?.scrollTop !== 0
 }
 
+const onTunSwitchChange = async (enable: boolean) => {
+  try {
+    await kernelApiStore.updateConfig({ tun: { enable } })
+  } catch (error: any) {
+    console.error(error)
+    message.info(error)
+  }
+}
+
+const onSystemProxySwitchChange = async (enable: boolean) => {
+  try {
+    await envStore.switchSystemProxy(enable)
+  } catch (error: any) {
+    console.error(error)
+    message.info(error)
+  }
+}
+
+watch(
+  () => appSettingsStore.app.kernel.running,
+  (running) => {
+    if (running) onKernelStarted()
+    else onKernelStopped()
+  }
+)
+
 watch(showController, (v) => {
   if (v) {
     kernelApiStore.refreshProviderProxies()
@@ -181,32 +114,13 @@ watch(showController, (v) => {
   }
 })
 
-watch(systemProxy, (enable) => {
-  if (enable) setSystemProxy()
-  else clearSystemProxy()
-})
+kernelApiStore.updateKernelStatus().then((running) => {
+  stateLoading.value = false
 
-watch(
-  () => kernelApiStore.config.tun.enable,
-  async (enable, ov) => {
-    if (enable !== ov) {
-      await kernelApiStore.updateConfig({ tun: { enable } })
-    }
-  }
-)
-
-updateKernelState().then((running) => {
-  if (running) {
-    kernelApiStore.refreshCofig()
-    return
-  }
-
-  if (appSettingsStore.app.autoStartKernel) {
-    startKernel()
+  if (!running && appSettingsStore.app.autoStartKernel) {
+    handleStartKernel()
   }
 })
-
-updateSystemProxyState()
 </script>
 
 <template>
@@ -234,7 +148,7 @@ updateSystemProxyState()
             {{ t('home.quickStart') }}
           </Card>
         </div>
-        <Button @click="startKernel" :loading="kernelLoading" type="primary">
+        <Button @click="handleStartKernel" :loading="kernelLoading" type="primary">
           {{ t('home.overview.start') }}
         </Button>
         <Button @click="toggleKernelLogs" type="link" size="small">
@@ -249,11 +163,18 @@ updateSystemProxyState()
           <Button @click="toggleSettingsModal" type="text" size="small">
             <Icon icon="settings" />
           </Button>
-          <Switch v-model="systemProxy" size="small" border="square" class="ml-4">
+          <Switch
+            v-model="envStore.systemProxy"
+            @change="onSystemProxySwitchChange"
+            size="small"
+            border="square"
+            class="ml-4"
+          >
             {{ t('home.overview.systemProxy') }}
           </Switch>
           <Switch
             v-model="kernelApiStore.config.tun.enable"
+            @change="onTunSwitchChange"
             size="small"
             border="square"
             class="ml-8"
@@ -269,7 +190,7 @@ updateSystemProxyState()
           >
             <Icon icon="log" />
           </Button>
-          <Button @click="stopKernel" v-tips="'home.overview.stop'" type="text" size="small">
+          <Button @click="handleStopKernel" v-tips="'home.overview.stop'" type="text" size="small">
             <Icon icon="stop" />
           </Button>
         </div>
