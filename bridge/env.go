@@ -10,8 +10,8 @@ import (
 
 func (a *App) GetEnv() EnvResult {
 	return EnvResult{
-		BasePath: Env.BasePath,
 		AppName:  Env.AppName,
+		BasePath: Env.BasePath,
 		OS:       Env.OS,
 		ARCH:     Env.ARCH,
 	}
