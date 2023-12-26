@@ -186,7 +186,8 @@ export default {
     requestFailed: '获取失败',
     local: '本地',
     remote: '远程',
-    update: '更新'
+    update: '更新',
+    restart: '重启内核'
   },
   router: {
     overview: '概览',
@@ -362,7 +363,7 @@ export default {
       name: '开机时启动'
     },
     kernel: {
-      whichOne: '哪一个',
+      branch: '分支',
       main: '主分支',
       alpha: 'Alpha分支'
     }

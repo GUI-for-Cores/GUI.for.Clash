@@ -126,9 +126,15 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
     logsStore.clearKernelLog()
   }
 
+  const restartKernel = async () => {
+    await stopKernel()
+    await startKernel()
+  }
+
   return {
     startKernel,
     stopKernel,
+    restartKernel,
     updateKernelStatus,
     setupKernelApi,
     config,

@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n'
 
 import { useMessage } from '@/hooks'
 import { ignoredError } from '@/utils'
-import { useAppSettingsStore } from '@/stores'
+import { useAppSettingsStore, useKernelApiStore } from '@/stores'
 import { KernelWorkDirectory, getKernelFileName } from '@/constant'
 import {
   Download,
@@ -29,6 +29,17 @@ const getRemoteVersionLoading = ref([false, false])
 const localVersion = ref(['', ''])
 const remoteVersion = ref(['', ''])
 const versionDetail = ref(['', ''])
+const restartLoading = ref([false, false])
+const downloadSuccessful = ref([false, false])
+const needRestarts = computed(() => {
+  const { running, branch } = appSettings.app.kernel
+  if (!running) return [false, false]
+
+  return [
+    localVersion.value[0] && downloadSuccessful.value[0] && branch === 'main',
+    localVersion.value[1] && downloadSuccessful.value[1] && branch === 'alpha'
+  ]
+})
 
 const needUpdates = computed(() => [
   remoteVersion.value[0] && localVersion.value[0] !== remoteVersion.value[0],
@@ -38,6 +49,7 @@ const needUpdates = computed(() => [
 const { t } = useI18n()
 const { message } = useMessage()
 const appSettings = useAppSettingsStore()
+const kernelApiStore = useKernelApiStore()
 
 const downloadCore = async () => {
   downloadLoading.value[0] = true
@@ -74,10 +86,13 @@ const downloadCore = async () => {
 
     await Removefile(tmp)
 
+    downloadSuccessful.value[0] = true
+
     message.info('Download Successful')
   } catch (error: any) {
     console.log(error)
     message.info(error)
+    downloadSuccessful.value[0] = false
   }
   downloadLoading.value[0] = false
 
@@ -122,10 +137,13 @@ const downloadAlphaCore = async () => {
 
     await Removefile(tmp)
 
+    downloadSuccessful.value[1] = true
+
     message.info('Download Successful')
   } catch (error: any) {
     console.log(error)
     message.info(error)
+    downloadSuccessful.value[1] = false
   }
   downloadLoading.value[1] = false
 
@@ -232,6 +250,33 @@ const initVersion = async () => {
     })
 }
 
+const handleRestartKernel = async (index: 0 | 1) => {
+  if (!appSettings.app.kernel.running) return
+
+  try {
+    await kernelApiStore.restartKernel()
+
+    downloadSuccessful.value[index] = false
+
+    message.info('common.success')
+  } catch (error: any) {
+    message.info(error)
+  }
+}
+
+const handleUseBranch = async (branch: any) => {
+  appSettings.app.kernel.branch = branch
+
+  if (!appSettings.app.kernel.running) return
+
+  try {
+    await kernelApiStore.restartKernel()
+    message.info('common.success')
+  } catch (error: any) {
+    message.info(error)
+  }
+}
+
 initVersion()
 </script>
 
@@ -256,6 +301,14 @@ initVersion()
         type="primary"
       >
         {{ t('kernel.update') }} : {{ remoteVersion[0] }}
+      </Button>
+      <Button
+        v-show="needRestarts[0]"
+        @click="handleRestartKernel(0)"
+        :loading="restartLoading[0]"
+        type="primary"
+      >
+        {{ t('kernel.restart') }}
       </Button>
       <div class="detail">
         {{ versionDetail[0] }}
@@ -282,17 +335,25 @@ initVersion()
       >
         {{ t('kernel.update') }} : {{ remoteVersion[1] }}
       </Button>
+      <Button
+        v-show="needRestarts[1]"
+        @click="handleRestartKernel(1)"
+        :loading="restartLoading[1]"
+        type="primary"
+      >
+        {{ t('kernel.restart') }}
+      </Button>
       <div class="detail">
         {{ versionDetail[1] }}
       </div>
     </div>
 
     <div class="item">
-      <h3>{{ t('settings.kernel.whichOne') }}</h3>
+      <h3>{{ t('settings.kernel.branch') }}</h3>
       <div class="branch">
         <Card
           :selected="appSettings.app.kernel.branch === 'main'"
-          @click="appSettings.app.kernel.branch = 'main'"
+          @click="handleUseBranch('main')"
           title="Main"
           class="branch-item"
         >
@@ -300,7 +361,7 @@ initVersion()
         </Card>
         <Card
           :selected="appSettings.app.kernel.branch === 'alpha'"
-          @click="appSettings.app.kernel.branch = 'alpha'"
+          @click="handleUseBranch('alpha')"
           title="Alpha"
           class="branch-item"
         >

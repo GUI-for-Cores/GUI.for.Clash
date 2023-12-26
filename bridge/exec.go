@@ -64,7 +64,7 @@ func (a *App) StartKernel(path string, directory string) FlagResult {
 		for scanner.Scan() {
 			text := scanner.Text()
 			runtime.EventsEmit(a.Ctx, "kernelLog", text)
-			if strings.Contains(text, "Start initial compatible provider default") {
+			if strings.Contains(strings.ToLower(text), "start initial compatible provider default") {
 				runtime.EventsEmit(a.Ctx, "kernelStarted", "")
 			}
 		}
