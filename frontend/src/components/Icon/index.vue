@@ -26,6 +26,7 @@ type IconType =
   | 'maximize2'
   | 'close'
   | 'arrowDown'
+  | 'arrowRight'
   | 'speedTest'
   | 'empty'
   | 'github'
