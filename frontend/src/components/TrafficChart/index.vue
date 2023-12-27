@@ -38,7 +38,12 @@ const maxValue = computed(() => {
   return props.height
 })
 
-const updateSvgWidth = () => svgRef.value && (width.value = svgRef.value.clientWidth)
+const updateSvgWidth = () => {
+  if (svgRef.value) {
+    width.value = svgRef.value.clientWidth
+    updateChart()
+  }
+}
 
 const updateChart = () => {
   let { height, padding } = props
