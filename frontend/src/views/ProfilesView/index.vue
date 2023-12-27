@@ -131,7 +131,7 @@ const handleDeleteProfile = async (p: ProfileType) => {
 
 const handleUseProfile = async (p: ProfileType) => {
   if (appSettingsStore.app.kernel.running) {
-    message.info(t('profiles.shouldStop'))
+    message.info('profiles.shouldStop')
     return
   }
   appSettingsStore.app.kernel.profile = p.id

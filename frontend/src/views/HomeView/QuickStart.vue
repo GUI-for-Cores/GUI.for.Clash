@@ -76,14 +76,14 @@ const handleSubmit = async () => {
     return
   }
 
-  message.info(t('home.initSuccessful'))
+  message.info('home.initSuccessful')
 
   try {
     await subscribeStore.updateSubscribe(subscribe.id)
   } catch (error: any) {
     console.log(error)
     message.info(error, 10)
-    message.info(t('home.initFailed'), 10)
+    message.info('home.initFailed', 10)
   }
 
   loading.value = false
