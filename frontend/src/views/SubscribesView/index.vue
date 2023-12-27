@@ -14,6 +14,7 @@ import SubscribeForm from './components/SubscribeForm.vue'
 
 const showSubForm = ref(false)
 const showProxies = ref(false)
+const proxiesSub = ref<SubscribeType>()
 const proxiesTitle = ref('')
 const subFormSubID = ref()
 const subFormIsUpdate = ref(false)
@@ -22,7 +23,7 @@ const subFormTitle = computed(() => (subFormIsUpdate.value ? t('common.edit') : 
 const menuList: Menu[] = [
   {
     label: 'subscribes.editProxies',
-    handler: (p: SubscribeType) => handleEditProxies(p)
+    handler: (id: string) => handleEditProxies(id)
   }
 ]
 
@@ -52,10 +53,13 @@ const handleEditSub = (s: SubscribeType) => {
   showSubForm.value = true
 }
 
-const handleEditProxies = (s: SubscribeType) => {
-  subFormSubID.value = s.id
-  proxiesTitle.value = s.name
-  showProxies.value = true
+const handleEditProxies = (id: string) => {
+  const sub = subscribeStore.getSubscribeById(id)
+  if (sub) {
+    proxiesTitle.value = sub.name
+    proxiesSub.value = sub
+    showProxies.value = true
+  }
 }
 
 const handleUpdateSub = async (s: SubscribeType) => {
@@ -137,7 +141,7 @@ const onSortUpdate = debounce(subscribeStore.saveSubscribes, 1000)
       :key="s.name"
       :title="s.name"
       :disabled="s.disabled"
-      v-menu="menuList.map((v) => ({ ...v, handler: () => v.handler?.(s) }))"
+      v-menu="menuList.map((v) => ({ ...v, handler: () => v.handler?.(s.id) }))"
       class="subscribe"
     >
       <template #title-prefix>
@@ -271,7 +275,7 @@ const onSortUpdate = debounce(subscribeStore.saveSubscribes, 1000)
   </Modal>
 
   <Modal v-model:open="showProxies" :title="proxiesTitle" :footer="false" height="80" width="80">
-    <ProxiesView :id="subFormSubID" />
+    <ProxiesView :sub="proxiesSub" />
   </Modal>
 </template>
 

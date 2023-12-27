@@ -71,7 +71,7 @@ provide('cancel', handleCancel)
   <div v-if="open" @click.self="onMaskClick" class="mask" style="--wails-draggable: drag">
     <div :style="contentStyle" class="modal" style="--wails-draggable: false">
       <div @dblclick="toggleFullScreen" class="title" style="--wails-draggable: drag">
-        {{ title }}
+        {{ t(title) }}
       </div>
       <div class="content">
         <slot />

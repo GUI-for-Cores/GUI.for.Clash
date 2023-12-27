@@ -3,11 +3,11 @@ import { useI18n } from 'vue-i18n'
 import { parse, stringify } from 'yaml'
 import { ref, computed, inject } from 'vue'
 
-import { useMessage } from '@/hooks'
+import { useBool, useMessage } from '@/hooks'
 import { ProxyTypeOptions } from '@/constant'
 import { deepClone, ignoredError } from '@/utils'
-import { Readfile, Writefile } from '@/utils/bridge'
 import { updateProvidersProxies } from '@/api/kernel'
+import { ClipboardSetText, Readfile, Writefile } from '@/utils/bridge'
 import {
   type Menu,
   type SubscribeType,
@@ -17,7 +17,7 @@ import {
 } from '@/stores'
 
 interface Props {
-  id: string
+  sub?: SubscribeType
 }
 
 const props = defineProps<Props>()
@@ -25,20 +25,23 @@ const props = defineProps<Props>()
 const loading = ref(false)
 const keywords = ref('')
 const proxyType = ref('')
-const sub = ref<SubscribeType>()
-const proxies = computed(() => sub.value?.proxies || [])
+const details = ref()
+const allFieldsProxies = ref()
+const sub = ref(deepClone(props.sub || ({} as SubscribeType)))
+
+const [showDetails, toggleDetails] = useBool(false)
 
 const keywordsRegexp = computed(() => new RegExp(keywords.value))
 
 const filteredProxyTypeOptions = computed(() => {
   return ProxyTypeOptions.map((v) => {
-    const count = proxies.value.filter((vv) => vv.type === v.value).length
+    const count = sub.value.proxies.filter((vv) => vv.type === v.value).length
     return { ...v, label: v.label + `(${count})`, count }
   }).filter((v) => v.count)
 })
 
 const filteredProxies = computed(() => {
-  return proxies.value.filter((v) => {
+  return sub.value.proxies.filter((v) => {
     const hitType = proxyType.value ? proxyType.value === v.type : true
     const hitName = keywordsRegexp.value.test(v.name)
     return hitName && hitType
@@ -46,29 +49,34 @@ const filteredProxies = computed(() => {
 })
 
 const menus: Menu[] = [
-  // {
-  //   label: 'common.details',
-  //   handler: (e: any) => {
-  //     console.log(e)
-  //   }
-  // },
-  // {
-  //   label: 'Copy(clash)',
-  //   handler: (e: any) => {
-  //     console.log(e)
-  //   }
-  // },
-  // {
-  //   label: 'Copy(v2ray)',
-  //   handler: (e: any) => {
-  //     console.log(e)
-  //   }
-  // },
+  {
+    label: 'common.details',
+    handler: async (record: SubscribeType['proxies'][0]) => {
+      try {
+        const proxy = await getProxyByName(record.name)
+        details.value = stringify(proxy)
+        toggleDetails()
+      } catch (error: any) {
+        message.info(error)
+      }
+    }
+  },
+  {
+    label: 'common.copy',
+    handler: async (record: SubscribeType['proxies'][0]) => {
+      try {
+        const proxy = await getProxyByName(record.name)
+        await ClipboardSetText(stringify(proxy))
+        message.info('common.copied')
+      } catch (error: any) {
+        message.info(error)
+      }
+    }
+  },
   {
     label: 'common.delete',
     handler: (record: Record<string, any>) => {
-      if (!sub.value) return
-      const idx = proxies.value.findIndex((v) => v.name === record.name)
+      const idx = sub.value.proxies.findIndex((v) => v.name === record.name)
       if (idx !== -1) {
         sub.value.proxies.splice(idx, 1)
       }
@@ -76,26 +84,26 @@ const menus: Menu[] = [
   }
 ]
 
-const handleCancel = inject('cancel') as any
-
 const { t } = useI18n()
 const { message } = useMessage()
 const subscribeStore = useSubscribesStore()
 const appSettings = useAppSettingsStore()
 const profilesStore = useProfilesStore()
 
+const handleCancel = inject('cancel') as any
+
 const handleSubmit = async () => {
-  if (!sub.value) return
   loading.value = true
   try {
     const { path, proxies, id } = sub.value
-    const content = (await ignoredError(Readfile, path)) || '{}'
-    const { proxies: _proxies = [] } = parse(content)
-    const filteredProxies = _proxies.filter((v: any) => proxies.some((vv) => vv.name === v.name))
+    await initAllFieldsProxies()
+    const filteredProxies = allFieldsProxies.value.filter((v: any) =>
+      proxies.some((vv) => vv.name === v.name)
+    )
     await Writefile(path, stringify({ proxies: filteredProxies }))
     await subscribeStore.editSubscribe(id, sub.value)
 
-    await _updateProvidersProxies(sub.value.name)
+    await _updateProvidersProxies(sub.value.id)
 
     handleCancel()
   } catch (error: any) {
@@ -110,21 +118,30 @@ const resetForm = () => {
   keywords.value = ''
 }
 
-const _updateProvidersProxies = async (subName: string) => {
+const _updateProvidersProxies = async (subID: string) => {
   const { running, profile } = appSettings.app.kernel
   if (running) {
     const _profile = profilesStore.getProfileById(profile)
     if (!_profile) return
-    const needUpdate = _profile.proxyGroupsConfig.some((v) => v.use.includes(subName))
+    const needUpdate = _profile.proxyGroupsConfig.some((v) => v.use.includes(subID))
     if (needUpdate) {
-      await updateProvidersProxies(subName)
+      await updateProvidersProxies(subID)
     }
   }
 }
 
-const s = subscribeStore.getSubscribeById(props.id)
-if (s) {
-  sub.value = deepClone(s)
+const initAllFieldsProxies = async () => {
+  if (allFieldsProxies.value) return
+  const content = (await ignoredError(Readfile, sub.value!.path)) || '{}'
+  const { proxies: _proxies = [] } = parse(content)
+  allFieldsProxies.value = _proxies
+}
+
+const getProxyByName = async (name: string) => {
+  await initAllFieldsProxies()
+  const proxy = allFieldsProxies.value.find((v: any) => v.name === name)
+  if (!proxy) throw 'Proxy Not Found'
+  return proxy
 }
 </script>
 
@@ -165,6 +182,19 @@ if (s) {
       </Button>
     </div>
   </div>
+
+  <Modal
+    v-model:open="showDetails"
+    :submit="false"
+    :cancel="false"
+    title="common.details"
+    cancel-text="common.close"
+    max-height="80"
+    max-width="80"
+    mask-closable
+  >
+    <CodeViewer :code="details" />
+  </Modal>
 </template>
 
 <style lang="less" scoped>
