@@ -139,10 +139,10 @@ const onSortUpdate = debounce(rulesetsStore.saveRulesets, 1000)
     </Button>
   </div>
 
-  <div v-if="rulesetsStore.rulesets.length === 0" class="empty">
+  <div v-else class="empty">
     <Empty>
       <template #description>
-        <I18nT keypath="rulesets.empty" tag="p">
+        <I18nT keypath="rulesets.empty" tag="p" scope="global">
           <template #action>
             <Button @click="handleAddRuleset" type="link">{{ t('common.add') }}</Button>
           </template>
