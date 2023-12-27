@@ -12,7 +12,8 @@ import {
   type Menu,
   useProfilesStore,
   useAppSettingsStore,
-  useApp
+  useApp,
+  useKernelApiStore
 } from '@/stores'
 
 import ProfileForm from './components/ProfileForm.vue'
@@ -28,6 +29,7 @@ const { message } = useMessage()
 const appStore = useApp()
 const profilesStore = useProfilesStore()
 const appSettingsStore = useAppSettingsStore()
+const kernelApiStore = useKernelApiStore()
 
 const secondaryMenus: Menu[] = [
   {
@@ -78,6 +80,17 @@ const menus: Menu[] = [
   {
     label: '',
     separator: true
+  },
+  {
+    label: 'home.overview.start',
+    handler: (id: string) => {
+      console.log('start')
+      const p = profilesStore.getProfileById(id)
+      if (p) {
+        appSettingsStore.app.kernel.profile = id
+        kernelApiStore.startKernel()
+      }
+    }
   },
   {
     label: 'common.more',
