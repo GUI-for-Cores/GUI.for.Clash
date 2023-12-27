@@ -5,8 +5,8 @@ import { ref, computed, inject } from 'vue'
 
 import { useMessage } from '@/hooks'
 import { deepClone, ignoredError } from '@/utils'
-import { updateProvidersRules } from '@/api/kernel'
 import { Readfile, Writefile } from '@/utils/bridge'
+import { updateProvidersRules, getProvidersRules } from '@/api/kernel'
 import { type RuleSetType, type Menu, useRulesetsStore, useAppSettingsStore } from '@/stores'
 
 interface Props {
@@ -72,7 +72,10 @@ const handleSave = async () => {
 
 const _updateProvidersRules = async (ruleset: string) => {
   if (appSettings.app.kernel.running) {
-    await updateProvidersRules(ruleset)
+    const { providers } = await getProvidersRules()
+    if (providers[ruleset]) {
+      await updateProvidersRules(ruleset)
+    }
   }
 }
 

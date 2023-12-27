@@ -7,8 +7,8 @@ import { View } from '@/constant'
 import { useMessage } from '@/hooks'
 import { Writefile } from '@/utils/bridge'
 import { DraggableOptions } from '@/constant'
-import { updateProvidersRules } from '@/api/kernel'
 import { debounce, formatRelativeTime } from '@/utils'
+import { getProvidersRules, updateProvidersRules } from '@/api/kernel'
 import { type RuleSetType, type Menu, useRulesetsStore, useAppSettingsStore } from '@/stores'
 
 import RulesetForm from './components/RulesetForm.vue'
@@ -112,7 +112,10 @@ const handleClearRuleset = async (id: string) => {
 
 const _updateProvidersRules = async (ruleset: string) => {
   if (appSettingsStore.app.kernel.running) {
-    await updateProvidersRules(ruleset)
+    const { providers } = await getProvidersRules()
+    if (providers[ruleset]) {
+      await updateProvidersRules(ruleset)
+    }
   }
 }
 
