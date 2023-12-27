@@ -28,7 +28,9 @@ export default {
     updateAll: 'Update All',
     updateTime: 'Update Time',
     keywords: 'Keywords',
-    success: 'Success'
+    success: 'Success',
+    copy: 'Copy',
+    copied: 'Copied'
   },
   kernel: {
     port: 'HTTP(s) Port',

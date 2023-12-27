@@ -28,7 +28,9 @@ export default {
     updateAll: '更新全部',
     updateTime: '更新时间',
     keywords: '关键词',
-    success: '成功'
+    success: '成功',
+    copy: '复制',
+    copied: '已复制'
   },
   kernel: {
     port: 'HTTP(s)代理端口',
@@ -307,9 +309,9 @@ export default {
     file: 'FILE',
     behavior: {
       name: '匹配行为',
-      classical: '域名 + IP-CIDR',
+      classical: '域名+IP地址段',
       domain: '域名',
-      ipcidr: 'IP-CIDR'
+      ipcidr: 'IP地址段'
     },
     rulesetType: '规则组类型',
     format: '格式',

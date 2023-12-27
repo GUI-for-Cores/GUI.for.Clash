@@ -120,13 +120,8 @@ onUnmounted(disconnect)
     max-width="90"
     mask-closable
   >
-    <pre class="pre user-select">{{ details }}</pre>
+    <CodeViewer :code="details" />
   </Modal>
 </template>
 
-<style lang="less" scoped>
-.pre {
-  font-size: 14px;
-  font-family: Menlo, Monaco, Consolas, 'Andale Mono', 'lucida console', 'Courier New', monospace;
-}
-</style>
+<style lang="less" scoped></style>
