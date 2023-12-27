@@ -38,13 +38,21 @@ const onKernelStarted = async () => {
 
   // Automatically set system proxy, but the priority is lower than tun mode
   if (!kernelApiStore.config.tun.enable && appSettingsStore.app.autoSetSystemProxy) {
-    await envStore.setSystemProxy()
+    try {
+      await envStore.setSystemProxy()
+    } catch (error: any) {
+      message.info(error)
+    }
   }
 }
 
 const onKernelStopped = async () => {
   if (appSettingsStore.app.autoSetSystemProxy) {
-    await envStore.clearSystemProxy()
+    try {
+      await envStore.clearSystemProxy()
+    } catch (error: any) {
+      message.info(error)
+    }
   }
 }
 
@@ -83,6 +91,7 @@ const onMouseWheel = (e: WheelEvent) => {
 const onTunSwitchChange = async (enable: boolean) => {
   try {
     await kernelApiStore.updateConfig({ tun: { enable } })
+    await envStore.clearSystemProxy()
   } catch (error: any) {
     console.error(error)
     message.info(error)
@@ -92,9 +101,12 @@ const onTunSwitchChange = async (enable: boolean) => {
 const onSystemProxySwitchChange = async (enable: boolean) => {
   try {
     await envStore.switchSystemProxy(enable)
+    await kernelApiStore.updateConfig({ tun: { enable: false } })
+    await kernelApiStore.refreshCofig()
   } catch (error: any) {
     console.error(error)
     message.info(error)
+    envStore.systemProxy = !envStore.systemProxy
   }
 }
 
@@ -113,6 +125,8 @@ watch(showController, (v) => {
     kernelApiStore.refreshCofig()
   }
 })
+
+envStore.updateSystemProxyState()
 
 kernelApiStore.updateKernelStatus().then(async (running) => {
   stateLoading.value = false
