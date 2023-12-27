@@ -131,7 +131,7 @@ const onSortUpdate = debounce(profilesStore.saveProfiles, 1000)
   <div v-if="profilesStore.profiles.length === 0" class="empty">
     <Empty>
       <template #description>
-        <I18nT keypath="profiles.empty" tag="p">
+        <I18nT keypath="profiles.empty" tag="p" scope="global">
           <template #action>
             <Button @click="handleAddProfile" type="link">{{ t('common.add') }}</Button>
           </template>

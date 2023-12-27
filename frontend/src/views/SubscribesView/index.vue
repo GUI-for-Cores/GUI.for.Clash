@@ -115,10 +115,10 @@ const onSortUpdate = debounce(subscribeStore.saveSubscribes, 1000)
     </Button>
   </div>
 
-  <div v-if="subscribeStore.subscribes.length === 0" class="empty">
+  <div v-else class="empty">
     <Empty>
       <template #description>
-        <I18nT keypath="subscribes.empty" tag="p">
+        <I18nT keypath="subscribes.empty" tag="p" scope="global">
           <template #action>
             <Button @click="handleAddSub" type="link">{{ t('common.add') }}</Button>
           </template>
@@ -129,8 +129,8 @@ const onSortUpdate = debounce(subscribeStore.saveSubscribes, 1000)
 
   <div
     v-draggable="[subscribeStore.subscribes, { ...DraggableOptions, onUpdate: onSortUpdate }]"
-    class="subscribes"
     :class="appSettingsStore.app.subscribesView"
+    class="subscribes"
   >
     <Card
       v-for="s in subscribeStore.subscribes"
