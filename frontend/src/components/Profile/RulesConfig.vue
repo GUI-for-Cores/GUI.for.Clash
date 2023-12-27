@@ -95,7 +95,7 @@ const notSupport = (r: ProfileType['rulesConfig'][0]) => {
 }
 
 const showNotSupport = () => {
-  message.info(t('kernel.rules.needGeodataMode'))
+  message.info('kernel.rules.needGeodataMode')
 }
 
 watch(rules, (v) => emits('update:modelValue', v), { immediate: true, deep: true })

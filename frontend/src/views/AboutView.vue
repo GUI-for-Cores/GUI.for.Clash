@@ -21,12 +21,12 @@ const downloadApp = async () => {
   if (loading.value || downloading.value) return
 
   if (!needUpdate.value) {
-    message.info(t('about.noNeedUpdate'))
+    message.info('about.noNeedUpdate')
     return
   }
 
   if (!downloadUrl) {
-    message.info(t('about.noDownloadLink'))
+    message.info('about.noDownloadLink')
     return
   }
 
@@ -42,7 +42,7 @@ const downloadApp = async () => {
     await Movefile(appName + '.tmp', appName)
 
     needRestart.value = true
-    message.info(t('about.updateSuccessful'))
+    message.info('about.updateSuccessful')
   } catch (error: any) {
     console.log(error)
     message.info(error, 5)
@@ -73,7 +73,7 @@ const checkForUpdates = async (showTips = false) => {
     downloadUrl = asset.browser_download_url
 
     if (showTips) {
-      message.info(needUpdate.value ? t('about.newVersion') : t('about.latestVersion'))
+      message.info(needUpdate.value ? 'about.newVersion' : 'about.latestVersion')
     }
   } catch (error: any) {
     console.error(error)

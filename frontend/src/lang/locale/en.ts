@@ -242,6 +242,7 @@ export default {
     },
     connections: {
       host: 'Host',
+      inbound: 'Inbound Mode',
       rule: 'Rule',
       chains: 'Chains',
       upload: 'Upload',

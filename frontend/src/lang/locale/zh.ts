@@ -242,7 +242,8 @@ export default {
     },
     connections: {
       host: '主机',
-      rule: '规则',
+      inbound: '入站模式',
+      rule: '匹配规则',
       chains: '链路',
       upload: '上行流量',
       download: '下行流量',

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { ref, onUnmounted } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { ref, onUnmounted, inject } from 'vue'
 
 import type { Menu } from '@/stores'
 import { useBool, useMessage } from '@/hooks'
@@ -19,19 +20,23 @@ const columns: Column[] = [
     }
   },
   {
+    title: 'home.connections.inbound',
+    key: 'metadata.inboundName',
+    customRender: ({ value }) => value.replace('DEFAULT-', '')
+  },
+  {
     title: 'home.connections.rule',
     key: 'rule',
-    align: 'left',
     customRender: ({ value, record }) => {
       return value + (record.rulePayload ? '::' + record.rulePayload : '')
     }
   },
-  {
-    title: 'home.connections.chains',
-    key: 'chains',
-    align: 'left',
-    customRender: ({ value }) => value[0]
-  },
+  // {
+  //   title: 'home.connections.chains',
+  //   key: 'chains',
+  //   align: 'left',
+  //   customRender: ({ value }) => value[0]
+  // },
   {
     title: 'home.connections.upload',
     key: 'upload',
@@ -94,10 +99,13 @@ const menu: Menu[] = [
 const details = ref()
 const dataSource = ref<KernelConnectionsWS['connections']>([])
 const [showDetails, toggleDetails] = useBool(false)
+const { t } = useI18n()
 const { message } = useMessage()
 
+const handleCancel = inject('cancel') as any
+
 const onConnections = (data: KernelConnectionsWS) => {
-  dataSource.value = data.connections.sort(
+  dataSource.value = (data.connections || []).sort(
     (a, b) => new Date(b.start).getTime() - new Date(a.start).getTime()
   )
 }
@@ -109,7 +117,7 @@ onUnmounted(disconnect)
 
 <template>
   <div class="connections">
-    <Table :columns="columns" :menu="menu" :data-source="dataSource" />
+    <Table :columns="columns" :menu="menu" :data-source="dataSource" style="flex: 1" />
   </div>
 
   <Modal
