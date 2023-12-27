@@ -6,7 +6,8 @@ import type {
   KernelApiProviders,
   KernelApiProxies,
   KernelApiConnections,
-  KernelConnectionsWS
+  KernelConnectionsWS,
+  KernelApiProvidersRules
 } from './kernel.schema'
 
 enum Api {
@@ -105,6 +106,8 @@ export const getProxyDelay = (proxy: string) => {
 }
 
 export const updateGEO = () => request.post<{ message: string } | null>(Api.GEO)
+
+export const getProvidersRules = () => request.get<KernelApiProvidersRules>(Api.ProvidersRules)
 
 export const updateProvidersRules = (ruleset: string) => {
   return request.put<null>(Api.ProvidersRules + '/' + ruleset)

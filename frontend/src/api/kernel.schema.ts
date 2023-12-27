@@ -79,3 +79,18 @@ export type KernelConnectionsWS = {
     rulePayload: string
   }[]
 }
+
+export type KernelApiProvidersRules = {
+  providers: Record<
+    string,
+    {
+      behavior: string
+      format: string
+      name: string
+      ruleCount: number
+      type: string
+      updatedAt: string
+      vehicleType: string
+    }
+  >
+}
