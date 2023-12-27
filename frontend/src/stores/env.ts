@@ -62,8 +62,8 @@ export const useEnvStore = defineStore('env', () => {
   }
 
   const switchSystemProxy = async (enable: boolean) => {
-    if (enable) setSystemProxy()
-    else clearSystemProxy()
+    if (enable) await setSystemProxy()
+    else await clearSystemProxy()
   }
 
   return {

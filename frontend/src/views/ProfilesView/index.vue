@@ -21,7 +21,7 @@ const profileID = ref()
 const profileStep = ref(0)
 const showForm = ref(false)
 const isUpdate = ref(false)
-const formTitle = computed(() => (isUpdate.value ? t('common.edit') : t('common.add')))
+const formTitle = computed(() => (isUpdate.value ? 'common.edit' : 'common.add'))
 
 const { t } = useI18n()
 const { message } = useMessage()

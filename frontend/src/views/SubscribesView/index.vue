@@ -18,7 +18,7 @@ const proxiesSub = ref<SubscribeType>()
 const proxiesTitle = ref('')
 const subFormSubID = ref()
 const subFormIsUpdate = ref(false)
-const subFormTitle = computed(() => (subFormIsUpdate.value ? t('common.edit') : t('common.add')))
+const subFormTitle = computed(() => (subFormIsUpdate.value ? 'common.edit' : 'common.add'))
 
 const menuList: Menu[] = [
   {
@@ -215,7 +215,7 @@ const onSortUpdate = debounce(subscribeStore.saveSubscribes, 1000)
         <div>
           {{ t('subscribes.proxyCount') }}
           :
-          <Button type="text" size="small" @click="handleEditProxies(s)">
+          <Button type="text" size="small" @click="handleEditProxies(s.id)">
             {{ s.proxies.length }}
           </Button>
         </div>

@@ -19,18 +19,16 @@ const showRulesetList = ref(false)
 const rulesetTitle = ref('')
 const rulesetFormID = ref()
 const rulesetFormIsUpdate = ref(false)
-const subFormTitle = computed(() =>
-  rulesetFormIsUpdate.value ? t('common.edit') : t('common.add')
-)
+const subFormTitle = computed(() => (rulesetFormIsUpdate.value ? 'common.edit' : 'common.add'))
 
 const menuList: Menu[] = [
   {
     label: 'rulesets.editRuleset',
-    handler: (r: RuleSetType) => handleEditRulesetList(r)
+    handler: (id: string) => handleEditRulesetList(id)
   },
   {
     label: 'common.clear',
-    handler: (r: RuleSetType) => handleClearRuleset(r)
+    handler: (id: string) => handleClearRuleset(id)
   }
 ]
 
@@ -60,10 +58,13 @@ const handleEditRuleset = (r: RuleSetType) => {
   showRulesetForm.value = true
 }
 
-const handleEditRulesetList = (r: RuleSetType) => {
-  rulesetFormID.value = r.id
-  rulesetTitle.value = r.name
-  showRulesetList.value = true
+const handleEditRulesetList = (id: string) => {
+  const r = rulesetsStore.getRulesetById(id)
+  if (r) {
+    rulesetFormID.value = r.id
+    rulesetTitle.value = r.name
+    showRulesetList.value = true
+  }
 }
 
 const handleUpdateRuleset = async (r: RuleSetType) => {
@@ -93,7 +94,10 @@ const handleDisableRuleset = async (r: RuleSetType) => {
   message.info('common.success')
 }
 
-const handleClearRuleset = async (r: RuleSetType) => {
+const handleClearRuleset = async (id: string) => {
+  const r = rulesetsStore.getRulesetById(id)
+  if (!r) return
+
   try {
     await Writefile(r.path, stringify({ payload: [] }))
     await _updateProvidersRules(r.name)
@@ -161,7 +165,7 @@ const onSortUpdate = debounce(rulesetsStore.saveRulesets, 1000)
       :key="r.name"
       :title="r.name"
       :disabled="r.disabled"
-      v-menu="menuList.map((v) => ({ ...v, handler: () => v.handler?.(r) }))"
+      v-menu="menuList.map((v) => ({ ...v, handler: () => v.handler?.(r.id) }))"
       class="ruleset"
     >
       <template #title-prefix>
@@ -222,7 +226,7 @@ const onSortUpdate = debounce(rulesetsStore.saveRulesets, 1000)
       <div>
         {{ t('rulesets.rulesetCount') }}
         :
-        <Button type="text" size="small">
+        <Button @click="handleEditRulesetList(r.id)" type="text" size="small">
           {{ r.count }}
         </Button>
       </div>

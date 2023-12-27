@@ -51,7 +51,7 @@ const downloadApp = async () => {
   downloading.value = false
 }
 
-const checkUpdate = async (showTips = false) => {
+const checkForUpdates = async (showTips = false) => {
   if (loading.value || downloading.value) return
 
   loading.value = true
@@ -91,7 +91,7 @@ const handleRestartApp = async () => {
   }
 }
 
-checkUpdate()
+checkForUpdates()
 </script>
 
 <template>
@@ -104,7 +104,7 @@ checkUpdate()
         <span style="margin-left: 4px">{{ t('about.restart') }}</span>
       </Button>
       <template v-else>
-        <Button @click="checkUpdate(true)" :loading="loading" type="link" size="small">
+        <Button @click="checkForUpdates(true)" :loading="loading" type="link" size="small">
           {{ APP_VERSION }}
         </Button>
         <Button v-if="needUpdate" @click="downloadApp" :loading="downloading" size="small">
