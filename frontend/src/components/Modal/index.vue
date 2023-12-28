@@ -65,6 +65,7 @@ const contentStyle = computed(() => ({
 }))
 
 provide('cancel', handleCancel)
+provide('submit', handleSubmit)
 </script>
 
 <template>
