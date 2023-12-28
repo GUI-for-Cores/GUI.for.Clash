@@ -90,13 +90,15 @@ table {
       transition: all 0.2s;
       &:nth-child(odd) {
         background: var(--table-tr-odd-bg);
+        &:hover {
+          background: var(--table-tr-odd-hover-bg);
+        }
       }
       &:nth-child(even) {
         background: var(--table-tr-even-bg);
-      }
-      &:hover {
-        color: #fff;
-        background: var(--primary-color);
+        &:hover {
+          background: var(--table-tr-even-hover-bg);
+        }
       }
       td {
         padding: 8px;

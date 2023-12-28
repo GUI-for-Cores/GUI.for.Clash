@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { useI18n } from 'vue-i18n'
-import { ref, onUnmounted, inject } from 'vue'
+import { ref, onUnmounted } from 'vue'
 
 import type { Menu } from '@/stores'
 import { useBool, useMessage } from '@/hooks'
@@ -31,12 +30,11 @@ const columns: Column[] = [
       return value + (record.rulePayload ? '::' + record.rulePayload : '')
     }
   },
-  // {
-  //   title: 'home.connections.chains',
-  //   key: 'chains',
-  //   align: 'left',
-  //   customRender: ({ value }) => value[0]
-  // },
+  {
+    title: 'home.connections.chains',
+    key: 'chains',
+    customRender: ({ value }) => value[0]
+  },
   {
     title: 'home.connections.upload',
     key: 'upload',
@@ -99,10 +97,7 @@ const menu: Menu[] = [
 const details = ref()
 const dataSource = ref<KernelConnectionsWS['connections']>([])
 const [showDetails, toggleDetails] = useBool(false)
-const { t } = useI18n()
 const { message } = useMessage()
-
-const handleCancel = inject('cancel') as any
 
 const onConnections = (data: KernelConnectionsWS) => {
   dataSource.value = (data.connections || []).sort(
