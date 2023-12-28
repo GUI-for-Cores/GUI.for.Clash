@@ -6,18 +6,11 @@ import { ref, computed, inject } from 'vue'
 import { useBool, useMessage } from '@/hooks'
 import { ProxyTypeOptions } from '@/constant'
 import { deepClone, ignoredError } from '@/utils'
-import { updateProvidersProxies } from '@/api/kernel'
 import { ClipboardSetText, Readfile, Writefile } from '@/utils/bridge'
-import {
-  type Menu,
-  type SubscribeType,
-  useSubscribesStore,
-  useAppSettingsStore,
-  useProfilesStore
-} from '@/stores'
+import { type Menu, type SubscribeType, useSubscribesStore } from '@/stores'
 
 interface Props {
-  sub?: SubscribeType
+  sub: SubscribeType
 }
 
 const props = defineProps<Props>()
@@ -27,7 +20,7 @@ const keywords = ref('')
 const proxyType = ref('')
 const details = ref()
 const allFieldsProxies = ref()
-const sub = ref(deepClone(props.sub || ({} as SubscribeType)))
+const sub = ref(deepClone(props.sub))
 
 const [showDetails, toggleDetails] = useBool(false)
 
@@ -87,12 +80,11 @@ const menus: Menu[] = [
 const { t } = useI18n()
 const { message } = useMessage()
 const subscribeStore = useSubscribesStore()
-const appSettings = useAppSettingsStore()
-const profilesStore = useProfilesStore()
 
 const handleCancel = inject('cancel') as any
+const handleSubmit = inject('submit') as any
 
-const handleSubmit = async () => {
+const handleSave = async () => {
   loading.value = true
   try {
     const { path, proxies, id } = sub.value
@@ -102,10 +94,7 @@ const handleSubmit = async () => {
     )
     await Writefile(path, stringify({ proxies: filteredProxies }))
     await subscribeStore.editSubscribe(id, sub.value)
-
-    await _updateProvidersProxies(sub.value.id)
-
-    handleCancel()
+    handleSubmit()
   } catch (error: any) {
     console.log(error)
     message.info(error)
@@ -116,18 +105,6 @@ const handleSubmit = async () => {
 const resetForm = () => {
   proxyType.value = ''
   keywords.value = ''
-}
-
-const _updateProvidersProxies = async (subID: string) => {
-  const { running, profile } = appSettings.app.kernel
-  if (running) {
-    const _profile = profilesStore.getProfileById(profile)
-    if (!_profile) return
-    const needUpdate = _profile.proxyGroupsConfig.some((v) => v.use.includes(subID))
-    if (needUpdate) {
-      await updateProvidersProxies(subID)
-    }
-  }
 }
 
 const initAllFieldsProxies = async () => {
@@ -177,7 +154,7 @@ const getProxyByName = async (name: string) => {
       <Button @click="handleCancel" :disable="loading">
         {{ t('common.cancel') }}
       </Button>
-      <Button @click="handleSubmit" :loading="loading" type="primary">
+      <Button @click="handleSave" :loading="loading" type="primary">
         {{ t('common.save') }}
       </Button>
     </div>

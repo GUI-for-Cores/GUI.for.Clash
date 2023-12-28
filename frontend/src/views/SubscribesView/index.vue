@@ -6,15 +6,22 @@ import { View } from '@/constant'
 import { useMessage } from '@/hooks'
 import { DraggableOptions } from '@/constant'
 import { BrowserOpenURL } from '@/utils/bridge'
+import { updateProvidersProxies } from '@/api/kernel'
 import { formatBytes, formatRelativeTime, debounce } from '@/utils'
-import { type SubscribeType, type Menu, useSubscribesStore, useAppSettingsStore } from '@/stores'
+import {
+  type SubscribeType,
+  type Menu,
+  useSubscribesStore,
+  useAppSettingsStore,
+  useKernelApiStore
+} from '@/stores'
 
 import ProxiesView from './components/ProxiesView.vue'
 import SubscribeForm from './components/SubscribeForm.vue'
 
 const showSubForm = ref(false)
 const showProxies = ref(false)
-const proxiesSub = ref<SubscribeType>()
+const proxiesSub = ref()
 const proxiesTitle = ref('')
 const subFormSubID = ref()
 const subFormIsUpdate = ref(false)
@@ -31,6 +38,7 @@ const { t } = useI18n()
 const { message } = useMessage()
 const subscribeStore = useSubscribesStore()
 const appSettingsStore = useAppSettingsStore()
+const kernelApiStore = useKernelApiStore()
 
 const handleAddSub = async () => {
   subFormIsUpdate.value = false
@@ -40,6 +48,7 @@ const handleAddSub = async () => {
 const handleUpdateSubs = async () => {
   try {
     await subscribeStore.updateSubscribes()
+    await _updateAllProviderProxies()
     message.info('success')
   } catch (error: any) {
     console.error('updateSubscribes: ', error)
@@ -65,6 +74,7 @@ const handleEditProxies = (id: string) => {
 const handleUpdateSub = async (s: SubscribeType) => {
   try {
     await subscribeStore.updateSubscribe(s.id)
+    await _updateProviderProxies(s.id)
     message.info('success')
   } catch (error: any) {
     console.error('updateSubscribe: ', error)
@@ -86,6 +96,40 @@ const handleDisableSub = async (s: SubscribeType) => {
   s.disabled = !s.disabled
   subscribeStore.editSubscribe(s.id, s)
   message.info('success')
+}
+
+const onEditProxiesEnd = async () => {
+  try {
+    await _updateProviderProxies(proxiesSub.value.id)
+  } catch (error: any) {
+    console.error(error)
+    message.info(error)
+  }
+}
+
+const _updateProviderProxies = async (provider: string) => {
+  if (appSettingsStore.app.kernel.running) {
+    await kernelApiStore.refreshProviderProxies()
+    if (kernelApiStore.providers[provider]) {
+      await updateProvidersProxies(provider)
+      await kernelApiStore.refreshProviderProxies()
+    }
+  }
+}
+
+const _updateAllProviderProxies = async () => {
+  if (appSettingsStore.app.kernel.running) {
+    await kernelApiStore.refreshProviderProxies()
+    const ids = Object.keys(kernelApiStore.providers).filter(
+      (v) => v !== 'default' && !kernelApiStore.proxies[v]
+    )
+    for (let i = 0; i < ids.length; i++) {
+      await updateProvidersProxies(ids[i])
+    }
+    if (ids.length !== 0) {
+      await kernelApiStore.refreshProviderProxies()
+    }
+  }
 }
 
 const noUpdateNeeded = computed(() => subscribeStore.subscribes.every((v) => v.disabled))
@@ -274,7 +318,14 @@ const onSortUpdate = debounce(subscribeStore.saveSubscribes, 1000)
     <SubscribeForm :is-update="subFormIsUpdate" :id="subFormSubID" />
   </Modal>
 
-  <Modal v-model:open="showProxies" :title="proxiesTitle" :footer="false" height="80" width="80">
+  <Modal
+    v-model:open="showProxies"
+    @ok="onEditProxiesEnd"
+    :title="proxiesTitle"
+    :footer="false"
+    height="80"
+    width="80"
+  >
     <ProxiesView :sub="proxiesSub" />
   </Modal>
 </template>
