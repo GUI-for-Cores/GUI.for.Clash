@@ -142,7 +142,7 @@ kernelApiStore.updateKernelStatus().then(async (running) => {
 <template>
   <div @wheel="onMouseWheel" class="homeview">
     <div v-if="!appSettingsStore.app.kernel.running || kernelLoading" class="center">
-      <img src="@/assets/logo.png" draggable="false" style="margin-bottom: 16px" />
+      <img src="@/assets/logo.png" draggable="false" style="margin-bottom: 16px; height: 128px" />
 
       <template v-if="profilesStore.profiles.length === 0">
         <p>{{ t('home.noProfile', [APP_TITLE]) }}</p>
