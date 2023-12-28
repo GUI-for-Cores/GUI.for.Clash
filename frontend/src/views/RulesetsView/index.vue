@@ -45,6 +45,7 @@ const handleAddRuleset = async () => {
 const handleUpdateRulesets = async () => {
   try {
     await rulesetsStore.updateRulesets()
+    await _updateAllProvidersRules()
     message.info('common.success')
   } catch (error: any) {
     console.error('updateRulesets: ', error)
@@ -110,11 +111,30 @@ const handleClearRuleset = async (id: string) => {
   }
 }
 
+const onEditRuelsetListEnd = async () => {
+  try {
+    await _updateProvidersRules(rulesetTitle.value)
+  } catch (error: any) {
+    message.info(error)
+    console.log(error)
+  }
+}
+
 const _updateProvidersRules = async (ruleset: string) => {
   if (appSettingsStore.app.kernel.running) {
     const { providers } = await getProvidersRules()
     if (providers[ruleset]) {
       await updateProvidersRules(ruleset)
+    }
+  }
+}
+
+const _updateAllProvidersRules = async () => {
+  if (appSettingsStore.app.kernel.running) {
+    const { providers } = await getProvidersRules()
+    const rulesets = Object.keys(providers)
+    for (let i = 0; i < rulesets.length; i++) {
+      await updateProvidersRules(rulesets[i])
     }
   }
 }
@@ -264,6 +284,7 @@ const onSortUpdate = debounce(rulesetsStore.saveRulesets, 1000)
     v-model:open="showRulesetList"
     :title="rulesetTitle"
     :footer="false"
+    @ok="onEditRuelsetListEnd"
     height="80"
     width="80"
   >

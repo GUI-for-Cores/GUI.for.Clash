@@ -6,8 +6,7 @@ import { ref, computed, inject } from 'vue'
 import { useMessage } from '@/hooks'
 import { deepClone, ignoredError } from '@/utils'
 import { Readfile, Writefile } from '@/utils/bridge'
-import { updateProvidersRules, getProvidersRules } from '@/api/kernel'
-import { type RuleSetType, type Menu, useRulesetsStore, useAppSettingsStore } from '@/stores'
+import { type RuleSetType, type Menu, useRulesetsStore } from '@/stores'
 
 interface Props {
   id: string
@@ -17,22 +16,14 @@ const props = defineProps<Props>()
 
 const loading = ref(false)
 const keywords = ref('')
-const rulesetType = ref('')
 const ruleset = ref<RuleSetType>()
 
 const rulesetList = ref<string[]>([])
 
 const keywordsRegexp = computed(() => new RegExp(keywords.value))
 
-const filteredProxyTypeOptions = computed(() => {
-  return []
-})
-
 const filteredList = computed(() => {
-  return rulesetList.value.filter((v) => {
-    const hitName = keywordsRegexp.value.test(v)
-    return hitName
-  })
+  return rulesetList.value.filter((v) => keywordsRegexp.value.test(v))
 })
 
 const menus: Menu[] = [
@@ -49,34 +40,24 @@ const menus: Menu[] = [
 ]
 
 const handleCancel = inject('cancel') as any
+const handleSubmit = inject('submit') as any
 
 const { t } = useI18n()
 const { message } = useMessage()
 const rulesetsStore = useRulesetsStore()
-const appSettings = useAppSettingsStore()
 
 const handleSave = async () => {
   if (!ruleset.value) return
   loading.value = true
   try {
     await Writefile(ruleset.value.path, stringify({ payload: rulesetList.value }))
-    await _updateProvidersRules(ruleset.value.name)
     message.info('common.success')
-    handleCancel()
+    handleSubmit()
   } catch (error: any) {
     message.info(error)
     console.log(error)
   }
   loading.value = false
-}
-
-const _updateProvidersRules = async (ruleset: string) => {
-  if (appSettings.app.kernel.running) {
-    const { providers } = await getProvidersRules()
-    if (providers[ruleset]) {
-      await updateProvidersRules(ruleset)
-    }
-  }
 }
 
 const resetForm = () => {
@@ -100,11 +81,6 @@ if (r) {
   <div class="ruleset-view">
     <div class="form">
       <span class="label">
-        {{ t('ruleset.rulesetType') }}
-        :
-      </span>
-      <Select v-model="rulesetType" :options="filteredProxyTypeOptions" :border="false" />
-      <span class="label">
         {{ t('common.keywords') }}
         :
       </span>
@@ -114,14 +90,14 @@ if (r) {
       </Button>
     </div>
     <div class="rules">
-      <Card
+      <div
         v-for="rule in filteredList"
         :key="rule"
-        :title="rule"
         v-menu="menus.map((v) => ({ ...v, handler: () => v.handler?.(rule) }))"
         class="rule"
       >
-      </Card>
+        {{ rule }}
+      </div>
     </div>
     <div class="action">
       <Button @click="handleCancel" :disable="loading">
@@ -160,8 +136,12 @@ if (r) {
 
   .rule {
     display: inline-block;
-    width: calc(25% - 4px);
+    width: calc(33.33% - 4px);
     margin: 2px;
+    padding: 8px;
+    word-break: break-all;
+    font-size: 12px;
+    background: var(--card-bg);
   }
 }
 
