@@ -70,7 +70,12 @@ export const HttpGetJSON = async (url: string, headers = {}) => {
   if (!flag) {
     throw body
   }
-  return { header, json: JSON.parse(body) }
+  try {
+    const json = JSON.parse(body)
+    return { header, json }
+  } catch {
+    throw 'Wrong data format'
+  }
 }
 
 export const Exec = async (path: string, ...args: string[]) => {
