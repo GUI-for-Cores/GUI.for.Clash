@@ -263,7 +263,9 @@ export default {
     path: '保存路径',
     include: '包含',
     exclude: '排除',
-    updating: '更新中'
+    updating: '更新中',
+    useragent: '用户代理',
+    resetUserAgent: '重置用户代理'
   },
   subscribes: {
     download: '下行流量',
@@ -372,6 +374,10 @@ export default {
       branch: '分支',
       main: '主分支',
       alpha: 'Alpha分支'
+    },
+    userAgent: {
+      name: '用户代理(User-Agent)',
+      reset: ' 重置用户代理'
     }
   },
   about: {

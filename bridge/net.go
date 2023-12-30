@@ -18,7 +18,7 @@ func (a *App) HttpGet(url string, headers map[string]string) HTTPResult {
 
 	header := make(http.Header)
 
-	header.Set("User-Agent", Env.UserAgent)
+	header.Set("User-Agent", Config.UserAgent)
 
 	for key, value := range headers {
 		header.Set(key, value)
@@ -60,7 +60,7 @@ func (a *App) Download(url string, path string) FlagResult {
 
 	client := &http.Client{}
 	header := make(http.Header)
-	header.Set("User-Agent", Env.UserAgent)
+	header.Set("User-Agent", Config.UserAgent)
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {

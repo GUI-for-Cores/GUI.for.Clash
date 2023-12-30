@@ -23,7 +23,6 @@ func (a *App) Startup(ctx context.Context) {
 var Env = &EnvResult{
 	BasePath:    "",
 	AppName:     "",
-	UserAgent:   "GUI.for.Clash/1.0",
 	OS:          runtime.GOOS,
 	ARCH:        runtime.GOARCH,
 	FromTaskSch: false,

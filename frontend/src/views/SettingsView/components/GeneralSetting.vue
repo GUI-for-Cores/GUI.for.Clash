@@ -4,8 +4,8 @@ import { useI18n } from 'vue-i18n'
 
 import { useMessage } from '@/hooks'
 import { useAppSettingsStore } from '@/stores'
-import { APP_TITLE, getTaskSchXmlString } from '@/utils'
 import { Theme, Lang, WindowStartState, Color } from '@/constant'
+import { APP_TITLE, APP_VERSION, getTaskSchXmlString } from '@/utils'
 import {
   CheckPermissions,
   SwitchPermissions,
@@ -79,6 +79,10 @@ const windowStates = [
 
 const resetFontFamily = () => {
   appSettings.app['font-family'] = '"Microsoft Yahei", "Arial", sans-serif, "Twemoji Mozilla"'
+}
+
+const resetUserAgent = () => {
+  appSettings.app.userAgent = APP_TITLE + '/' + APP_VERSION
 }
 
 const onPermChange = async (v: boolean) => {
@@ -210,6 +214,20 @@ checkSchtask()
           v-model="appSettings.app.windowStartState"
           :options="windowStates"
           type="number"
+        />
+      </div>
+    </div>
+    <div class="settings-item">
+      <div class="title">{{ t('settings.userAgent.name') }}</div>
+      <div style="display: flex; align-items: center">
+        <Button @click="resetUserAgent" v-tips="'settings.userAgent.reset'" type="text">
+          <Icon icon="reset" />
+        </Button>
+        <Input
+          v-model="appSettings.app.userAgent"
+          :delay="1000"
+          editable
+          style="margin-left: 8px"
         />
       </div>
     </div>
