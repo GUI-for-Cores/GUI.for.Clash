@@ -2,9 +2,9 @@
 import { inject, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { sampleID } from '@/utils'
 import { useMessage } from '@/hooks'
 import * as Defaults from '@/constant'
+import { sampleID, APP_TITLE, APP_VERSION } from '@/utils'
 import {
   useProfilesStore,
   useAppSettingsStore,
@@ -59,6 +59,7 @@ const handleSubmit = async () => {
     include: '',
     exclude: '',
     disabled: false,
+    userAgent: APP_TITLE + '/' + APP_VERSION,
     proxies: []
   }
 
