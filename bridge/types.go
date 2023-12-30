@@ -12,7 +12,6 @@ type App struct {
 
 type EnvResult struct {
 	FromTaskSch bool   `json:"-"`
-	UserAgent   string `json:"-"`
 	AppName     string `json:"appName"`
 	BasePath    string `json:"basePath"`
 	OS          string `json:"os"`
@@ -34,6 +33,7 @@ type AppConfig struct {
 	Lang              string `yaml:"lang"`
 	WindowStartState  int    `yaml:"windowStartState"`
 	CloseKernelOnExit bool   `yaml:"closeKernelOnExit"`
+	UserAgent         string `yaml:"userAgent"`
 	Kernel            struct {
 		Pid int32 `yaml:"pid"`
 	} `yaml:"kernel"`

@@ -2,6 +2,7 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { stringify, parse } from 'yaml'
 
+import { useAppSettingsStore } from '@/stores'
 import { Readfile, Writefile, HttpGet } from '@/utils/bridge'
 import { SubscribesFilePath, NodeConverterFilePath } from '@/constant'
 import { deepClone, debounce, isValidBase64, isValidSubYAML, sampleID } from '@/utils'
@@ -22,6 +23,7 @@ export type SubscribeType = {
   exclude: string
   disabled: boolean
   proxies: { id: string; name: string; type: string }[]
+  userAgent: string
   // Not Config
   updating?: boolean
 }
@@ -87,7 +89,11 @@ export const useSubscribesStore = defineStore('subscribes', () => {
     }
 
     if (s.type === 'Http') {
-      const { header: h, body: b } = await HttpGet(s.url)
+      const appSettings = useAppSettingsStore()
+
+      const { header: h, body: b } = await HttpGet(s.url, {
+        'User-Agent': s.userAgent || appSettings.app.userAgent
+      })
       if (h['Subscription-Userinfo'] && h['Subscription-Userinfo'][0]) {
         userInfo = h['Subscription-Userinfo'][0]
       }

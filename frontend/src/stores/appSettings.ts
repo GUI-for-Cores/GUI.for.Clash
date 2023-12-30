@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 import { parse, stringify } from 'yaml'
 
 import i18n from '@/lang'
-import { debounce } from '@/utils'
+import { debounce, APP_TITLE, APP_VERSION } from '@/utils'
 import { Theme, WindowStartState, Lang, View, Color, Colors } from '@/constant'
 import { WindowSetDarkTheme, WindowSetLightTheme, Readfile, Writefile } from '@/utils/bridge'
 
@@ -20,6 +20,7 @@ type AppSettings = {
   closeKernelOnExit: boolean
   autoSetSystemProxy: boolean
   autoStartKernel: boolean
+  userAgent: string
   kernel: {
     branch: 'main' | 'alpha'
     profile: string
@@ -47,6 +48,7 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
     closeKernelOnExit: false,
     autoSetSystemProxy: false,
     autoStartKernel: false,
+    userAgent: APP_TITLE + '/' + APP_VERSION,
     kernel: {
       branch: 'main',
       profile: '',

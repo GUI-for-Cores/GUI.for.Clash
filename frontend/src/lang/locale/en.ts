@@ -263,7 +263,9 @@ export default {
     path: 'Save Path',
     include: 'Include',
     exclude: 'Exclude',
-    updating: 'Updating'
+    updating: 'Updating',
+    useragent: 'User-Agent',
+    resetUserAgent: 'Reset User-Agent'
   },
   subscribes: {
     download: 'Download',
@@ -372,6 +374,10 @@ export default {
       branch: 'Branch',
       main: 'Main branch',
       alpha: 'Alpha branch'
+    },
+    userAgent: {
+      name: 'User-Agent',
+      reset: 'Reset User-Agent'
     }
   },
   about: {

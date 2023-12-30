@@ -3,8 +3,8 @@ import { ref, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { useBool, useMessage } from '@/hooks'
-import { deepClone, sampleID } from '@/utils'
 import { type SubscribeType, useSubscribesStore } from '@/stores'
+import { deepClone, sampleID, APP_TITLE, APP_VERSION } from '@/utils'
 
 interface Props {
   id?: string
@@ -33,6 +33,7 @@ const sub = ref<SubscribeType>({
   include: '',
   exclude: '',
   disabled: false,
+  userAgent: APP_TITLE + '/' + APP_VERSION,
   proxies: []
 })
 
@@ -46,28 +47,22 @@ const handleCancel = inject('cancel') as any
 const handleSubmit = async () => {
   loading.value = true
 
-  if (props.isUpdate) {
-    try {
-      await subscribeStore.editSubscribe(props.id, sub.value)
-      handleCancel()
-    } catch (error: any) {
-      console.error('editSubscribe: ', error)
-      message.info(error)
-    }
-    loading.value = false
-    return
-  }
-
   try {
-    await subscribeStore.addSubscribe(sub.value)
+    if (props.isUpdate) {
+      await subscribeStore.editSubscribe(props.id, sub.value)
+    } else {
+      await subscribeStore.addSubscribe(sub.value)
+    }
     handleCancel()
   } catch (error: any) {
-    console.error('addSubscribe: ', error)
+    console.error(error)
     message.info(error)
   }
 
   loading.value = false
 }
+
+const resetUserAgent = () => (sub.value.userAgent = APP_TITLE + '/' + APP_VERSION)
 
 if (props.isUpdate) {
   const s = subscribeStore.getSubscribeById(props.id)
@@ -133,6 +128,15 @@ if (props.isUpdate) {
         </div>
         <Input v-model="sub.website" placeholder="http(s)://" auto-size class="input" />
       </div>
+      <div class="form-item">
+        <div class="name">{{ t('subscribe.useragent') }}</div>
+        <div style="display: flex; align-items: center; width: 80%">
+          <Input v-model="sub.userAgent" placeholder="" auto-size style="width: 100%" />
+          <Button @click="resetUserAgent" v-tips="t('subscribe.resetUserAgent')">
+            <Icon icon="reset" />
+          </Button>
+        </div>
+      </div>
     </div>
   </div>
   <div class="action">
@@ -150,6 +154,7 @@ if (props.isUpdate) {
     .name {
       font-size: 14px;
       padding: 8px 0;
+      white-space: nowrap;
     }
     .input {
       width: 80%;
