@@ -3,6 +3,7 @@ import { useI18n } from 'vue-i18n'
 import { ref, computed } from 'vue'
 
 import { useMessage } from '@/hooks'
+import { useAppSettingsStore } from '@/stores'
 import { Download, HttpGetJSON, BrowserOpenURL, Movefile, GetEnv, RestartApp } from '@/utils/bridge'
 import { APP_TITLE, APP_VERSION, PROJECT_URL, TG_GROUP, TG_CHANNEL, APP_VERSION_API } from '@/utils'
 
@@ -16,6 +17,8 @@ const needUpdate = computed(() => APP_VERSION !== remoteVersion.value)
 
 const { t } = useI18n()
 const { message } = useMessage()
+
+const appSettings = useAppSettingsStore()
 
 const downloadApp = async () => {
   if (loading.value || downloading.value) return
@@ -57,7 +60,9 @@ const checkForUpdates = async (showTips = false) => {
   loading.value = true
 
   try {
-    const { json } = await HttpGetJSON(APP_VERSION_API)
+    const { json } = await HttpGetJSON(APP_VERSION_API, {
+      'User-Agent': appSettings.app.userAgent
+    })
     const { os, arch } = await GetEnv()
 
     const { tag_name, assets, message: msg } = json

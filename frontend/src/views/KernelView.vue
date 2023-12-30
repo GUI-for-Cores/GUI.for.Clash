@@ -54,7 +54,9 @@ const kernelApiStore = useKernelApiStore()
 const downloadCore = async () => {
   downloadLoading.value[0] = true
   try {
-    const { json } = await HttpGetJSON(releaseUrl)
+    const { json } = await HttpGetJSON(releaseUrl, {
+      'User-Agent': appSettings.app.userAgent
+    })
     const { os, arch } = await GetEnv()
 
     const { assets, tag_name, message: msg } = json
@@ -102,7 +104,9 @@ const downloadCore = async () => {
 const downloadAlphaCore = async () => {
   downloadLoading.value[1] = true
   try {
-    const { json } = await HttpGetJSON(alphaUrl)
+    const { json } = await HttpGetJSON(alphaUrl, {
+      'User-Agent': appSettings.app.userAgent
+    })
     const { os, arch } = await GetEnv()
 
     const { assets, message: msg } = json
@@ -190,7 +194,9 @@ const getAlphaLocalVersion = async () => {
 const getRemoteVersion = async (showTips = false) => {
   getRemoteVersionLoading.value[0] = true
   try {
-    const { json } = await HttpGetJSON(releaseUrl)
+    const { json } = await HttpGetJSON(releaseUrl, {
+      'User-Agent': appSettings.app.userAgent
+    })
     const { tag_name } = json
     return tag_name as string
   } catch (error: any) {
