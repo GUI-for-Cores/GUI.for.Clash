@@ -148,12 +148,13 @@ export const generateProxyProviders = async (groups: ProfileType['proxyGroupsCon
     if (sub) {
       providers[sub.id] = {
         type: 'file',
-        path: sub.path.replace('data/', '../'),
-        'health-check': {
+        path: sub.path.replace('data/', '../')
+      }
+      if (sub.healthCheck.enable) {
+        providers[sub.id]['health-check'] = {
           enable: true,
-          lazy: true,
-          url: 'https://www.gstatic.com/generate_204',
-          interval: 300
+          url: sub.healthCheck.url || 'https://www.gstatic.com/generate_204',
+          interval: sub.healthCheck.interval || 300
         }
       }
     }

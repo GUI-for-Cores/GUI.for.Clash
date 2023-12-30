@@ -34,6 +34,11 @@ const sub = ref<SubscribeType>({
   exclude: '',
   disabled: false,
   userAgent: APP_TITLE + '/' + APP_VERSION,
+  healthCheck: {
+    enable: true,
+    url: 'https://www.gstatic.com/generate_204',
+    interval: 300
+  },
   proxies: []
 })
 
@@ -133,10 +138,24 @@ if (props.isUpdate) {
         <div style="display: flex; align-items: center; width: 80%">
           <Input v-model="sub.userAgent" placeholder="" auto-size style="width: 100%" />
           <Button @click="resetUserAgent" v-tips="t('subscribe.resetUserAgent')">
-            <Icon icon="reset" />
+            <Icon icon="reset" fill="var(--primary-btn-color)" />
           </Button>
         </div>
       </div>
+      <div class="form-item">
+        <div class="name">{{ t('subscribe.healthCheck.name') }}</div>
+        <Switch v-model="sub.healthCheck.enable" />
+      </div>
+      <template v-if="sub.healthCheck.enable">
+        <div class="form-item">
+          <div class="name">{{ t('subscribe.healthCheck.interval') }}</div>
+          <Input v-model="sub.healthCheck.interval" type="number" :min="0" />
+        </div>
+        <div class="form-item">
+          <div class="name">{{ t('subscribe.healthCheck.url') }}</div>
+          <Input v-model="sub.healthCheck.url" />
+        </div>
+      </template>
     </div>
   </div>
   <div class="action">
@@ -149,16 +168,13 @@ if (props.isUpdate) {
 
 <style lang="less" scoped>
 .subform {
-  .form-item {
-    margin-bottom: 8px;
-    .name {
-      font-size: 14px;
-      padding: 8px 0;
-      white-space: nowrap;
-    }
-    .input {
-      width: 80%;
-    }
+  .name {
+    font-size: 14px;
+    padding: 8px 0;
+    white-space: nowrap;
+  }
+  .input {
+    width: 80%;
   }
   .row {
     display: flex;

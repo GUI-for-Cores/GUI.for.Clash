@@ -265,7 +265,12 @@ export default {
     exclude: 'Exclude',
     updating: 'Updating',
     useragent: 'User-Agent',
-    resetUserAgent: 'Reset User-Agent'
+    resetUserAgent: 'Reset User-Agent',
+    healthCheck: {
+      name: 'Health Check',
+      interval: 'interval(s)',
+      url: 'url'
+    }
   },
   subscribes: {
     download: 'Download',

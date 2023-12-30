@@ -60,6 +60,11 @@ const handleSubmit = async () => {
     exclude: '',
     disabled: false,
     userAgent: APP_TITLE + '/' + APP_VERSION,
+    healthCheck: {
+      enable: true,
+      url: 'https://www.gstatic.com/generate_204',
+      interval: 300
+    },
     proxies: []
   }
 
