@@ -265,7 +265,12 @@ export default {
     exclude: '排除',
     updating: '更新中',
     useragent: '用户代理',
-    resetUserAgent: '重置用户代理'
+    resetUserAgent: '重置用户代理',
+    healthCheck: {
+      name: '健康检查',
+      interval: '时间间隔(秒)',
+      url: '测试链接'
+    }
   },
   subscribes: {
     download: '下行流量',

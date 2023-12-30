@@ -24,6 +24,11 @@ export type SubscribeType = {
   disabled: boolean
   proxies: { id: string; name: string; type: string }[]
   userAgent: string
+  healthCheck: {
+    enable: boolean
+    url: string
+    interval: number
+  }
   // Not Config
   updating?: boolean
 }
