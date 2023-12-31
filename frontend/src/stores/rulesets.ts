@@ -77,7 +77,7 @@ export const useRulesetsStore = defineStore('rulesets', () => {
     let ruleset: any
 
     if (r.type === 'File') {
-      body = await Readfile(r.url)
+      body = await Readfile(r.path)
     }
 
     if (r.type === 'Http') {
@@ -100,7 +100,7 @@ export const useRulesetsStore = defineStore('rulesets', () => {
 
   const updateRuleset = async (id: string) => {
     const r = rulesets.value.find((v) => v.id === id)
-    if (!r || r.disabled || r.type === 'File') return
+    if (!r || r.disabled) return
     try {
       r.updating = true
       await _doUpdateRuleset(r)
