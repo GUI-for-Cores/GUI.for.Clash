@@ -23,7 +23,7 @@ const onInterfaceChange = (name: string) => kernelApiStore.updateConfig({ 'inter
 const handleUpdateGEO = async () => {
   try {
     const res = await updateGEO()
-    message.info((res && res.message) || 'success')
+    message.info((res && res.message) || 'common.success')
   } catch (error: any) {
     console.log(error)
     message.info(error)

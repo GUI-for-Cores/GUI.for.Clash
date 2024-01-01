@@ -287,12 +287,12 @@ const onSortUpdate = debounce(subscribeStore.saveSubscribes, 1000)
         </div>
       </template>
       <template v-else>
-        <div class="traffic-detail">
-          <div>
-            {{ s.upload + s.download ? formatBytes(s.upload + s.download) : '--' }}
-            /
-            {{ s.total ? formatBytes(s.total) : '--' }}
-          </div>
+        <div>
+          {{ s.upload + s.download ? formatBytes(s.upload + s.download) : '--' }}
+          /
+          {{ s.total ? formatBytes(s.total) : '--' }}
+        </div>
+        <div class="traffic-diagram">
           <Progress
             :percent="clacTrafficPercent(s)"
             :status="clacTrafficStatus(s)"
@@ -352,19 +352,20 @@ const onSortUpdate = debounce(subscribeStore.saveSubscribes, 1000)
   overflow-y: auto;
   font-size: 12px;
   line-height: 1.6;
-
-  .traffic-detail {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
 }
 
 .grid {
   .subscribe {
+    position: relative;
     display: inline-block;
     width: calc(33.333333% - 16px);
     margin: 8px;
+
+    .traffic-diagram {
+      position: absolute;
+      top: 40px;
+      right: 12px;
+    }
   }
 }
 .list {
