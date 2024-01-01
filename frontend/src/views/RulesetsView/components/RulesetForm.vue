@@ -18,6 +18,8 @@ const props = withDefaults(defineProps<Props>(), {
   isUpdate: false
 })
 
+const loading = ref(false)
+
 const ruleset = ref<RuleSetType>({
   id: sampleID(),
   name: '',
@@ -40,6 +42,8 @@ const rulesetsStore = useRulesetsStore()
 const handleCancel = inject('cancel') as any
 
 const handleSubmit = async () => {
+  loading.value = true
+
   if (props.isUpdate) {
     try {
       await rulesetsStore.editRuleset(props.id, ruleset.value)
@@ -48,6 +52,9 @@ const handleSubmit = async () => {
       console.error('editRuleset: ', error)
       message.info(error)
     }
+
+    loading.value = true
+
     return
   }
 
@@ -58,6 +65,8 @@ const handleSubmit = async () => {
     console.error('addRuleset: ', error)
     message.info(error)
   }
+
+  loading.value = true
 }
 
 if (props.isUpdate) {
@@ -133,6 +142,7 @@ if (props.isUpdate) {
     <Button @click="handleCancel">{{ t('common.cancel') }}</Button>
     <Button
       @click="handleSubmit"
+      :loading="loading"
       :disable="!ruleset.name || !ruleset.path || (ruleset.type === 'Http' && !ruleset.url)"
       type="primary"
     >

@@ -160,7 +160,12 @@ if (props.isUpdate) {
   </div>
   <div class="action">
     <Button @click="handleCancel">{{ t('common.cancel') }}</Button>
-    <Button @click="handleSubmit" :disable="!sub.name || !sub.url || !sub.path" type="primary">
+    <Button
+      @click="handleSubmit"
+      :loading="loading"
+      :disable="!sub.name || !sub.url || !sub.path"
+      type="primary"
+    >
       {{ t('common.save') }}
     </Button>
   </div>

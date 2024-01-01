@@ -247,19 +247,15 @@ const onSortUpdate = debounce(rulesetsStore.saveRulesets, 1000)
       </template>
 
       <div>
-        {{ t('rulesets.rulesetCount') }}
-        :
-        <Button @click="handleEditRulesetList(r.id)" type="text" size="small">
-          {{ r.count }}
-        </Button>
-      </div>
-      <div>
         {{ t('ruleset.behavior.name') }}
         :
         {{ r.behavior || '--' }}
       </div>
 
       <template v-if="appSettingsStore.app.rulesetsView === View.Grid">
+        {{ t('rulesets.rulesetCount') }}
+        :
+        {{ r.count }}
         <div>
           {{ t('common.updateTime') }}
           :
@@ -267,6 +263,11 @@ const onSortUpdate = debounce(rulesetsStore.saveRulesets, 1000)
         </div>
       </template>
       <template v-else>
+        {{ t('rulesets.rulesetCount') }}
+        :
+        <Button @click="handleEditRulesetList(r.id)" type="text" size="small">
+          {{ r.count }}
+        </Button>
         <div>
           {{ t('common.updateTime') }}
           :
