@@ -112,7 +112,7 @@ if (props.isUpdate) {
       </Button>
     </Divider>
     <div v-if="showAdvancedSetting">
-      <AdvancedConfig v-model="profile.advancedConfig" />
+      <AdvancedConfig v-model="profile.advancedConfig" :profile="profile" />
     </div>
   </div>
 

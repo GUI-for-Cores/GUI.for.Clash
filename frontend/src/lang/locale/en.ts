@@ -68,6 +68,8 @@ export default {
     'store-fake-ip': 'store-fake-ip',
     'geo-auto-update': 'GEO Auto Update',
     'geo-update-interval': 'GEO Update Interval',
+    'lan-allowed-ips': 'LAN Allowed IPs',
+    'lan-disallowed-ips': 'LAN Disallowed IPs',
     tun: {
       enable: 'Enable',
       stack: 'Stack',

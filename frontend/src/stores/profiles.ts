@@ -51,6 +51,8 @@ export type ProfileType = {
       'store-selected'?: boolean
       'store-fake-ip'?: boolean
     }
+    'lan-allowed-ips': string[]
+    'lan-disallowed-ips': string[]
   }
   tunConfig: {
     enable: boolean
