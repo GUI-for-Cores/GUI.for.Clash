@@ -58,6 +58,7 @@ const handleSubmit = async () => {
     path: `data/subscribes/${subscribeID}.yaml`,
     include: '',
     exclude: '',
+    proxyPrefix: '',
     disabled: false,
     userAgent: APP_TITLE + '/' + APP_VERSION,
     healthCheck: {
