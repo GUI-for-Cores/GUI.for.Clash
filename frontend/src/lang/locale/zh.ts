@@ -68,6 +68,8 @@ export default {
     'store-fake-ip': '持久化Fake-IP',
     'geo-auto-update': 'GEO 自动更新',
     'geo-update-interval': 'GEO 自动更新间隔',
+    'lan-allowed-ips': '允许连接的地址段',
+    'lan-disallowed-ips': '禁止连接的IP地址段',
     tun: {
       enable: '启用TUN',
       stack: 'TUN模式堆栈',

@@ -12,6 +12,7 @@ import {
 
 interface Props {
   modelValue: ProfileType['advancedConfig']
+  profile: ProfileType
 }
 
 const props = withDefaults(defineProps<Props>(), {})
@@ -49,6 +50,22 @@ watch(fields, (v) => emits('update:modelValue', v), { immediate: true, deep: tru
   <div class="form-item" :class="{ 'flex-start': fields['skip-auth-prefixes'].length !== 0 }">
     {{ t('kernel.skip-auth-prefixes') }}
     <InputList v-model="fields['skip-auth-prefixes']" placeholder="127.0.0.1/8" />
+  </div>
+  <div
+    v-show="props.profile.generalConfig['allow-lan']"
+    :class="{ 'flex-start': fields['lan-allowed-ips'].length !== 0 }"
+    class="form-item"
+  >
+    {{ t('kernel.lan-allowed-ips') }}
+    <InputList v-model="fields['lan-allowed-ips']" placeholder="127.0.0.1/8" />
+  </div>
+  <div
+    v-show="props.profile.generalConfig['allow-lan']"
+    :class="{ 'flex-start': fields['lan-disallowed-ips'].length !== 0 }"
+    class="form-item"
+  >
+    {{ t('kernel.lan-disallowed-ips') }}
+    <InputList v-model="fields['lan-disallowed-ips']" placeholder="192.168.0.3/32" />
   </div>
   <div class="form-item">
     {{ t('kernel.external-ui') }}

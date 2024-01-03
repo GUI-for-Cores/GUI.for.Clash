@@ -45,7 +45,9 @@ export const AdvancedConfigDefaults = (): ProfileType['advancedConfig'] => ({
   profile: {
     'store-selected': true,
     'store-fake-ip': true
-  }
+  },
+  'lan-allowed-ips': ['0.0.0.0/0', '::/0'],
+  'lan-disallowed-ips': []
 })
 
 export const TunConfigDefaults: ProfileType['tunConfig'] = {
