@@ -265,6 +265,7 @@ export default {
     path: 'Save Path',
     include: 'Include',
     exclude: 'Exclude',
+    proxyPrefix: 'Proxy Prefix',
     updating: 'Updating',
     useragent: 'User-Agent',
     resetUserAgent: 'Reset User-Agent',

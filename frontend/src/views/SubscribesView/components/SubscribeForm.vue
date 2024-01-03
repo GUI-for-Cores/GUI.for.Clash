@@ -32,6 +32,7 @@ const sub = ref<SubscribeType>({
   path: `data/subscribes/${sampleID()}.yaml`,
   include: '',
   exclude: '',
+  proxyPrefix: '',
   disabled: false,
   userAgent: APP_TITLE + '/' + APP_VERSION,
   healthCheck: {
@@ -126,6 +127,10 @@ if (props.isUpdate) {
       <div class="form-item">
         <div class="name">{{ t('subscribe.exclude') }}</div>
         <Input v-model="sub.exclude" placeholder="keyword1|keyword2" auto-size class="input" />
+      </div>
+      <div class="form-item">
+        <div class="name">{{ t('subscribe.proxyPrefix') }}</div>
+        <Input v-model="sub.proxyPrefix" auto-size class="input" />
       </div>
       <div v-if="sub.type === 'Http'" class="form-item">
         <div class="name">

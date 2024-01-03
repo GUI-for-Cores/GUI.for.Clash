@@ -21,6 +21,7 @@ export type SubscribeType = {
   path: string
   include: string
   exclude: string
+  proxyPrefix: string
   disabled: boolean
   proxies: { id: string; name: string; type: string }[]
   userAgent: string
@@ -149,6 +150,10 @@ export const useSubscribesStore = defineStore('subscribes', () => {
       })
     } else {
       throw 'Not a valid subscription data'
+    }
+
+    if (s.proxyPrefix) {
+      proxies = proxies.map((v) => ({ ...v, name: s.proxyPrefix + s.name }))
     }
 
     await Writefile(s.path, stringify({ proxies }))

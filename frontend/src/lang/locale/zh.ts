@@ -265,6 +265,7 @@ export default {
     path: '保存路径',
     include: '包含',
     exclude: '排除',
+    proxyPrefix: '代理前缀',
     updating: '更新中',
     useragent: '用户代理',
     resetUserAgent: '重置用户代理',
