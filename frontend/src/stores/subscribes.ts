@@ -153,7 +153,7 @@ export const useSubscribesStore = defineStore('subscribes', () => {
     }
 
     if (s.proxyPrefix) {
-      proxies = proxies.map((v) => ({ ...v, name: s.proxyPrefix + s.name }))
+      proxies = proxies.map((v) => ({ ...v, name: s.proxyPrefix + v.name }))
     }
 
     await Writefile(s.path, stringify({ proxies }))
