@@ -23,7 +23,13 @@ const onChange = (val: string) => {
 }
 
 GetInterfaces().then((res) => {
-  options.value = res.map((v) => ({ label: v, value: v }))
+  options.value = [
+    {
+      label: 'common.auto',
+      value: ''
+    },
+    ...res.map((v) => ({ label: v, value: v }))
+  ]
 })
 </script>
 
