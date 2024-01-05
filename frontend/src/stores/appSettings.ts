@@ -30,6 +30,7 @@ type AppSettings = {
     running: boolean
     autoClose: boolean
     unAvailable: boolean
+    cardMode: boolean
   }
 }
 
@@ -59,7 +60,8 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
       pid: -1,
       running: false,
       autoClose: true,
-      unAvailable: true
+      unAvailable: true,
+      cardMode: true
     }
   })
 

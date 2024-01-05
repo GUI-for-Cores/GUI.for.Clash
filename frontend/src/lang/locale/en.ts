@@ -241,7 +241,8 @@ export default {
     controller: {
       name: 'Controller',
       autoClose: 'Auto-close Connections',
-      unAvailable: 'Show UnAvailable Proxies'
+      unAvailable: 'Show UnAvailable Proxies',
+      cardMode: 'Card Mode'
     },
     connections: {
       host: 'Host',
