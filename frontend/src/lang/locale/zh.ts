@@ -376,7 +376,8 @@ export default {
     autoStartKernel: '自动启动内核程序',
     admin: '以管理员身份运行',
     startup: {
-      name: '开机时启动'
+      name: '开机时启动',
+      delay: '延迟(秒)'
     },
     kernel: {
       branch: '分支',

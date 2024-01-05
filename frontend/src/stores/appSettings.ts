@@ -22,6 +22,7 @@ type AppSettings = {
   autoSetSystemProxy: boolean
   autoStartKernel: boolean
   userAgent: string
+  startupDelay: number
   kernel: {
     branch: 'main' | 'alpha'
     profile: string
@@ -51,6 +52,7 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
     autoSetSystemProxy: false,
     autoStartKernel: false,
     userAgent: APP_TITLE + '/' + APP_VERSION,
+    startupDelay: 30,
     kernel: {
       branch: 'main',
       profile: '',

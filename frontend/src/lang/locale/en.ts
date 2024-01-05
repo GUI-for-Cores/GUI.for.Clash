@@ -376,7 +376,8 @@ export default {
     autoStartKernel: 'Auto Start Kernel',
     admin: 'Run As Admin',
     startup: {
-      name: 'Startup on boot'
+      name: 'Startup on boot',
+      delay: 'Delay(s)'
     },
     kernel: {
       branch: 'Branch',

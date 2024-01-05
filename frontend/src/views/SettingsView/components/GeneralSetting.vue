@@ -112,18 +112,32 @@ const checkSchtask = async () => {
 const onTaskSchChange = async (v: boolean) => {
   try {
     if (v) {
-      const xmlPath = 'data/tasksch.xml'
-      const xmlContent = await getTaskSchXmlString()
-      await Writefile(xmlPath, xmlContent)
-      await CreateSchTask(APP_TITLE, xmlPath)
-      await Removefile(xmlPath)
+      createSchTask(appSettings.app.startupDelay)
     } else {
       await DeleteSchTask(APP_TITLE)
     }
   } catch (error: any) {
+    console.error(error)
     message.info(error)
     isTaskScheduled.value = !v
   }
+}
+
+const onStartupDelayChange = async (delay: number) => {
+  try {
+    createSchTask(delay)
+  } catch (error: any) {
+    console.error(error)
+    message.info(error)
+  }
+}
+
+const createSchTask = async (delay = 30) => {
+  const xmlPath = 'data/tasksch.xml'
+  const xmlContent = await getTaskSchXmlString(delay)
+  await Writefile(xmlPath, xmlContent)
+  await CreateSchTask(APP_TITLE, xmlPath)
+  await Removefile(xmlPath)
 }
 
 CheckPermissions().then((admin) => {
@@ -209,12 +223,16 @@ checkSchtask()
       </div>
       <div style="display: flex; align-items: center">
         <Switch v-model="isTaskScheduled" @change="onTaskSchChange" style="margin-right: 16px" />
-        <Radio
-          v-show="isTaskScheduled"
-          v-model="appSettings.app.windowStartState"
-          :options="windowStates"
-          type="number"
-        />
+        <template v-if="isTaskScheduled">
+          <Radio v-model="appSettings.app.windowStartState" :options="windowStates" type="number" />
+          <span style="margin: 0 8px">{{ t('settings.startup.delay') }}</span>
+          <Input
+            v-model="appSettings.app.startupDelay"
+            @submit="onStartupDelayChange"
+            :min="0"
+            type="number"
+          />
+        </template>
       </div>
     </div>
     <div class="settings-item">

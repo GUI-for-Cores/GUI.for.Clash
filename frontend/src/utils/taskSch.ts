@@ -1,6 +1,6 @@
 import { GetEnv } from './bridge'
 
-export const getTaskSchXmlString = async () => {
+export const getTaskSchXmlString = async (delay = 30) => {
   const { basePath, appName } = await GetEnv()
 
   const xml = /*xml*/ `<?xml version="1.0" encoding="UTF-16"?>
@@ -12,7 +12,7 @@ export const getTaskSchXmlString = async () => {
   <Triggers>
     <LogonTrigger>
       <Enabled>true</Enabled>
-      <Delay>PT30S</Delay>
+      <Delay>PT${delay}S</Delay>
     </LogonTrigger>
   </Triggers>
   <Principals>
