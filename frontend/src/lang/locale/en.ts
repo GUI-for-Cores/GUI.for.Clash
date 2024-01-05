@@ -30,7 +30,8 @@ export default {
     keywords: 'Keywords',
     success: 'Success',
     copy: 'Copy',
-    copied: 'Copied'
+    copied: 'Copied',
+    auto: 'Auto'
   },
   kernel: {
     port: 'HTTP(s) Port',

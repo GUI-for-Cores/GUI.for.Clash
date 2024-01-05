@@ -5,11 +5,10 @@ import { ProxyGroup } from '@/constant'
 export const GeneralConfigDefaults: ProfileType['generalConfig'] = {
   mode: 'rule',
   ipv6: false,
-  // a meaningful port
   'mixed-port': 20112,
   'allow-lan': false,
   'log-level': 'silent',
-  'interface-name': 'WLAN'
+  'interface-name': ''
 }
 
 export const AdvancedConfigDefaults = (): ProfileType['advancedConfig'] => ({
@@ -51,13 +50,11 @@ export const AdvancedConfigDefaults = (): ProfileType['advancedConfig'] => ({
 })
 
 export const TunConfigDefaults: ProfileType['tunConfig'] = {
-  // System proxy is supported, which is simpler than tun mode
-  // Of course I prefer tun mode (*v*)
   enable: false,
   stack: 'System',
   'auto-route': true,
-  'auto-detect-interface': false,
-  'dns-hijack': ['any:53' /* '198.18.0.2:53' */],
+  'auto-detect-interface': true,
+  'dns-hijack': ['any:53'],
   device: 'Internet',
   mtu: 9000,
   'strict-route': true,

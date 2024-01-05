@@ -30,7 +30,8 @@ export default {
     keywords: '关键词',
     success: '成功',
     copy: '复制',
-    copied: '已复制'
+    copied: '已复制',
+    auto: '自动'
   },
   kernel: {
     port: 'HTTP(s)代理端口',
