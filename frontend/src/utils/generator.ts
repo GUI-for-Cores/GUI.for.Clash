@@ -5,9 +5,13 @@ import { deepClone, ignoredError, APP_TITLE } from '@/utils'
 import { KernelConfigFilePath, ProxyGroup } from '@/constant/kernel'
 import { type ProfileType, useSubscribesStore, useRulesetsStore } from '@/stores'
 
-export const generateRule = (rule: ProfileType['rulesConfig'][0]) => {
+export const generateRule = (
+  rule: ProfileType['rulesConfig'][0],
+  proxyGruoups?: ProfileType['proxyGroupsConfig']
+) => {
   const { type, payload, proxy, 'no-resolve': noResolve } = rule
   let ruleStr = type
+  let proxyStr = proxy
   if (type !== 'MATCH') {
     if (type === 'RULE-SET') {
       const rulesetsStore = useRulesetsStore()
@@ -19,7 +23,15 @@ export const generateRule = (rule: ProfileType['rulesConfig'][0]) => {
       ruleStr += ',' + payload
     }
   }
-  ruleStr += ',' + proxy
+
+  if (proxyGruoups) {
+    const group = proxyGruoups.find((v) => v.id === proxy)
+    if (group) {
+      proxyStr = group.name
+    }
+  }
+
+  ruleStr += ',' + proxyStr
 
   const supportNoResolve = ['GEOIP', 'IP-CIDR', 'IP-CIDR6', 'SCRIPT', 'RULE-SET'].includes(type)
 
@@ -70,6 +82,7 @@ export const generateProxies = async (groups: ProfileType['proxyGroupsConfig']) 
         const isExist = proxiesList.find((v: any) => v.name === proxy.name)
         !isExist && proxiesList.push(proxy)
         // TODO: Handle proxy with the same name
+        // No processing required, can be implemented using proxy prefixes
       }
     }
   })
@@ -213,7 +226,7 @@ export const generateConfig = async (profile: ProfileType) => {
 
   config['rules'] = profile.rulesConfig
     .filter(({ type }) => profile.advancedConfig['geodata-mode'] || !type.startsWith('GEO'))
-    .map((rule) => generateRule(rule))
+    .map((rule) => generateRule(rule, profile.proxyGroupsConfig))
 
   return config
 }
