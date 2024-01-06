@@ -35,7 +35,7 @@ const fields = ref({
 const proxyOptions = computed(() => [
   { label: 'DIRECT', value: 'DIRECT' },
   { label: 'REJECT', value: 'REJECT' },
-  ...props.proxyGroups.map(({ name }) => ({ label: name, value: name }))
+  ...props.proxyGroups.map(({ id, name }) => ({ label: name, value: id }))
 ])
 
 const supportNoResolve = computed(() =>
@@ -90,13 +90,18 @@ const handleUseRuleset = (ruleset: RuleSetType) => {
   fields.value['no-resolve'] = ruleset.behavior === RulesetBehavior.Ipcidr
 }
 
+const hasLost = (r: ProfileType['rulesConfig'][0]) => {
+  if (['DIRECT', 'REJECT'].includes(r.proxy)) return false
+  return !props.profile.proxyGroupsConfig.find((v) => v.id === r.proxy)
+}
+
 const notSupport = (r: ProfileType['rulesConfig'][0]) => {
   return r.type.startsWith('GEO') && !props.profile.advancedConfig['geodata-mode']
 }
 
-const showNotSupport = () => {
-  message.info('kernel.rules.needGeodataMode')
-}
+const showNotSupport = () => message.info('kernel.rules.needGeodataMode')
+
+const showLost = () => message.info('kernel.rules.notFound')
 
 watch(rules, (v) => emits('update:modelValue', v), { immediate: true, deep: true })
 </script>
@@ -106,8 +111,9 @@ watch(rules, (v) => emits('update:modelValue', v), { immediate: true, deep: true
     <div v-draggable="[rules, DraggableOptions]">
       <Card v-for="(r, index) in rules" :key="r.id" class="rules-item">
         <div class="name">
-          <span v-if="notSupport(r)" @click="showNotSupport" class="not-support"> [ ! ] </span>
-          {{ generateRule(r) }}
+          <span v-if="hasLost(r)" @click="showLost" class="warn"> [ ! ] </span>
+          <span v-if="notSupport(r)" @click="showNotSupport" class="warn"> [ ! ] </span>
+          {{ generateRule(r, profile.proxyGroupsConfig) }}
         </div>
         <div class="action">
           <Button @click="handleEditRule(index)" type="text" size="small">
@@ -169,7 +175,7 @@ watch(rules, (v) => emits('update:modelValue', v), { immediate: true, deep: true
   margin-bottom: 2px;
   .name {
     font-weight: bold;
-    .not-support {
+    .warn {
       color: rgb(200, 193, 11);
       cursor: pointer;
     }
