@@ -35,23 +35,20 @@ const secondaryMenus: Menu[] = [
   {
     label: 'profiles.copy',
     handler: async (id: string) => {
-      const p = profilesStore.getProfileById(id)
-      if (!p) return
+      const p = profilesStore.getProfileById(id)!
       appStore.setProfilesClipboard(p)
       message.info('common.success')
     }
   },
   {
-    label: 'profiles.export',
+    label: 'profiles.copytoClipboard',
     handler: async (id: string) => {
-      const p = profilesStore.getProfileById(id)
-      if (!p) return
+      const p = profilesStore.getProfileById(id)!
       try {
         const config = await generateConfig(p)
         const str = stringify(config)
         const ok = await ClipboardSetText(str)
         if (!ok) throw 'ClipboardSetText Error'
-        console.log(config)
         message.info('common.success')
       } catch (error: any) {
         message.info(error)
@@ -83,12 +80,14 @@ const menus: Menu[] = [
   },
   {
     label: 'home.overview.start',
-    handler: (id: string) => {
-      console.log('start')
-      const p = profilesStore.getProfileById(id)
-      if (p) {
-        appSettingsStore.app.kernel.profile = id
-        kernelApiStore.startKernel()
+    handler: async (id: string) => {
+      appSettingsStore.app.kernel.profile = id
+      kernelApiStore.loading = true
+      try {
+        await kernelApiStore.startKernel()
+      } catch (error: any) {
+        message.info(error)
+        console.error(error)
       }
     }
   },
@@ -130,6 +129,7 @@ const handleDeleteProfile = async (p: ProfileType) => {
 }
 
 const handleUseProfile = async (p: ProfileType) => {
+  if (appSettingsStore.app.kernel.profile === p.id) return
   if (appSettingsStore.app.kernel.running) {
     message.info('profiles.shouldStop')
     return
