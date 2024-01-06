@@ -2,7 +2,7 @@
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { APP_TITLE, sleep } from '@/utils'
+import { APP_TITLE } from '@/utils'
 import { useMessage, useBool } from '@/hooks'
 import { useAppSettingsStore, useProfilesStore, useKernelApiStore, useEnvStore } from '@/stores'
 
@@ -13,7 +13,6 @@ import LogsController from './LogsController.vue'
 import GroupsController from './GroupsController.vue'
 import CommonController from './CommonController.vue'
 
-const kernelLoading = ref(false)
 const stateLoading = ref(true)
 const showController = ref(false)
 const controllerRef = ref<HTMLElement>()
@@ -30,46 +29,13 @@ const profilesStore = useProfilesStore()
 const kernelApiStore = useKernelApiStore()
 const envStore = useEnvStore()
 
-const onKernelStarted = async () => {
-  kernelLoading.value = false
-
-  await kernelApiStore.refreshCofig()
-  await envStore.updateSystemProxyState()
-
-  // Automatically set system proxy, but the priority is lower than tun mode
-  if (!kernelApiStore.config.tun.enable && appSettingsStore.app.autoSetSystemProxy) {
-    try {
-      await envStore.setSystemProxy()
-    } catch (error: any) {
-      message.info(error)
-    }
-  }
-}
-
-const onKernelStopped = async () => {
-  if (appSettingsStore.app.autoSetSystemProxy) {
-    try {
-      await envStore.clearSystemProxy()
-    } catch (error: any) {
-      message.info(error)
-    }
-  }
-}
-
 const handleStartKernel = async () => {
-  kernelLoading.value = true
-
   try {
     await kernelApiStore.startKernel()
   } catch (error: any) {
     console.error(error)
     message.info(error)
-    kernelLoading.value = false
   }
-
-  await sleep(4000)
-
-  kernelLoading.value = false
 }
 
 const handleStopKernel = async () => {
@@ -102,7 +68,7 @@ const onSystemProxySwitchChange = async (enable: boolean) => {
   try {
     await envStore.switchSystemProxy(enable)
     await kernelApiStore.updateConfig({ tun: { enable: false } })
-    await kernelApiStore.refreshCofig()
+    await kernelApiStore.refreshConfig()
   } catch (error: any) {
     console.error(error)
     message.info(error)
@@ -110,19 +76,11 @@ const onSystemProxySwitchChange = async (enable: boolean) => {
   }
 }
 
-watch(
-  () => appSettingsStore.app.kernel.running,
-  (running) => {
-    if (running) onKernelStarted()
-    else onKernelStopped()
-  }
-)
-
 watch(showController, (v) => {
   if (v) {
     kernelApiStore.refreshProviderProxies()
   } else {
-    kernelApiStore.refreshCofig()
+    kernelApiStore.refreshConfig()
   }
 })
 
@@ -132,7 +90,7 @@ kernelApiStore.updateKernelStatus().then(async (running) => {
   stateLoading.value = false
 
   if (running) {
-    await kernelApiStore.refreshCofig()
+    await kernelApiStore.refreshConfig()
   } else if (appSettingsStore.app.autoStartKernel) {
     handleStartKernel()
   }
@@ -141,7 +99,7 @@ kernelApiStore.updateKernelStatus().then(async (running) => {
 
 <template>
   <div @wheel="onMouseWheel" class="homeview">
-    <div v-if="!appSettingsStore.app.kernel.running || kernelLoading" class="center">
+    <div v-if="!appSettingsStore.app.kernel.running || kernelApiStore.loading" class="center">
       <img src="@/assets/logo.png" draggable="false" style="margin-bottom: 16px; height: 128px" />
 
       <template v-if="profilesStore.profiles.length === 0">
@@ -164,7 +122,7 @@ kernelApiStore.updateKernelStatus().then(async (running) => {
             {{ t('home.quickStart') }}
           </Card>
         </div>
-        <Button @click="handleStartKernel" :loading="kernelLoading" type="primary">
+        <Button @click="handleStartKernel" :loading="kernelApiStore.loading" type="primary">
           {{ t('home.overview.start') }}
         </Button>
         <Button @click="toggleKernelLogs" type="link" size="small">

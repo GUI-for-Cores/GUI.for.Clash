@@ -4,7 +4,7 @@ import { defineStore } from 'pinia'
 import { generateConfigFile, ignoredError } from '@/utils'
 import type { KernelApiConfig, Proxy } from '@/api/kernel.schema'
 import { KernelWorkDirectory, getKernelFileName } from '@/constant'
-import { useAppSettingsStore, useProfilesStore, useLogsStore } from '@/stores'
+import { useAppSettingsStore, useProfilesStore, useLogsStore, useEnvStore } from '@/stores'
 import { getConfigs, setConfigs, getProxies, getProviders } from '@/api/kernel'
 import { EventsOn, KernelRunning, KillProcess, StartKernel } from '@/utils/bridge'
 
@@ -38,7 +38,7 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
     >
   >({})
 
-  const refreshCofig = async () => {
+  const refreshConfig = async () => {
     config.value = await getConfigs()
   }
 
@@ -53,20 +53,38 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
   }
 
   /* Bridge API */
+  const loading = ref(false)
+
   const setupKernelApi = async () => {
+    const envStore = useEnvStore()
     const logsStore = useLogsStore()
     const appSettings = useAppSettingsStore()
 
     EventsOn('kernelLog', logsStore.recordKernelLog)
-    EventsOn('kernelStarted', () => {
-      appSettings.app.kernel.running = true
-    })
-    EventsOn('kernelStopped', () => {
-      appSettings.app.kernel.running = false
-      appSettings.app.kernel.pid = 0
-    })
     EventsOn('kernelPid', (pid) => {
+      loading.value = true
       appSettings.app.kernel.pid = pid
+    })
+    EventsOn('kernelStarted', async () => {
+      loading.value = false
+      appSettings.app.kernel.running = true
+
+      await refreshConfig()
+      await envStore.updateSystemProxyState()
+
+      // Automatically set system proxy, but the priority is lower than tun mode
+      if (!config.value.tun.enable && appSettings.app.autoSetSystemProxy) {
+        await envStore.setSystemProxy()
+      }
+    })
+    EventsOn('kernelStopped', async () => {
+      loading.value = false
+      appSettings.app.kernel.pid = 0
+      appSettings.app.kernel.running = false
+
+      if (appSettings.app.autoSetSystemProxy) {
+        await envStore.clearSystemProxy()
+      }
     })
   }
 
@@ -137,10 +155,11 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
     restartKernel,
     updateKernelStatus,
     setupKernelApi,
+    loading,
     config,
     proxies,
     providers,
-    refreshCofig,
+    refreshConfig,
     updateConfig,
     refreshProviderProxies
   }
