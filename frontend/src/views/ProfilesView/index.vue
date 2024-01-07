@@ -33,6 +33,18 @@ const kernelApiStore = useKernelApiStore()
 
 const secondaryMenus: Menu[] = [
   {
+    label: 'profiles.start',
+    handler: async (id: string) => {
+      appSettingsStore.app.kernel.profile = id
+      try {
+        await kernelApiStore.startKernel()
+      } catch (error: any) {
+        message.info(error)
+        console.error(error)
+      }
+    }
+  },
+  {
     label: 'profiles.copy',
     handler: async (id: string) => {
       const p = profilesStore.getProfileById(id)!
@@ -79,19 +91,6 @@ const menus: Menu[] = [
     separator: true
   },
   {
-    label: 'home.overview.start',
-    handler: async (id: string) => {
-      appSettingsStore.app.kernel.profile = id
-      kernelApiStore.loading = true
-      try {
-        await kernelApiStore.startKernel()
-      } catch (error: any) {
-        message.info(error)
-        console.error(error)
-      }
-    }
-  },
-  {
     label: 'common.more',
     children: secondaryMenus
   }
@@ -119,6 +118,12 @@ const handleEditProfile = (p: ProfileType, step = 0) => {
 }
 
 const handleDeleteProfile = async (p: ProfileType) => {
+  const { profile, running } = appSettingsStore.app.kernel
+  if (profile === p.id && running) {
+    message.info('profiles.shouldStop')
+    return
+  }
+
   try {
     await profilesStore.deleteProfile(p.id)
     message.info('common.success')
@@ -130,11 +135,19 @@ const handleDeleteProfile = async (p: ProfileType) => {
 
 const handleUseProfile = async (p: ProfileType) => {
   if (appSettingsStore.app.kernel.profile === p.id) return
-  if (appSettingsStore.app.kernel.running) {
-    message.info('profiles.shouldStop')
-    return
-  }
+
   appSettingsStore.app.kernel.profile = p.id
+
+  if (appSettingsStore.app.kernel.running) {
+    await kernelApiStore.restartKernel()
+  }
+}
+
+const onProfileFormEnd = async () => {
+  const { running, profile } = appSettingsStore.app.kernel
+  if (running && profile === profileID.value) {
+    await kernelApiStore.restartKernel()
+  }
 }
 
 const onSortUpdate = debounce(profilesStore.saveProfiles, 1000)
@@ -248,7 +261,13 @@ const onSortUpdate = debounce(profilesStore.saveProfiles, 1000)
     </Card>
   </div>
 
-  <Modal v-model:open="showForm" :title="formTitle" :footer="false" max-height="80">
+  <Modal
+    v-model:open="showForm"
+    :title="formTitle"
+    :footer="false"
+    @ok="onProfileFormEnd"
+    max-height="80"
+  >
     <ProfileForm :is-update="isUpdate" :id="profileID" :step="profileStep" />
   </Modal>
 </template>
