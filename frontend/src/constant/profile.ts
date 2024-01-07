@@ -83,19 +83,13 @@ export const DnsConfigDefaults: ProfileType['dnsConfig'] = {
   'prefer-h3': true
 }
 
-export const ProxyGroupsConfigDefaults = (): ProfileType['proxyGroupsConfig'] => {
-  const id1 = sampleID() // 🚀 节点选择
-  const id2 = sampleID() // 🎈 自动选择
-  const id3 = sampleID() // 🎯 全球直连
-  const id4 = sampleID() // 🛑 全球拦截
-  const id5 = sampleID() // 🐟 漏网之鱼
-
+export const ProxyGroupsConfigDefaults = (ids: string[]): ProfileType['proxyGroupsConfig'] => {
   return [
     {
-      id: id1,
+      id: ids[0],
       name: '🚀 节点选择',
       type: ProxyGroup.Select,
-      proxies: [{ id: id2, type: 'Built-In', name: '🎈 自动选择' }],
+      proxies: [{ id: ids[1], type: 'Built-In', name: '🎈 自动选择' }],
       url: 'https://www.gstatic.com/generate_204',
       interval: 300,
       strategy: 'consistent-hashing',
@@ -106,7 +100,7 @@ export const ProxyGroupsConfigDefaults = (): ProfileType['proxyGroupsConfig'] =>
       filter: ''
     },
     {
-      id: id2,
+      id: ids[1],
       name: '🎈 自动选择',
       type: ProxyGroup.UrlTest,
       proxies: [],
@@ -120,7 +114,7 @@ export const ProxyGroupsConfigDefaults = (): ProfileType['proxyGroupsConfig'] =>
       filter: ''
     },
     {
-      id: id3,
+      id: ids[2],
       name: '🎯 全球直连',
       type: ProxyGroup.Select,
       proxies: [
@@ -137,7 +131,7 @@ export const ProxyGroupsConfigDefaults = (): ProfileType['proxyGroupsConfig'] =>
       filter: ''
     },
     {
-      id: id4,
+      id: ids[3],
       name: '🛑 全球拦截',
       type: ProxyGroup.Select,
       proxies: [
@@ -154,12 +148,12 @@ export const ProxyGroupsConfigDefaults = (): ProfileType['proxyGroupsConfig'] =>
       filter: ''
     },
     {
-      id: id5,
+      id: ids[4],
       name: '🐟 漏网之鱼',
       type: ProxyGroup.Select,
       proxies: [
-        { id: id1, type: 'Built-In', name: '🚀 节点选择' },
-        { id: id3, type: 'Built-In', name: '🎯 全球直连' }
+        { id: ids[0], type: 'Built-In', name: '🚀 节点选择' },
+        { id: ids[2], type: 'Built-In', name: '🎯 全球直连' }
       ],
       url: 'https://www.gstatic.com/generate_204',
       interval: 300,
@@ -173,12 +167,12 @@ export const ProxyGroupsConfigDefaults = (): ProfileType['proxyGroupsConfig'] =>
   ]
 }
 
-export const RulesConfigDefaults = (): ProfileType['rulesConfig'] => [
+export const RulesConfigDefaults = (ids: string[]): ProfileType['rulesConfig'] => [
   {
     id: sampleID(),
     type: 'GEOSITE',
     payload: 'category-ads-all',
-    proxy: '🛑 全球拦截',
+    proxy: ids[3], // '🛑 全球拦截',
     'no-resolve': false,
     filter: ''
   },
@@ -186,7 +180,7 @@ export const RulesConfigDefaults = (): ProfileType['rulesConfig'] => [
     id: sampleID(),
     type: 'GEOIP',
     payload: 'private',
-    proxy: '🎯 全球直连',
+    proxy: ids[2], // '🎯 全球直连',
     'no-resolve': true,
     filter: ''
   },
@@ -194,7 +188,7 @@ export const RulesConfigDefaults = (): ProfileType['rulesConfig'] => [
     id: sampleID(),
     type: 'GEOIP',
     payload: 'CN',
-    proxy: '🎯 全球直连',
+    proxy: ids[2], // '🎯 全球直连',
     'no-resolve': true,
     filter: ''
   },
@@ -202,7 +196,7 @@ export const RulesConfigDefaults = (): ProfileType['rulesConfig'] => [
     id: sampleID(),
     type: 'GEOSITE',
     payload: 'private',
-    proxy: '🎯 全球直连',
+    proxy: ids[2], // '🎯 全球直连',
     'no-resolve': false,
     filter: ''
   },
@@ -210,7 +204,7 @@ export const RulesConfigDefaults = (): ProfileType['rulesConfig'] => [
     id: sampleID(),
     type: 'GEOSITE',
     payload: 'CN',
-    proxy: '🎯 全球直连',
+    proxy: ids[2], // '🎯 全球直连',
     'no-resolve': false,
     filter: ''
   },
@@ -218,7 +212,7 @@ export const RulesConfigDefaults = (): ProfileType['rulesConfig'] => [
     id: sampleID(),
     type: 'GEOSITE',
     payload: 'geolocation-!cn',
-    proxy: '🚀 节点选择',
+    proxy: ids[0], // '🚀 节点选择',
     'no-resolve': false,
     filter: ''
   },
@@ -226,7 +220,7 @@ export const RulesConfigDefaults = (): ProfileType['rulesConfig'] => [
     id: sampleID(),
     type: 'MATCH',
     payload: '',
-    proxy: '🐟 漏网之鱼',
+    proxy: ids[4], // '🐟 漏网之鱼',
     'no-resolve': false,
     filter: ''
   }
