@@ -37,6 +37,8 @@ const stepItems = [
   { title: 'profile.step.rules' }
 ]
 
+const ids = [sampleID(), sampleID(), sampleID(), sampleID(), sampleID()]
+
 const profile = ref<ProfileType>({
   id: sampleID(),
   name: '',
@@ -44,8 +46,8 @@ const profile = ref<ProfileType>({
   advancedConfig: Defaults.AdvancedConfigDefaults(),
   tunConfig: Defaults.TunConfigDefaults,
   dnsConfig: Defaults.DnsConfigDefaults,
-  proxyGroupsConfig: Defaults.ProxyGroupsConfigDefaults(),
-  rulesConfig: Defaults.RulesConfigDefaults()
+  proxyGroupsConfig: Defaults.ProxyGroupsConfigDefaults(ids),
+  rulesConfig: Defaults.RulesConfigDefaults(ids)
 })
 
 const { t } = useI18n()

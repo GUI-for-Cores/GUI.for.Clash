@@ -30,6 +30,8 @@ const handleSubmit = async () => {
   const profileID = sampleID()
   const subscribeID = sampleID()
 
+  const ids = [sampleID(), sampleID(), sampleID(), sampleID(), sampleID()]
+
   const profile: ProfileType = {
     id: profileID,
     name: profileID,
@@ -37,8 +39,8 @@ const handleSubmit = async () => {
     advancedConfig: Defaults.AdvancedConfigDefaults(),
     tunConfig: Defaults.TunConfigDefaults,
     dnsConfig: Defaults.DnsConfigDefaults,
-    proxyGroupsConfig: Defaults.ProxyGroupsConfigDefaults(),
-    rulesConfig: Defaults.RulesConfigDefaults()
+    proxyGroupsConfig: Defaults.ProxyGroupsConfigDefaults(ids),
+    rulesConfig: Defaults.RulesConfigDefaults(ids)
   }
 
   profile.proxyGroupsConfig[0].use = [subscribeID]
