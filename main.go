@@ -58,9 +58,6 @@ func main() {
 		Bind: []interface{}{
 			app,
 		},
-		Debug: options.Debug{
-			OpenInspectorOnStartup: bridge.Config.OpenInspectorOnStartup,
-		},
 	})
 
 	if err != nil {

@@ -16,7 +16,6 @@ type AppSettings = {
   subscribesView: View
   rulesetsView: View
   windowStartState: WindowStartState
-  openInspectorOnStartup: boolean
   exitOnClose: boolean
   closeKernelOnExit: boolean
   autoSetSystemProxy: boolean
@@ -47,7 +46,6 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
     subscribesView: View.Grid,
     rulesetsView: View.Grid,
     windowStartState: WindowStartState.Normal,
-    openInspectorOnStartup: false,
     exitOnClose: false,
     closeKernelOnExit: false,
     autoSetSystemProxy: false,
