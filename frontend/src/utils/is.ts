@@ -14,7 +14,7 @@ export const isValidBase64 = (str: string) => {
 export const isValidSubYAML = (str: string) => {
   try {
     const { proxies } = parse(str)
-    return proxies
+    return !!proxies
   } catch (error) {
     return false
   }
@@ -23,7 +23,7 @@ export const isValidSubYAML = (str: string) => {
 export const isValidPaylodYAML = (str: string) => {
   try {
     const { payload } = parse(str)
-    return payload
+    return !!payload
   } catch (error) {
     return false
   }
