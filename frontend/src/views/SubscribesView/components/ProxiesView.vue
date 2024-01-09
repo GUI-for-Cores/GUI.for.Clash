@@ -131,8 +131,14 @@ const handleAdd = async () => {
   toggleDetails()
 }
 
-const handleEditEnd = async () => {
-  const proxy = parse(details.value)
+const onEditEnd = async () => {
+  let proxy: any
+  try {
+    proxy = parse(details.value)
+  } catch (error: any) {
+    console.log(error)
+    message.info(error.message)
+  }
 
   if (!proxy) return
 
@@ -218,8 +224,8 @@ const getProxyByName = async (name: string) => {
     :submit="isEdit"
     :cancel="isEdit"
     :mask-closable="!isEdit"
-    :title="isEdit ? 'common.edit' : 'common.details'"
-    @ok="handleEditEnd"
+    :title="isEdit ? (details ? 'common.edit' : 'common.add') : 'common.details'"
+    @ok="onEditEnd"
     cancel-text="common.close"
     max-height="80"
     max-width="80"

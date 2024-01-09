@@ -125,6 +125,8 @@ export default {
       notFound: '部分订阅或节点已丢失，请清理',
       needToAdd: '至少添加一个节点或订阅',
       sort: '查看和排序',
+      builtIn: '内建',
+      subscriptions: '订阅列表',
       type: {
         name: '类型',
         select: '手动选择',
@@ -198,7 +200,7 @@ export default {
   },
   router: {
     overview: '概览',
-    subscribes: '订阅',
+    subscriptions: '订阅',
     rulesets: '规则组',
     settings: '设置',
     debug: '调试',
@@ -405,7 +407,8 @@ export default {
     latestVersion: '已经是最新版本了'
   },
   titlebar: {
-    resetSize: '重置窗口'
+    resetSize: '重置窗口',
+    reload: '重载界面'
   },
   format: {
     seconds: '秒',
