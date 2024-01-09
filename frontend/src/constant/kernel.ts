@@ -179,11 +179,6 @@ export const RulesTypeOptions = [
     label: 'kernel.rules.type.RULE-SET',
     value: 'RULE-SET'
   },
-  // To be realized
-  // {
-  //   label: 'kernel.rules.type.SCRIPT',
-  //   value: 'SCRIPT'
-  // },
   {
     label: 'kernel.rules.type.GEOIP',
     value: 'GEOIP'

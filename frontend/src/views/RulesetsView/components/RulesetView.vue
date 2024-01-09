@@ -16,6 +16,7 @@ const props = defineProps<Props>()
 
 const loading = ref(false)
 const keywords = ref('')
+const ruleValue = ref('')
 const ruleset = ref<RuleSetType>()
 
 const rulesetList = ref<string[]>([])
@@ -30,7 +31,6 @@ const menus: Menu[] = [
   {
     label: 'common.delete',
     handler: (record: string) => {
-      if (!ruleset.value) return
       const idx = rulesetList.value.findIndex((v) => v === record)
       if (idx !== -1) {
         rulesetList.value.splice(idx, 1)
@@ -60,6 +60,14 @@ const handleSave = async () => {
   loading.value = false
 }
 
+const handleAdd = () => {
+  const rule = ruleValue.value.trim()
+  if (rule) {
+    if (!rulesetList.value.includes(rule)) rulesetList.value.push(rule)
+    ruleValue.value = ''
+  }
+}
+
 const resetForm = () => {
   keywords.value = ''
 }
@@ -85,8 +93,12 @@ if (r) {
         :
       </span>
       <Input v-model="keywords" :border="false" :delay="500" />
-      <Button @click="resetForm" type="primary" style="margin-left: 8px">
+      <Button @click="resetForm" class="ml-8">
         {{ t('common.reset') }}
+      </Button>
+      <Input v-model="ruleValue" :border="false" class="ml-8" />
+      <Button @click="handleAdd" type="primary" class="ml-8">
+        {{ t('common.add') }}
       </Button>
     </div>
     <div class="rules">
@@ -149,5 +161,9 @@ if (r) {
   display: flex;
   margin-top: 8px;
   justify-content: flex-end;
+}
+
+.ml-8 {
+  margin-left: 8px;
 }
 </style>

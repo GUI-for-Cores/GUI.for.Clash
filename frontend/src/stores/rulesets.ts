@@ -86,8 +86,8 @@ export const useRulesetsStore = defineStore('rulesets', () => {
     }
 
     if (isValidPaylodYAML(body)) {
-      const yaml = parse(body)
-      ruleset = yaml
+      const { payload } = parse(body)
+      ruleset = { payload: [...new Set(payload)] }
     } else {
       throw 'Not a valid ruleset data'
     }
