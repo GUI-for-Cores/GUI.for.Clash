@@ -292,7 +292,8 @@ export default {
     editProxies: 'Edit Proxies',
     proxies: {
       type: 'Type',
-      name: 'Name'
+      name: 'Name',
+      add: 'Add Proxy'
     }
   },
   profile: {

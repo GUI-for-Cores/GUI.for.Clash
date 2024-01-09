@@ -5,7 +5,7 @@ import { ref, computed, inject } from 'vue'
 
 import { useBool, useMessage } from '@/hooks'
 import { ProxyTypeOptions } from '@/constant'
-import { deepClone, ignoredError } from '@/utils'
+import { deepClone, ignoredError, sampleID } from '@/utils'
 import { ClipboardSetText, Readfile, Writefile } from '@/utils/bridge'
 import { type Menu, type SubscribeType, useSubscribesStore } from '@/stores'
 
@@ -15,6 +15,8 @@ interface Props {
 
 const props = defineProps<Props>()
 
+let editId = ''
+const isEdit = ref(false)
 const loading = ref(false)
 const keywords = ref('')
 const proxyType = ref('')
@@ -48,6 +50,7 @@ const menus: Menu[] = [
       try {
         const proxy = await getProxyByName(record.name)
         details.value = stringify(proxy)
+        isEdit.value = false
         toggleDetails()
       } catch (error: any) {
         message.info(error)
@@ -61,6 +64,20 @@ const menus: Menu[] = [
         const proxy = await getProxyByName(record.name)
         await ClipboardSetText(stringify(proxy))
         message.info('common.copied')
+      } catch (error: any) {
+        message.info(error)
+      }
+    }
+  },
+  {
+    label: 'common.edit',
+    handler: async (record: SubscribeType['proxies'][0]) => {
+      try {
+        const proxy = await getProxyByName(record.name)
+        details.value = stringify(proxy)
+        isEdit.value = true
+        editId = record.name
+        toggleDetails()
       } catch (error: any) {
         message.info(error)
       }
@@ -107,6 +124,39 @@ const resetForm = () => {
   keywords.value = ''
 }
 
+const handleAdd = async () => {
+  editId = ''
+  details.value = ''
+  isEdit.value = true
+  toggleDetails()
+}
+
+const handleEditEnd = async () => {
+  const proxy = parse(details.value)
+
+  if (!proxy) return
+
+  await initAllFieldsProxies()
+
+  const allFieldsProxiesIdx = allFieldsProxies.value.findIndex((v: any) => v.name === editId)
+  const subProxiesIdx = sub.value.proxies.findIndex((v) => v.name === editId)
+
+  if (allFieldsProxiesIdx !== -1 && subProxiesIdx !== -1) {
+    allFieldsProxies.value.splice(allFieldsProxiesIdx, 1, proxy)
+    sub.value.proxies.splice(subProxiesIdx, 1, {
+      ...sub.value.proxies[subProxiesIdx],
+      name: proxy.name
+    })
+  } else {
+    allFieldsProxies.value.push(proxy)
+    sub.value.proxies.push({
+      id: sampleID(),
+      name: proxy.name,
+      type: proxy.type
+    })
+  }
+}
+
 const initAllFieldsProxies = async () => {
   if (allFieldsProxies.value) return
   const content = (await ignoredError(Readfile, sub.value!.path)) || '{}'
@@ -135,8 +185,11 @@ const getProxyByName = async (name: string) => {
         :
       </span>
       <Input v-model="keywords" :border="false" :delay="500" />
-      <Button @click="resetForm" type="primary" style="margin-left: 8px">
+      <Button @click="resetForm" class="ml-8">
         {{ t('common.reset') }}
+      </Button>
+      <Button @click="handleAdd" type="primary" class="ml-auto">
+        {{ t('subscribes.proxies.add') }}
       </Button>
     </div>
     <div class="proxies">
@@ -162,15 +215,16 @@ const getProxyByName = async (name: string) => {
 
   <Modal
     v-model:open="showDetails"
-    :submit="false"
-    :cancel="false"
-    title="common.details"
+    :submit="isEdit"
+    :cancel="isEdit"
+    :mask-closable="!isEdit"
+    :title="isEdit ? 'common.edit' : 'common.details'"
+    @ok="handleEditEnd"
     cancel-text="common.close"
     max-height="80"
     max-width="80"
-    mask-closable
   >
-    <CodeViewer :code="details" />
+    <CodeViewer v-model="details" :editable="isEdit" />
   </Modal>
 </template>
 
@@ -203,6 +257,14 @@ const getProxyByName = async (name: string) => {
     width: calc(25% - 4px);
     margin: 2px;
   }
+}
+
+.ml-8 {
+  margin-left: 8px;
+}
+
+.ml-auto {
+  margin-left: auto;
 }
 
 .action {
