@@ -202,6 +202,7 @@ export default {
     overview: 'OverView',
     subscriptions: 'Subscriptions',
     rulesets: 'Rulesets',
+    plugins: 'Plugins',
     settings: 'Settings',
     debug: 'Debug',
     components: 'Components',

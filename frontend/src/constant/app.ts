@@ -6,6 +6,8 @@ export const NodeConverterFilePath = './data/nodeConverter.js'
 
 export const RulesetsFilePath = './data/rulesets.yaml'
 
+export const PluginsFilePath = './data/plugins.yaml'
+
 export enum WindowStartState {
   Normal = 0,
   // Maximised = 1,

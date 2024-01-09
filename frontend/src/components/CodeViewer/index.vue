@@ -21,7 +21,16 @@ const code = ref(props.modelValue)
 
 const lang = { json, javascript }[props.lang]()
 
-watch(code, (v) => emits('update:modelValue', v))
+// watch(
+//   () => props.modelValue,
+//   (v) => {
+//     code.value = v
+//   }
+// )
+
+watch(code, (v) => {
+  emits('update:modelValue', v)
+})
 </script>
 
 <template>

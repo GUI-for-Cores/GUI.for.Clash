@@ -202,6 +202,7 @@ export default {
     overview: '概览',
     subscriptions: '订阅',
     rulesets: '规则组',
+    plugins: '插件',
     settings: '设置',
     debug: '调试',
     components: '组件预览',
