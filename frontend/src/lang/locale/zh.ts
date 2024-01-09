@@ -292,7 +292,8 @@ export default {
     editProxies: '编辑节点',
     proxies: {
       type: '类型',
-      name: '名称'
+      name: '名称',
+      add: '添加代理'
     }
   },
   profile: {
