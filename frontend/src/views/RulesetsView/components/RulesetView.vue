@@ -62,10 +62,10 @@ const handleSave = async () => {
 
 const handleAdd = () => {
   const rule = ruleValue.value.trim()
-  if (rule) {
-    if (!rulesetList.value.includes(rule)) rulesetList.value.push(rule)
-    ruleValue.value = ''
+  if (rule && !rulesetList.value.includes(rule)) {
+    rulesetList.value.push(rule)
   }
+  ruleValue.value = ''
 }
 
 const resetForm = () => {

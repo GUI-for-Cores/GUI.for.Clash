@@ -29,7 +29,7 @@ const SubscribesNameMap = ref<Record<string, string>>({})
 const proxyGroup = ref([
   {
     id: 'Built-In',
-    name: 'Built-In',
+    name: 'kernel.proxyGroups.builtIn',
     proxies: [
       { id: 'DIRECT', name: 'DIRECT', type: 'Built-In' },
       { id: 'REJECT', name: 'REJECT', type: 'Built-In' },
@@ -38,7 +38,7 @@ const proxyGroup = ref([
   },
   {
     id: 'Subscribes',
-    name: 'Subscribes',
+    name: 'kernel.proxyGroups.subscriptions',
     proxies: []
   }
 ])
@@ -325,7 +325,7 @@ subscribesStore.subscribes.forEach(async ({ id, name, proxies }) => {
         @click="toggleExpanded(group.name)"
         class="group-title"
       >
-        {{ group.name }}
+        {{ t(group.name) }}
         <div style="margin-left: auto; margin-right: 8px">{{ group.proxies.length }}</div>
         <Icon
           :class="{ 'rotate-z': isExpanded(group.name) }"
