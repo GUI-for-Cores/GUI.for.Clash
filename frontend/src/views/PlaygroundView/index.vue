@@ -1,20 +1,33 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 
-const code = ref(/*javascript*/ `
-const message = 'hhhhhhhhhhhh' 
-console.log(message)
-`)
+import { APP_TITLE, APP_VERSION } from '@/utils'
 
-const reset = () => (code.value = '')
+import icons from '@/components/Icon/icons'
+
+const code = ref(`
+const appName = '${APP_TITLE}'
+const appVersion = '${APP_VERSION}'
+`)
 </script>
 
 <template>
-  <h2>Code</h2>
-  <pre>{{ code }}</pre>
-  <CodeViewer v-model="code" editable />
+  <h2>Icons</h2>
+  <div class="icons">
+    <Icon v-for="icon in icons" v-tips.fast="icon" :key="icon" :icon="icon" class="icon" />
+  </div>
 
-  <Button @click="reset">Reset</Button>
+  <h2>CodeViewer</h2>
+  <CodeViewer v-model="code" />
 </template>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.icons {
+  .icon {
+    width: 32px;
+    height: 32px;
+    margin: 2px;
+    background: var(--card-bg);
+  }
+}
+</style>

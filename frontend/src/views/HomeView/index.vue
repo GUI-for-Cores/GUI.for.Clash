@@ -38,6 +38,15 @@ const handleStartKernel = async () => {
   }
 }
 
+const handleRestartKernel = async () => {
+  try {
+    await kernelApiStore.restartKernel()
+  } catch (error: any) {
+    console.error(error)
+    message.info(error)
+  }
+}
+
 const handleStopKernel = async () => {
   try {
     await kernelApiStore.stopKernel()
@@ -163,6 +172,14 @@ kernelApiStore.updateKernelStatus().then(async (running) => {
             class="ml-auto"
           >
             <Icon icon="log" />
+          </Button>
+          <Button
+            @click="handleRestartKernel"
+            v-tips="'home.overview.restart'"
+            type="text"
+            size="small"
+          >
+            <Icon icon="restart" />
           </Button>
           <Button @click="handleStopKernel" v-tips="'home.overview.stop'" type="text" size="small">
             <Icon icon="stop" />
