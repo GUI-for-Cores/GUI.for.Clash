@@ -48,7 +48,8 @@ const routes: RouteRecordRaw[] = [
     name: 'PluginsView',
     component: PluginsView,
     meta: {
-      name: 'router.plugins'
+      name: 'router.plugins',
+      hidden: !isDev
     }
   },
   {
