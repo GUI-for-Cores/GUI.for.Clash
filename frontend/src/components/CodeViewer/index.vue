@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
 import CodeMirror from 'vue-codemirror6'
+import { ref, watch, computed } from 'vue'
 import { json } from '@codemirror/lang-json'
 import { oneDark } from '@codemirror/theme-one-dark'
 import { javascript } from '@codemirror/lang-javascript'
@@ -26,7 +26,7 @@ const lang = { json, javascript }[props.lang]()
 
 const appSettings = useAppSettingsStore()
 
-const extensions = appSettings.app.theme === Theme.Dark ? [oneDark] : []
+const extensions = computed(() => (appSettings.themeMode === Theme.Dark ? [oneDark] : []))
 
 watch(code, (v) => emits('update:modelValue', v))
 </script>

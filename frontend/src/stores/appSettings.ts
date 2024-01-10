@@ -1,4 +1,4 @@
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { defineStore } from 'pinia'
 import { parse, stringify } from 'yaml'
 
@@ -36,6 +36,8 @@ type AppSettings = {
 export const useAppSettingsStore = defineStore('app-settings', () => {
   let firstOpen = true
   let latestUserConfig = ''
+
+  const themeMode = ref<Theme.Dark | Theme.Light>(Theme.Light)
 
   const app = ref<AppSettings>({
     lang: Lang.EN,
@@ -83,23 +85,27 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
   const mediaQueryList = window.matchMedia('(prefers-color-scheme: dark)')
   mediaQueryList.addEventListener('change', ({ matches }) => {
     console.log('onSystemThemeChange')
-    app.value.theme === 'auto' && setAppTheme(matches ? 'dark' : 'light')
+    if (app.value.theme === Theme.Auto) {
+      themeMode.value = matches ? Theme.Dark : Theme.Light
+      setAppTheme(themeMode.value)
+    }
   })
 
-  const setAppTheme = (theme: 'dark' | 'light') => {
+  const setAppTheme = (theme: Theme.Dark | Theme.Light) => {
     document.body.setAttribute('theme-mode', theme)
-    if (theme === 'dark') WindowSetDarkTheme()
+    if (theme === Theme.Dark) WindowSetDarkTheme()
     else WindowSetLightTheme()
   }
 
   const updateAppSettings = (v: AppSettings) => {
     i18n.global.locale.value = v.lang
-    const mode = v.theme === 'auto' ? (mediaQueryList.matches ? 'dark' : 'light') : v.theme
+    themeMode.value =
+      v.theme === Theme.Auto ? (mediaQueryList.matches ? Theme.Dark : Theme.Light) : v.theme
     const { primary, secondary } = Colors[v.color]
     document.documentElement.style.setProperty('--primary-color', primary)
     document.documentElement.style.setProperty('--secondary-color', secondary)
     document.body.style.fontFamily = v['font-family']
-    setAppTheme(mode)
+    setAppTheme(themeMode.value)
   }
 
   watch(
@@ -123,5 +129,5 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
     { deep: true }
   )
 
-  return { setupAppSettings, app }
+  return { setupAppSettings, app, themeMode }
 })
