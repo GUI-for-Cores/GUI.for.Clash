@@ -88,7 +88,19 @@ export default {
     },
     dns: {
       enable: 'Enable',
+      listen: 'Listen',
       ipv6: 'IPv6',
+      'use-hosts': 'Use Hosts',
+      'proxy-server-nameserver': 'Proxy Server Nameserver',
+      fallback: 'Fallback',
+      'fallback-filter': {
+        name: 'Fallback Filter',
+        geoip: 'GeoIP',
+        'geoip-code': 'GeoIP Code',
+        geosite: 'GeoSite',
+        ipcidr: 'ipcidr',
+        domain: 'domain'
+      },
       'prefer-h3': 'Prefer h3',
       'enhanced-mode': 'Enhanced Mode',
       'fake-ip-range': 'Fake-IP Range',
