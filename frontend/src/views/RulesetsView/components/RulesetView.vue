@@ -4,6 +4,7 @@ import { parse, stringify } from 'yaml'
 import { ref, computed, inject } from 'vue'
 
 import { useMessage } from '@/hooks'
+import { DraggableOptions } from '@/constant'
 import { deepClone, ignoredError } from '@/utils'
 import { Readfile, Writefile } from '@/utils/bridge'
 import { type RuleSetType, type Menu, useRulesetsStore } from '@/stores'
@@ -75,7 +76,7 @@ const resetForm = () => {
 const initRulesetList = async (r: RuleSetType) => {
   const content = (await ignoredError(Readfile, r.path)) || '{}'
   const { payload = [] } = parse(content)
-  rulesetList.value = payload
+  rulesetList.value.push(...payload)
 }
 
 const r = rulesetsStore.getRulesetById(props.id)
@@ -101,7 +102,7 @@ if (r) {
         {{ t('common.add') }}
       </Button>
     </div>
-    <div class="rules">
+    <div v-draggable="[rulesetList, DraggableOptions]" class="rules">
       <div
         v-for="rule in filteredList"
         :key="rule"
