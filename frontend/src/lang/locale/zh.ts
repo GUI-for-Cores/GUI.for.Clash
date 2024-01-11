@@ -88,7 +88,19 @@ export default {
     },
     dns: {
       enable: '启用DNS',
+      listen: '服务监听地址',
+      'use-hosts': '是否查询系统hosts',
+      'proxy-server-nameserver': '代理节点域名解析服务器',
+      fallback: '后备域名解析服务器',
       ipv6: 'IPv6',
+      'fallback-filter': {
+        name: '后备域名解析服务器筛选',
+        geoip: '国家IP代码规则',
+        'geoip-code': '国家IP代码缩写',
+        geosite: '域名集合',
+        ipcidr: 'IP地址段',
+        domain: '域名'
+      },
       'prefer-h3': 'Prefer h3',
       'enhanced-mode': '增强模式',
       'fake-ip-range': 'Fake-IP 范围',

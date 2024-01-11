@@ -67,6 +67,8 @@ export type ProfileType = {
   }
   dnsConfig: {
     enable: boolean
+    listen: string
+    'use-hosts': boolean
     ipv6: boolean
     'default-nameserver': string[]
     nameserver: string[]
@@ -74,6 +76,15 @@ export type ProfileType = {
     'fake-ip-range': string
     'fake-ip-filter': string[]
     'prefer-h3': boolean
+    fallback: string[]
+    'proxy-server-nameserver': string[]
+    'fallback-filter': {
+      geoip: boolean
+      'geoip-code': string
+      geosite: string[]
+      ipcidr: string[]
+      domain: string[]
+    }
   }
   proxyGroupsConfig: {
     id: string

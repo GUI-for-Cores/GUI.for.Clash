@@ -206,12 +206,25 @@ export const generateConfig = async (profile: ProfileType) => {
     dns: profile.dnsConfig
   }
 
+  if (!config.dns.listen) {
+    delete config.dns.listen
+  }
+
   if (config.dns['default-nameserver'].length === 0) {
     delete config.dns['default-nameserver']
   }
 
   if (config.dns['nameserver'].length === 0) {
     delete config.dns['nameserver']
+  }
+
+  if (config.dns['fallback'].length === 0) {
+    delete config.dns['fallback']
+    delete config.dns['fallback-filter']
+  }
+
+  if (config.dns['proxy-server-nameserver'].length === 0) {
+    delete config.dns['proxy-server-nameserver']
   }
 
   config['proxy-providers'] = await generateProxyProviders(profile.proxyGroupsConfig)

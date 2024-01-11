@@ -1,6 +1,6 @@
 import { sampleID } from '@/utils'
-import type { ProfileType } from '@/stores'
 import { ProxyGroup } from '@/constant'
+import type { ProfileType } from '@/stores'
 
 export const GeneralConfigDefaults: ProfileType['generalConfig'] = {
   mode: 'rule',
@@ -63,9 +63,12 @@ export const TunConfigDefaults: ProfileType['tunConfig'] = {
 
 export const DnsConfigDefaults: ProfileType['dnsConfig'] = {
   enable: true,
+  listen: '',
   ipv6: false,
+  'use-hosts': true,
   'default-nameserver': [],
   nameserver: ['https://223.5.5.5/dns-query'],
+  'proxy-server-nameserver': [],
   'enhanced-mode': 'fake-ip',
   'fake-ip-range': '198.18.0.1/16',
   'fake-ip-filter': [
@@ -80,6 +83,14 @@ export const DnsConfigDefaults: ProfileType['dnsConfig'] = {
     '*.msftconnecttest.com',
     '*.msftncsi.com'
   ],
+  fallback: [],
+  'fallback-filter': {
+    geoip: true,
+    'geoip-code': 'CN',
+    geosite: ['gfw'],
+    ipcidr: ['240.0.0.0/4'],
+    domain: ['+.google.com', '+.facebook.com', '+.youtube.com']
+  },
   'prefer-h3': true
 }
 
