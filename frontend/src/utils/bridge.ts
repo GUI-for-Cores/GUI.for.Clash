@@ -33,6 +33,14 @@ export const Removefile = async (path: string) => {
   return data
 }
 
+export const FileExists = async (path: string) => {
+  const { flag, data } = await App.FileExists(path)
+  if (!flag) {
+    throw data
+  }
+  return data
+}
+
 export const Makedir = async (path: string) => {
   const { flag, data } = await App.Makedir(path)
   if (!flag) {
