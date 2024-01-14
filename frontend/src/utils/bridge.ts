@@ -38,7 +38,7 @@ export const FileExists = async (path: string) => {
   if (!flag) {
     throw data
   }
-  return data
+  return data === 'true'
 }
 
 export const Makedir = async (path: string) => {
