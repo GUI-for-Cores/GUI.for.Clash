@@ -2,10 +2,10 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { stringify, parse } from 'yaml'
 
-import { useAppSettingsStore } from '@/stores'
+import { SubscribesFilePath } from '@/constant'
+import { deepClone, debounce, sampleID } from '@/utils'
 import { Readfile, Writefile, HttpGet } from '@/utils/bridge'
-import { SubscribesFilePath, NodeConverterFilePath } from '@/constant'
-import { deepClone, debounce, isValidBase64, isValidSubYAML, sampleID } from '@/utils'
+import { useAppSettingsStore, usePluginsStore } from '@/stores'
 
 export type SubscribeType = {
   id: string
@@ -106,51 +106,19 @@ export const useSubscribesStore = defineStore('subscribes', () => {
       body = b
     }
 
-    if (isValidBase64(body)) {
-      let converterStr = ''
-      try {
-        converterStr = await Readfile(NodeConverterFilePath)
-      } catch {
-        throw NodeConverterFilePath + ' Not Found!'
-      }
-      const url = URL.createObjectURL(new Blob([converterStr]))
-      const worker = new Worker(url)
+    const pluginStore = usePluginsStore()
 
-      let resolve: (value: unknown) => void
-      const promise = new Promise((r) => (resolve = r))
+    proxies = await pluginStore.onSubscribeTrigger(body)
 
-      const links = atob(body).trim().split('\n')
-      links.forEach((link, index) => {
-        worker.postMessage({ link, done: index === links.length - 1 })
-      })
-
-      worker.onmessage = ({ data: { node, done } }) => {
-        if (node) {
-          const flag1 = s.include ? new RegExp(s.include).test(node.name) : true
-          const flag2 = s.exclude ? !new RegExp(s.exclude).test(node.name) : true
-
-          if (flag1 && flag2) proxies.push(node)
-        }
-
-        if (done) {
-          worker.terminate()
-          URL.revokeObjectURL(url)
-          resolve(null)
-        }
-      }
-
-      await promise
-    } else if (isValidSubYAML(body)) {
-      const yaml = parse(body)
-      proxies = yaml.proxies ?? []
-      proxies = proxies.filter((v) => {
-        const flag1 = s.include ? new RegExp(s.include).test(v.name) : true
-        const flag2 = s.exclude ? !new RegExp(s.exclude).test(v.name) : true
-        return flag1 && flag2
-      })
-    } else {
+    if (!Array.isArray(proxies)) {
       throw 'Not a valid subscription data'
     }
+
+    proxies = proxies.filter((v) => {
+      const flag1 = s.include ? new RegExp(s.include).test(v.name) : true
+      const flag2 = s.exclude ? !new RegExp(s.exclude).test(v.name) : true
+      return flag1 && flag2
+    })
 
     if (s.proxyPrefix) {
       proxies = proxies.map((v) => ({
