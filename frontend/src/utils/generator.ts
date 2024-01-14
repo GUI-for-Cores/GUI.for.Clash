@@ -3,7 +3,7 @@ import { parse, stringify } from 'yaml'
 import { Readfile, Writefile } from '@/utils/bridge'
 import { deepClone, ignoredError, APP_TITLE } from '@/utils'
 import { KernelConfigFilePath, ProxyGroup } from '@/constant/kernel'
-import { type ProfileType, useSubscribesStore, useRulesetsStore } from '@/stores'
+import { type ProfileType, useSubscribesStore, useRulesetsStore, usePluginsStore } from '@/stores'
 
 export const generateRule = (
   rule: ProfileType['rulesConfig'][0],
@@ -241,7 +241,9 @@ export const generateConfig = async (profile: ProfileType) => {
     .filter(({ type }) => profile.advancedConfig['geodata-mode'] || !type.startsWith('GEO'))
     .map((rule) => generateRule(rule, profile.proxyGroupsConfig))
 
-  return config
+  const pluginsStore = usePluginsStore()
+
+  return await pluginsStore.onGenerateTrigger(config)
 }
 
 export const generateConfigFile = async (profile: ProfileType) => {

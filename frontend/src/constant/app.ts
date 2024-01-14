@@ -2,8 +2,6 @@ export const ProfilesFilePath = './data/profiles.yaml'
 
 export const SubscribesFilePath = './data/subscribes.yaml'
 
-export const NodeConverterFilePath = './data/nodeConverter.js'
-
 export const RulesetsFilePath = './data/rulesets.yaml'
 
 export const PluginsFilePath = './data/plugins.yaml'
@@ -61,3 +59,24 @@ export const Colors = {
 export const DraggableOptions = {
   animation: 150
 }
+
+export enum PluginTrigger {
+  OnManual = 'on::manual',
+  OnSubscribe = 'on::subscribe',
+  OnGenerate = 'on::generate',
+  OnStartup = 'on::startup',
+  OnUpdateRuleset = 'on::update::ruleset'
+}
+
+export enum PluginManualEvent {
+  OnInstall = 'onInstall',
+  OnUninstall = 'onUninstall',
+  OnRun = 'onRun'
+}
+
+export const PluginsTriggerOptions = [
+  { label: 'plugin.on::manual', value: PluginTrigger.OnManual },
+  { label: 'plugin.on::subscribe', value: PluginTrigger.OnSubscribe },
+  { label: 'plugin.on::generate', value: PluginTrigger.OnGenerate },
+  { label: 'plugin.on::startup', value: PluginTrigger.OnStartup }
+]
