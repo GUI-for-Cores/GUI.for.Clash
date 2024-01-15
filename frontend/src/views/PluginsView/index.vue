@@ -89,7 +89,7 @@ const handleEditPluginCode = (p: PluginType) => {
 const handleInstall = async (p: PluginType) => {
   try {
     p.loading = true
-    await pluginsStore.pluginTrigger(p, PluginManualEvent.OnInstall)
+    await pluginsStore.manualTrigger(p, PluginManualEvent.OnInstall)
     p.installed = true
     await pluginsStore.editPlugin(p.id, p)
   } catch (error: any) {
@@ -101,7 +101,7 @@ const handleInstall = async (p: PluginType) => {
 const handleUnInstall = async (p: PluginType) => {
   try {
     p.loading = true
-    await pluginsStore.pluginTrigger(p, PluginManualEvent.OnUninstall)
+    await pluginsStore.manualTrigger(p, PluginManualEvent.OnUninstall)
     p.installed = false
     await pluginsStore.editPlugin(p.id, p)
   } catch (error: any) {
@@ -112,7 +112,7 @@ const handleUnInstall = async (p: PluginType) => {
 
 const handleOnRun = async (p: PluginType) => {
   try {
-    await pluginsStore.pluginTrigger(p, PluginManualEvent.OnRun)
+    await pluginsStore.manualTrigger(p, PluginManualEvent.OnRun)
   } catch (error: any) {
     message.info(p.name + ': ' + error)
   }
@@ -283,7 +283,13 @@ const onSortUpdate = debounce(pluginsStore.savePlugins, 1000)
     </Card>
   </div>
 
-  <Modal v-model:open="showPluginForm" :title="pluginFormTitle" max-height="80" :footer="false">
+  <Modal
+    v-model:open="showPluginForm"
+    :title="pluginFormTitle"
+    min-width="66"
+    max-height="80"
+    :footer="false"
+  >
     <PluginForm :is-update="pluginFormIsUpdate" :id="pluginFormID" />
   </Modal>
 

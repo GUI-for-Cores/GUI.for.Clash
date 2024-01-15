@@ -367,6 +367,7 @@ export default {
     trigger: 'Trigger',
     'on::manual': 'on::manual',
     'on::startup': 'on::startup',
+    'on::shutdown': 'on::shutdown',
     'on::generate': 'on::generate',
     'on::subscribe': 'on::subscribe',
     name: 'Name',

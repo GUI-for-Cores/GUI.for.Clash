@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-import { APP_TITLE, APP_VERSION, ignoredError } from '@/utils'
-import { type Menu, useAppSettingsStore, useKernelApiStore } from '@/stores'
+import { APP_TITLE, APP_VERSION, ignoredError, sleep } from '@/utils'
+import { type Menu, useAppSettingsStore, useKernelApiStore, usePluginsStore } from '@/stores'
 import {
   WindowFullscreen,
   WindowIsFullscreen,
@@ -23,6 +23,7 @@ const isFullScreen = ref(false)
 
 const appSettingsStore = useAppSettingsStore()
 const kernelApiStore = useKernelApiStore()
+const pluginsStore = usePluginsStore()
 
 const toggleFullScreen = async () => {
   const isFull = await WindowIsFullscreen()
@@ -50,7 +51,13 @@ const closeWindow = async () => {
     }
   }
 
-  exitOnClose ? Quit() : WindowHide()
+  if (exitOnClose) {
+    pluginsStore.onShutdownTrigger()
+    await sleep(500)
+    Quit()
+  } else {
+    WindowHide()
+  }
 }
 
 const menus: Menu[] = [

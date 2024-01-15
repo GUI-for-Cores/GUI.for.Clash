@@ -42,6 +42,10 @@ const PluginsMap: {
     fnName: 'onStartup',
     observers: {}
   },
+  [PluginTrigger.OnShutdown]: {
+    fnName: 'onShutdown',
+    observers: {}
+  },
   [PluginTrigger.OnUpdateRuleset]: {
     fnName: 'onUpdateRuleset',
     observers: {}
@@ -206,8 +210,8 @@ export const usePluginsStore = defineStore('plugins', () => {
     return result as unknown as Record<string, any>[]
   }
 
-  const onStartupTrigger = async () => {
-    const { fnName, observers } = PluginsMap[PluginTrigger.OnStartup]
+  const noParamsTrigger = async (trigger: PluginTrigger) => {
+    const { fnName, observers } = PluginsMap[trigger]
     const pluginIds = Object.keys(observers)
     const observersCode = Object.values(observers)
 
@@ -244,7 +248,7 @@ export const usePluginsStore = defineStore('plugins', () => {
     return params as Record<string, any>
   }
 
-  const pluginTrigger = async (plugin: PluginType, event: PluginManualEvent) => {
+  const manualTrigger = async (plugin: PluginType, event: PluginManualEvent) => {
     const { observers } = PluginsMap[plugin.trigger]
     const result = await eval(`${observers[plugin.id]};(async () => (await ${event}()))()`)
     return result
@@ -263,7 +267,8 @@ export const usePluginsStore = defineStore('plugins', () => {
     reloadPlugin,
     onSubscribeTrigger,
     onGenerateTrigger,
-    onStartupTrigger,
-    pluginTrigger
+    onStartupTrigger: () => noParamsTrigger(PluginTrigger.OnStartup),
+    onShutdownTrigger: () => noParamsTrigger(PluginTrigger.OnShutdown),
+    manualTrigger
   }
 })
