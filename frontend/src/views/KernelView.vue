@@ -159,7 +159,7 @@ const getLocalVersion = async () => {
   try {
     const fileName = await getKernelFileName()
     const kernelFilePath = KernelWorkDirectory + '/' + fileName
-    const res = await Exec(kernelFilePath, '-v')
+    const res = await Exec(kernelFilePath, ['-v'])
     versionDetail.value[0] = res.trim()
     return res.trim().match(/v\S+/)?.[0].trim() || ''
   } catch (error) {
@@ -175,7 +175,7 @@ const getAlphaLocalVersion = async () => {
   try {
     const fileName = await getKernelFileName(true)
     const kernelFilePath = KernelWorkDirectory + '/' + fileName
-    const res = await Exec(kernelFilePath, '-v')
+    const res = await Exec(kernelFilePath, ['-v'])
     versionDetail.value[1] = res.trim()
     return (
       res

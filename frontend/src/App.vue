@@ -8,7 +8,6 @@ import {
   useSubscribesStore,
   useRulesetsStore,
   usePluginsStore,
-  useKernelApiStore,
   useEnvStore,
   useApp
 } from '@/stores'
@@ -24,7 +23,6 @@ const profilesStore = useProfilesStore()
 const subscribesStore = useSubscribesStore()
 const rulesetsStore = useRulesetsStore()
 const pluginsStore = usePluginsStore()
-const kernelApiStore = useKernelApiStore()
 const envStore = useEnvStore()
 
 appSettings.setupAppSettings().then(async () => {
@@ -33,7 +31,6 @@ appSettings.setupAppSettings().then(async () => {
   await ignoredError(subscribesStore.setupSubscribes)
   await ignoredError(rulesetsStore.setupRulesets)
   await ignoredError(pluginsStore.setupPlugins)
-  await ignoredError(kernelApiStore.setupKernelApi)
   await sleep(1000)
   loading.value = false
 
