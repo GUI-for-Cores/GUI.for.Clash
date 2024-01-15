@@ -16,12 +16,17 @@ import (
 func (a *App) Exec(path string, args []string) FlagResult {
 	fmt.Println("Exec:", path, args)
 
-	path, err := GetPath(path)
+	exe_path, err := GetPath(path)
+
 	if err != nil {
 		return FlagResult{false, err.Error()}
 	}
 
-	cmd := exec.Command(path, args...)
+	if a.FileExists(exe_path).Data != "true" {
+		exe_path = path
+	}
+
+	cmd := exec.Command(exe_path, args...)
 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 
 	out, err := cmd.CombinedOutput()
