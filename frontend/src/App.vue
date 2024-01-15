@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 
 import { ignoredError, sleep } from '@/utils'
+import { EventsOn } from '@/utils/bridge'
 import {
   useAppSettingsStore,
   useProfilesStore,
@@ -33,6 +34,10 @@ appSettings.setupAppSettings().then(async () => {
   await ignoredError(pluginsStore.setupPlugins)
   await sleep(1000)
   loading.value = false
+
+  EventsOn('onShutdown', async () => {
+    pluginsStore.onShutdownTrigger()
+  })
 
   pluginsStore.onStartupTrigger()
 })

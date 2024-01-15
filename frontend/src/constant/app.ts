@@ -65,6 +65,7 @@ export enum PluginTrigger {
   OnSubscribe = 'on::subscribe',
   OnGenerate = 'on::generate',
   OnStartup = 'on::startup',
+  OnShutdown = 'on::shutdown',
   OnUpdateRuleset = 'on::update::ruleset'
 }
 
@@ -78,5 +79,6 @@ export const PluginsTriggerOptions = [
   { label: 'plugin.on::manual', value: PluginTrigger.OnManual },
   { label: 'plugin.on::subscribe', value: PluginTrigger.OnSubscribe },
   { label: 'plugin.on::generate', value: PluginTrigger.OnGenerate },
-  { label: 'plugin.on::startup', value: PluginTrigger.OnStartup }
+  { label: 'plugin.on::startup', value: PluginTrigger.OnStartup },
+  { label: 'plugin.on::shutdown', value: PluginTrigger.OnShutdown }
 ]

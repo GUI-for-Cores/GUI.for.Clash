@@ -367,6 +367,7 @@ export default {
     trigger: '触发器',
     'on::manual': '手动触发',
     'on::startup': '启动APP时',
+    'on::shutdown': '关闭APP时',
     'on::generate': '生成配置时',
     'on::subscribe': '更新订阅时',
     name: '名称',
