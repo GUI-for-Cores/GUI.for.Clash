@@ -26,6 +26,10 @@ export function Exec(arg1, arg2) {
   return window['go']['bridge']['App']['Exec'](arg1, arg2);
 }
 
+export function ExecBackground(arg1, arg2, arg3, arg4) {
+  return window['go']['bridge']['App']['ExecBackground'](arg1, arg2, arg3, arg4);
+}
+
 export function FileExists(arg1) {
   return window['go']['bridge']['App']['FileExists'](arg1);
 }
@@ -80,10 +84,6 @@ export function RestartApp() {
 
 export function SetSystemProxy(arg1, arg2) {
   return window['go']['bridge']['App']['SetSystemProxy'](arg1, arg2);
-}
-
-export function StartKernel(arg1, arg2) {
-  return window['go']['bridge']['App']['StartKernel'](arg1, arg2);
 }
 
 export function SwitchPermissions(arg1, arg2) {

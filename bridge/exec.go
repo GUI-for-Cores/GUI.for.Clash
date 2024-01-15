@@ -6,7 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"strconv"
-	"strings"
+	"sync"
 	"syscall"
 
 	"github.com/shirou/gopsutil/process"
@@ -37,23 +37,28 @@ func (a *App) Exec(path string, args []string) FlagResult {
 	return FlagResult{true, string(out)}
 }
 
-func (a *App) StartKernel(path string, directory string) FlagResult {
-	fmt.Println("StartKernel:", path, directory)
+func (a *App) ExecBackground(path string, args []string, outEvent string, endEvent string) FlagResult {
+	fmt.Println("ExecBackground:", path, args)
 
-	path, err := GetPath(path)
+	exe_path, err := GetPath(path)
+
 	if err != nil {
 		return FlagResult{false, err.Error()}
 	}
 
-	directory, err = GetPath(directory)
-	if err != nil {
-		return FlagResult{false, err.Error()}
+	if a.FileExists(exe_path).Data != "true" {
+		exe_path = path
 	}
 
-	cmd := exec.Command(path, "-d", directory)
+	cmd := exec.Command(exe_path, args...)
 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 
 	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		return FlagResult{false, err.Error()}
+	}
+
+	stderr, err := cmd.StderrPipe()
 	if err != nil {
 		return FlagResult{false, err.Error()}
 	}
@@ -63,22 +68,37 @@ func (a *App) StartKernel(path string, directory string) FlagResult {
 		return FlagResult{false, err.Error()}
 	}
 
-	scanner := bufio.NewScanner(stdout)
+	if outEvent != "" {
+		wg := sync.WaitGroup{}
+		wg.Add(2)
 
-	go func() {
-		for scanner.Scan() {
-			text := scanner.Text()
-			runtime.EventsEmit(a.Ctx, "kernelLog", text)
-			if strings.Contains(strings.ToLower(text), "start initial compatible provider default") {
-				runtime.EventsEmit(a.Ctx, "kernelStarted", "")
+		outScanner := bufio.NewScanner(stdout)
+		go func() {
+			defer wg.Done()
+			for outScanner.Scan() {
+				text := outScanner.Text()
+				runtime.EventsEmit(a.Ctx, outEvent, ""+text)
 			}
-		}
-		runtime.EventsEmit(a.Ctx, "kernelStopped", "")
-	}()
+		}()
+
+		errScanner := bufio.NewScanner(stderr)
+		go func() {
+			defer wg.Done()
+			for errScanner.Scan() {
+				text := errScanner.Text()
+				runtime.EventsEmit(a.Ctx, outEvent, ""+text)
+			}
+		}()
+
+		go func() {
+			wg.Wait()
+			if endEvent != "" {
+				runtime.EventsEmit(a.Ctx, endEvent, "")
+			}
+		}()
+	}
 
 	pid := cmd.Process.Pid
-
-	runtime.EventsEmit(a.Ctx, "kernelPid", pid)
 
 	return FlagResult{true, strconv.Itoa(pid)}
 }
