@@ -17,14 +17,17 @@
   <img src="docs/imgs/3.png" width="400" height="270">
   <img src="docs/imgs/13.png" width="400" height="270">
   <br/>
+  <img src="docs/imgs/4.png" width="400" height="270">
+  <img src="docs/imgs/14.png" width="400" height="270">
+  <br/>
+  <img src="docs/imgs/5.png" width="400" height="270">
+  <img src="docs/imgs/15.png" width="400" height="270">
+  <br/>
   <img src="docs/imgs/6.png" width="400" height="270">
   <img src="docs/imgs/16.png" width="400" height="270">
   <br/>
   <img src="docs/imgs/7.png" width="400" height="270">
   <img src="docs/imgs/17.png" width="400" height="270">
-  <br/>
-  <img src="docs/imgs/8.png" width="400" height="270">
-  <img src="docs/imgs/18.png" width="400" height="270">
 </div>
 
 ## Build
