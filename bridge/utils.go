@@ -23,3 +23,18 @@ func ConvertByte2String(byte []byte) string {
 	decodeBytes, _ := simplifiedchinese.GB18030.NewDecoder().Bytes(byte)
 	return string(decodeBytes)
 }
+
+func (a *App) AbsolutePath(path string) FlagResult {
+	fmt.Println("AbsolutePath:", path)
+
+	if(filepath.IsAbs(path)){
+		return FlagResult{true, path}
+	}
+
+	path, err := GetPath(path)
+	if err != nil {
+		return FlagResult{false, err.Error()}
+	}
+	
+	return FlagResult{true, path}
+}
