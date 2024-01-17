@@ -382,7 +382,9 @@ export default {
   },
   plugins: {
     updating: '更新中',
-    empty: '插件列表为空，请先{action}或{import}插件。'
+    empty: '插件列表为空，请先{action}或{import}插件。',
+    source: '源码',
+    reload: '重载插件'
   },
   settings: {
     general: '通用',

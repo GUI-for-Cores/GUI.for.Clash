@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-import { ignoredError, sleep } from '@/utils'
 import { EventsOn } from '@/utils/bridge'
+import { ignoredError, sleep } from '@/utils'
+import { useMessage } from '@/hooks'
 import {
   useAppSettingsStore,
   useProfilesStore,
@@ -25,6 +26,9 @@ const subscribesStore = useSubscribesStore()
 const rulesetsStore = useRulesetsStore()
 const pluginsStore = usePluginsStore()
 const envStore = useEnvStore()
+
+const { message } = useMessage()
+window.Plugins.message = message
 
 appSettings.setupAppSettings().then(async () => {
   await ignoredError(envStore.setupEnv)

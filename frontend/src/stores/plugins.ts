@@ -3,9 +3,9 @@ import { defineStore } from 'pinia'
 import { parse, stringify } from 'yaml'
 
 import { useAppSettingsStore } from '@/stores'
+import { HttpGet, Readfile, Writefile } from '@/utils/bridge'
 import { debounce, deepClone, ignoredError, isValidSubYAML } from '@/utils'
 import { PluginsFilePath, PluginTrigger, PluginManualEvent } from '@/constant'
-import { HttpGet, Readfile, Writefile } from '@/utils/bridge'
 
 export type PluginType = {
   id: string
@@ -14,43 +14,57 @@ export type PluginType = {
   type: 'Http' | 'File'
   url: string
   path: string
-  trigger: PluginTrigger
+  triggers: PluginTrigger[]
   disabled: boolean
   install: boolean
   installed: boolean
   // Not Config
   updating?: boolean
   loading?: boolean
+  running?: boolean
 }
 
-const PluginsMap: {
-  [key in PluginTrigger]: { fnName: string; observers: Record<string, string> }
+const PluginsCache: Record<
+  string,
+  {
+    plugin: PluginType
+    code: string
+  }
+> = {}
+
+const PluginsTriggerMap: {
+  [key in PluginTrigger]: {
+    fnName: string
+    observers: string[]
+  }
 } = {
   [PluginTrigger.OnManual]: {
     fnName: 'onRun',
-    observers: {}
+    observers: []
   },
   [PluginTrigger.OnSubscribe]: {
     fnName: 'onSubscribe',
-    observers: {}
+    observers: []
   },
   [PluginTrigger.OnGenerate]: {
     fnName: 'onGenerate',
-    observers: {}
+    observers: []
   },
   [PluginTrigger.OnStartup]: {
     fnName: 'onStartup',
-    observers: {}
+    observers: []
   },
   [PluginTrigger.OnShutdown]: {
     fnName: 'onShutdown',
-    observers: {}
+    observers: []
   },
   [PluginTrigger.OnUpdateRuleset]: {
     fnName: 'onUpdateRuleset',
-    observers: {}
+    observers: []
   }
 }
+
+const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor
 
 export const usePluginsStore = defineStore('plugins', () => {
   const plugins = ref<PluginType[]>([])
@@ -60,21 +74,36 @@ export const usePluginsStore = defineStore('plugins', () => {
     plugins.value = parse(data)
 
     for (let i = 0; i < plugins.value.length; i++) {
-      const { id, trigger, path } = plugins.value[i]
+      const { id, triggers, path } = plugins.value[i]
       const code = await ignoredError(Readfile, path)
-      code && (PluginsMap[trigger].observers[id] = code)
+      if (code) {
+        PluginsCache[id] = { plugin: plugins.value[i], code }
+        triggers.forEach((trigger) => {
+          PluginsTriggerMap[trigger].observers.push(id)
+        })
+      }
     }
   }
 
-  const reloadPlugin = async (_id: string, code = '') => {
-    const plugin = getPluginById(_id)
-    if (plugin) {
-      const { id, trigger, path } = plugin
-      if (!code) {
-        code = await Readfile(path)
-      }
-      PluginsMap[trigger].observers[id] = code
+  const reloadPlugin = async (plugin: PluginType, code = '') => {
+    const { path } = plugin
+    if (!code) {
+      code = await Readfile(path)
     }
+    PluginsCache[plugin.id] = { plugin, code }
+  }
+
+  // FIXME: Plug-in execution order is wrong
+  const updatePluginTrigger = (plugin: PluginType) => {
+    const triggers = Object.keys(PluginsTriggerMap) as PluginTrigger[]
+    triggers.forEach((trigger) => {
+      PluginsTriggerMap[trigger].observers = PluginsTriggerMap[trigger].observers.filter(
+        (v) => v !== plugin.id
+      )
+    })
+    plugin.triggers.forEach((trigger) => {
+      PluginsTriggerMap[trigger].observers.push(plugin.id)
+    })
   }
 
   const savePlugins = debounce(async () => {
@@ -82,6 +111,7 @@ export const usePluginsStore = defineStore('plugins', () => {
     for (let i = 0; i < p.length; i++) {
       delete p[i].updating
       delete p[i].loading
+      delete p[i].running
     }
     await Writefile(PluginsFilePath, stringify(p))
   }, 100)
@@ -100,13 +130,13 @@ export const usePluginsStore = defineStore('plugins', () => {
     const idx = plugins.value.findIndex((v) => v.id === id)
     if (idx === -1) return
     const backup = plugins.value.splice(idx, 1)[0]
-    const backupCode = PluginsMap[backup.trigger].observers[id]
-    delete PluginsMap[backup.trigger].observers[id]
+    const backupCode = PluginsCache[id]
+    delete PluginsCache[id]
     try {
       await savePlugins()
     } catch (error) {
       plugins.value.splice(idx, 0, backup)
-      PluginsMap[backup.trigger].observers[id] = backupCode
+      PluginsCache[id] = backupCode
       throw error
     }
   }
@@ -123,24 +153,24 @@ export const usePluginsStore = defineStore('plugins', () => {
     }
   }
 
-  const _doUpdatePlugin = async (p: PluginType) => {
-    let body = ''
+  const _doUpdatePlugin = async (plugin: PluginType) => {
+    let code = ''
 
-    if (p.type === 'File') {
-      body = await Readfile(p.path)
+    if (plugin.type === 'File') {
+      code = await Readfile(plugin.path)
     }
 
-    if (p.type === 'Http') {
+    if (plugin.type === 'Http') {
       const appSettings = useAppSettingsStore()
-      const { body: b } = await HttpGet(p.url, {
+      const { body } = await HttpGet(plugin.url, {
         'User-Agent': appSettings.app.userAgent
       })
-      body = b
+      code = body
     }
 
-    await Writefile(p.path, body)
+    await Writefile(plugin.path, code)
 
-    PluginsMap[p.trigger].observers[p.id] = body
+    PluginsCache[plugin.id] = { plugin, code }
   }
 
   const updatePlugin = async (id: string) => {
@@ -161,17 +191,16 @@ export const usePluginsStore = defineStore('plugins', () => {
 
   const updatePlugins = async () => {
     let needSave = false
-    for (let i = 0; i < plugins.value.length; i++) {
-      const p = plugins.value[i]
-      if (p.disabled) continue
+    for (const plugin of plugins.value) {
+      if (plugin.disabled) continue
       try {
-        p.updating = true
-        await _doUpdatePlugin(p)
+        plugin.updating = true
+        await _doUpdatePlugin(plugin)
         needSave = true
       } catch (error) {
-        console.error('updatePlugins: ', p.name, error)
+        console.error('updatePlugins: ', plugin.name, error)
       } finally {
-        p.updating = false
+        plugin.updating = false
       }
     }
     if (needSave) savePlugins()
@@ -180,9 +209,7 @@ export const usePluginsStore = defineStore('plugins', () => {
   const getPluginById = (id: string) => plugins.value.find((v) => v.id === id)
 
   const onSubscribeTrigger = async (params: string) => {
-    const { fnName, observers } = PluginsMap[PluginTrigger.OnSubscribe]
-    const pluginIds = Object.keys(observers)
-    const observersCode = Object.values(observers)
+    const { fnName, observers } = PluginsTriggerMap[PluginTrigger.OnSubscribe]
 
     let result = params
 
@@ -190,17 +217,31 @@ export const usePluginsStore = defineStore('plugins', () => {
       result = parse(result).proxies
     }
 
-    for (let i = 0; i < observersCode.length; i++) {
-      if (getPluginById(pluginIds[i])?.disabled) {
-        console.log('skip')
+    for (let i = 0; i < observers.length; i++) {
+      const pluginId = observers[i]
+      const cache = PluginsCache[pluginId]
+
+      if (
+        !cache ||
+        !cache.plugin ||
+        cache.plugin.disabled ||
+        (cache.plugin.install && !cache.plugin.installed)
+      )
         continue
-      }
+
       if (typeof result !== 'string') {
         result = JSON.stringify(result)
       } else {
         result = `\`${result}\``
       }
-      result = await eval(`${observersCode[i]};(async () => (await ${fnName}(${result})))()`)
+
+      const fn = new AsyncFunction(`${cache.code}; return await ${fnName}(${result})`)
+
+      result = await fn(result)
+
+      if (!Array.isArray(result)) {
+        throw `【${cache.plugin.name}】 Error: Wrong result`
+      }
     }
 
     if (typeof result === 'string') {
@@ -211,47 +252,69 @@ export const usePluginsStore = defineStore('plugins', () => {
   }
 
   const noParamsTrigger = async (trigger: PluginTrigger) => {
-    const { fnName, observers } = PluginsMap[trigger]
-    const pluginIds = Object.keys(observers)
-    const observersCode = Object.values(observers)
+    const { fnName, observers } = PluginsTriggerMap[trigger]
+    if (observers.length === 0) return
 
-    if (observersCode.length === 0) return
+    for (let i = 0; i < observers.length; i++) {
+      const pluginId = observers[i]
+      const cache = PluginsCache[pluginId]
 
-    for (let i = 0; i < observersCode.length; i++) {
-      if (getPluginById(pluginIds[i])?.disabled) {
-        console.log('skip')
+      if (
+        !cache ||
+        !cache.plugin ||
+        cache.plugin.disabled ||
+        (cache.plugin.install && !cache.plugin.installed)
+      )
         continue
-      }
-      await eval(`${observersCode[i]};(async () => (await ${fnName}()))()`)
-    }
 
+      const fn = new AsyncFunction(`${cache.code}; await ${fnName}()`)
+
+      await await fn()
+    }
     return
   }
 
   const onGenerateTrigger = async (params: Record<string, any>) => {
-    const { fnName, observers } = PluginsMap[PluginTrigger.OnGenerate]
-    const pluginIds = Object.keys(observers)
-    const observersCode = Object.values(observers)
-    if (observersCode.length === 0) return params
+    const { fnName, observers } = PluginsTriggerMap[PluginTrigger.OnGenerate]
+    if (observers.length === 0) return params
 
-    for (let i = 0; i < observersCode.length; i++) {
-      if (getPluginById(pluginIds[i])?.disabled) {
-        console.log('skip')
-        continue
-      }
+    for (let i = 0; i < observers.length; i++) {
+      const pluginId = observers[i]
+      const cache = PluginsCache[pluginId]
 
-      params = await eval(
-        `${observersCode[i]};(async () => (await ${fnName}(${JSON.stringify(params)})))()`
+      if (
+        !cache ||
+        !cache.plugin ||
+        cache.plugin.disabled ||
+        (cache.plugin.install && !cache.plugin.installed)
       )
+        continue
+
+      const fn = new AsyncFunction(
+        `${cache.code}; return await ${fnName}(${JSON.stringify(params)})`
+      )
+
+      params = await fn()
+
+      if (!params) throw `【${cache.plugin.name}】 Error: Wrong result`
     }
 
     return params as Record<string, any>
   }
 
   const manualTrigger = async (plugin: PluginType, event: PluginManualEvent) => {
-    const { observers } = PluginsMap[plugin.trigger]
-    const result = await eval(`${observers[plugin.id]};(async () => (await ${event}()))()`)
-    return result
+    const cache = PluginsCache[plugin.id]
+
+    if (!cache || !cache.plugin || cache.plugin.disabled) {
+      return
+    }
+    const fn = new AsyncFunction(`${cache.code}; await ${event}()`)
+    plugin.running = true
+    try {
+      await fn()
+    } finally {
+      plugin.running = false
+    }
   }
 
   return {
@@ -269,6 +332,7 @@ export const usePluginsStore = defineStore('plugins', () => {
     onGenerateTrigger,
     onStartupTrigger: () => noParamsTrigger(PluginTrigger.OnStartup),
     onShutdownTrigger: () => noParamsTrigger(PluginTrigger.OnShutdown),
-    manualTrigger
+    manualTrigger,
+    updatePluginTrigger
   }
 })

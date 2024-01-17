@@ -4,8 +4,8 @@ import { useI18n, I18nT } from 'vue-i18n'
 
 import { debounce } from '@/utils'
 import { useMessage } from '@/hooks'
-import { usePluginsStore, useAppSettingsStore, type PluginType } from '@/stores'
 import { DraggableOptions, PluginManualEvent, PluginTrigger, View } from '@/constant'
+import { usePluginsStore, useAppSettingsStore, type PluginType, type Menu } from '@/stores'
 
 import PluginForm from './components/PluginForm.vue'
 import PluginView from './components/PluginView.vue'
@@ -16,6 +16,22 @@ const pluginTitle = ref('')
 const pluginFormID = ref()
 const pluginFormIsUpdate = ref(false)
 const pluginFormTitle = computed(() => (pluginFormIsUpdate.value ? 'common.edit' : 'common.add'))
+
+const menuList: Menu[] = [
+  {
+    label: 'plugins.reload',
+    handler: async (id: string) => {
+      const plugin = pluginsStore.getPluginById(id)
+      try {
+        await pluginsStore.reloadPlugin(plugin!)
+        message.info('common.success')
+      } catch (error: any) {
+        console.log(error)
+        message.info(error)
+      }
+    }
+  }
+]
 
 const { t } = useI18n()
 const { message } = useMessage()
@@ -86,24 +102,17 @@ const handleEditPluginCode = (p: PluginType) => {
   showPluginView.value = true
 }
 
-const handleInstall = async (p: PluginType) => {
+const handleInstallation = async (p: PluginType) => {
   try {
     p.loading = true
-    await pluginsStore.manualTrigger(p, PluginManualEvent.OnInstall)
-    p.installed = true
+    if (p.installed) {
+      await pluginsStore.manualTrigger(p, PluginManualEvent.OnUninstall)
+    } else {
+      await pluginsStore.manualTrigger(p, PluginManualEvent.OnInstall)
+    }
+    p.installed = !p.installed
     await pluginsStore.editPlugin(p.id, p)
-  } catch (error: any) {
-    message.info(p.name + ': ' + error)
-  }
-  p.loading = false
-}
-
-const handleUnInstall = async (p: PluginType) => {
-  try {
-    p.loading = true
-    await pluginsStore.manualTrigger(p, PluginManualEvent.OnUninstall)
-    p.installed = false
-    await pluginsStore.editPlugin(p.id, p)
+    message.info('common.success')
   } catch (error: any) {
     message.info(p.name + ': ' + error)
   }
@@ -147,7 +156,7 @@ const onSortUpdate = debounce(pluginsStore.savePlugins, 1000)
         { label: 'common.list', value: View.List }
       ]"
     />
-    <Button style="margin-left: auto" @click="handleImportPlugin" type="link">
+    <Button class="ml-auto" @click="handleImportPlugin" type="link">
       {{ t('common.import') }}
     </Button>
     <Button
@@ -172,6 +181,7 @@ const onSortUpdate = debounce(pluginsStore.savePlugins, 1000)
       :key="p.id"
       :title="p.name"
       :disabled="p.disabled"
+      v-menu="menuList.map((v) => ({ ...v, handler: () => v.handler?.(p.id) }))"
       class="plugin"
     >
       <template #title-prefix>
@@ -232,7 +242,27 @@ const onSortUpdate = debounce(pluginsStore.savePlugins, 1000)
         </template>
       </template>
 
-      <div>{{ t('plugin.trigger') }}: {{ t('plugin.' + p.trigger) }}</div>
+      {{ t('plugin.trigger') }}:
+      <Tag v-if="p.triggers.length === 0" size="small" color="red">{{ t('common.none') }}</Tag>
+
+      <template v-if="appSettingsStore.app.pluginsView === View.Grid">
+        <span v-for="trigger in p.triggers.slice(0, 2)" :key="trigger">
+          <Tag size="small">{{ t('plugin.' + trigger) }}</Tag>
+        </span>
+        <Tag
+          v-if="p.triggers.length > 2"
+          v-tips="p.triggers.map((v) => t('plugin.' + v)).join('、')"
+          size="small"
+          color="cyan"
+        >
+          ...
+        </Tag>
+      </template>
+      <template v-else>
+        <span v-for="trigger in p.triggers" :key="trigger">
+          <Tag size="small">{{ t('plugin.' + trigger) }}</Tag>
+        </span>
+      </template>
 
       <div :class="{ descsription: appSettingsStore.app.pluginsView === View.Grid }">
         {{ t('plugin.description') }}
@@ -242,39 +272,29 @@ const onSortUpdate = debounce(pluginsStore.savePlugins, 1000)
 
       <div class="action">
         <Button @click="handleEditPluginCode(p)" type="link" size="small" class="edit">
-          {{ t('common.edit') }}
+          {{ t('plugins.source') }}
         </Button>
 
-        <template v-if="p.install">
-          <Button
-            v-if="!p.installed"
-            @click="handleInstall(p)"
-            :loading="p.loading"
-            type="link"
-            size="small"
-            auto-size
-          >
-            {{ t('common.install') }}
-          </Button>
-          <Button
-            v-else
-            @click="handleUnInstall(p)"
-            :loading="p.loading"
-            type="link"
-            size="small"
-            auto-size
-          >
-            {{ t('common.uninstall') }}
-          </Button>
-        </template>
+        <Button
+          v-if="p.install"
+          @click="handleInstallation(p)"
+          :loading="p.loading"
+          type="link"
+          size="small"
+          auto-size
+        >
+          {{ t(p.installed ? 'common.uninstall' : 'common.install') }}
+        </Button>
 
-        <template v-if="p.trigger === PluginTrigger.OnManual">
+        <template v-if="p.triggers.includes(PluginTrigger.OnManual)">
           <Button
+            v-if="!p.disabled && (!p.install || p.installed)"
             @click="handleOnRun(p)"
+            :loading="p.running"
             type="primary"
             size="small"
             auto-size
-            :class="{ 'ml-auto': !p.disabled }"
+            class="ml-auto"
           >
             {{ t('common.run') }}
           </Button>
