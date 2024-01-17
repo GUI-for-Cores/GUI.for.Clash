@@ -92,7 +92,9 @@ export const useRulesetsStore = defineStore('rulesets', () => {
       throw 'Not a valid ruleset data'
     }
 
-    await Writefile(r.path, stringify(ruleset))
+    if (r.type !== 'File') {
+      await Writefile(r.path, stringify(ruleset))
+    }
 
     r.count = ruleset.payload.length
     r.updateTime = new Date().toLocaleString()
