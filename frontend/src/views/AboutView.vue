@@ -48,7 +48,7 @@ const downloadApp = async () => {
     message.info('about.updateSuccessful')
   } catch (error: any) {
     console.log(error)
-    message.info(error, 5)
+    message.info(error, 5_000)
   }
 
   downloading.value = false
