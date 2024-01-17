@@ -3,9 +3,9 @@ import { ref, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { useMessage } from '@/hooks'
-import { deepClone, sampleID } from '@/utils'
+import { deepClone, ignoredError, sampleID } from '@/utils'
+import { PluginsTriggerOptions } from '@/constant'
 import { usePluginsStore, type PluginType } from '@/stores'
-import { PluginTrigger, PluginsTriggerOptions } from '@/constant'
 
 interface Props {
   id?: string
@@ -19,6 +19,8 @@ const props = withDefaults(defineProps<Props>(), {
 
 const loading = ref(false)
 
+const oldPluginTriggers = ref()
+
 const pluginID = sampleID()
 
 const plugin = ref<PluginType>({
@@ -28,7 +30,7 @@ const plugin = ref<PluginType>({
   type: 'Http',
   url: '',
   path: `data/plugins/plugin-${pluginID}.js`,
-  trigger: PluginTrigger.OnManual,
+  triggers: [],
   disabled: false,
   install: false,
   installed: false
@@ -42,29 +44,23 @@ const handleCancel = inject('cancel') as any
 
 const handleSubmit = async () => {
   loading.value = true
-
-  if (props.isUpdate) {
-    try {
-      await pluginsStore.editPlugin(props.id, plugin.value)
-      handleCancel()
-    } catch (error: any) {
-      console.error('editPlugin: ', error)
-      message.info(error)
-    }
-
-    loading.value = true
-
-    return
-  }
-
   try {
-    await pluginsStore.addPlugin(plugin.value)
-    handleCancel()
+    if (props.isUpdate) {
+      await pluginsStore.editPlugin(props.id, plugin.value)
+      if (plugin.value.triggers.sort().join('') !== oldPluginTriggers.value) {
+        pluginsStore.updatePluginTrigger(plugin.value)
+      }
+    } else {
+      await pluginsStore.addPlugin(plugin.value)
+      // Try to autoload the plugin
+      await ignoredError(pluginsStore.reloadPlugin, plugin.value)
+      pluginsStore.updatePluginTrigger(plugin.value)
+    }
   } catch (error: any) {
-    console.error('addPlugin: ', error)
+    console.error(error)
     message.info(error)
   }
-
+  handleCancel()
   loading.value = true
 }
 
@@ -72,12 +68,13 @@ if (props.isUpdate) {
   const p = pluginsStore.getPluginById(props.id)
   if (p) {
     plugin.value = deepClone(p)
+    oldPluginTriggers.value = p.triggers.sort().join('')
   }
 }
 </script>
 
 <template>
-  <div class="form-item row">
+  <div class="form-item">
     <div class="name">
       {{ t('plugin.type') }}
     </div>
@@ -91,7 +88,9 @@ if (props.isUpdate) {
   </div>
   <div class="form-item">
     {{ t('plugin.trigger') }}
-    <Radio v-model="plugin.trigger" :options="PluginsTriggerOptions" />
+  </div>
+  <div class="form-item justify-center">
+    <CheckBox v-model="plugin.triggers" :options="PluginsTriggerOptions" />
   </div>
   <div class="form-item">
     {{ t('plugin.install') }}
@@ -142,11 +141,15 @@ if (props.isUpdate) {
 .form-item {
   margin-bottom: 4px;
   .input {
-    width: 78%;
+    width: 80%;
   }
 }
 .action {
   display: flex;
   justify-content: flex-end;
+}
+
+.justify-center {
+  justify-content: center;
 }
 </style>

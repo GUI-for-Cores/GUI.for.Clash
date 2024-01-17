@@ -1,11 +1,14 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 import { DraggableOptions } from '@/constant'
 import { APP_TITLE, APP_VERSION } from '@/utils'
 
 import icons from '@/components/Icon/icons'
 const list = ref(['data 1', 'data 2', 'data 3', 'data 4'])
+
+const radioValue = ref(list.value[0])
+const radioOptions = computed(() => list.value.map((v) => ({ label: v, value: v })))
 
 const code = ref(`
 const appName = '${APP_TITLE}'
@@ -27,6 +30,15 @@ const appVersion = '${APP_VERSION}'
     <div v-for="l in list" :key="l" class="drag-item">
       {{ l }}
     </div>
+  </div>
+
+  <h2>Components</h2>
+  <div>
+    <Radio v-model="radioValue" :options="radioOptions" />
+    {{ radioValue }}
+    <CheckBox v-model="list" :options="icons.map((v) => ({ label: v, value: v }))" />
+
+    {{ list }}
   </div>
 </template>
 
