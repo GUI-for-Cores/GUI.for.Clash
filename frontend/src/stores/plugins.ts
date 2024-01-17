@@ -168,7 +168,9 @@ export const usePluginsStore = defineStore('plugins', () => {
       code = body
     }
 
-    await Writefile(plugin.path, code)
+    if (plugin.type !== 'File') {
+      await Writefile(plugin.path, code)
+    }
 
     PluginsCache[plugin.id] = { plugin, code }
   }

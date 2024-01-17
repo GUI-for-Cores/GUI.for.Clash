@@ -127,7 +127,9 @@ export const useSubscribesStore = defineStore('subscribes', () => {
       }))
     }
 
-    await Writefile(s.path, stringify({ proxies }))
+    if (s.type === 'Http' || s.url !== s.path) {
+      await Writefile(s.path, stringify({ proxies }))
+    }
 
     const match = userInfo.match(pattern) || [0, 0, 0, 0, 0]
 
