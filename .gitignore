@@ -3,3 +3,5 @@ node_modules
 frontend/dist
 
 backend
+
+.DS_Store

@@ -62,7 +62,7 @@ const downloadCore = async () => {
     const { assets, tag_name, message: msg } = json
     if (msg) throw msg
 
-    const suffix = { windows: '.zip', linux: '.gz' }[os]
+    const suffix = { windows: '.zip', linux: '.gz', darwin: '.gz' }[os]
     const assetName = `mihomo-${os}-${arch}-${tag_name}${suffix}`
 
     const asset = assets.find((v: any) => v.name === assetName)
@@ -112,7 +112,7 @@ const downloadAlphaCore = async () => {
     const { assets, message: msg } = json
     if (msg) throw msg
 
-    const suffix = { windows: '.zip', linux: '.gz' }[os]
+    const suffix = { windows: '.zip', linux: '.gz', darwin: '.gz' }[os]
     const assetName = `mihomo-${os}-${arch}-${remoteVersion.value[1]}${suffix}`
 
     const asset = assets.find((v: any) => v.name === assetName)
