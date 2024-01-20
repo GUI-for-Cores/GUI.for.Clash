@@ -22,7 +22,7 @@ export const KernelConfigFilePath = KernelWorkDirectory + '/config.yaml'
 
 export const getKernelFileName = async (isAlpha = false) => {
   const { os, arch } = await GetEnv()
-  const fileSuffix = { windows: '.exe', linux: '' }[os]
+  const fileSuffix = { windows: '.exe', linux: '', darwin: '' }[os]
   const alpha = isAlpha ? '-alpha' : ''
   return `mihomo-${os}-${arch}${alpha}${fileSuffix}`
 }
