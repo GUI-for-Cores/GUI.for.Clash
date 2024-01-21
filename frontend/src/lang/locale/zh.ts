@@ -3,6 +3,7 @@ export default {
     grid: '网格',
     list: '列表',
     add: '添加',
+    added: '已添加',
     more: '更多',
     edit: '编辑',
     clear: '清理',
@@ -35,7 +36,8 @@ export default {
     import: '导入',
     install: '安装',
     uninstall: '卸载',
-    run: '运行'
+    run: '运行',
+    refresh: '刷新'
   },
   kernel: {
     port: 'HTTP(s)代理端口',
@@ -189,6 +191,7 @@ export default {
         'PROCESS-NAME': '源进程名',
         'PROCESS-PATH': '源进程路径',
         'RULE-SET': '规则集',
+        LOGIC: '逻辑规则',
         'SRC-IP-CIDR': '源IP段地址'
       }
     },
@@ -384,7 +387,10 @@ export default {
     updating: '更新中',
     empty: '插件列表为空，请先{action}或{import}插件。',
     source: '源码',
-    reload: '重载插件'
+    reload: '重载插件',
+    hub: '插件中心',
+    update: '更新列表',
+    updateSuccess: '列表更新成功'
   },
   settings: {
     general: '通用',
