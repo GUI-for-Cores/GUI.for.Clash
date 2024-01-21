@@ -15,7 +15,8 @@ import {
   Movefile,
   Removefile,
   GetEnv,
-  Makedir
+  Makedir,
+  UnzipGZFile
 } from '@/utils/bridge'
 
 const releaseUrl = 'https://api.github.com/repos/MetaCubeX/mihomo/releases/latest'
@@ -83,7 +84,7 @@ const downloadCore = async () => {
     if (suffix === '.zip') {
       await UnzipZIPFile(tmp, KernelWorkDirectory)
     } else {
-      // TODO: unzip gz
+      await UnzipGZFile(tmp, kernelFilePath)
     }
 
     await Removefile(tmp)
@@ -134,7 +135,7 @@ const downloadAlphaCore = async () => {
     if (suffix === '.zip') {
       await UnzipZIPFile(tmp, 'data')
     } else {
-      // TODO: unzip gz
+      await UnzipGZFile(tmp, alphaKernelFilePath)
     }
 
     await Movefile('data/' + fileName, alphaKernelFilePath)

@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { useMessage } from '@/hooks'
-import { useAppSettingsStore } from '@/stores'
+import { useAppSettingsStore, useEnvStore } from '@/stores'
 import { Theme, Lang, WindowStartState, Color } from '@/constant'
 import { APP_TITLE, APP_VERSION, getTaskSchXmlString } from '@/utils'
 import {
@@ -24,6 +24,7 @@ const isTaskScheduled = ref(false)
 const { t } = useI18n()
 const { message } = useMessage()
 const appSettings = useAppSettingsStore()
+const envStore = useEnvStore()
 
 const themes = [
   {
@@ -140,11 +141,13 @@ const createSchTask = async (delay = 30) => {
   await Removefile(xmlPath)
 }
 
-CheckPermissions().then((admin) => {
-  isAdmin.value = admin
-})
+if (envStore.env.os === 'windows') {
+  CheckPermissions().then((admin) => {
+    isAdmin.value = admin
+  })
 
-checkSchtask()
+  checkSchtask()
+}
 </script>
 
 <template>
@@ -210,14 +213,14 @@ checkSchtask()
       </div>
       <Switch v-model="appSettings.app.autoStartKernel" />
     </div>
-    <div class="settings-item">
+    <div v-if="envStore.env.os === 'windows'" class="settings-item">
       <div class="title">
         {{ t('settings.admin') }}
         <span class="tips">({{ t('settings.needRestart') }})</span>
       </div>
       <Switch v-model="isAdmin" @change="onPermChange" />
     </div>
-    <div class="settings-item">
+    <div v-if="envStore.env.os === 'windows'" class="settings-item">
       <div class="title">
         {{ t('settings.startup.name') }}
       </div>
