@@ -19,6 +19,8 @@ export const generateRule = (
       if (ruleset) {
         ruleStr += ',' + ruleset.name
       }
+    } else if (type === 'LOGIC') {
+      ruleStr = payload
     } else {
       ruleStr += ',' + payload
     }

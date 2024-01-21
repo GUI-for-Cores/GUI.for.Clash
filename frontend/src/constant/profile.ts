@@ -181,6 +181,14 @@ export const ProxyGroupsConfigDefaults = (ids: string[]): ProfileType['proxyGrou
 export const RulesConfigDefaults = (ids: string[]): ProfileType['rulesConfig'] => [
   {
     id: sampleID(),
+    type: 'LOGIC',
+    payload: 'AND,((DST-PORT,443),(NETWORK,udp))',
+    proxy: ids[3], // '🛑 全球拦截',
+    'no-resolve': false,
+    filter: ''
+  },
+  {
+    id: sampleID(),
     type: 'GEOSITE',
     payload: 'category-ads-all',
     proxy: ids[3], // '🛑 全球拦截',

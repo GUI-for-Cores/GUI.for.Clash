@@ -180,6 +180,10 @@ export const RulesTypeOptions = [
     value: 'RULE-SET'
   },
   {
+    label: 'kernel.rules.type.LOGIC',
+    value: 'LOGIC'
+  },
+  {
     label: 'kernel.rules.type.GEOIP',
     value: 'GEOIP'
   },

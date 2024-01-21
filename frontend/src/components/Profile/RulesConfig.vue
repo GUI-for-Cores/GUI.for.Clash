@@ -138,7 +138,14 @@ watch(rules, (v) => emits('update:modelValue', v), { immediate: true, deep: true
     </div>
     <div v-show="supportPayload" class="form-item">
       {{ t('kernel.rules.payload') }}
-      <Input v-model="fields.payload" autofocus />
+      <CodeViewer
+        v-if="fields.type === 'LOGIC'"
+        v-model="fields.payload"
+        editable
+        lang="javascript"
+        style="min-width: 200px"
+      />
+      <Input v-else v-model="fields.payload" autofocus />
     </div>
     <div class="form-item">
       {{ t('kernel.rules.proxy') }}

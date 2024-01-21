@@ -3,6 +3,7 @@ export default {
     grid: 'Grid',
     list: 'List',
     add: 'Add',
+    added: 'Added',
     more: 'More',
     edit: 'Edit',
     clear: 'Clear',
@@ -189,6 +190,7 @@ export default {
         'PROCESS-NAME': 'PROCESS-NAME',
         'PROCESS-PATH': 'PROCESS-PATH',
         'RULE-SET': 'RULE-SET',
+        LOGIC: 'LOGIC',
         'SRC-IP-CIDR': 'SRC-IP-CIDR'
       }
     },
@@ -384,7 +386,10 @@ export default {
     updating: 'Updating',
     empty: 'The plugin list is empty. Please {action} or {import} a plugin first.',
     source: 'Source',
-    reload: 'Reload'
+    reload: 'Reload',
+    hub: 'Plugin-Hub',
+    update: 'Update List',
+    updateSuccess: 'updated successfully'
   },
   settings: {
     general: 'General',
