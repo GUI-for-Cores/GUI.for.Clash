@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 
 import { DraggableOptions } from '@/constant'
+import { UnzipGZFile } from '@/utils/bridge'
 import { APP_TITLE, APP_VERSION } from '@/utils'
 
 import icons from '@/components/Icon/icons'
@@ -14,6 +15,10 @@ const code = ref(`
 const appName = '${APP_TITLE}'
 const appVersion = '${APP_VERSION}'
 `)
+
+const handleUnzip = async () => {
+  await UnzipGZFile('data/core.gz', 'core')
+}
 </script>
 
 <template>
@@ -39,6 +44,11 @@ const appVersion = '${APP_VERSION}'
     <CheckBox v-model="list" :options="icons.map((v) => ({ label: v, value: v }))" />
 
     {{ list }}
+  </div>
+
+  <h2>Unzip .gz</h2>
+  <div>
+    <Button @click="handleUnzip">Unzip .gz</Button>
   </div>
 </template>
 

@@ -390,7 +390,8 @@ export default {
     reload: '重载插件',
     hub: '插件中心',
     update: '更新列表',
-    updateSuccess: '列表更新成功'
+    updateSuccess: '列表更新成功',
+    total: '插件数量为'
   },
   settings: {
     general: '通用',

@@ -389,7 +389,8 @@ export default {
     reload: 'Reload',
     hub: 'Plugin-Hub',
     update: 'Update List',
-    updateSuccess: 'updated successfully'
+    updateSuccess: 'updated successfully',
+    total: 'Number of plug-ins'
   },
   settings: {
     general: 'General',
