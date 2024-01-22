@@ -78,67 +78,69 @@ if (props.isUpdate) {
 </script>
 
 <template>
-  <div class="form-item">
-    <div class="name">
-      {{ t('ruleset.rulesetType') }}
-    </div>
-    <Radio
-      v-model="ruleset.type"
-      :options="[
-        { label: 'ruleset.http', value: 'Http' },
-        { label: 'ruleset.file', value: 'File' }
-      ]"
-    />
-  </div>
-  <div class="form-item">
-    <div class="name">
-      {{ t('ruleset.behavior.name') }}
-    </div>
-    <Radio v-model="ruleset.behavior" :options="RulesetBehaviorOptions" />
-  </div>
-  <div class="form-item">
-    <div class="name">* {{ t('ruleset.name') }}</div>
-    <Input v-model="ruleset.name" auto-size autofocus class="input" />
-  </div>
-  <div v-show="ruleset.type === 'Http'" class="form-item">
-    <div class="name">* {{ t('ruleset.url') }}</div>
-    <Input
-      v-model="ruleset.url"
-      :placeholder="ruleset.type === 'Http' ? 'http(s)://' : 'data/local/{filename}.txt'"
-      auto-size
-      class="input"
-    />
-  </div>
-  <div class="form-item">
-    <div class="name">* {{ t('ruleset.path') }}</div>
-    <Input
-      v-model="ruleset.path"
-      placeholder="data/rulesets/{filename}.yaml"
-      auto-size
-      class="input"
-    />
-  </div>
-  <Divider>
-    <Button @click="toggleShowMore" type="text" size="small">
-      {{ t('common.more') }}
-    </Button>
-  </Divider>
-  <div v-show="showMore">
+  <div class="form">
     <div class="form-item">
-      <div class="name">{{ t('ruleset.interval') }}</div>
-      <Input
-        v-model="ruleset.interval"
-        placeholder="data/rulesets/{filename}.yaml"
-        auto-size
-        type="number"
+      <div class="name">
+        {{ t('ruleset.rulesetType') }}
+      </div>
+      <Radio
+        v-model="ruleset.type"
+        :options="[
+          { label: 'ruleset.http', value: 'Http' },
+          { label: 'ruleset.file', value: 'File' }
+        ]"
       />
     </div>
     <div class="form-item">
-      <div class="name">{{ t('ruleset.format') }}</div>
-      <Radio v-model="ruleset.format" :options="RulesetFormatOptions" />
+      <div class="name">
+        {{ t('ruleset.behavior.name') }}
+      </div>
+      <Radio v-model="ruleset.behavior" :options="RulesetBehaviorOptions" />
+    </div>
+    <div class="form-item">
+      <div class="name">{{ t('ruleset.name') }} *</div>
+      <Input v-model="ruleset.name" auto-size autofocus class="input" />
+    </div>
+    <div v-show="ruleset.type === 'Http'" class="form-item">
+      <div class="name">{{ t('ruleset.url') }} *</div>
+      <Input
+        v-model="ruleset.url"
+        :placeholder="ruleset.type === 'Http' ? 'http(s)://' : 'data/local/{filename}.txt'"
+        auto-size
+        class="input"
+      />
+    </div>
+    <div class="form-item">
+      <div class="name">{{ t('ruleset.path') }} *</div>
+      <Input
+        v-model="ruleset.path"
+        placeholder="data/rulesets/{filename}.yaml"
+        auto-size
+        class="input"
+      />
+    </div>
+    <Divider>
+      <Button @click="toggleShowMore" type="text" size="small">
+        {{ t('common.more') }}
+      </Button>
+    </Divider>
+    <div v-show="showMore">
+      <div class="form-item">
+        <div class="name">{{ t('ruleset.interval') }}</div>
+        <Input
+          v-model="ruleset.interval"
+          placeholder="data/rulesets/{filename}.yaml"
+          auto-size
+          type="number"
+        />
+      </div>
+      <div class="form-item">
+        <div class="name">{{ t('ruleset.format') }}</div>
+        <Radio v-model="ruleset.format" :options="RulesetFormatOptions" />
+      </div>
     </div>
   </div>
-  <div class="action">
+  <div class="form-action">
     <Button @click="handleCancel">{{ t('common.cancel') }}</Button>
     <Button
       @click="handleSubmit"
@@ -152,18 +154,17 @@ if (props.isUpdate) {
 </template>
 
 <style lang="less" scoped>
-.form-item {
-  margin-bottom: 8px;
+.form {
+  padding: 0 8px;
+  overflow-y: auto;
+  max-height: 58vh;
   .name {
     font-size: 14px;
     padding: 8px 0;
+    white-space: nowrap;
   }
   .input {
     width: 80%;
   }
-}
-.action {
-  display: flex;
-  justify-content: flex-end;
 }
 </style>
