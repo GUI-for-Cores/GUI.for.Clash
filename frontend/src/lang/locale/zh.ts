@@ -163,7 +163,14 @@ export default {
         'consistent-hashing': 'consistent-hashing',
         'round-robin': 'round-robin'
       },
-      empty: '该订阅分组内没有可用节点'
+      empty: '该订阅分组内没有可用节点',
+      'built-in': {
+        select: '🚀 节点选择',
+        autoSelect: '🎈 自动选择',
+        direct: '🎯 全球直连',
+        reject: '🛑 全球拦截',
+        fallback: '🐟 漏网之鱼'
+      }
     },
     rules: {
       payload: '载荷',
