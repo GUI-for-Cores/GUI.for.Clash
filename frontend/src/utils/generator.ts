@@ -125,6 +125,7 @@ export const generateProxyGroup = (
       if (group) {
         return group.name
       }
+      return v.name
     })
   }
 
