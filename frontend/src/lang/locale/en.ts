@@ -162,7 +162,14 @@ export default {
         'consistent-hashing': 'consistent-hashing',
         'round-robin': 'round-robin'
       },
-      empty: 'The subscription group is empty'
+      empty: 'The subscription group is empty',
+      'built-in': {
+        select: '🚀 Select',
+        autoSelect: '🎈 Auto Select',
+        direct: '🎯 Direct',
+        reject: '🛑 Reject',
+        fallback: '🐟 Fallback'
+      }
     },
     rules: {
       payload: 'Payload',

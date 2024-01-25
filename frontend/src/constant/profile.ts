@@ -1,6 +1,9 @@
+import i18n from '@/lang'
 import { sampleID } from '@/utils'
 import { ProxyGroup } from '@/constant'
 import type { ProfileType } from '@/stores'
+
+const { t } = i18n.global
 
 export const GeneralConfigDefaults: ProfileType['generalConfig'] = {
   mode: 'rule',
@@ -98,9 +101,11 @@ export const ProxyGroupsConfigDefaults = (ids: string[]): ProfileType['proxyGrou
   return [
     {
       id: ids[0],
-      name: '🚀 节点选择',
+      name: t('kernel.proxyGroups.built-in.select'),
       type: ProxyGroup.Select,
-      proxies: [{ id: ids[1], type: 'Built-In', name: '🎈 自动选择' }],
+      proxies: [
+        { id: ids[1], type: 'Built-In', name: t('kernel.proxyGroups.built-in.autoSelect') }
+      ],
       url: 'https://www.gstatic.com/generate_204',
       interval: 300,
       strategy: 'consistent-hashing',
@@ -112,7 +117,7 @@ export const ProxyGroupsConfigDefaults = (ids: string[]): ProfileType['proxyGrou
     },
     {
       id: ids[1],
-      name: '🎈 自动选择',
+      name: t('kernel.proxyGroups.built-in.autoSelect'),
       type: ProxyGroup.UrlTest,
       proxies: [],
       url: 'https://www.gstatic.com/generate_204',
@@ -126,7 +131,7 @@ export const ProxyGroupsConfigDefaults = (ids: string[]): ProfileType['proxyGrou
     },
     {
       id: ids[2],
-      name: '🎯 全球直连',
+      name: t('kernel.proxyGroups.built-in.direct'),
       type: ProxyGroup.Select,
       proxies: [
         { id: 'DIRECT', type: 'Built-In', name: 'DIRECT' },
@@ -143,7 +148,7 @@ export const ProxyGroupsConfigDefaults = (ids: string[]): ProfileType['proxyGrou
     },
     {
       id: ids[3],
-      name: '🛑 全球拦截',
+      name: t('kernel.proxyGroups.built-in.reject'),
       type: ProxyGroup.Select,
       proxies: [
         { id: 'REJECT', type: 'Built-In', name: 'REJECT' },
@@ -160,11 +165,11 @@ export const ProxyGroupsConfigDefaults = (ids: string[]): ProfileType['proxyGrou
     },
     {
       id: ids[4],
-      name: '🐟 漏网之鱼',
+      name: t('kernel.proxyGroups.built-in.fallback'),
       type: ProxyGroup.Select,
       proxies: [
-        { id: ids[0], type: 'Built-In', name: '🚀 节点选择' },
-        { id: ids[2], type: 'Built-In', name: '🎯 全球直连' }
+        { id: ids[0], type: 'Built-In', name: t('kernel.proxyGroups.built-in.select') },
+        { id: ids[2], type: 'Built-In', name: t('kernel.proxyGroups.built-in.direct') }
       ],
       url: 'https://www.gstatic.com/generate_204',
       interval: 300,
