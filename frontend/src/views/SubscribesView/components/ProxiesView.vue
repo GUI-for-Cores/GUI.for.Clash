@@ -21,7 +21,7 @@ const loading = ref(false)
 const keywords = ref('')
 const proxyType = ref('')
 const details = ref()
-const allFieldsProxies = ref()
+const allFieldsProxies = ref<any[]>([])
 const sub = ref(deepClone(props.sub))
 
 const [showDetails, toggleDetails] = useBool(false)
@@ -109,7 +109,8 @@ const handleSave = async () => {
     const filteredProxies = allFieldsProxies.value.filter((v: any) =>
       proxies.some((vv) => vv.name === v.name)
     )
-    await Writefile(path, stringify({ proxies: filteredProxies }))
+    const sortedArray = proxies.map((v) => filteredProxies.find((vv) => vv.name === v.name))
+    await Writefile(path, stringify({ proxies: sortedArray }))
     await subscribeStore.editSubscribe(id, sub.value)
     handleSubmit()
   } catch (error: any) {
@@ -165,7 +166,7 @@ const onEditEnd = async () => {
 }
 
 const initAllFieldsProxies = async () => {
-  if (allFieldsProxies.value) return
+  if (allFieldsProxies.value.length) return
   const content = (await ignoredError(Readfile, sub.value!.path)) || '{}'
   const { proxies: _proxies = [] } = parse(content)
   allFieldsProxies.value = _proxies
