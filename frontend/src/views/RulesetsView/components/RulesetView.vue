@@ -4,9 +4,9 @@ import { parse, stringify } from 'yaml'
 import { ref, computed, inject } from 'vue'
 
 import { useMessage } from '@/hooks'
-import { DraggableOptions } from '@/constant'
-import { deepClone, ignoredError } from '@/utils'
 import { Readfile, Writefile } from '@/utils/bridge'
+import { DraggableOptions, RulesetBehavior } from '@/constant'
+import { deepClone, ignoredError, isValidIPCIDR } from '@/utils'
 import { type RuleSetType, type Menu, useRulesetsStore } from '@/stores'
 
 interface Props {
@@ -63,9 +63,15 @@ const handleSave = async () => {
 
 const handleAdd = () => {
   const rule = ruleValue.value.trim()
-  if (rule && !rulesetList.value.includes(rule)) {
-    rulesetList.value.push(rule)
+  if (!rule || rulesetList.value.includes(rule)) {
+    ruleValue.value = ''
+    return
   }
+  if (ruleset.value?.behavior === RulesetBehavior.Ipcidr && !isValidIPCIDR(rule)) {
+    message.info('Not a valid IP-CIDR format')
+    return
+  }
+  rulesetList.value.push(rule)
   ruleValue.value = ''
 }
 
@@ -112,7 +118,7 @@ if (r) {
         {{ rule }}
       </div>
     </div>
-    <div class="action">
+    <div class="form-action">
       <Button @click="handleCancel" :disable="loading">
         {{ t('common.cancel') }}
       </Button>
@@ -156,12 +162,6 @@ if (r) {
     font-size: 12px;
     background: var(--card-bg);
   }
-}
-
-.action {
-  display: flex;
-  margin-top: 8px;
-  justify-content: flex-end;
 }
 
 .ml-8 {
