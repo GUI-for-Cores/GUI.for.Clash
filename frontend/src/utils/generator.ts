@@ -92,7 +92,10 @@ export const generateProxies = async (groups: ProfileType['proxyGroupsConfig']) 
   return proxiesList
 }
 
-export const generateProxyGroup = (proxyGruoup: ProfileType['proxyGroupsConfig'][0]) => {
+export const generateProxyGroup = (
+  proxyGruoup: ProfileType['proxyGroupsConfig'][0],
+  groups: ProfileType['proxyGroupsConfig']
+) => {
   const {
     type,
     name,
@@ -114,7 +117,15 @@ export const generateProxyGroup = (proxyGruoup: ProfileType['proxyGroupsConfig']
   }
 
   if (proxies.length !== 0) {
-    group.proxies = proxies.map((v) => v.name)
+    group.proxies = proxies.map((v) => {
+      if (['DIRECT', 'REJECT'].includes(v.id)) {
+        return v.name
+      }
+      const group = groups.find((vv) => vv.id === v.id)
+      if (group) {
+        return group.name
+      }
+    })
   }
 
   if (type === ProxyGroup.Select) {
@@ -236,7 +247,7 @@ export const generateConfig = async (profile: ProfileType) => {
   config['proxies'] = await generateProxies(profile.proxyGroupsConfig)
 
   config['proxy-groups'] = profile.proxyGroupsConfig.map((proxyGruoup) =>
-    generateProxyGroup(proxyGruoup)
+    generateProxyGroup(proxyGruoup, profile.proxyGroupsConfig)
   )
 
   config['rules'] = profile.rulesConfig
