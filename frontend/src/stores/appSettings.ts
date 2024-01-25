@@ -59,7 +59,7 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
     kernel: {
       branch: 'main',
       profile: '',
-      pid: -1,
+      pid: 0,
       running: false,
       autoClose: true,
       unAvailable: true,
