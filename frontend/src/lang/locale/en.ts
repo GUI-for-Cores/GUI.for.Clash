@@ -165,7 +165,7 @@ export default {
       empty: 'The subscription group is empty',
       'built-in': {
         select: '🚀 Select',
-        autoSelect: '🎈 Auto Select',
+        auto: '🎈 Auto',
         direct: '🎯 Direct',
         reject: '🛑 Reject',
         fallback: '🐟 Fallback'

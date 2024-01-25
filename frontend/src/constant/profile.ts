@@ -103,9 +103,7 @@ export const ProxyGroupsConfigDefaults = (ids: string[]): ProfileType['proxyGrou
       id: ids[0],
       name: t('kernel.proxyGroups.built-in.select'),
       type: ProxyGroup.Select,
-      proxies: [
-        { id: ids[1], type: 'Built-In', name: t('kernel.proxyGroups.built-in.autoSelect') }
-      ],
+      proxies: [{ id: ids[1], type: 'Built-In', name: t('kernel.proxyGroups.built-in.auto') }],
       url: 'https://www.gstatic.com/generate_204',
       interval: 300,
       strategy: 'consistent-hashing',
@@ -117,7 +115,7 @@ export const ProxyGroupsConfigDefaults = (ids: string[]): ProfileType['proxyGrou
     },
     {
       id: ids[1],
-      name: t('kernel.proxyGroups.built-in.autoSelect'),
+      name: t('kernel.proxyGroups.built-in.auto'),
       type: ProxyGroup.UrlTest,
       proxies: [],
       url: 'https://www.gstatic.com/generate_204',
