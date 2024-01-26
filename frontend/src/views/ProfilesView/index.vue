@@ -12,7 +12,7 @@ import {
   type Menu,
   useProfilesStore,
   useAppSettingsStore,
-  useApp,
+  useAppStore,
   useKernelApiStore
 } from '@/stores'
 
@@ -25,7 +25,7 @@ const isUpdate = ref(false)
 
 const { t } = useI18n()
 const { message } = useMessage()
-const appStore = useApp()
+const appStore = useAppStore()
 const profilesStore = useProfilesStore()
 const appSettingsStore = useAppSettingsStore()
 const kernelApiStore = useKernelApiStore()

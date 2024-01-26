@@ -65,8 +65,9 @@ const onMouseWheel = (e: WheelEvent) => {
 
 const onTunSwitchChange = async (enable: boolean) => {
   try {
-    await kernelApiStore.updateConfig({ tun: { enable } })
     await envStore.clearSystemProxy()
+    await kernelApiStore.updateConfig({ tun: { enable } })
+    await kernelApiStore.refreshConfig()
   } catch (error: any) {
     console.error(error)
     message.info(error)
@@ -75,9 +76,9 @@ const onTunSwitchChange = async (enable: boolean) => {
 
 const onSystemProxySwitchChange = async (enable: boolean) => {
   try {
-    await envStore.switchSystemProxy(enable)
     await kernelApiStore.updateConfig({ tun: { enable: false } })
     await kernelApiStore.refreshConfig()
+    await envStore.switchSystemProxy(enable)
   } catch (error: any) {
     console.error(error)
     message.info(error)
