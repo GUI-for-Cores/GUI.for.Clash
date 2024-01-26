@@ -480,5 +480,19 @@ export default {
     year: '年',
     ago: '前',
     later: '后'
+  },
+  tray: {
+    hide: '隐藏',
+    hideTip: '隐藏窗口',
+    show: '显示',
+    showTip: '显示窗口',
+    restart: '重启',
+    restartTip: '重启程序',
+    exit: '退出',
+    exitTip: '退出程序',
+    setSystemProxy: '设置系统代理',
+    clearSystemProxy: '清除系统代理',
+    enableTunMode: '启用系统代理',
+    disableTunMode: '禁用系统代理'
   }
 }

@@ -17,6 +17,8 @@ export function Exec(arg1:string,arg2:Array<string>):Promise<bridge.FlagResult>;
 
 export function ExecBackground(arg1:string,arg2:Array<string>,arg3:string,arg4:string):Promise<bridge.FlagResult>;
 
+export function ExitApp():Promise<void>;
+
 export function FileExists(arg1:string):Promise<bridge.FlagResult>;
 
 export function GetEnv():Promise<bridge.EnvResult>;
@@ -52,5 +54,9 @@ export function SwitchPermissions(arg1:boolean,arg2:string):Promise<bridge.FlagR
 export function UnzipGZFile(arg1:string,arg2:string):Promise<bridge.FlagResult>;
 
 export function UnzipZIPFile(arg1:string,arg2:string):Promise<bridge.FlagResult>;
+
+export function UpdateTray(arg1:bridge.TrayContents):Promise<void>;
+
+export function UpdateTrayMenus(arg1:Array<bridge.MenuItem>):Promise<void>;
 
 export function Writefile(arg1:string,arg2:string):Promise<bridge.FlagResult>;
