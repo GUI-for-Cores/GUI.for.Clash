@@ -13,7 +13,6 @@ import LogsController from './LogsController.vue'
 import GroupsController from './GroupsController.vue'
 import CommonController from './CommonController.vue'
 
-const stateLoading = ref(true)
 const showController = ref(false)
 const controllerRef = ref<HTMLElement>()
 
@@ -93,18 +92,6 @@ watch(showController, (v) => {
     kernelApiStore.refreshConfig()
   }
 })
-
-envStore.updateSystemProxyState()
-
-kernelApiStore.updateKernelStatus().then(async (running) => {
-  stateLoading.value = false
-
-  if (running) {
-    await kernelApiStore.refreshConfig()
-  } else if (appSettingsStore.app.autoStartKernel) {
-    handleStartKernel()
-  }
-})
 </script>
 
 <template>
@@ -141,7 +128,7 @@ kernelApiStore.updateKernelStatus().then(async (running) => {
       </template>
     </div>
 
-    <template v-else-if="!stateLoading">
+    <template v-else-if="!kernelApiStore.statusLoading">
       <div :class="{ blur: showController }">
         <div class="kernel-status">
           <Button @click="toggleSettingsModal" type="text" size="small">
