@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
 
-import { DraggableOptions } from '@/constant'
-import { UnzipGZFile } from '@/utils/bridge'
+import { DraggableOptions, type MenuItem } from '@/constant'
+import { UnzipGZFile, UpdateTray } from '@/utils/bridge'
 import { APP_TITLE, APP_VERSION } from '@/utils'
 
 import icons from '@/components/Icon/icons'
+import { useAppStore } from '@/stores'
 const list = ref(['data 1', 'data 2', 'data 3', 'data 4'])
 
 const radioValue = ref(list.value[0])
@@ -18,6 +19,52 @@ const appVersion = '${APP_VERSION}'
 
 const handleUnzip = async () => {
   await UnzipGZFile('data/core.gz', 'core')
+}
+
+const handleUpdateMenus = async () => {
+  const menus: MenuItem[] = [
+    {
+      type: 'item',
+      text: '一级菜单',
+      tooltip: '',
+      children: [
+        {
+          type: 'item',
+          text: '二级菜单',
+          tooltip: '',
+          children: [
+            {
+              type: 'item',
+              text: '三级菜单',
+              tooltip: '',
+              children: [
+                {
+                  type: 'item',
+                  text: '四级菜单',
+                  tooltip: '',
+                  event: () => {
+                    console.log('click')
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+
+  const appStore = useAppStore()
+  appStore.updateTrayMenus()
+}
+
+const icos = ['data/ico/normal.ico', 'data/ico/proxy.ico', 'data/ico/tun.ico']
+let i = 0
+const handleUpdateTray = async () => {
+  i += 1
+  await UpdateTray({
+    icon: icos[i % 3]
+  })
 }
 </script>
 
@@ -49,6 +96,12 @@ const handleUnzip = async () => {
   <h2>Unzip .gz</h2>
   <div>
     <Button @click="handleUnzip">Unzip .gz</Button>
+  </div>
+
+  <h2>Tray Update/Destroy</h2>
+  <div>
+    <Button @click="handleUpdateMenus" type="link">Update Menus</Button>
+    <Button @click="handleUpdateTray" type="link">Update Tray</Button>
   </div>
 </template>
 
