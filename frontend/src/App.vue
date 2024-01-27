@@ -4,7 +4,7 @@ import { ref } from 'vue'
 import { useMessage } from '@/hooks'
 import * as Stores from '@/stores'
 import { EventsOn } from '@/utils/bridge'
-import { ignoredError, sleep } from '@/utils'
+import { ignoredError, sampleID, sleep } from '@/utils'
 
 import SplashView from '@/views/SplashView.vue'
 import { NavigationBar, MainPage, TitleBar } from '@/components'
@@ -23,8 +23,25 @@ const subscribesStore = Stores.useSubscribesStore()
 const { message } = useMessage()
 window.Plugins.message = message
 
-EventsOn('launchArgs', (args) => {
-  console.log(args)
+EventsOn('launchArgs', async (args: string[]) => {
+  console.log('launchArgs', args)
+  const url = new URL(args[0])
+  if (url.pathname === '//install-config/') {
+    const _url = url.searchParams.get('url')
+    const _name = url.searchParams.get('name') || sampleID()
+
+    if (!_url) {
+      message.info('URL missing')
+      return
+    }
+
+    try {
+      await subscribesStore.importSubscribe(_name, _url)
+      message.info('common.success')
+    } catch (error: any) {
+      message.info('URL missing')
+    }
+  }
 })
 
 appSettings.setupAppSettings().then(async () => {
