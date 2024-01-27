@@ -3,9 +3,9 @@ import { defineStore } from 'pinia'
 import { stringify, parse } from 'yaml'
 
 import { SubscribesFilePath } from '@/constant'
-import { deepClone, debounce, sampleID } from '@/utils'
 import { Readfile, Writefile, HttpGet } from '@/utils/bridge'
 import { useAppSettingsStore, usePluginsStore } from '@/stores'
+import { deepClone, debounce, sampleID, APP_TITLE, APP_VERSION } from '@/utils'
 
 export type SubscribeType = {
   id: string
@@ -58,6 +58,34 @@ export const useSubscribesStore = defineStore('subscribes', () => {
       subscribes.value.pop()
       throw error
     }
+  }
+
+  const importSubscribe = async (name: string, url: string) => {
+    const id = sampleID()
+    await addSubscribe({
+      id: id,
+      name: name,
+      upload: 0,
+      download: 0,
+      total: 0,
+      expire: '',
+      updateTime: '',
+      type: 'Http',
+      url: url,
+      website: '',
+      path: `data/subscribes/${id}.yaml`,
+      include: '',
+      exclude: '',
+      proxyPrefix: '',
+      disabled: false,
+      userAgent: APP_TITLE + '/' + APP_VERSION,
+      healthCheck: {
+        enable: true,
+        url: 'https://www.gstatic.com/generate_204',
+        interval: 300
+      },
+      proxies: []
+    })
   }
 
   const deleteSubscribe = async (id: string) => {
@@ -193,6 +221,7 @@ export const useSubscribesStore = defineStore('subscribes', () => {
     deleteSubscribe,
     updateSubscribe,
     updateSubscribes,
-    getSubscribeById
+    getSubscribeById,
+    importSubscribe
   }
 })
