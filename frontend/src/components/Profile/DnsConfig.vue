@@ -30,12 +30,16 @@ watch(fields, (v) => emits('update:modelValue', v), { immediate: true, deep: tru
   </div>
   <template v-if="fields.enable">
     <div class="form-item">
-      {{ t('kernel.dns.prefer-h3') }}
-      <Switch v-model="fields['prefer-h3']" />
+      {{ t('kernel.dns.use-hosts') }}
+      <Switch v-model="fields['use-hosts']" />
     </div>
     <div class="form-item">
       {{ t('kernel.dns.ipv6') }}
       <Switch v-model="fields['ipv6']" />
+    </div>
+    <div class="form-item">
+      {{ t('kernel.dns.listen') }}
+      <Input v-model="fields['listen']" editable />
     </div>
     <div class="form-item" :class="{ 'flex-start': fields['nameserver'].length !== 0 }">
       {{ t('kernel.dns.nameserver') }}
@@ -53,12 +57,8 @@ watch(fields, (v) => emits('update:modelValue', v), { immediate: true, deep: tru
 
     <div v-if="showMore">
       <div class="form-item">
-        {{ t('kernel.dns.listen') }}
-        <Input v-model="fields['listen']" editable />
-      </div>
-      <div class="form-item">
-        {{ t('kernel.dns.use-hosts') }}
-        <Switch v-model="fields['use-hosts']" />
+        {{ t('kernel.dns.prefer-h3') }}
+        <Switch v-model="fields['prefer-h3']" />
       </div>
 
       <div class="form-item" :class="{ 'flex-start': fields['default-nameserver'].length !== 0 }">

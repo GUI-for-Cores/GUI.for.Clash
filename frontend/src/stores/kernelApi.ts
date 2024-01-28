@@ -44,6 +44,7 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
 
   const updateConfig = async (options: Record<string, any>) => {
     await setConfigs(options)
+    await refreshConfig()
   }
 
   const refreshProviderProxies = async () => {

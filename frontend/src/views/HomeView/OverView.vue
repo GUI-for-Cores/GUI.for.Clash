@@ -34,8 +34,6 @@ const handleChangeMode = async (mode: string) => {
   const { connections } = await getConnections()
   const promises = (connections || []).map((v) => deleteConnection(v.id))
   await Promise.all(promises)
-
-  kernelApiStore.refreshConfig()
 }
 
 const onConnections = (data: any) => {

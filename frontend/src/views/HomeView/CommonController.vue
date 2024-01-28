@@ -82,12 +82,7 @@ const handleUpdateGEO = async () => {
       />
     </Card>
     <Card :title="t('kernel.tun.device')" class="card-item">
-      <Input
-        v-model="kernelApiStore.config.tun.device"
-        @submit="onTunDeviceSubmit"
-        editable
-        disabled
-      />
+      <Input v-model="kernelApiStore.config.tun.device" @submit="onTunDeviceSubmit" editable />
     </Card>
     <Card :title="t('kernel.interface-name')" class="card-item">
       <InterfaceSelect
