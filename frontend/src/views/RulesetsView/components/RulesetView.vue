@@ -52,7 +52,6 @@ const handleSave = async () => {
   loading.value = true
   try {
     await Writefile(ruleset.value.path, stringify({ payload: rulesetList.value }))
-    message.info('common.success')
     handleSubmit()
   } catch (error: any) {
     message.info(error)
