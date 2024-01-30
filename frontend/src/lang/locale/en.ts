@@ -274,7 +274,8 @@ export default {
       name: 'Controller',
       autoClose: 'Auto-close Connections',
       unAvailable: 'Show UnAvailable Proxies',
-      cardMode: 'Card Mode'
+      cardMode: 'Card Mode',
+      sortBy: 'Sort By Delay'
     },
     connections: {
       host: 'Host',
