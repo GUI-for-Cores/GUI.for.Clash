@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { ref, computed } from 'vue'
+import { ref, computed, onActivated } from 'vue'
 
 import { useMessage } from '@/hooks'
 import { ProxyGroupType } from '@/constant'
@@ -44,6 +44,7 @@ const groups = computed(() => {
           const delay = history[history.length - 1]?.delay
           return { ...proxies[v], delay }
         })
+        .sort((a, b) => (!appSettings.app.kernel.sortByDelay ? 0 : a.delay - b.delay))
 
       const chains = [provider.now]
       let tmp = proxies[provider.now]
@@ -142,6 +143,10 @@ const delayColor = (delay = 0) => {
   if (delay < 1200) return 'var(--level-3-color)'
   return 'var(--level-4-color)'
 }
+
+onActivated(() => {
+  kernelApiStore.refreshProviderProxies()
+})
 </script>
 
 <template>
@@ -155,6 +160,9 @@ const delayColor = (delay = 0) => {
       </Switch>
       <Switch v-model="appSettings.app.kernel.cardMode" style="margin-left: 8px">
         {{ t('home.controller.cardMode') }}
+      </Switch>
+      <Switch v-model="appSettings.app.kernel.sortByDelay" style="margin-left: 8px">
+        {{ t('home.controller.sortBy') }}
       </Switch>
       <Button
         @click="expandAll"
