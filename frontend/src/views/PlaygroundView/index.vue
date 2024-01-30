@@ -2,11 +2,11 @@
 import { ref, computed } from 'vue'
 
 import { DraggableOptions, type MenuItem } from '@/constant'
+import { useAppStore, useAppSettingsStore } from '@/stores'
 import { UnzipGZFile, UpdateTray } from '@/utils/bridge'
 import { APP_TITLE, APP_VERSION } from '@/utils'
-
 import icons from '@/components/Icon/icons'
-import { useAppStore } from '@/stores'
+
 const list = ref(['data 1', 'data 2', 'data 3', 'data 4'])
 
 const radioValue = ref(list.value[0])
@@ -58,7 +58,15 @@ const handleUpdateMenus = async () => {
   appStore.updateTrayMenus()
 }
 
-const icos = ['data/ico/normal.ico', 'data/ico/proxy.ico', 'data/ico/tun.ico']
+const appSettings = useAppSettingsStore()
+
+const theme = appSettings.app.theme
+
+const icos = [
+  `data/ico/normal_${theme}.ico`,
+  `data/ico/proxy_${theme}.ico`,
+  `data/ico/tun_${theme}.ico`
+]
 let i = 0
 const handleUpdateTray = async () => {
   i += 1

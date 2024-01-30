@@ -12,7 +12,8 @@ import {
   WindowHide,
   WindowShow,
   RestartApp,
-  ExitApp
+  ExitApp,
+  UpdateTray
 } from '@/utils/bridge'
 
 export type Menu = {
@@ -189,8 +190,20 @@ export const useAppStore = defineStore('app', () => {
 
     const processedMenus = generateUniqueEventsForMenu(trayMenus)
 
+    const themeMode = appSettings.themeMode
+    let icon = `normal_${themeMode}.ico`
+
+    if (appSettings.app.kernel.running) {
+      if (kernelApiStore.config.tun.enable) {
+        icon = `tun_${themeMode}.ico`
+      } else if (envStore.systemProxy) {
+        icon = `proxy_${themeMode}.ico`
+      }
+    }
+
+    await UpdateTray({ icon })
     await UpdateTrayMenus(processedMenus as any)
-  }, 1000)
+  }, 500)
 
   return {
     menuShow,
