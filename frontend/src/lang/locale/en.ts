@@ -493,6 +493,7 @@ export default {
     exitTip: 'Exit App',
     setSystemProxy: 'Set System Proxy',
     clearSystemProxy: 'Clear System Proxy',
+    tun: 'Tun Mode',
     enableTunMode: 'Enable Tun Mode',
     disableTunMode: 'Disable Tun Mode',
     kernel: 'Kernel',

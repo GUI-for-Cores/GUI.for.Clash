@@ -144,13 +144,40 @@ export const useAppStore = defineStore('app', () => {
             type: 'item',
             text: 'tray.setSystemProxy',
             show: !envStore.systemProxy,
-            event: envStore.setSystemProxy
+            event: async () => {
+              await kernelApiStore.updateConfig({ tun: { enable: false } })
+              await envStore.setSystemProxy()
+            }
           },
           {
             type: 'item',
             text: 'tray.clearSystemProxy',
             show: envStore.systemProxy,
             event: envStore.clearSystemProxy
+          }
+        ]
+      },
+      {
+        type: 'item',
+        text: 'tray.tun',
+        show: appSettings.app.kernel.running,
+        children: [
+          {
+            type: 'item',
+            text: 'tray.enableTunMode',
+            show: !kernelApiStore.config.tun.enable,
+            event: async () => {
+              await envStore.clearSystemProxy()
+              await kernelApiStore.updateConfig({ tun: { enable: true } })
+            }
+          },
+          {
+            type: 'item',
+            text: 'tray.disableTunMode',
+            show: kernelApiStore.config.tun.enable,
+            event: async () => {
+              await kernelApiStore.updateConfig({ tun: { enable: false } })
+            }
           }
         ]
       },
