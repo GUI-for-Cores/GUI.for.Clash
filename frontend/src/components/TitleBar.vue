@@ -125,7 +125,7 @@ const menus: Menu[] = [
 }
 .appname {
   font-size: 14px;
-  margin-left: 4px;
+  margin-left: 8px;
   margin-top: 2px;
   font-weight: bold;
 }

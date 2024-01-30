@@ -4,8 +4,8 @@ import { defineStore } from 'pinia'
 import { generateConfigFile, ignoredError } from '@/utils'
 import type { KernelApiConfig, Proxy } from '@/api/kernel.schema'
 import { KernelWorkDirectory, getKernelFileName } from '@/constant'
-import { ProcessInfo, KillProcess, ExecBackground } from '@/utils/bridge'
 import { getConfigs, setConfigs, getProxies, getProviders } from '@/api/kernel'
+import { ProcessInfo, KillProcess, ExecBackground } from '@/utils/bridge'
 import {
   useAppSettingsStore,
   useProfilesStore,
