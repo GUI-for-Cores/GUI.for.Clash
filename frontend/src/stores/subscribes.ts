@@ -184,9 +184,6 @@ export const useSubscribesStore = defineStore('subscribes', () => {
       s.updating = true
       await _doUpdateSub(s)
       await saveSubscribes()
-    } catch (error) {
-      console.error('updateSubscribe: ', s.name, error)
-      throw error
     } finally {
       s.updating = false
     }

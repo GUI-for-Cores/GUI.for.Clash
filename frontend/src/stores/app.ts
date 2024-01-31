@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 
 import i18n from '@/lang'
 import type { MenuItem } from '@/constant'
-import { debounce, deepClone, ignoredError, sampleID } from '@/utils'
+import { debounce, deepClone, sampleID } from '@/utils'
 import { useAppSettingsStore, useKernelApiStore, useEnvStore, usePluginsStore } from '@/stores'
 import {
   EventsOff,
@@ -70,7 +70,11 @@ export const useAppStore = defineStore('app', () => {
 
     setTimeout(ExitApp, 3_000)
 
-    await ignoredError(pluginsStore.onShutdownTrigger)
+    try {
+      await pluginsStore.onShutdownTrigger()
+    } catch (error: any) {
+      window.Plugins.message.info(error)
+    }
 
     ExitApp()
   }
