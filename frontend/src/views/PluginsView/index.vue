@@ -262,7 +262,7 @@ const onSortUpdate = debounce(pluginsStore.savePlugins, 1000)
         </span>
       </template>
 
-      <div :class="{ description: appSettingsStore.app.pluginsView === View.Grid }">
+      <div v-tips="p.description" :class="{ description: appSettingsStore.app.pluginsView === View.Grid }">
         {{ t('plugin.description') }}
         :
         {{ p.description || '--' }}
