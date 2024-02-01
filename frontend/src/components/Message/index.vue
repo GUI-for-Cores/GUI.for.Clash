@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import i18n from '@/lang'
+import { computed } from 'vue'
+
+export type IconType = 'info' | 'warn' | 'error' | 'success'
 
 interface Props {
-  icon?: 'info' | 'success' | 'error' | 'warn'
+  icon?: IconType
   content: string
 }
 
@@ -12,12 +15,14 @@ const props = withDefaults(defineProps<Props>(), {
 
 const { t } = i18n.global
 
-const icon = {
+const iconMap = {
   info: 'messageInfo',
   success: 'messageSuccess',
   error: 'messageError',
   warn: 'messageWarn'
-}[props.icon]
+}
+
+const icon = computed(() => iconMap[props.icon])
 </script>
 
 <template>
@@ -35,7 +40,7 @@ const icon = {
   border-radius: 8px;
   margin: 4px 0;
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.2);
-
+  background: var(--toast-bg);
   .content {
     font-size: 14px;
     padding: 0 8px;

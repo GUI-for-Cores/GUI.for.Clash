@@ -4,8 +4,9 @@ import { ref, computed } from 'vue'
 import { DraggableOptions, type MenuItem } from '@/constant'
 import { useAppStore, useAppSettingsStore } from '@/stores'
 import { UnzipGZFile, UpdateTray } from '@/utils/bridge'
-import { APP_TITLE, APP_VERSION } from '@/utils'
+import { APP_TITLE, APP_VERSION, sleep } from '@/utils'
 import icons from '@/components/Icon/icons'
+import { useMessage } from '@/hooks'
 
 const list = ref(['data 1', 'data 2', 'data 3', 'data 4'])
 
@@ -58,6 +59,7 @@ const handleUpdateMenus = async () => {
   appStore.updateTrayMenus()
 }
 
+const { message } = useMessage()
 const appSettings = useAppSettingsStore()
 
 const theme = appSettings.app.theme
@@ -73,6 +75,15 @@ const handleUpdateTray = async () => {
   await UpdateTray({
     icon: icos[i % 3]
   })
+}
+
+const handleUpdateMessage = async () => {
+  const { id } = message.info('success', 5_000)
+  await sleep(1000)
+  message.update(id, 'error', 'error')
+  message.destroy(id)
+  await sleep(1000)
+  message.update(id, 'success', 'success')
 }
 </script>
 
@@ -96,8 +107,8 @@ const handleUpdateTray = async () => {
   <div>
     <Radio v-model="radioValue" :options="radioOptions" />
     {{ radioValue }}
-    <CheckBox v-model="list" :options="icons.map((v) => ({ label: v, value: v }))" />
-
+    <br />
+    <CheckBox v-model="list" :options="icons.map((v) => ({ label: v, value: v })).slice(0, 5)" />
     {{ list }}
   </div>
 
@@ -110,6 +121,27 @@ const handleUpdateTray = async () => {
   <div>
     <Button @click="handleUpdateMenus" type="link">Update Menus</Button>
     <Button @click="handleUpdateTray" type="link">Update Tray</Button>
+  </div>
+
+  <h2>Show Message</h2>
+  <div>
+    <Button @click="message.info('info', 1_000)">
+      <Icon icon="messageInfo" />
+      Info
+    </Button>
+    <Button @click="message.warn('warn', 1_000)">
+      <Icon icon="messageWarn" />
+      Warn
+    </Button>
+    <Button @click="message.error('error', 1_000)">
+      <Icon icon="messageError" />
+      Error
+    </Button>
+    <Button @click="message.success('success', 1_000)">
+      <Icon icon="messageSuccess" />
+      Success
+    </Button>
+    <Button @click="handleUpdateMessage">Update Me</Button>
   </div>
 </template>
 
