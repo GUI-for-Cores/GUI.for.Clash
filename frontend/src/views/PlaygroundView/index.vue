@@ -21,7 +21,7 @@ const appVersion = '${APP_VERSION}'
 const kv = ref({
   appTitle: APP_TITLE,
   appVersion: APP_VERSION,
-  count: 1
+  count: '1'
 })
 
 const handleUpdateMenus = async () => {
