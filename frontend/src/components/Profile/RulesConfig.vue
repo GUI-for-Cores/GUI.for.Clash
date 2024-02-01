@@ -99,9 +99,9 @@ const notSupport = (r: ProfileType['rulesConfig'][0]) => {
   return r.type.startsWith('GEO') && !props.profile.advancedConfig['geodata-mode']
 }
 
-const showNotSupport = () => message.info('kernel.rules.needGeodataMode')
+const showNotSupport = () => message.warn('kernel.rules.needGeodataMode')
 
-const showLost = () => message.info('kernel.rules.notFound')
+const showLost = () => message.warn('kernel.rules.notFound')
 
 watch(rules, (v) => emits('update:modelValue', v), { immediate: true, deep: true })
 </script>

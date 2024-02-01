@@ -81,18 +81,18 @@ const handleSubmit = async () => {
     appSettingsStore.app.kernel.profile = profile.name
   } catch (error: any) {
     console.log(error)
-    message.info(error)
+    message.error(error)
     return
   }
 
-  message.info('home.initSuccessful')
+  message.success('home.initSuccessful')
 
   try {
     await subscribeStore.updateSubscribe(subscribe.id)
   } catch (error: any) {
     console.log(error)
-    message.info(error, 10_000)
-    message.info('home.initFailed', 10_000)
+    message.warn(error, 10_000)
+    message.warn('home.initFailed', 10_000)
   }
 
   loading.value = false

@@ -78,7 +78,7 @@ const handleUseProxy = async (group: any, proxy: any) => {
     await Promise.all(promises)
     await kernelApiStore.refreshProviderProxies()
   } catch (error: any) {
-    message.info(error)
+    message.error(error)
   }
 }
 
@@ -104,7 +104,7 @@ const handleGroupDelay = async (group: string) => {
     await getGroupDelay(group)
     await kernelApiStore.refreshProviderProxies()
   } catch (error: any) {
-    message.info(error)
+    message.error(error)
   }
   loadingSet.value.delete(group)
 }
@@ -115,7 +115,7 @@ const handleProxyDelay = async (proxy: string) => {
     const _proxy = kernelApiStore.proxies[proxy]
     _proxy.history[_proxy.history.length - 1].delay = delay
   } catch (error: any) {
-    message.info(error)
+    message.error(error)
   }
 }
 

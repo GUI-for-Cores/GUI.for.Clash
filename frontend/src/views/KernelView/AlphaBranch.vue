@@ -93,10 +93,10 @@ const downloadCore = async () => {
 
     downloadSuccessful.value = true
 
-    message.info('Download Successful')
+    message.success('Download Successful')
   } catch (error: any) {
     console.log(error)
-    message.info(error)
+    message.error(error)
     downloadSuccessful.value = false
   }
 
@@ -131,7 +131,7 @@ const getRemoteVersion = async (showTips = false) => {
     return body.trim()
   } catch (error: any) {
     console.log(error)
-    showTips && message.info(error)
+    showTips && message.error(error)
   } finally {
     remoteVersionLoading.value = false
   }
@@ -146,9 +146,9 @@ const handleRestartKernel = async () => {
 
     downloadSuccessful.value = false
 
-    message.info('common.success')
+    message.success('common.success')
   } catch (error: any) {
-    message.info(error)
+    message.error(error)
   }
 }
 
