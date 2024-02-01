@@ -127,6 +127,33 @@ const handleOnRun = async (p: PluginType) => {
   }
 }
 
+const generateMenus = (p: PluginType) => {
+  const builtInMenus: Menu[] = menuList.map((v) => ({ ...v, handler: () => v.handler?.(p.id) }))
+
+  if (Object.keys(p.menus).length !== 0) {
+    builtInMenus.push({
+      label: '',
+      separator: true
+    })
+  }
+
+  const pluginMenus: Menu[] = Object.entries(p.menus).map(([title, fn]) => ({
+    label: title,
+    handler: async () => {
+      try {
+        p.running = true
+        await pluginsStore.manualTrigger(p, fn as any)
+      } catch (error: any) {
+        message.error(p.name + ': ' + error)
+      } finally {
+        p.running = false
+      }
+    }
+  }))
+
+  return builtInMenus.concat(...pluginMenus)
+}
+
 const noUpdateNeeded = computed(() => pluginsStore.plugins.every((v) => v.disabled))
 
 const onSortUpdate = debounce(pluginsStore.savePlugins, 1000)
@@ -181,7 +208,7 @@ const onSortUpdate = debounce(pluginsStore.savePlugins, 1000)
       :key="p.id"
       :title="p.name"
       :disabled="p.disabled"
-      v-menu="menuList.map((v) => ({ ...v, handler: () => v.handler?.(p.id) }))"
+      v-menu="generateMenus(p)"
       class="plugin"
     >
       <template #title-prefix>

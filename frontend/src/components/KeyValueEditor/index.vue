@@ -3,9 +3,12 @@ import { ref, watch } from 'vue'
 
 interface Props {
   modelValue: Record<string, string>
+  placeholder?: [string, string]
 }
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  placeholder: () => ['key', 'value']
+})
 const emits = defineEmits(['update:modelValue'])
 
 const keys = ref(Object.keys(props.modelValue))
@@ -40,9 +43,9 @@ watch(
 <template>
   <div class="kv-editor">
     <div v-for="(key, i) in keys" :key="i" class="item">
-      <Input v-model="keys[i]" placeholder="key" />
+      <Input v-model="keys[i]" :placeholder="placeholder[0]" />
       <Button @click="handleDel(i)" type="text" class="ml-4" size="small"> × </Button>
-      <Input v-model="values[i]" placeholder="value" />
+      <Input v-model="values[i]" :placeholder="placeholder[1]" />
     </div>
     <Button @click="handleAdd" type="primary" size="small" class="add">+</Button>
   </div>
@@ -50,7 +53,7 @@ watch(
 
 <style lang="less" scoped>
 .kv-editor {
-  padding: 8px;
+  padding: 0 8px 0 8px;
   display: inline-block;
   flex-direction: column;
   min-width: 408px;
@@ -63,7 +66,7 @@ watch(
     margin-left: 4px;
   }
   .add {
-    margin: 2px -2px;
+    margin: 8px -2px 0 -2px;
     display: flex;
   }
 }
