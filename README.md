@@ -45,7 +45,7 @@
 2、Pull and Build
 
 ```
-git clone https://github.com/onejibang/GUI.for.Clash.git
+git clone https://github.com/GUI-for-Cores/GUI.for.Clash.git
 
 cd GUI.for.Clash
 
@@ -54,4 +54,4 @@ wails build -m -trimpath
 
 ## Stargazers over time
 
-[![Stargazers over time](https://starchart.cc/onejibang/GUI.for.Clash.svg)](https://starchart.cc/onejibang/GUI.for.Clash)
+[![Stargazers over time](https://starchart.cc/GUI-for-Cores/GUI.for.Clash.svg)](https://starchart.cc/GUI-for-Cores/GUI.for.Clash)
