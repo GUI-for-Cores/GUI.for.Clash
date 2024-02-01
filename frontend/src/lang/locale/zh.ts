@@ -176,8 +176,8 @@ export default {
       payload: '载荷',
       proxy: '代理',
       'no-resolve': '跳过DNS解析',
-      ruleset: '规则组',
-      rulesets: '规则组列表',
+      ruleset: '规则集',
+      rulesets: '规则集列表',
       needGeodataMode: '请在高级设置中打开"GEO数据模式"',
       notFound: '代理组不存在',
       empty: '规则集列表为空',
@@ -227,7 +227,7 @@ export default {
   router: {
     overview: '概览',
     subscriptions: '订阅',
-    rulesets: '规则组',
+    rulesets: '规则集',
     plugins: '插件',
     settings: '设置',
     debug: '调试',
@@ -361,7 +361,7 @@ export default {
       domain: '域名',
       ipcidr: 'IP地址段'
     },
-    rulesetType: '规则组类型',
+    rulesetType: '规则集类型',
     format: '格式',
     name: '名称',
     url: '链接',
@@ -370,9 +370,9 @@ export default {
     updating: '更新中'
   },
   rulesets: {
-    empty: '规则组列表为空. 请先{action}规则组。',
+    empty: '规则集列表为空. 请先{action}规则集。',
     rulesetCount: '规则数量',
-    editRuleset: '编辑规则组列表'
+    editRuleset: '编辑规则集列表'
   },
   plugin: {
     trigger: '触发器',
