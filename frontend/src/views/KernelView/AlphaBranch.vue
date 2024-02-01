@@ -200,6 +200,7 @@ initVersion()
     v-show="!remoteVersionLoading && needRestart"
     @click="handleRestartKernel"
     :loading="kernelApiStore.loading"
+    size="small"
     type="primary"
   >
     {{ t('kernel.restart') }}

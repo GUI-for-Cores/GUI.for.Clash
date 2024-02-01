@@ -22,7 +22,7 @@ const iconMap = {
   warn: 'messageWarn'
 }
 
-const icon = computed(() => iconMap[props.icon])
+const icon = computed(() => iconMap[props.icon] as any)
 </script>
 
 <template>
