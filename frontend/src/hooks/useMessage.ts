@@ -1,5 +1,7 @@
-import { useI18n } from 'vue-i18n'
+import { render, createVNode } from 'vue'
 import { APP_TITLE } from '@/utils'
+
+import MessageComp from '@/components/Message/index.vue'
 
 const ID = APP_TITLE + '-toast'
 
@@ -19,50 +21,17 @@ class Message {
     `
     document.body.appendChild(this.dom)
     this.instances = {}
-
-    const { t } = useI18n()
-    this.t = t
   }
 
-  public info = (msg: string, duration = 3_000) => {
-    const info = document.createElement('div')
-    info.style.cssText = `
-      transition: all .2s;
-      display: block;
-      color: var(--color);
-      background: var(--toast-bg);
-      padding: 8px;
-      border-radius: 8px;
-      margin: 4px 0;
-      box-shadow: 0 4px 4px rgba(0, 0, 0, .2);
-    `
-    const id = 'ID-' + Math.random()
-    info.id = id
-    info.textContent = this.t(msg)
-
-    this.instances[id] = info
-    this.dom.appendChild(info)
-
-    setTimeout(() => {
-      info.remove()
-      delete this.instances[id]
-    }, duration)
-
-    return { id }
+  public info = (content: string, duration = 3_000) => {
+    const msg = createVNode(MessageComp, { icon: 'info', content })
+    render(msg, this.dom)
+    return {}
   }
 
-  public update = (id: string, msg: string) => {
-    if (this.instances[id]) {
-      this.instances[id].textContent = msg
-    }
-  }
+  public update = (id: string, msg: string) => {}
 
-  public destroy = (id: string) => {
-    document.getElementById(id)?.remove()
-    if (this.instances[id]) {
-      delete this.instances[id]
-    }
-  }
+  public destroy = (id: string) => {}
 }
 
 export const useMessage = () => {
