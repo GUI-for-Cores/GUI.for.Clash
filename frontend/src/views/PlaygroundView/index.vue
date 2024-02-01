@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 
 import { DraggableOptions, type MenuItem } from '@/constant'
 import { useAppStore, useAppSettingsStore } from '@/stores'
-import { UnzipGZFile, UpdateTray } from '@/utils/bridge'
+import { UpdateTray } from '@/utils/bridge'
 import { APP_TITLE, APP_VERSION, sleep } from '@/utils'
 import icons from '@/components/Icon/icons'
 import { useMessage } from '@/hooks'
@@ -18,9 +18,11 @@ const appName = '${APP_TITLE}'
 const appVersion = '${APP_VERSION}'
 `)
 
-const handleUnzip = async () => {
-  await UnzipGZFile('data/core.gz', 'core')
-}
+const kv = ref({
+  appTitle: APP_TITLE,
+  appVersion: APP_VERSION,
+  count: 1
+})
 
 const handleUpdateMenus = async () => {
   const menus: MenuItem[] = [
@@ -110,11 +112,10 @@ const handleUpdateMessage = async () => {
     <br />
     <CheckBox v-model="list" :options="icons.map((v) => ({ label: v, value: v })).slice(0, 5)" />
     {{ list }}
-  </div>
-
-  <h2>Unzip .gz</h2>
-  <div>
-    <Button @click="handleUnzip">Unzip .gz</Button>
+    <br />
+    <KeyValueEditor v-model="kv" />
+    <br />
+    kv: {{ kv }}
   </div>
 
   <h2>Tray Update/Destroy</h2>
