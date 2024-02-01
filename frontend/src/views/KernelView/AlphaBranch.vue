@@ -100,6 +100,8 @@ const downloadCore = async () => {
     downloadSuccessful.value = false
   }
 
+  downloadLoading.value = false
+
   updateLocalVersion()
 }
 
@@ -185,11 +187,17 @@ initVersion()
     :
     {{ remoteVersionLoading ? 'Loading' : remoteVersion }}
   </Tag>
-  <Button v-show="needUpdate" @click="downloadCore" :loading="downloadLoading" type="primary">
+  <Button
+    v-show="!remoteVersionLoading && needUpdate"
+    @click="downloadCore"
+    :loading="downloadLoading"
+    size="small"
+    type="primary"
+  >
     {{ t('kernel.update') }} : {{ remoteVersion }}
   </Button>
   <Button
-    v-show="needRestart"
+    v-show="!remoteVersionLoading && needRestart"
     @click="handleRestartKernel"
     :loading="kernelApiStore.loading"
     type="primary"
