@@ -2,8 +2,9 @@
 import { ref, computed } from 'vue'
 import { useI18n, I18nT } from 'vue-i18n'
 
-import { debounce } from '@/utils'
 import { useMessage } from '@/hooks'
+import { Removefile } from '@/utils/bridge'
+import { debounce, ignoredError } from '@/utils'
 import { DraggableOptions, PluginManualEvent, PluginTrigger, View } from '@/constant'
 import { usePluginsStore, useAppSettingsStore, type PluginType, type Menu } from '@/stores'
 
@@ -77,6 +78,7 @@ const handleUpdatePlugin = async (s: PluginType) => {
 
 const handleDeletePlugin = async (p: PluginType) => {
   try {
+    await ignoredError(Removefile, p.path)
     await pluginsStore.deletePlugin(p.id)
   } catch (error: any) {
     console.error('handleDeletePlugin: ', error)
