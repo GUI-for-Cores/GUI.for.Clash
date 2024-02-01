@@ -54,7 +54,7 @@ const handleSave = async () => {
     await Writefile(ruleset.value.path, stringify({ payload: rulesetList.value }))
     handleSubmit()
   } catch (error: any) {
-    message.info(error)
+    message.error(error)
     console.log(error)
   }
   loading.value = false
@@ -67,7 +67,7 @@ const handleAdd = () => {
     return
   }
   if (ruleset.value?.behavior === RulesetBehavior.Ipcidr && !isValidIPCIDR(rule)) {
-    message.info('Not a valid IP-CIDR format')
+    message.warn('Not a valid IP-CIDR format')
     return
   }
   rulesetList.value.push(rule)

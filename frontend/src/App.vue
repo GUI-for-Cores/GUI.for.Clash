@@ -31,15 +31,15 @@ EventsOn('launchArgs', async (args: string[]) => {
     const _name = url.searchParams.get('name') || sampleID()
 
     if (!_url) {
-      message.info('URL missing')
+      message.error('URL missing')
       return
     }
 
     try {
       await subscribesStore.importSubscribe(_name, _url)
-      message.info('common.success')
+      message.success('common.success')
     } catch (error: any) {
-      message.info('URL missing')
+      message.error(error)
     }
   }
 })
@@ -72,7 +72,7 @@ appSettings.setupAppSettings().then(async () => {
   try {
     await pluginsStore.onStartupTrigger()
   } catch (error: any) {
-    message.info(error)
+    message.error(error)
   }
 })
 </script>

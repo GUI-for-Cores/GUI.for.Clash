@@ -62,7 +62,7 @@ const handleSubmit = async () => {
     handleCancel()
   } catch (error: any) {
     console.error(error)
-    message.info(error)
+    message.error(error)
   }
 
   loading.value = false

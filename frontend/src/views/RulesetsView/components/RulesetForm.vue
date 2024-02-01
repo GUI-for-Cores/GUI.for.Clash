@@ -50,7 +50,7 @@ const handleSubmit = async () => {
       handleCancel()
     } catch (error: any) {
       console.error('editRuleset: ', error)
-      message.info(error)
+      message.error(error)
     }
 
     loading.value = true
@@ -63,7 +63,7 @@ const handleSubmit = async () => {
     handleCancel()
   } catch (error: any) {
     console.error('addRuleset: ', error)
-    message.info(error)
+    message.error(error)
   }
 
   loading.value = true
