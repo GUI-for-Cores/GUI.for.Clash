@@ -211,6 +211,8 @@ export const usePluginsStore = defineStore('plugins', () => {
 
   const getPluginById = (id: string) => plugins.value.find((v) => v.id === id)
 
+  const getPluginCodefromCache = (id: string) => PluginsCache[id]?.code
+
   const onSubscribeTrigger = async (params: string) => {
     const { fnName, observers } = PluginsTriggerMap[PluginTrigger.OnSubscribe]
 
@@ -315,16 +317,13 @@ export const usePluginsStore = defineStore('plugins', () => {
 
   const manualTrigger = async (plugin: PluginType, event: PluginManualEvent) => {
     const cache = PluginsCache[plugin.id]
-
-    if (!cache || !cache.plugin || cache.plugin.disabled) {
-      return
-    }
-    const fn = new AsyncFunction(`${cache.code}; await ${event}()`)
-    plugin.running = true
+    if (!cache) throw `【${plugin.name}】: Missing source code`
+    if (cache.plugin.disabled) throw `【${plugin.name}】: Plugin disabled`
     try {
+      const fn = new AsyncFunction(`${cache.code}; await ${event}()`)
       await fn()
-    } finally {
-      plugin.running = false
+    } catch (error: any) {
+      throw `【${cache.plugin.name}】 Error: ` + (error.message || error)
     }
   }
 
@@ -344,6 +343,7 @@ export const usePluginsStore = defineStore('plugins', () => {
     onStartupTrigger: () => noParamsTrigger(PluginTrigger.OnStartup),
     onShutdownTrigger: () => noParamsTrigger(PluginTrigger.OnShutdown),
     manualTrigger,
-    updatePluginTrigger
+    updatePluginTrigger,
+    getPluginCodefromCache
   }
 })

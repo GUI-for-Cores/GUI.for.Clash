@@ -104,8 +104,8 @@ const handleEditPluginCode = (p: PluginType) => {
 }
 
 const handleInstallation = async (p: PluginType) => {
+  p.loading = true
   try {
-    p.loading = true
     if (p.installed) {
       await pluginsStore.manualTrigger(p, PluginManualEvent.OnUninstall)
     } else {
@@ -114,17 +114,19 @@ const handleInstallation = async (p: PluginType) => {
     p.installed = !p.installed
     await pluginsStore.editPlugin(p.id, p)
   } catch (error: any) {
-    message.error(p.name + ': ' + error)
+    message.error(error)
   }
   p.loading = false
 }
 
 const handleOnRun = async (p: PluginType) => {
+  p.running = true
   try {
     await pluginsStore.manualTrigger(p, PluginManualEvent.OnRun)
   } catch (error: any) {
-    message.error(p.name + ': ' + error)
+    message.error(error)
   }
+  p.running = false
 }
 
 const generateMenus = (p: PluginType) => {
