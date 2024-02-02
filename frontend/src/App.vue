@@ -55,11 +55,15 @@ appSettings.setupAppSettings().then(async () => {
 
   kernelApiStore.updateKernelStatus().then(async (running) => {
     kernelApiStore.statusLoading = false
-    if (running) {
-      await kernelApiStore.refreshConfig()
-      await envStore.updateSystemProxyState()
-    } else if (appSettings.app.autoStartKernel) {
-      await kernelApiStore.startKernel()
+    try {
+      if (running) {
+        await kernelApiStore.refreshConfig()
+        await envStore.updateSystemProxyState()
+      } else if (appSettings.app.autoStartKernel) {
+        await kernelApiStore.startKernel()
+      }
+    } catch (error: any) {
+      message.error(error)
     }
 
     appStore.updateTrayMenus()
