@@ -72,6 +72,7 @@ export const DnsConfigDefaults: ProfileType['dnsConfig'] = {
   'default-nameserver': [],
   nameserver: ['https://223.5.5.5/dns-query'],
   'proxy-server-nameserver': [],
+  'nameserver-policy': {},
   'enhanced-mode': 'fake-ip',
   'fake-ip-range': '198.18.0.1/16',
   'fake-ip-filter': [

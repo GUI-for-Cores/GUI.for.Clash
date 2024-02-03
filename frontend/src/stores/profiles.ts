@@ -78,6 +78,7 @@ export type ProfileType = {
     'prefer-h3': boolean
     fallback: string[]
     'proxy-server-nameserver': string[]
+    'nameserver-policy': {}
     'fallback-filter': {
       geoip: boolean
       'geoip-code': string

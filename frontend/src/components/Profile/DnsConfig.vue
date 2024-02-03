@@ -85,6 +85,17 @@ watch(fields, (v) => emits('update:modelValue', v), { immediate: true, deep: tru
         <InputList v-model="fields['proxy-server-nameserver']" />
       </div>
 
+      <div
+        class="form-item"
+        :class="{ 'flex-start': Object.keys(fields['nameserver-policy']).length !== 0 }"
+      >
+        {{ t('kernel.dns.nameserver-policy') }}
+        <KeyValueEditor
+          v-model="fields['nameserver-policy']"
+          :placeholder="['google.com', '8.8.8.8,114.114.114.114']"
+        />
+      </div>
+
       <div class="form-item" :class="{ 'flex-start': fields['fallback'].length !== 0 }">
         {{ t('kernel.dns.fallback') }}
         <InputList v-model="fields['fallback']" />
