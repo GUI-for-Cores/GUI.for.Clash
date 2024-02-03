@@ -241,6 +241,15 @@ export const generateConfig = async (profile: ProfileType) => {
     delete config.dns['proxy-server-nameserver']
   }
 
+  if (Object.keys(config.dns['nameserver-policy']).length === 0) {
+    delete config.dns['nameserver-policy']
+  } else {
+    Object.entries(config.dns['nameserver-policy']).forEach(([key, value]: any) => {
+      const _value = value.split(',')
+      config.dns['nameserver-policy'][key] = _value.length === 1 ? _value[0] : _value
+    })
+  }
+
   config['proxy-providers'] = await generateProxyProviders(profile.proxyGroupsConfig)
 
   config['rule-providers'] = await generateRuleProviders(profile.rulesConfig)

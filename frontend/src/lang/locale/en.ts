@@ -98,6 +98,7 @@ export default {
       ipv6: 'IPv6',
       'use-hosts': 'Use Hosts',
       'proxy-server-nameserver': 'Proxy Server Nameserver',
+      'nameserver-policy': 'Nameserver Policy',
       fallback: 'Fallback',
       'fallback-filter': {
         name: 'Fallback Filter',
