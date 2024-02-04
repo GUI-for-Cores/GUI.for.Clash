@@ -92,7 +92,15 @@ const handleUpdateMessage = async () => {
 
 const handleShowSinglePicker = async () => {
   try {
-    const res = await picker.single('Single', ['one', 'two', 'three'])
+    const res = await picker.single(
+      'Single',
+      [
+        { label: 'ONE', value: 'one' },
+        { label: 'TWO', value: 'two' },
+        { label: 'THREE', value: 'three' }
+      ],
+      ['one']
+    )
     console.log(res)
   } catch (error: any) {
     message.info(error)
@@ -101,7 +109,15 @@ const handleShowSinglePicker = async () => {
 
 const handleShowMultiPicker = async () => {
   try {
-    const res = await picker.multi('Multi', ['one', 'two', 'three'])
+    const res = await picker.multi(
+      'Multi',
+      [
+        { label: 'ONE', value: 'one' },
+        { label: 'TWO', value: 'two' },
+        { label: 'THREE', value: 'three' }
+      ],
+      ['one', 'three']
+    )
     console.log(res)
   } catch (error: any) {
     message.info(error)
