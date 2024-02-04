@@ -6,7 +6,7 @@ import { useAppStore, useAppSettingsStore } from '@/stores'
 import { UpdateTray } from '@/utils/bridge'
 import { APP_TITLE, APP_VERSION, sleep } from '@/utils'
 import icons from '@/components/Icon/icons'
-import { useMessage } from '@/hooks'
+import { useMessage, usePicker } from '@/hooks'
 
 const list = ref(['data 1', 'data 2', 'data 3', 'data 4'])
 
@@ -62,6 +62,8 @@ const handleUpdateMenus = async () => {
 }
 
 const { message } = useMessage()
+const { picker } = usePicker()
+
 const appSettings = useAppSettingsStore()
 
 const theme = appSettings.app.theme
@@ -86,6 +88,24 @@ const handleUpdateMessage = async () => {
   message.destroy(id)
   await sleep(1000)
   message.update(id, 'success', 'success')
+}
+
+const handleShowSinglePicker = async () => {
+  try {
+    const res = await picker.single('Single', ['one', 'two', 'three'])
+    console.log(res)
+  } catch (error: any) {
+    message.info(error)
+  }
+}
+
+const handleShowMultiPicker = async () => {
+  try {
+    const res = await picker.multi('Multi', ['one', 'two', 'three'])
+    console.log(res)
+  } catch (error: any) {
+    message.info(error)
+  }
 }
 </script>
 
@@ -124,7 +144,7 @@ const handleUpdateMessage = async () => {
     <Button @click="handleUpdateTray" type="link">Update Tray</Button>
   </div>
 
-  <h2>Show Message</h2>
+  <h2>useMessage & usePicker</h2>
   <div>
     <Button @click="message.info('info', 1_000)">
       <Icon icon="messageInfo" />
@@ -144,6 +164,8 @@ const handleUpdateMessage = async () => {
     </Button>
     <Button @click="handleUpdateMessage">Update Me</Button>
   </div>
+  <div><Button @click="handleShowSinglePicker">Single Picker</Button></div>
+  <div><Button @click="handleShowMultiPicker">Multi Picker</Button></div>
 </template>
 
 <style lang="less" scoped>

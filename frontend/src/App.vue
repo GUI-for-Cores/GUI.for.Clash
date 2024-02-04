@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-import { useMessage } from '@/hooks'
 import * as Stores from '@/stores'
 import { EventsOn } from '@/utils/bridge'
+import { useMessage, usePicker } from '@/hooks'
 import { ignoredError, sampleID, sleep } from '@/utils'
 
 import SplashView from '@/views/SplashView.vue'
@@ -21,7 +21,9 @@ const kernelApiStore = Stores.useKernelApiStore()
 const subscribesStore = Stores.useSubscribesStore()
 
 const { message } = useMessage()
+const { picker } = usePicker()
 window.Plugins.message = message
+window.Plugins.picker = picker
 
 EventsOn('launchArgs', async (args: string[]) => {
   console.log('launchArgs', args)
