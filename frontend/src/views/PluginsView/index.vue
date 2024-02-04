@@ -146,7 +146,7 @@ const generateMenus = (p: PluginType) => {
         p.running = true
         await pluginsStore.manualTrigger(p, fn as any)
       } catch (error: any) {
-        message.error(p.name + ': ' + error)
+        message.error(error)
       } finally {
         p.running = false
       }
