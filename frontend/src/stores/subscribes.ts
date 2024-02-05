@@ -126,7 +126,7 @@ export const useSubscribesStore = defineStore('subscribes', () => {
       const appSettings = useAppSettingsStore()
 
       const { header: h, body: b } = await HttpGet(s.url, {
-        'User-Agent': s.userAgent || appSettings.app.userAgent
+        'User-Agent': s.userAgent || appSettings.app.userAgent || APP_TITLE + '/' + APP_VERSION
       })
       if (h['Subscription-Userinfo'] && h['Subscription-Userinfo'][0]) {
         userInfo = h['Subscription-Userinfo'][0]
