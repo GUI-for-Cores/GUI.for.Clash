@@ -162,7 +162,7 @@ const handleShowMultiPicker = async () => {
 
   <h2>useMessage & usePicker</h2>
   <div>
-    <Button @click="message.info('info', 1_000)">
+    <Button @click="message.info('info', 100_000)">
       <Icon icon="messageInfo" />
       Info
     </Button>

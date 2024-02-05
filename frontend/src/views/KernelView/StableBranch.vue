@@ -40,8 +40,8 @@ const { message } = useMessage()
 const appSettings = useAppSettingsStore()
 const kernelApiStore = useKernelApiStore()
 
-const updateLocalVersion = async () => {
-  localVersion.value = await getLocalVersion()
+const updateLocalVersion = async (showTips = false) => {
+  localVersion.value = await getLocalVersion(showTips)
 }
 
 const updateRemoteVersion = async (showTips = false) => {
@@ -103,7 +103,7 @@ const downloadCore = async () => {
   updateLocalVersion()
 }
 
-const getLocalVersion = async () => {
+const getLocalVersion = async (showTips = false) => {
   localVersionLoading.value = true
   try {
     const fileName = await getKernelFileName()
@@ -111,8 +111,9 @@ const getLocalVersion = async () => {
     const res = await Exec(kernelFilePath, ['-v'])
     versionDetail.value = res.trim()
     return res.trim().match(/v\S+/)?.[0].trim() || ''
-  } catch (error) {
+  } catch (error: any) {
     console.log(error)
+    showTips && message.error(error)
   } finally {
     localVersionLoading.value = false
   }
@@ -173,7 +174,7 @@ initVersion()
 
 <template>
   <h3>{{ t('kernel.name') }}</h3>
-  <Tag @click="updateLocalVersion" style="cursor: pointer">
+  <Tag @click="updateLocalVersion(true)" style="cursor: pointer">
     {{ t('kernel.local') }}
     :
     {{ localVersionLoading ? 'Loading' : localVersion || t('kernel.notFound') }}

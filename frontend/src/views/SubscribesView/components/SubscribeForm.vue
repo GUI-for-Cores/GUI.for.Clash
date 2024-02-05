@@ -34,7 +34,7 @@ const sub = ref<SubscribeType>({
   exclude: '',
   proxyPrefix: '',
   disabled: false,
-  userAgent: APP_TITLE + '/' + APP_VERSION,
+  userAgent: '',
   healthCheck: {
     enable: true,
     url: 'https://www.gstatic.com/generate_204',
@@ -68,7 +68,7 @@ const handleSubmit = async () => {
   loading.value = false
 }
 
-const resetUserAgent = () => (sub.value.userAgent = APP_TITLE + '/' + APP_VERSION)
+const resetUserAgent = () => (sub.value.userAgent = '')
 
 if (props.isUpdate) {
   const s = subscribeStore.getSubscribeById(props.id)
@@ -141,7 +141,12 @@ if (props.isUpdate) {
       <div class="form-item">
         <div class="name">{{ t('subscribe.useragent') }}</div>
         <div style="display: flex; align-items: center; width: 80%">
-          <Input v-model="sub.userAgent" placeholder="" auto-size style="width: 100%" />
+          <Input
+            v-model="sub.userAgent"
+            :placeholder="APP_TITLE + '/' + APP_VERSION"
+            auto-size
+            style="width: 100%"
+          />
           <Button @click="resetUserAgent" v-tips="t('subscribe.resetUserAgent')">
             <Icon icon="reset" fill="var(--primary-btn-color)" />
           </Button>

@@ -54,11 +54,11 @@ export const AdvancedConfigDefaults = (): ProfileType['advancedConfig'] => ({
 
 export const TunConfigDefaults: ProfileType['tunConfig'] = {
   enable: false,
-  stack: 'System',
+  stack: 'gVisor',
   'auto-route': true,
   'auto-detect-interface': true,
   'dns-hijack': ['any:53'],
-  device: 'Internet',
+  device: 'utun_clash',
   mtu: 9000,
   'strict-route': true,
   'endpoint-independent-nat': false
