@@ -192,7 +192,7 @@ initVersion()
     {{ remoteVersionLoading ? 'Loading' : remoteVersion }}
   </Tag>
   <Button
-    v-show="!remoteVersionLoading && needUpdate"
+    v-show="!localVersionLoading && !remoteVersionLoading && needUpdate"
     @click="downloadCore"
     :loading="downloadLoading"
     size="small"
@@ -201,7 +201,7 @@ initVersion()
     {{ t('kernel.update') }} : {{ remoteVersion }}
   </Button>
   <Button
-    v-show="!remoteVersionLoading && needRestart"
+    v-show="!localVersionLoading && !remoteVersionLoading && needRestart"
     @click="handleRestartKernel"
     :loading="kernelApiStore.loading"
     size="small"
