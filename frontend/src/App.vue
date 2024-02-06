@@ -60,6 +60,7 @@ appSettings.setupAppSettings().then(async () => {
     try {
       if (running) {
         await kernelApiStore.refreshConfig()
+        await kernelApiStore.refreshProviderProxies()
         await envStore.updateSystemProxyState()
       } else if (appSettings.app.autoStartKernel) {
         await kernelApiStore.startKernel()
