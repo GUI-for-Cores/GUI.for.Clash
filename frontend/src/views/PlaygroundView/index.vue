@@ -57,8 +57,8 @@ const handleUpdateMenus = async () => {
     }
   ]
 
-  const appStore = useAppStore()
-  appStore.updateTrayMenus()
+  // const appStore = useAppStore()
+  // appStore.updateTrayMenus()
 }
 
 const { message } = useMessage()

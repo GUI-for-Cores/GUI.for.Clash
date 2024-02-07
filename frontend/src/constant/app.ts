@@ -89,7 +89,7 @@ export type MenuItem = {
   tooltip?: string
   event?: (() => void) | string
   children?: MenuItem[]
-  show?: boolean
+  hidden?: boolean
   checked?: boolean
 }
 

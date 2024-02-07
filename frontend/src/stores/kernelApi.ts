@@ -1,18 +1,12 @@
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { defineStore } from 'pinia'
 
-import { generateConfigFile, ignoredError } from '@/utils'
 import type { KernelApiConfig, Proxy } from '@/api/kernel.schema'
 import { KernelWorkDirectory, getKernelFileName } from '@/constant'
-import { getConfigs, setConfigs, getProxies, getProviders } from '@/api/kernel'
 import { ProcessInfo, KillProcess, ExecBackground } from '@/utils/bridge'
-import {
-  useAppSettingsStore,
-  useProfilesStore,
-  useLogsStore,
-  useEnvStore,
-  useAppStore
-} from '@/stores'
+import { generateConfigFile, ignoredError, updateTrayMenus } from '@/utils'
+import { getConfigs, setConfigs, getProxies, getProviders } from '@/api/kernel'
+import { useAppSettingsStore, useProfilesStore, useLogsStore, useEnvStore } from '@/stores'
 
 export const useKernelApiStore = defineStore('kernelApi', () => {
   /** RESTful API */
@@ -51,8 +45,6 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
     const [{ providers: a }, { proxies: b }] = await Promise.all([getProviders(), getProxies()])
     providers.value = a
     proxies.value = b
-    const appStore = useAppStore()
-    appStore.updateTrayMenus()
   }
 
   /* Bridge API */
@@ -78,7 +70,6 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
   }
 
   const startKernel = async () => {
-    const appStore = useAppStore()
     const envStore = useEnvStore()
     const logsStore = useLogsStore()
     const profilesStore = useProfilesStore()
@@ -116,8 +107,6 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
           if (!config.value.tun.enable && appSettingsStore.app.autoSetSystemProxy) {
             await envStore.setSystemProxy()
           }
-
-          appStore.updateTrayMenus()
         }
       },
       // end
@@ -129,14 +118,11 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
         if (appSettingsStore.app.autoSetSystemProxy) {
           await envStore.clearSystemProxy()
         }
-
-        appStore.updateTrayMenus()
       }
     )
   }
 
   const stopKernel = async () => {
-    const appStore = useAppStore()
     const logsStore = useLogsStore()
     const appSettingsStore = useAppSettingsStore()
 
@@ -149,14 +135,17 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
     appSettingsStore.app.kernel.running = false
 
     logsStore.clearKernelLog()
-
-    appStore.updateTrayMenus()
   }
 
   const restartKernel = async () => {
     await stopKernel()
     await startKernel()
   }
+
+  watch(
+    [() => config.value.mode, () => config.value.tun.enable, () => proxies.value],
+    updateTrayMenus
+  )
 
   return {
     startKernel,

@@ -1,14 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-import { APP_TITLE, APP_VERSION } from '@/utils'
-import {
-  type Menu,
-  useAppSettingsStore,
-  useKernelApiStore,
-  useEnvStore,
-  useAppStore
-} from '@/stores'
+import { APP_TITLE, APP_VERSION, exitApp } from '@/utils'
+import { type Menu, useAppSettingsStore, useKernelApiStore, useEnvStore } from '@/stores'
 import {
   WindowFullscreen,
   WindowIsFullscreen,
@@ -26,7 +20,6 @@ const isFullScreen = ref(false)
 const appSettingsStore = useAppSettingsStore()
 const kernelApiStore = useKernelApiStore()
 const envStore = useEnvStore()
-const appStore = useAppStore()
 
 const toggleFullScreen = async () => {
   const isFull = await WindowIsFullscreen()
@@ -41,7 +34,7 @@ const pinWindow = () => {
 
 const closeWindow = async () => {
   if (appSettingsStore.app.exitOnClose) {
-    appStore.exitApp()
+    exitApp()
   } else {
     WindowHide()
   }

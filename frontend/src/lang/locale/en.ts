@@ -487,14 +487,11 @@ export default {
     later: 'Later'
   },
   tray: {
-    hide: 'Hide',
-    hideTip: 'Hide Window',
-    show: 'Show',
-    showTip: 'Show Window',
     restart: 'Restart',
     restartTip: 'Restart App',
     exit: 'Exit',
     exitTip: 'Exit App',
+    proxyGroup: 'Proxy Group',
     setSystemProxy: 'Set System Proxy',
     clearSystemProxy: 'Clear System Proxy',
     tun: 'Tun Mode',
