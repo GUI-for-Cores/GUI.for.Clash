@@ -53,7 +53,7 @@ func (a *App) UpdateTrayMenus(menus []MenuItem) {
 }
 
 func createMenuItem(menu MenuItem, a *App, parent *systray.MenuItem) {
-	if !menu.Show {
+	if menu.Hidden {
 		return
 	}
 	switch menu.Type {

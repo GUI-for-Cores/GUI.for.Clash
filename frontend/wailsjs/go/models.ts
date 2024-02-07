@@ -54,7 +54,7 @@ export namespace bridge {
 	    tooltip: string;
 	    event: string;
 	    children: MenuItem[];
-	    show: boolean;
+	    hidden: boolean;
 	    checked: boolean;
 	
 	    static createFrom(source: any = {}) {
@@ -68,7 +68,7 @@ export namespace bridge {
 	        this.tooltip = source["tooltip"];
 	        this.event = source["event"];
 	        this.children = this.convertValues(source["children"], MenuItem);
-	        this.show = source["show"];
+	        this.hidden = source["hidden"];
 	        this.checked = source["checked"];
 	    }
 	
