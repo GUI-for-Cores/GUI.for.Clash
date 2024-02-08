@@ -4,8 +4,8 @@ import { computed, ref } from 'vue'
 
 import { useMessage } from '@/hooks'
 import { ignoredError } from '@/utils'
-import { useAppSettingsStore, useKernelApiStore } from '@/stores'
 import { KernelWorkDirectory, getKernelFileName } from '@/constant'
+import { useAppSettingsStore, useEnvStore, useKernelApiStore } from '@/stores'
 import {
   Download,
   UnzipZIPFile,
@@ -62,8 +62,10 @@ const downloadCore = async () => {
     const { assets, message: msg } = json
     if (msg) throw msg
 
+    const envStore = useEnvStore()
+    const amd64Compatible = arch === 'amd64' && envStore.env.x64Level < 3 ? '-compatible' : ''
     const suffix = { windows: '.zip', linux: '.gz', darwin: '.gz' }[os]
-    const assetName = `mihomo-${os}-${arch}-${remoteVersion.value}${suffix}`
+    const assetName = `mihomo-${os}-${arch}${amd64Compatible}-${remoteVersion.value}${suffix}`
 
     const asset = assets.find((v: any) => v.name === assetName)
     if (!asset) throw 'Asset Not Found:' + assetName
@@ -72,11 +74,13 @@ const downloadCore = async () => {
 
     await Makedir('data/mihomo')
 
-    const { id } = message.info('Downloading...')
+    const { id } = message.info('Downloading...', 10 * 60 * 1_000)
 
     await Download(asset.browser_download_url, tmp, (progress, total) => {
       message.update(id, 'Downloading...' + ((progress / total) * 100).toFixed(2) + '%')
     })
+
+    message.destroy(id)
 
     const fileName = await getKernelFileName() // mihomo-windows-amd64.exe
     const alphaFileName = await getKernelFileName(true) // mihomo-windows-amd64-alpha.exe
