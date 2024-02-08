@@ -4,7 +4,7 @@ import { ref, computed, onActivated } from 'vue'
 
 import { useMessage } from '@/hooks'
 import { ProxyGroupType } from '@/constant'
-import { ignoredError, sleep, updateTrayMenus } from '@/utils'
+import { ignoredError, sleep } from '@/utils'
 import { useAppSettingsStore, useKernelApiStore } from '@/stores'
 import {
   useProxy,
@@ -29,20 +29,20 @@ const groups = computed(() => {
   return providers.default.proxies
     .concat([proxies.GLOBAL])
     .filter((v) => v.all)
-    .map((provider) => {
-      const all = provider.all
-        .filter((v) => {
+    .map((group) => {
+      const all = group.all
+        .filter((proxy) => {
           return (
             appSettings.app.kernel.unAvailable ||
-            ['DIRECT', 'REJECT'].includes(v) ||
-            proxies[v].all ||
-            proxies[v].alive
+            ['DIRECT', 'REJECT'].includes(proxy) ||
+            proxies[proxy].all ||
+            proxies[proxy].alive
           )
         })
-        .map((v) => {
-          const history = proxies[v].history || []
+        .map((proxy) => {
+          const history = proxies[proxy].history || []
           const delay = history[history.length - 1]?.delay || 0
-          return { ...proxies[v], delay }
+          return { ...proxies[proxy], delay }
         })
         .sort((a, b) => {
           if (!appSettings.app.kernel.sortByDelay || a.delay === b.delay) return 0
@@ -51,14 +51,14 @@ const groups = computed(() => {
           return a.delay - b.delay
         })
 
-      const chains = [provider.now]
-      let tmp = proxies[provider.now]
+      const chains = [group.now]
+      let tmp = proxies[group.now]
       while (tmp) {
         tmp.now && chains.push(tmp.now)
         tmp = proxies[tmp.now]
       }
 
-      return { ...provider, all, chains }
+      return { ...group, all, chains }
     })
 })
 

@@ -19,7 +19,7 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
     mode: '',
     tun: {
       enable: false,
-      stack: 'System',
+      stack: 'gVisor',
       device: ''
     }
   })
@@ -100,8 +100,7 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
           appSettingsStore.app.kernel.pid = pid
           appSettingsStore.app.kernel.running = true
 
-          await refreshConfig()
-          await refreshProviderProxies()
+          await Promise.all([refreshConfig(), refreshProviderProxies()])
 
           // Automatically set system proxy, but the priority is lower than tun mode
           if (!config.value.tun.enable && appSettingsStore.app.autoSetSystemProxy) {

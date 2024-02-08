@@ -184,9 +184,6 @@ export const usePluginsStore = defineStore('plugins', () => {
       p.updating = true
       await _doUpdatePlugin(p)
       await savePlugins()
-    } catch (error) {
-      console.error('updatePlugin: ', p.name, error)
-      throw error
     } finally {
       p.updating = false
     }
@@ -200,8 +197,6 @@ export const usePluginsStore = defineStore('plugins', () => {
         plugin.updating = true
         await _doUpdatePlugin(plugin)
         needSave = true
-      } catch (error) {
-        console.error('updatePlugins: ', plugin.name, error)
       } finally {
         plugin.updating = false
       }

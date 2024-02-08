@@ -107,9 +107,6 @@ export const useRulesetsStore = defineStore('rulesets', () => {
       r.updating = true
       await _doUpdateRuleset(r)
       await saveRulesets()
-    } catch (error) {
-      console.error('updateRuleset: ', r.name, error)
-      throw error
     } finally {
       r.updating = false
     }
@@ -124,8 +121,6 @@ export const useRulesetsStore = defineStore('rulesets', () => {
         r.updating = true
         await _doUpdateRuleset(r)
         needSave = true
-      } catch (error) {
-        console.error('updateRulesets: ', r.name, error)
       } finally {
         r.updating = false
       }

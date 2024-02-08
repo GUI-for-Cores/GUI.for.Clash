@@ -3,8 +3,8 @@ import { ref, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { useBool, useMessage } from '@/hooks'
-import { deepClone, ignoredError, sampleID } from '@/utils'
 import { PluginsTriggerOptions } from '@/constant'
+import { deepClone, ignoredError, sampleID } from '@/utils'
 import { usePluginsStore, type PluginType } from '@/stores'
 
 interface Props {
