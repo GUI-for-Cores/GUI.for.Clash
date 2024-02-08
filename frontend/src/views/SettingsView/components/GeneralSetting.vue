@@ -118,7 +118,7 @@ const onTaskSchChange = async (v: boolean) => {
     } else {
       await DeleteSchTask(APP_TITLE)
     }
-    isTaskScheduled.value = !v
+    isTaskScheduled.value = v
   } catch (error: any) {
     console.error(error)
     message.error(error)

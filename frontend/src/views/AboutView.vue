@@ -33,11 +33,13 @@ const downloadApp = async () => {
   try {
     const { appName } = await GetEnv()
 
-    const { id } = message.info('Downloading...')
+    const { id } = message.info('Downloading...', 10 * 60 * 1_000)
 
     await Download(downloadUrl, appName + '.tmp', (progress, total) => {
       message.update(id, 'Downloading...' + ((progress / total) * 100).toFixed(2) + '%')
     })
+
+    message.destroy(id)
 
     await Movefile(appName, appName + '_' + APP_VERSION + '.bak')
 
