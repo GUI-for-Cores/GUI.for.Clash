@@ -90,13 +90,13 @@ export namespace bridge {
 		    return a;
 		}
 	}
-	export class TrayContents {
+	export class TrayContent {
 	    icon: string;
 	    title: string;
 	    tooltip: string;
 	
 	    static createFrom(source: any = {}) {
-	        return new TrayContents(source);
+	        return new TrayContent(source);
 	    }
 	
 	    constructor(source: any = {}) {
