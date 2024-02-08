@@ -16,8 +16,10 @@ const onPortSubmit = (port: number) => kernelApiStore.updateConfig({ port })
 const onSocksPortSubmit = (port: number) => kernelApiStore.updateConfig({ 'socks-port': port })
 const onMixedPortSubmit = (port: number) => kernelApiStore.updateConfig({ 'mixed-port': port })
 const onAllowLanChange = (allow: boolean) => kernelApiStore.updateConfig({ 'allow-lan': allow })
-const conStackChange = (stack: string) => kernelApiStore.updateConfig({ tun: { stack } })
-const onTunDeviceSubmit = (device: string) => kernelApiStore.updateConfig({ tun: { device } })
+const conStackChange = (stack: string) =>
+  kernelApiStore.updateConfig({ tun: { stack, enable: kernelApiStore.config.tun.enable } })
+const onTunDeviceSubmit = (device: string) =>
+  kernelApiStore.updateConfig({ tun: { device, enable: kernelApiStore.config.tun.enable } })
 const onInterfaceChange = (name: string) => kernelApiStore.updateConfig({ 'interface-name': name })
 
 const handleUpdateGEO = async () => {

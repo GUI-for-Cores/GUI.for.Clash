@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { useMessage } from '@/hooks'
-import { APP_TITLE, APP_VERSION, ignoredError, sleep } from '@/utils'
+import { APP_TITLE, APP_VERSION, ignoredError } from '@/utils'
 import { usePluginsStore, type PluginType, useAppSettingsStore } from '@/stores'
 import { HttpGet, Readfile, Writefile } from '@/utils/bridge'
 

@@ -143,11 +143,11 @@ const createSchTask = async (delay = 30) => {
 }
 
 if (envStore.env.os === 'windows') {
+  checkSchtask()
+
   CheckPermissions().then((admin) => {
     isAdmin.value = admin
   })
-
-  checkSchtask()
 }
 </script>
 

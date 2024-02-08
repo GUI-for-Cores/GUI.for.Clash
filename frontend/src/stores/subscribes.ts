@@ -170,8 +170,7 @@ export const useSubscribesStore = defineStore('subscribes', () => {
     s.updateTime = new Date().toLocaleString()
     s.proxies = proxies.map(({ name, type }) => {
       // Keep the original ID value of the proxy unchanged
-      const _id = s.proxies.find((v) => v.name === name)?.id
-      const id = _id || sampleID()
+      const id = s.proxies.find((v) => v.name === name)?.id || sampleID()
       return { id, name, type }
     })
   }
@@ -198,8 +197,6 @@ export const useSubscribesStore = defineStore('subscribes', () => {
         s.updating = true
         await _doUpdateSub(s)
         needSave = true
-      } catch (error) {
-        console.error('updateSubscribes: ', s.name, error)
       } finally {
         s.updating = false
       }
