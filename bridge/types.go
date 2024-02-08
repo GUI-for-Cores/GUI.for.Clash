@@ -44,7 +44,7 @@ type MenuItem struct {
 	Checked  bool       `json:"checked"`
 }
 
-type TrayContents struct {
+type TrayContent struct {
 	Icon    string `json:"icon"`
 	Title   string `json:"title"`
 	Tooltip string `json:"tooltip"`

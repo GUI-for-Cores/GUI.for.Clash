@@ -4,7 +4,7 @@ package bridge
 
 import (
 	"embed"
-	"fmt"
+	"log"
 	"os/exec"
 	"syscall"
 
@@ -27,23 +27,21 @@ func CreateTray(a *App, icon []byte, fs embed.FS) {
 	}()
 }
 
-func (a *App) UpdateTray(icon TrayContents) {
-	fmt.Println("UpdateTray")
-
-	if icon.Icon != "" {
-		ico, _ := assets.ReadFile("frontend/dist/" + icon.Icon)
+func (a *App) UpdateTray(tray TrayContent) {
+	if tray.Icon != "" {
+		ico, _ := assets.ReadFile("frontend/dist/" + tray.Icon)
 		systray.SetIcon(ico)
 	}
-	if icon.Title != "" {
-		systray.SetTitle(icon.Title)
+	if tray.Title != "" {
+		systray.SetTitle(tray.Title)
 	}
-	if icon.Tooltip != "" {
-		systray.SetTooltip(icon.Tooltip)
+	if tray.Tooltip != "" {
+		systray.SetTooltip(tray.Tooltip)
 	}
 }
 
 func (a *App) UpdateTrayMenus(menus []MenuItem) {
-	fmt.Println("UpdateTrayMenus")
+	log.Printf("UpdateTrayMenus")
 
 	systray.ResetMenu()
 
