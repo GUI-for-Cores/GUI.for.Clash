@@ -144,7 +144,7 @@ export default {
       url: 'URL',
       filter: 'Filter',
       notFound: 'Some subscriptions or proxies are missing, please clean them up',
-      needToAdd: 'Add at least one `Use` or `Proxies`',
+      needToAdd: 'References at least one proxy or subscription',
       sort: 'View and Sort',
       builtIn: 'Built-In',
       subscriptions: 'Subscriptions',
@@ -342,8 +342,8 @@ export default {
       groups: 'Proxy Groups',
       rules: 'Rules'
     },
-    proxies: 'Proxies',
-    use: 'Use',
+    proxies: 'Reference proxies',
+    use: 'Reference subscriptions',
     noSubs: 'There are no available subscriptions.'
   },
   profiles: {
