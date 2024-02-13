@@ -287,6 +287,8 @@ export default {
       chains: '链路',
       upload: '上行流量',
       download: '下行流量',
+      uploadSpeed: '上行速度',
+      downSpeed: '下行速度',
       time: '连接时间',
       close: '关闭连接',
       addToDirect: '添加到直连',
