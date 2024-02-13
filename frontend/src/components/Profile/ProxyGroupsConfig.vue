@@ -230,9 +230,9 @@ subscribesStore.subscribes.forEach(async ({ id, name, proxies }) => {
       <div class="count">
         <Button @click="handleSortGroup(index)" type="link" size="small">
           (
-          {{ t('profile.use') }}:{{ g.use.length }}
+          {{ t('profile.use') }}: {{ g.use.length }}
           /
-          {{ t('profile.proxies') }}:{{ g.proxies.length }}
+          {{ t('profile.proxies') }}: {{ g.proxies.length }}
           )
         </Button>
       </div>
@@ -262,16 +262,18 @@ subscribesStore.subscribes.forEach(async ({ id, name, proxies }) => {
     max-height="80"
   >
     <div class="group">
-      <Divider>{{ t('profile.proxies') }}</Divider>
-      <div v-draggable="[fields.proxies, DraggableOptions]" class="group-proxies">
-        <Button v-for="proxy in fields.proxies" :key="proxy.id" type="link" class="group-item">
-          {{ proxy.name }}
-        </Button>
-      </div>
       <Divider>{{ t('profile.use') }}</Divider>
+      <Empty v-if="fields.use.length === 0"></Empty>
       <div v-draggable="[fields.use, DraggableOptions]" class="group-proxies">
         <Button v-for="use in fields.use" :key="use" type="link" class="group-item">
           {{ SubscribesNameMap[use] || use }}
+        </Button>
+      </div>
+      <Divider>{{ t('profile.proxies') }}</Divider>
+      <Empty v-if="fields.proxies.length === 0"></Empty>
+      <div v-draggable="[fields.proxies, DraggableOptions]" class="group-proxies">
+        <Button v-for="proxy in fields.proxies" :key="proxy.id" type="link" class="group-item">
+          {{ proxy.name }}
         </Button>
       </div>
     </div>
@@ -360,6 +362,7 @@ subscribesStore.subscribes.forEach(async ({ id, name, proxies }) => {
   margin-bottom: 2px;
   .name {
     font-weight: bold;
+    min-width: 90px;
     .warn {
       color: rgb(200, 193, 11);
       cursor: pointer;
