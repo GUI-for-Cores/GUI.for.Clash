@@ -4,16 +4,19 @@ import { ref, onUnmounted } from 'vue'
 import type { Menu } from '@/stores'
 import { useBool, useMessage } from '@/hooks'
 import type { KernelConnectionsWS } from '@/api/kernel.schema'
-import { formatBytes, formatRelativeTime, addToRuleSet } from '@/utils'
+import { formatBytes, formatRelativeTime, addToRuleSet, ignoredError } from '@/utils'
 import { getKernelConnectionsWS, deleteConnection, updateProvidersRules } from '@/api/kernel'
 
 import type { Column } from '@/components/Table/index.vue'
+
+type TrafficCacheType = { up: number; down: number }
+const TrafficCache: Record<string, TrafficCacheType> = {}
 
 const columns: Column[] = [
   {
     title: 'home.connections.host',
     key: 'metadata.host',
-    align: 'left',
+    sort: (a, b) => b.metadata.host.localeCompare(a.metadata.host),
     customRender: ({ value, record }) => {
       return (value || record.metadata.destinationIP) + ':' + record.metadata.destinationPort
     }
@@ -21,11 +24,13 @@ const columns: Column[] = [
   {
     title: 'home.connections.inbound',
     key: 'metadata.inboundName',
+    align: 'center',
     customRender: ({ value }) => value.replace('DEFAULT-', '')
   },
   {
     title: 'home.connections.rule',
     key: 'rule',
+    align: 'center',
     customRender: ({ value, record }) => {
       return value + (record.rulePayload ? '::' + record.rulePayload : '')
     }
@@ -36,18 +41,40 @@ const columns: Column[] = [
     customRender: ({ value }) => value[0]
   },
   {
+    title: 'home.connections.uploadSpeed',
+    key: 'up',
+    align: 'center',
+    minWidth: '90px',
+    sort: (a, b) => b.upload - b.up - (a.upload - a.up),
+    customRender: ({ value, record }) => formatBytes((record.upload - value) / 1000) + '/s'
+  },
+  {
+    title: 'home.connections.downSpeed',
+    key: 'down',
+    align: 'center',
+    minWidth: '90px',
+    sort: (a, b) => b.download - b.down - (a.download - a.down),
+    customRender: ({ value, record }) => formatBytes((record.download - value) / 1000) + '/s'
+  },
+  {
     title: 'home.connections.upload',
+    align: 'center',
     key: 'upload',
+    sort: (a, b) => b.upload - a.upload,
     customRender: ({ value }) => formatBytes(value)
   },
   {
     title: 'home.connections.download',
+    align: 'center',
     key: 'download',
+    sort: (a, b) => b.download - a.download,
     customRender: ({ value }) => formatBytes(value)
   },
   {
     title: 'home.connections.time',
     key: 'start',
+    align: 'center',
+    sort: (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime(),
     customRender: ({ value }) => formatRelativeTime(value)
   }
 ]
@@ -83,8 +110,8 @@ const menu: Menu[] = [
           const behavior = record.metadata.host ? 'DOMAIN' : 'IP-CIDR'
           const payload = record.metadata.host || record.metadata.destinationIP + '/32,no-resolve'
           await addToRuleSet(ruleset as any, behavior + ',' + payload)
-          await updateProvidersRules(ruleset)
-          message.success('success')
+          await ignoredError(updateProvidersRules, ruleset)
+          message.success('common.success')
         } catch (error: any) {
           message.error(error)
           console.log(error)
@@ -95,14 +122,22 @@ const menu: Menu[] = [
 ]
 
 const details = ref()
-const dataSource = ref<KernelConnectionsWS['connections']>([])
+const dataSource = ref<(KernelConnectionsWS['connections'][0] & TrafficCacheType)[]>([])
 const [showDetails, toggleDetails] = useBool(false)
 const { message } = useMessage()
 
 const onConnections = (data: KernelConnectionsWS) => {
-  dataSource.value = (data.connections || []).sort(
-    (a, b) => new Date(b.start).getTime() - new Date(a.start).getTime()
-  )
+  dataSource.value = (data.connections || []).map((connection) => {
+    const result = { ...connection, up: 0, down: 0 }
+    const cache = TrafficCache[connection.id]
+    result.up = cache?.up || connection.upload
+    result.down = cache?.down || connection.download
+    TrafficCache[connection.id] = {
+      down: connection.download,
+      up: connection.upload
+    }
+    return result
+  })
 }
 
 const disconnect = getKernelConnectionsWS(onConnections)
@@ -112,7 +147,7 @@ onUnmounted(disconnect)
 
 <template>
   <div class="connections">
-    <Table :columns="columns" :menu="menu" :data-source="dataSource" style="flex: 1" />
+    <Table :columns="columns" :menu="menu" :data-source="dataSource" sort="start" style="flex: 1" />
   </div>
 
   <Modal
