@@ -2,7 +2,7 @@
 import { useI18n } from 'vue-i18n'
 
 interface Props {
-  modelValue: string | number
+  modelValue: string | number | boolean
   options: { label: string; value: string | number }[]
   size?: 'default' | 'small'
 }
