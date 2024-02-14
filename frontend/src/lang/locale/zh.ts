@@ -293,7 +293,11 @@ export default {
       close: '关闭连接',
       addToDirect: '添加到直连',
       addToProxy: '添加到代理',
-      addToReject: '添加到拦截'
+      addToReject: '添加到拦截',
+      active: '活动',
+      closed: '已关闭',
+      closeAll: '关闭所有连接',
+      sort: '排序和设置显示字段'
     }
   },
   subscribe: {
