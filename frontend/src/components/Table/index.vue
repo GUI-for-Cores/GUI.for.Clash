@@ -11,6 +11,7 @@ export type Column = {
   title: string
   key: string
   align?: 'center' | 'left' | 'right'
+  hidden?: boolean
   minWidth?: string
   sort?: SortType
   customRender?: (v: { value: any; record: Record<string, any> }) => string
@@ -56,6 +57,10 @@ const tableData = computed(() => {
   if (sortReverse.value) sorted.reverse()
   return sorted
 })
+
+const tableColumns = computed(() => {
+  return props.columns.filter((column) => !!column.hidden)
+})
 </script>
 
 <template>
@@ -63,9 +68,8 @@ const tableData = computed(() => {
     <table>
       <thead>
         <tr>
-          <th v-for="column in columns" :key="column.key">
+          <th v-for="column in tableColumns" :key="column.key">
             <div
-              class="title"
               @click="handleChangeSortField(column.key, column.sort)"
               :style="{
                 justifyContent: { left: 'flext-start', center: 'center', right: 'flex-end' }[
@@ -73,6 +77,7 @@ const tableData = computed(() => {
                 ],
                 minWidth: column.minWidth || 'auto'
               }"
+              class="title"
             >
               {{ t(column.title) }}
               <div v-if="sortField === column.key">
@@ -90,11 +95,9 @@ const tableData = computed(() => {
           :key="data.id"
         >
           <td
-            v-for="column in columns"
+            v-for="column in tableColumns"
             :key="column.key"
-            :style="{
-              textAlign: column.align || 'left'
-            }"
+            :style="{ textAlign: column.align || 'left' }"
             class="user-select"
           >
             {{
@@ -110,6 +113,9 @@ const tableData = computed(() => {
 </template>
 
 <style lang="less" scoped>
+.table {
+  overflow: auto;
+}
 table {
   width: 100%;
   border-collapse: collapse;
