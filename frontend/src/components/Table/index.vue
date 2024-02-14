@@ -5,15 +5,13 @@ import { ref, computed } from 'vue'
 import { getValue } from '@/utils'
 import type { Menu } from '@/stores'
 
-type SortType = (a: Record<string, any>, b: Record<string, any>) => number
-
 export type Column = {
   title: string
   key: string
   align?: 'center' | 'left' | 'right'
   hidden?: boolean
   minWidth?: string
-  sort?: SortType
+  sort?: (a: Record<string, any>, b: Record<string, any>) => number
   customRender?: (v: { value: any; record: Record<string, any> }) => string
 }
 
@@ -29,31 +27,30 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const sortField = ref(props.sort)
-const sortReverse = ref(false)
-let sortFunc: SortType
+const sortReverse = ref(true)
+const sortFunc = computed(
+  () => props.columns.find((column) => column.key === sortField.value)?.sort
+)
 
 const { t } = useI18n()
 
-const handleChangeSortField = (field: string, sort: any) => {
+const handleChangeSortField = (field: string) => {
   if (sortField.value === field) {
-    if (!sortReverse.value) {
-      sortReverse.value = true
+    if (sortReverse.value) {
+      sortReverse.value = false
       return
     }
     sortField.value = ''
-    sortReverse.value = false
+    sortReverse.value = true
     return
   }
-  if (sort) {
-    sortField.value = field
-    sortFunc = sort
-    sortReverse.value = false
-  }
+  sortField.value = field
+  sortReverse.value = true
 }
 
 const tableData = computed(() => {
-  if (!sortField.value || !sortFunc) return props.dataSource
-  const sorted = props.dataSource.slice().sort(sortFunc)
+  if (!sortField.value || !sortFunc.value) return props.dataSource
+  const sorted = props.dataSource.slice().sort(sortFunc.value)
   if (sortReverse.value) sorted.reverse()
   return sorted
 })
@@ -70,7 +67,7 @@ const tableColumns = computed(() => {
         <tr>
           <th v-for="column in tableColumns" :key="column.key">
             <div
-              @click="handleChangeSortField(column.key, column.sort)"
+              @click="handleChangeSortField(column.key)"
               :style="{
                 justifyContent: { left: 'flext-start', center: 'center', right: 'flex-end' }[
                   column.align || 'left'
@@ -80,9 +77,8 @@ const tableColumns = computed(() => {
               class="title"
             >
               {{ t(column.title) }}
-              <div v-if="sortField === column.key">
-                <span v-if="sortReverse" class="title-sort"> ↑ </span>
-                <span v-else class="title-sort"> ↓ </span>
+              <div v-if="sortField === column.key && sortFunc">
+                <span class="title-sort"> {{ sortReverse ? '↑' : '↓' }} </span>
               </div>
             </div>
           </th>
