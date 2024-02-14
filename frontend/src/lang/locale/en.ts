@@ -293,7 +293,11 @@ export default {
       close: 'Close',
       addToDirect: 'Add To DIRECT',
       addToProxy: 'Add To PROXY',
-      addToReject: 'Add To REJECT'
+      addToReject: 'Add To REJECT',
+      active: 'Active',
+      closed: 'Closed',
+      closeAll: 'Close all connections',
+      sort: 'Sorting and Setting Visibility'
     }
   },
   subscribe: {

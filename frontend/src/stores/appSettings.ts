@@ -23,6 +23,10 @@ type AppSettings = {
   autoStartKernel: boolean
   userAgent: string
   startupDelay: number
+  connections: {
+    visibility: Record<string, boolean>
+    order: string[]
+  }
   kernel: {
     branch: 'main' | 'alpha'
     profile: string
@@ -57,6 +61,30 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
     autoStartKernel: false,
     userAgent: APP_TITLE + '/' + APP_VERSION,
     startupDelay: 30,
+    connections: {
+      visibility: {
+        'metadata.host': true,
+        start: true,
+        download: true,
+        upload: true,
+        down: true,
+        up: true,
+        chains: true,
+        rule: true,
+        'metadata.inboundName': true
+      },
+      order: [
+        'metadata.host',
+        'metadata.inboundName',
+        'rule',
+        'chains',
+        'up',
+        'down',
+        'upload',
+        'download',
+        'start'
+      ]
+    },
     kernel: {
       branch: 'main',
       profile: '',
