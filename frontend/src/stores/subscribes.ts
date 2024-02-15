@@ -21,6 +21,8 @@ export type SubscribeType = {
   path: string
   include: string
   exclude: string
+  includeProtocol: string
+  excludeProtocol: string
   proxyPrefix: string
   disabled: boolean
   proxies: { id: string; name: string; type: string }[]
@@ -76,6 +78,8 @@ export const useSubscribesStore = defineStore('subscribes', () => {
       path: `data/subscribes/${id}.yaml`,
       include: '',
       exclude: '',
+      includeProtocol: '',
+      excludeProtocol: '',
       proxyPrefix: '',
       disabled: false,
       userAgent: APP_TITLE + '/' + APP_VERSION,
@@ -145,7 +149,9 @@ export const useSubscribesStore = defineStore('subscribes', () => {
     proxies = proxies.filter((v) => {
       const flag1 = s.include ? new RegExp(s.include).test(v.name) : true
       const flag2 = s.exclude ? !new RegExp(s.exclude).test(v.name) : true
-      return flag1 && flag2
+      const flag3 = s.includeProtocol ? new RegExp(s.includeProtocol).test(v.type) : true
+      const flag4 = s.excludeProtocol ? !new RegExp(s.excludeProtocol).test(v.type) : true
+      return flag1 && flag2 && flag3 && flag4
     })
 
     if (s.proxyPrefix) {
