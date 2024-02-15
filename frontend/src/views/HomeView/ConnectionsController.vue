@@ -33,6 +33,7 @@ const columns = computed(() =>
         align: 'center',
         key: 'metadata.inboundName',
         hidden: appSettingsStore.app.connections.visibility['metadata.inboundName'],
+        sort: (a, b) => b.metadata.inboundName.localeCompare(a.metadata.inboundName),
         customRender: ({ value }) => value.replace('DEFAULT-', '')
       },
       {
@@ -40,6 +41,7 @@ const columns = computed(() =>
         align: 'center',
         key: 'rule',
         hidden: appSettingsStore.app.connections.visibility['rule'],
+        sort: (a, b) => b.rule.localeCompare(a.rule),
         customRender: ({ value, record }) => {
           return value + (record.rulePayload ? '::' + record.rulePayload : '')
         }
@@ -48,6 +50,7 @@ const columns = computed(() =>
         title: 'home.connections.chains',
         key: 'chains',
         hidden: appSettingsStore.app.connections.visibility['chains'],
+        sort: (a, b) => b.chains[0].localeCompare(a.chains[0]),
         customRender: ({ value }) => value[0]
       },
       {
