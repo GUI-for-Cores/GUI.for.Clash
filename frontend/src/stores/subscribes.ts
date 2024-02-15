@@ -82,7 +82,7 @@ export const useSubscribesStore = defineStore('subscribes', () => {
       excludeProtocol: '',
       proxyPrefix: '',
       disabled: false,
-      userAgent: APP_TITLE + '/' + APP_VERSION,
+      userAgent: '',
       healthCheck: {
         enable: true,
         url: 'https://www.gstatic.com/generate_204',
