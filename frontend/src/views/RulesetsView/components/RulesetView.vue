@@ -28,6 +28,15 @@ const filteredList = computed(() => {
   return rulesetList.value.filter((v) => keywordsRegexp.value.test(v))
 })
 
+const placeholder = computed(() => {
+  if (!ruleset.value) return ''
+  return {
+    [RulesetBehavior.Classical]: 'DOMAIN,domain.com|IP-CIDR,127.0.0.0/8',
+    [RulesetBehavior.Domain]: '.blogger.com|*.*.microsoft.com|books.itunes.apple.com',
+    [RulesetBehavior.Ipcidr]: '192.168.1.0/24|10.0.0.1/32'
+  }[ruleset.value.behavior]
+})
+
 const menus: Menu[] = [
   {
     label: 'common.delete',
@@ -66,11 +75,16 @@ const handleAdd = () => {
     ruleValue.value = ''
     return
   }
-  if (ruleset.value?.behavior === RulesetBehavior.Ipcidr && !isValidIPCIDR(rule)) {
-    message.warn('Not a valid IP-CIDR format')
-    return
+  const rules = [
+    ...new Set(rule.split('|').filter((rule) => rule && !rulesetList.value.includes(rule)))
+  ]
+  if (ruleset.value?.behavior === RulesetBehavior.Ipcidr) {
+    if (rules.some((rule) => !isValidIPCIDR(rule))) {
+      message.warn('Not a valid IP-CIDR format')
+      return
+    }
   }
-  rulesetList.value.push(rule)
+  rulesetList.value.push(...rules)
   ruleValue.value = ''
 }
 
@@ -94,16 +108,26 @@ if (r) {
 <template>
   <div class="ruleset-view">
     <div class="form">
-      <span class="label">
-        {{ t('common.keywords') }}
-        :
-      </span>
-      <Input v-model="keywords" :border="false" :delay="500" />
-      <Button @click="resetForm" class="ml-8">
+      <Input
+        v-model="keywords"
+        :delay="200"
+        size="small"
+        :placeholder="t('common.keywords')"
+        class="ml-8"
+        style="flex: 1"
+      />
+      <Button @click="resetForm" size="small" class="ml-8">
         {{ t('common.reset') }}
       </Button>
-      <Input v-model="ruleValue" :border="false" class="ml-8" />
-      <Button @click="handleAdd" type="primary" class="ml-8">
+      <Input
+        v-model="ruleValue"
+        :delay="200"
+        :placeholder="placeholder"
+        size="small"
+        class="ml-8"
+        style="flex: 1"
+      />
+      <Button @click="handleAdd" type="primary" size="small" class="ml-8">
         {{ t('common.add') }}
       </Button>
     </div>
@@ -142,10 +166,6 @@ if (r) {
   align-items: center;
   background-color: var(--modal-bg);
   backdrop-filter: blur(2px);
-  .label {
-    padding: 0 8px;
-    font-size: 12px;
-  }
 }
 .rules {
   margin-top: 8px;
