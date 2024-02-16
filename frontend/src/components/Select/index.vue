@@ -49,7 +49,7 @@ const handleChange = (e: any) => {
     background: transparent;
     color: var(--select-color);
     option {
-      background: var(--select-bg);
+      background: var(--select-option-bg);
     }
   }
 }
