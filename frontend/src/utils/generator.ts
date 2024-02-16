@@ -210,8 +210,8 @@ const generateRuleProviders = async (rules: ProfileType['rulesConfig']) => {
   return providers
 }
 
-export const generateConfig = async (profile: ProfileType) => {
-  profile = deepClone(profile)
+export const generateConfig = async (originalProfile: ProfileType) => {
+  const profile = deepClone(originalProfile)
 
   const config: Record<string, any> = {
     ...profile.generalConfig,
@@ -266,7 +266,7 @@ export const generateConfig = async (profile: ProfileType) => {
 
   const pluginsStore = usePluginsStore()
 
-  return await pluginsStore.onGenerateTrigger(config)
+  return await pluginsStore.onGenerateTrigger(config, originalProfile)
 }
 
 export const generateConfigFile = async (profile: ProfileType) => {
