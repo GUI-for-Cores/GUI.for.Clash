@@ -92,7 +92,7 @@ export default {
       mtu: '最大传输单元',
       'endpoint-independent-nat': '独立于端点的 NAT',
       system: 'System',
-      gvisor: 'Gvisor',
+      gvisor: 'gVisor',
       mixed: 'Mixed',
       lwip: 'LWIP'
     },
