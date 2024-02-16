@@ -63,9 +63,9 @@ export default {
     rule: 'Rule',
     global: 'Global',
     direct: 'Direct',
-    ruleDesp: 'By rules file',
-    globalDesp: 'Use Global group',
-    directDesp: 'Direct connection',
+    ruleDesp: 'Route traffic based on rules',
+    globalDesp: 'Only follow the Global group',
+    directDesp: 'Directly connect all traffic',
     'keep-alive-interval': 'keep-alive-interval',
     'find-process-mode': 'find-process-mode',
     'external-controller-tls': 'external-controller-tls',
@@ -340,7 +340,7 @@ export default {
     proxyCount: 'Proxy Count',
     editProxies: 'Edit Proxies',
     proxies: {
-      type: 'Type',
+      type: 'Protocol',
       name: 'Name',
       add: 'Add Proxy'
     }
