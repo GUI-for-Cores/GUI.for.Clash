@@ -20,6 +20,37 @@ const columns = computed(() =>
   (
     [
       {
+        title: 'home.connections.inbound',
+        align: 'center',
+        key: 'metadata.inboundName',
+        hidden: appSettingsStore.app.connections.visibility['metadata.inboundName'],
+        sort: (a, b) => b.metadata.inboundName.localeCompare(a.metadata.inboundName),
+        customRender: ({ value }) => value.replace('DEFAULT-', '')
+      },
+      {
+        title: 'home.connections.type',
+        align: 'center',
+        key: 'metadata.type',
+        hidden: appSettingsStore.app.connections.visibility['metadata.type'],
+        sort: (a, b) => b.metadata.type.localeCompare(a.metadata.type),
+        customRender: ({ value, record }) => {
+          return value + '(' + record.metadata.network + ')'
+        }
+      },
+      {
+        title: 'home.connections.process',
+        align: 'center',
+        key: 'metadata.process',
+        hidden: appSettingsStore.app.connections.visibility['metadata.process'],
+        sort: (a, b) => b.metadata.process.localeCompare(a.metadata.process)
+      },
+      {
+        title: 'home.connections.processPath',
+        key: 'metadata.processPath',
+        hidden: appSettingsStore.app.connections.visibility['metadata.processPath'],
+        sort: (a, b) => b.metadata.processPath.localeCompare(a.metadata.processPath)
+      },
+      {
         title: 'home.connections.host',
         key: 'metadata.host',
         hidden: appSettingsStore.app.connections.visibility['metadata.host'],
@@ -29,12 +60,31 @@ const columns = computed(() =>
         }
       },
       {
-        title: 'home.connections.inbound',
+        title: 'home.connections.sniffHost',
         align: 'center',
-        key: 'metadata.inboundName',
-        hidden: appSettingsStore.app.connections.visibility['metadata.inboundName'],
-        sort: (a, b) => b.metadata.inboundName.localeCompare(a.metadata.inboundName),
-        customRender: ({ value }) => value.replace('DEFAULT-', '')
+        key: 'metadata.sniffHost',
+        hidden: appSettingsStore.app.connections.visibility['metadata.sniffHost'],
+        sort: (a, b) => b.metadata.sniffHost.localeCompare(a.metadata.sniffHost)
+      },
+      {
+        title: 'home.connections.sourceIP',
+        align: 'center',
+        key: 'metadata.sourceIP',
+        hidden: appSettingsStore.app.connections.visibility['metadata.sourceIP'],
+        sort: (a, b) => b.metadata.sourceIP.localeCompare(a.metadata.sourceIP),
+        customRender: ({ value, record }) => {
+          return value + ':' + record.metadata.sourcePort
+        }
+      },
+      {
+        title: 'home.connections.remoteDestination',
+        align: 'center',
+        key: 'metadata.remoteDestination',
+        hidden: appSettingsStore.app.connections.visibility['metadata.remoteDestination'],
+        sort: (a, b) => b.metadata.remoteDestination.localeCompare(a.metadata.remoteDestination),
+        customRender: ({ value, record }) => {
+          return value + ':' + record.metadata.destinationPort
+        }
       },
       {
         title: 'home.connections.rule',
@@ -51,7 +101,7 @@ const columns = computed(() =>
         key: 'chains',
         hidden: appSettingsStore.app.connections.visibility['chains'],
         sort: (a, b) => b.chains[0].localeCompare(a.chains[0]),
-        customRender: ({ value }) => value[0]
+        customRender: ({ value }) => value.slice().reverse().join(' :: ')
       },
       {
         title: 'home.connections.uploadSpeed',
@@ -256,8 +306,9 @@ onUnmounted(disconnect)
   <Modal
     v-model:open="showSettings"
     :submit="false"
-    cancel-text="common.close"
     mask-closable
+    max-height="90"
+    cancel-text="common.close"
     title="home.connections.sort"
   >
     <div v-draggable="[appSettingsStore.app.connections.order, DraggableOptions]">
