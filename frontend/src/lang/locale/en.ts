@@ -39,7 +39,9 @@ export default {
     run: 'Run',
     refresh: 'Refresh',
     confirm: 'Confirm',
-    selectAll: 'Select All'
+    selectAll: 'Select All',
+    http: 'Remote',
+    file: 'Local'
   },
   kernel: {
     port: 'HTTP(s) Port',
@@ -307,10 +309,9 @@ export default {
     }
   },
   subscribe: {
-    http: 'HTTP',
-    file: 'FILE',
     name: 'Name',
-    url: 'Url',
+    url: 'Remote Url',
+    localPath: 'Local Path',
     website: 'Website',
     path: 'Save Path',
     include: 'Include Keywords',
@@ -332,7 +333,7 @@ export default {
     upload: 'Upload',
     total: 'Total',
     expire: 'Expire',
-    subtype: 'Subscribe Type',
+    subtype: 'Subscription Type',
     website: 'Website',
     empty: 'The subscription list is empty. Please {action} a subscription first.',
     enterLink: 'Enter subscription link',
@@ -368,8 +369,6 @@ export default {
     start: 'Start/Restart with this Profile'
   },
   ruleset: {
-    http: 'HTTP',
-    file: 'FILE',
     behavior: {
       name: 'Behavior',
       classical: 'classical',
@@ -379,7 +378,7 @@ export default {
     rulesetType: 'Ruleset Type',
     format: 'format',
     name: 'Name',
-    url: 'Url',
+    url: 'Remote Url',
     path: 'Save Path',
     interval: 'Interval',
     updating: 'Updating'
@@ -398,13 +397,11 @@ export default {
     'on::subscribe': 'on::subscribe',
     name: 'Name',
     description: 'Description',
-    url: 'URL',
-    install: 'Requires installation',
+    url: 'Remote Url',
+    install: 'Installation required',
     installed: 'Installed',
-    path: 'Path',
+    path: 'Save Path',
     type: 'Type',
-    http: 'HTTP',
-    file: 'FILE',
     menus: 'Menus',
     menuKey: 'Menu Title',
     menuValue: 'Trigger function name'

@@ -39,7 +39,9 @@ export default {
     run: '运行',
     refresh: '刷新',
     confirm: '确定',
-    selectAll: '全选'
+    selectAll: '全选',
+    http: '远程',
+    file: '本地'
   },
   kernel: {
     port: 'HTTP(s)代理端口',
@@ -307,10 +309,9 @@ export default {
     }
   },
   subscribe: {
-    http: '远程',
-    file: '本地',
     name: '名称',
-    url: '链接',
+    url: '远程链接',
+    localPath: '本地路径',
     website: '官网',
     path: '保存路径',
     include: '包括名称',
@@ -368,8 +369,6 @@ export default {
     start: '使用此配置启动/重启'
   },
   ruleset: {
-    http: 'HTTP',
-    file: 'FILE',
     behavior: {
       name: '匹配行为',
       classical: '域名+IP地址段',
@@ -379,7 +378,7 @@ export default {
     rulesetType: '规则集类型',
     format: '格式',
     name: '名称',
-    url: '链接',
+    url: '远程链接',
     path: '保存路径',
     interval: '更新间隔',
     updating: '更新中'
@@ -398,13 +397,11 @@ export default {
     'on::subscribe': '更新订阅时',
     name: '名称',
     description: '描述',
-    url: '地址',
+    url: '远程地址',
     install: '需要安装',
     installed: '已安装',
     path: '保存路径',
     type: '类型',
-    http: 'HTTP',
-    file: 'FILE',
     menus: '菜单',
     menuKey: '菜单名称',
     menuValue: '触发方法名'
