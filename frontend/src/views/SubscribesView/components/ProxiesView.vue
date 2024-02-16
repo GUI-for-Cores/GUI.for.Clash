@@ -137,6 +137,9 @@ const onEditEnd = async () => {
   let proxy: any
   try {
     proxy = parse(details.value)
+
+    if (typeof proxy !== 'object') throw 'wrong format'
+
     if (sub.value.proxies.find((v) => v.name === proxy.name)) {
       throw 'A proxy with the same name already exists.'
     }
@@ -207,7 +210,10 @@ const getProxyByName = async (name: string) => {
         {{ t('subscribes.proxies.add') }}
       </Button>
     </div>
-    <div v-draggable="[sub.proxies, { ...DraggableOptions }]" class="proxies">
+
+    <Empty v-if="filteredProxies.length === 0" class="empty" />
+
+    <div v-else v-draggable="[sub.proxies, { ...DraggableOptions }]" class="proxies">
       <Card
         v-for="proxy in filteredProxies"
         :key="proxy.name"
@@ -261,6 +267,12 @@ const getProxyByName = async (name: string) => {
     padding: 0 8px;
     font-size: 12px;
   }
+}
+.empty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .proxies {
   margin-top: 8px;
