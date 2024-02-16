@@ -92,7 +92,7 @@ export default {
       mtu: 'MTU',
       'endpoint-independent-nat': 'Endpoint Independent NAT',
       system: 'System',
-      gvisor: 'Gvisor',
+      gvisor: 'gVisor',
       mixed: 'Mixed',
       lwip: 'LWIP'
     },
