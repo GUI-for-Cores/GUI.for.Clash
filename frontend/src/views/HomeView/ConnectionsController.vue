@@ -247,8 +247,11 @@ const filteredConnections = computed(() => {
 })
 
 const handleCloseAll = async () => {
-  if (!isActive.value) return
   await Promise.all(dataSource.value.map((connection) => deleteConnection(connection.id)))
+}
+
+const handleClearClosedConns = () => {
+  disconnectedData.value.splice(0)
 }
 
 const disconnect = getKernelConnectionsWS(onConnections)
@@ -276,8 +279,23 @@ onUnmounted(disconnect)
       <Button @click="togglePause" size="small" type="text" style="margin-left: 8px">
         <Icon :icon="isPause ? 'play' : 'pause'" fill="var(--color)" />
       </Button>
-      <Button @click="handleCloseAll" v-tips="'home.connections.closeAll'" size="small" type="text">
+      <Button
+        v-if="isActive"
+        @click="handleCloseAll"
+        v-tips="'home.connections.closeAll'"
+        size="small"
+        type="text"
+      >
         <Icon icon="close" fill="var(--color)" />
+      </Button>
+      <Button
+        v-else
+        @click="handleClearClosedConns"
+        v-tips="'common.clear'"
+        size="small"
+        type="text"
+      >
+        <Icon icon="clear" fill="var(--color)" />
       </Button>
       <Button @click="toggleSettings" size="small" type="text">
         <Icon icon="settings" />

@@ -131,7 +131,10 @@ if (r) {
         {{ t('common.add') }}
       </Button>
     </div>
-    <div v-draggable="[rulesetList, DraggableOptions]" class="rules">
+
+    <Empty v-if="rulesetList.length === 0" class="empty" />
+
+    <div v-else v-draggable="[rulesetList, DraggableOptions]" class="rules">
       <div
         v-for="rule in filteredList"
         :key="rule"
@@ -159,27 +162,33 @@ if (r) {
   height: 100%;
 }
 .form {
-  position: sticky;
-  top: 0;
-  z-index: 9;
   display: flex;
   align-items: center;
-  background-color: var(--modal-bg);
-  backdrop-filter: blur(2px);
+}
+.empty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .rules {
   margin-top: 8px;
   flex: 1;
   overflow-y: auto;
-
+  display: flex;
+  flex-wrap: wrap;
   .rule {
-    display: inline-block;
+    display: flex;
+    align-items: center;
     width: calc(33.33% - 4px);
     margin: 2px;
-    padding: 8px;
+    padding: 0 8px;
+    line-height: 20px;
+    height: 40px;
     word-break: break-all;
     font-size: 12px;
     background: var(--card-bg);
+    overflow: hidden;
   }
 }
 
