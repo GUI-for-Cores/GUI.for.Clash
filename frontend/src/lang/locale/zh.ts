@@ -65,7 +65,7 @@ export default {
     direct: '直连',
     ruleDesp: '按照规则文件分流',
     globalDesp: '仅走Global规则组',
-    directDesp: '所有流量直连',
+    directDesp: '直接连接所有流量',
     'keep-alive-interval': 'TCP Keep Alive 间隔',
     'find-process-mode': '进程匹配模式',
     'external-controller-tls': 'RESTful Web API监听地址(HTTPS)',
@@ -340,7 +340,7 @@ export default {
     proxyCount: '代理数量',
     editProxies: '编辑节点',
     proxies: {
-      type: '类型',
+      type: '协议',
       name: '名称',
       add: '添加代理'
     }
