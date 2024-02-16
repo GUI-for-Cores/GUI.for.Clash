@@ -29,10 +29,11 @@ const [showDetails, toggleDetails] = useBool(false)
 const keywordsRegexp = computed(() => new RegExp(keywords.value))
 
 const filteredProxyTypeOptions = computed(() => {
-  return ProxyTypeOptions.map((v) => {
+  const protocolList = ProxyTypeOptions.map((v) => {
     const count = sub.value.proxies.filter((vv) => vv.type === v.value).length
     return { ...v, label: v.label + `(${count})`, count }
   }).filter((v) => v.count)
+  return [{ label: 'All', value: '', count: 0 }].concat(protocolList)
 })
 
 const filteredProxies = computed(() => {
@@ -136,9 +137,12 @@ const onEditEnd = async () => {
   let proxy: any
   try {
     proxy = parse(details.value)
+    if (sub.value.proxies.find((v) => v.name === proxy.name)) {
+      throw 'A proxy with the same name already exists.'
+    }
   } catch (error: any) {
     console.log(error)
-    message.error(error.message)
+    message.error(error.message || error)
     // reopen
     toggleDetails()
     return
@@ -187,16 +191,19 @@ const getProxyByName = async (name: string) => {
         {{ t('subscribes.proxies.type') }}
         :
       </span>
-      <Select v-model="proxyType" :options="filteredProxyTypeOptions" :border="false" />
-      <span class="label">
-        {{ t('subscribes.proxies.name') }}
-        :
-      </span>
-      <Input v-model="keywords" :border="false" :delay="500" />
-      <Button @click="resetForm" class="ml-8">
+      <Select v-model="proxyType" :options="filteredProxyTypeOptions" size="small" />
+      <Input
+        v-model="keywords"
+        :delay="200"
+        size="small"
+        :placeholder="t('subscribes.proxies.name')"
+        class="ml-8"
+        style="flex: 1"
+      />
+      <Button @click="resetForm" size="small" class="ml-8">
         {{ t('common.reset') }}
       </Button>
-      <Button @click="handleAdd" type="primary" class="ml-auto">
+      <Button @click="handleAdd" type="primary" size="small">
         {{ t('subscribes.proxies.add') }}
       </Button>
     </div>
