@@ -16,6 +16,7 @@ type AppSettings = {
   subscribesView: View
   rulesetsView: View
   pluginsView: View
+  scheduledtasksView: View
   windowStartState: WindowStartState
   exitOnClose: boolean
   closeKernelOnExit: boolean
@@ -54,6 +55,7 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
     subscribesView: View.Grid,
     rulesetsView: View.Grid,
     pluginsView: View.Grid,
+    scheduledtasksView: View.Grid,
     windowStartState: WindowStartState.Normal,
     exitOnClose: true,
     closeKernelOnExit: true,
