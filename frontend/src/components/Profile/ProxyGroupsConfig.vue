@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { ref, watch, computed } from 'vue'
+import { ref, computed } from 'vue'
 
 import { useMessage } from '@/hooks'
 import { deepClone, sampleID } from '@/utils'
@@ -9,20 +9,11 @@ import { GroupsTypeOptions, StrategyOptions, ProxyGroup, DraggableOptions } from
 
 type GroupsType = ProfileType['proxyGroupsConfig']
 
-interface Props {
-  modelValue: GroupsType
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  modelValue: () => []
-})
-
-const emits = defineEmits(['update:modelValue'])
+const groups = defineModel<GroupsType>({ default: [] })
 
 let updateGroupId = 0
 const showModal = ref(false)
 const showSortModal = ref(false)
-const groups = ref(deepClone(props.modelValue))
 const expandedSet = ref<Set<string>>(new Set(['Built-In', 'Subscribes']))
 const SubscribesNameMap = ref<Record<string, string>>({})
 
@@ -209,8 +200,6 @@ const isExpanded = (key: string) => expandedSet.value.has(key)
 const showLost = () => message.warn('kernel.proxyGroups.notFound')
 
 const showNeedToAdd = () => message.warn('kernel.proxyGroups.needToAdd')
-
-watch(groups, (v) => emits('update:modelValue', v), { immediate: true, deep: true })
 
 subscribesStore.subscribes.forEach(async ({ id, name, proxies }) => {
   proxyGroup.value[1].proxies.push({ id, name, type: 'use' })

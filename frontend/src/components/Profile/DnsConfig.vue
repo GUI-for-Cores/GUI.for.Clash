@@ -1,26 +1,14 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { useBool } from '@/hooks'
-import { deepClone } from '@/utils'
 import { type ProfileType } from '@/stores'
-import { EnhancedModeOptions } from '@/constant'
+import { EnhancedModeOptions, DnsConfigDefaults } from '@/constant'
 
-interface Props {
-  modelValue: ProfileType['dnsConfig']
-}
-
-const props = withDefaults(defineProps<Props>(), {})
-
-const emits = defineEmits(['update:modelValue'])
-
-const fields = ref(deepClone(props.modelValue))
+const fields = defineModel<ProfileType['dnsConfig']>({ default: DnsConfigDefaults() })
 
 const { t } = useI18n()
 const [showMore, toggleMore] = useBool(false)
-
-watch(fields, (v) => emits('update:modelValue', v), { immediate: true, deep: true })
 </script>
 
 <template>

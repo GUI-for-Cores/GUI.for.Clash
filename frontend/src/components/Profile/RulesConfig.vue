@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 
 import { useMessage } from '@/hooks'
 import { deepClone, sampleID, generateRule } from '@/utils'
@@ -8,20 +8,16 @@ import { type ProfileType, useRulesetsStore, type RuleSetType } from '@/stores'
 import { RulesTypeOptions, RulesetBehavior, DraggableOptions } from '@/constant'
 
 interface Props {
-  modelValue: ProfileType['rulesConfig']
   proxyGroups: ProfileType['proxyGroupsConfig']
   profile: ProfileType
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  modelValue: () => []
-})
+const props = defineProps<Props>()
 
-const emits = defineEmits(['update:modelValue'])
+const rules = defineModel<ProfileType['rulesConfig']>({ default: [] })
 
 let updateRuleId = 0
 const showModal = ref(false)
-const rules = ref(deepClone(props.modelValue))
 
 const fields = ref({
   id: sampleID(),
@@ -102,8 +98,6 @@ const notSupport = (r: ProfileType['rulesConfig'][0]) => {
 const showNotSupport = () => message.warn('kernel.rules.needGeodataMode')
 
 const showLost = () => message.warn('kernel.rules.notFound')
-
-watch(rules, (v) => emits('update:modelValue', v), { immediate: true, deep: true })
 </script>
 
 <template>
