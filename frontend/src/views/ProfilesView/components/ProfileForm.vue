@@ -42,10 +42,10 @@ const ids = [sampleID(), sampleID(), sampleID(), sampleID(), sampleID()]
 const profile = ref<ProfileType>({
   id: sampleID(),
   name: '',
-  generalConfig: Defaults.GeneralConfigDefaults,
+  generalConfig: Defaults.GeneralConfigDefaults(),
   advancedConfig: Defaults.AdvancedConfigDefaults(),
-  tunConfig: Defaults.TunConfigDefaults,
-  dnsConfig: Defaults.DnsConfigDefaults,
+  tunConfig: Defaults.TunConfigDefaults(),
+  dnsConfig: Defaults.DnsConfigDefaults(),
   proxyGroupsConfig: Defaults.ProxyGroupsConfigDefaults(ids),
   rulesConfig: Defaults.RulesConfigDefaults(ids)
 })

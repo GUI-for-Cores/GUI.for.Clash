@@ -110,7 +110,6 @@ if (r) {
     <div class="form">
       <Input
         v-model="keywords"
-        :delay="200"
         size="small"
         :placeholder="t('common.keywords')"
         class="ml-8"
@@ -121,7 +120,6 @@ if (r) {
       </Button>
       <Input
         v-model="ruleValue"
-        :delay="200"
         :placeholder="placeholder"
         size="small"
         class="ml-8"

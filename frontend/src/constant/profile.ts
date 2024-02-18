@@ -5,14 +5,14 @@ import type { ProfileType } from '@/stores'
 
 const { t } = i18n.global
 
-export const GeneralConfigDefaults: ProfileType['generalConfig'] = {
+export const GeneralConfigDefaults = (): ProfileType['generalConfig'] => ({
   mode: 'rule',
   ipv6: false,
   'mixed-port': 20112,
   'allow-lan': false,
   'log-level': 'silent',
   'interface-name': ''
-}
+})
 
 export const AdvancedConfigDefaults = (): ProfileType['advancedConfig'] => ({
   port: 0,
@@ -52,7 +52,7 @@ export const AdvancedConfigDefaults = (): ProfileType['advancedConfig'] => ({
   'lan-disallowed-ips': []
 })
 
-export const TunConfigDefaults: ProfileType['tunConfig'] = {
+export const TunConfigDefaults = (): ProfileType['tunConfig'] => ({
   enable: false,
   stack: 'gVisor',
   'auto-route': true,
@@ -62,9 +62,9 @@ export const TunConfigDefaults: ProfileType['tunConfig'] = {
   mtu: 9000,
   'strict-route': true,
   'endpoint-independent-nat': false
-}
+})
 
-export const DnsConfigDefaults: ProfileType['dnsConfig'] = {
+export const DnsConfigDefaults = (): ProfileType['dnsConfig'] => ({
   enable: false,
   listen: '',
   ipv6: false,
@@ -96,7 +96,7 @@ export const DnsConfigDefaults: ProfileType['dnsConfig'] = {
     domain: ['+.google.com', '+.facebook.com', '+.youtube.com']
   },
   'prefer-h3': false
-}
+})
 
 export const ProxyGroupsConfigDefaults = (ids: string[]): ProfileType['proxyGroupsConfig'] => {
   return [

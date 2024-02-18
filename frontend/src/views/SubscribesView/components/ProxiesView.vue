@@ -197,7 +197,6 @@ const getProxyByName = async (name: string) => {
       <Select v-model="proxyType" :options="filteredProxyTypeOptions" size="small" />
       <Input
         v-model="keywords"
-        :delay="200"
         size="small"
         :placeholder="t('subscribes.proxies.name')"
         class="ml-8"

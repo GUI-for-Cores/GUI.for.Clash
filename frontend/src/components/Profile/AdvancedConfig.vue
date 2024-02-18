@@ -1,29 +1,23 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { deepClone } from '@/utils'
 import { type ProfileType } from '@/stores'
 import {
   FindProcessModeOptions,
   GeodataLoaderOptions,
-  GlobalClientFingerprintOptions
+  GlobalClientFingerprintOptions,
+  AdvancedConfigDefaults
 } from '@/constant'
 
 interface Props {
-  modelValue: ProfileType['advancedConfig']
   profile: ProfileType
 }
 
-const props = withDefaults(defineProps<Props>(), {})
+const props = defineProps<Props>()
 
-const emits = defineEmits(['update:modelValue'])
-
-const fields = ref(deepClone(props.modelValue))
+const fields = defineModel<ProfileType['advancedConfig']>({ default: AdvancedConfigDefaults() })
 
 const { t } = useI18n()
-
-watch(fields, (v) => emits('update:modelValue', v), { immediate: true, deep: true })
 </script>
 
 <template>
