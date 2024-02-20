@@ -289,10 +289,6 @@ const getProxyByName = async (name: string) => {
   margin-left: 8px;
 }
 
-.ml-auto {
-  margin-left: auto;
-}
-
 .action {
   display: flex;
   margin-top: 8px;
