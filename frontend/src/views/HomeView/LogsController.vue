@@ -54,11 +54,6 @@ const { t } = useI18n()
 const { message } = useMessage()
 const [pause, togglePause] = useBool(false)
 
-const handleReset = () => {
-  logType.value = ''
-  keywords.value = ''
-}
-
 const handleClear = () => logs.value.splice(0)
 
 const getPayload = (str = '') => {
@@ -85,34 +80,50 @@ onUnmounted(disconnect)
 </script>
 
 <template>
-  <div class="form">
-    <span class="label"> {{ t('kernel.log-level') }}: </span>
-    <Select v-model="logType" :options="LogLevelOptions" :border="false" />
-    <span class="label"> {{ t('common.keywords') }}: </span>
-    <Input v-model="keywords" :border="false" style="margin-right: 8px" />
-    <Button @click="handleReset" type="primary">
-      {{ t('common.reset') }}
-    </Button>
-    <Button @click="togglePause" type="normal" style="margin-left: auto">
-      {{ pause ? t('common.resume') : t('common.pause') }}
-    </Button>
-    <Button @click="handleClear" type="normal">
-      {{ t('common.clear') }}
-    </Button>
-  </div>
   <div class="logs">
-    <div
-      v-for="log in filteredLogs"
-      v-menu="menus.map((v) => ({ ...v, handler: () => v.handler?.(log) }))"
-      :key="log.payload"
-      class="log user-select"
-    >
-      <span class="type">{{ log.type }}</span> {{ log.payload }}
+    <div class="form">
+      <span class="label">
+        {{ t('kernel.log-level') }}
+        :
+      </span>
+      <Select v-model="logType" :options="LogLevelOptions" size="small" />
+      <Input
+        v-model="keywords"
+        size="small"
+        :placeholder="t('common.keywords')"
+        class="ml-8"
+        style="flex: 1"
+      />
+      <Button @click="togglePause" type="text" size="small" class="ml-8">
+        <Icon :icon="pause ? 'play' : 'pause'" fill="var(--color)" />
+      </Button>
+      <Button @click="handleClear" v-tips="'common.clear'" size="small" type="text">
+        <Icon icon="clear" fill="var(--color)" />
+      </Button>
+    </div>
+
+    <Empty v-if="filteredLogs.length === 0" class="empty" />
+
+    <div v-else>
+      <div
+        v-for="log in filteredLogs"
+        v-menu="menus.map((v) => ({ ...v, handler: () => v.handler?.(log) }))"
+        :key="log.payload"
+        class="log user-select"
+      >
+        <span class="type">{{ log.type }}</span> {{ log.payload }}
+      </div>
     </div>
   </div>
 </template>
 
 <style lang="less" scoped>
+.logs {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 .log {
   font-size: 12px;
   padding: 2px 4px;
@@ -141,10 +152,21 @@ onUnmounted(disconnect)
   }
 }
 
+.ml-8 {
+  margin-left: 8px;
+}
+
 .type {
   display: inline-block;
   width: 50px;
   text-align: center;
   color: var(--primary-color);
+}
+
+.empty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>
