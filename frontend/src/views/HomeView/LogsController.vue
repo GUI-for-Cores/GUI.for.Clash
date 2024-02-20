@@ -165,8 +165,6 @@ onUnmounted(disconnect)
 
 .empty {
   flex: 1;
-  display: flex;
-  align-items: center;
   justify-content: center;
 }
 </style>

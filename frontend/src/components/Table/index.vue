@@ -56,7 +56,7 @@ const tableData = computed(() => {
 })
 
 const tableColumns = computed(() => {
-  return props.columns.filter((column) => !!column.hidden)
+  return props.columns.filter((column) => !column.hidden)
 })
 </script>
 
@@ -99,7 +99,7 @@ const tableColumns = computed(() => {
             {{
               (column.customRender
                 ? column.customRender({ value: getValue(data, column.key), record: data })
-                : getValue(data, column.key)) || '-'
+                : getValue(data, column.key)) ?? '-'
             }}
           </td>
         </tr>

@@ -23,7 +23,7 @@ const columns = computed(() =>
         title: 'home.connections.inbound',
         align: 'center',
         key: 'metadata.inboundName',
-        hidden: appSettingsStore.app.connections.visibility['metadata.inboundName'],
+        hidden: !appSettingsStore.app.connections.visibility['metadata.inboundName'],
         sort: (a, b) => b.metadata.inboundName.localeCompare(a.metadata.inboundName),
         customRender: ({ value }) => value.replace('DEFAULT-', '')
       },
@@ -31,7 +31,7 @@ const columns = computed(() =>
         title: 'home.connections.type',
         align: 'center',
         key: 'metadata.type',
-        hidden: appSettingsStore.app.connections.visibility['metadata.type'],
+        hidden: !appSettingsStore.app.connections.visibility['metadata.type'],
         sort: (a, b) => b.metadata.type.localeCompare(a.metadata.type),
         customRender: ({ value, record }) => {
           return value + '(' + record.metadata.network + ')'
@@ -41,19 +41,19 @@ const columns = computed(() =>
         title: 'home.connections.process',
         align: 'center',
         key: 'metadata.process',
-        hidden: appSettingsStore.app.connections.visibility['metadata.process'],
+        hidden: !appSettingsStore.app.connections.visibility['metadata.process'],
         sort: (a, b) => b.metadata.process.localeCompare(a.metadata.process)
       },
       {
         title: 'home.connections.processPath',
         key: 'metadata.processPath',
-        hidden: appSettingsStore.app.connections.visibility['metadata.processPath'],
+        hidden: !appSettingsStore.app.connections.visibility['metadata.processPath'],
         sort: (a, b) => b.metadata.processPath.localeCompare(a.metadata.processPath)
       },
       {
         title: 'home.connections.host',
         key: 'metadata.host',
-        hidden: appSettingsStore.app.connections.visibility['metadata.host'],
+        hidden: !appSettingsStore.app.connections.visibility['metadata.host'],
         sort: (a, b) => b.metadata.host.localeCompare(a.metadata.host),
         customRender: ({ value, record }) => {
           return (value || record.metadata.destinationIP) + ':' + record.metadata.destinationPort
@@ -63,14 +63,14 @@ const columns = computed(() =>
         title: 'home.connections.sniffHost',
         align: 'center',
         key: 'metadata.sniffHost',
-        hidden: appSettingsStore.app.connections.visibility['metadata.sniffHost'],
+        hidden: !appSettingsStore.app.connections.visibility['metadata.sniffHost'],
         sort: (a, b) => b.metadata.sniffHost.localeCompare(a.metadata.sniffHost)
       },
       {
         title: 'home.connections.sourceIP',
         align: 'center',
         key: 'metadata.sourceIP',
-        hidden: appSettingsStore.app.connections.visibility['metadata.sourceIP'],
+        hidden: !appSettingsStore.app.connections.visibility['metadata.sourceIP'],
         sort: (a, b) => b.metadata.sourceIP.localeCompare(a.metadata.sourceIP),
         customRender: ({ value, record }) => {
           return value + ':' + record.metadata.sourcePort
@@ -80,7 +80,7 @@ const columns = computed(() =>
         title: 'home.connections.remoteDestination',
         align: 'center',
         key: 'metadata.remoteDestination',
-        hidden: appSettingsStore.app.connections.visibility['metadata.remoteDestination'],
+        hidden: !appSettingsStore.app.connections.visibility['metadata.remoteDestination'],
         sort: (a, b) => b.metadata.remoteDestination.localeCompare(a.metadata.remoteDestination),
         customRender: ({ value, record }) => {
           return value + ':' + record.metadata.destinationPort
@@ -90,7 +90,7 @@ const columns = computed(() =>
         title: 'home.connections.rule',
         align: 'center',
         key: 'rule',
-        hidden: appSettingsStore.app.connections.visibility['rule'],
+        hidden: !appSettingsStore.app.connections.visibility['rule'],
         sort: (a, b) => b.rule.localeCompare(a.rule),
         customRender: ({ value, record }) => {
           return value + (record.rulePayload ? '::' + record.rulePayload : '')
@@ -99,7 +99,7 @@ const columns = computed(() =>
       {
         title: 'home.connections.chains',
         key: 'chains',
-        hidden: appSettingsStore.app.connections.visibility['chains'],
+        hidden: !appSettingsStore.app.connections.visibility['chains'],
         sort: (a, b) => b.chains[0].localeCompare(a.chains[0]),
         customRender: ({ value }) => value.slice().reverse().join(' :: ')
       },
@@ -108,7 +108,7 @@ const columns = computed(() =>
         align: 'center',
         key: 'up',
         minWidth: '90px',
-        hidden: appSettingsStore.app.connections.visibility['up'],
+        hidden: !appSettingsStore.app.connections.visibility['up'],
         sort: (a, b) => b.upload - b.up - (a.upload - a.up),
         customRender: ({ value, record }) => formatBytes((record.upload - value) / 1000) + '/s'
       },
@@ -117,7 +117,7 @@ const columns = computed(() =>
         align: 'center',
         key: 'down',
         minWidth: '90px',
-        hidden: appSettingsStore.app.connections.visibility['down'],
+        hidden: !appSettingsStore.app.connections.visibility['down'],
         sort: (a, b) => b.download - b.down - (a.download - a.down),
         customRender: ({ value, record }) => formatBytes((record.download - value) / 1000) + '/s'
       },
@@ -125,7 +125,7 @@ const columns = computed(() =>
         title: 'home.connections.upload',
         align: 'center',
         key: 'upload',
-        hidden: appSettingsStore.app.connections.visibility['upload'],
+        hidden: !appSettingsStore.app.connections.visibility['upload'],
         sort: (a, b) => b.upload - a.upload,
         customRender: ({ value }) => formatBytes(value)
       },
@@ -133,7 +133,7 @@ const columns = computed(() =>
         title: 'home.connections.download',
         align: 'center',
         key: 'download',
-        hidden: appSettingsStore.app.connections.visibility['download'],
+        hidden: !appSettingsStore.app.connections.visibility['download'],
         sort: (a, b) => b.download - a.download,
         customRender: ({ value }) => formatBytes(value)
       },
@@ -141,7 +141,7 @@ const columns = computed(() =>
         title: 'home.connections.time',
         align: 'center',
         key: 'start',
-        hidden: appSettingsStore.app.connections.visibility['start'],
+        hidden: !appSettingsStore.app.connections.visibility['start'],
         sort: (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime(),
         customRender: ({ value }) => formatRelativeTime(value)
       }
