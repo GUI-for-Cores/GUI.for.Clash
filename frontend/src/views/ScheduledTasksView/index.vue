@@ -3,17 +3,20 @@ import { computed, ref } from 'vue'
 import { useI18n, I18nT } from 'vue-i18n'
 
 import { View } from '@/constant'
-import { useMessage } from '@/hooks'
+import { useMessage, useBool } from '@/hooks'
 import { DraggableOptions } from '@/constant'
 import { debounce, formatRelativeTime } from '@/utils'
 import { type ScheduledTaskType, useAppSettingsStore, useScheduledTasksStore } from '@/stores'
 
 import ScheduledTaskForm from './components/ScheduledTaskForm.vue'
+import ScheduledTasksLogs from './components/ScheduledTasksLogs.vue'
 
 const showTaskForm = ref(false)
 const taskFormTaskID = ref()
 const taskFormIsUpdate = ref(false)
 const taskFormTitle = computed(() => (taskFormIsUpdate.value ? 'common.edit' : 'common.add'))
+
+const [showLogs, toggleLogs] = useBool(false)
 
 const { t } = useI18n()
 const { message } = useMessage()
@@ -57,7 +60,10 @@ const onSortUpdate = debounce(scheduledTasksStore.saveScheduledTasks, 1000)
         { label: 'common.list', value: View.List }
       ]"
     />
-    <Button @click="handleAddTask" type="primary" style="margin-left: auto">
+    <Button @click="toggleLogs" type="text" style="margin-left: auto">
+      {{ t('scheduledtasks.logs') }}
+    </Button>
+    <Button @click="handleAddTask" type="primary">
       {{ t('common.add') }}
     </Button>
   </div>
@@ -150,6 +156,17 @@ const onSortUpdate = debounce(scheduledTasksStore.saveScheduledTasks, 1000)
     :footer="false"
   >
     <ScheduledTaskForm :is-update="taskFormIsUpdate" :id="taskFormTaskID" />
+  </Modal>
+
+  <Modal
+    v-model:open="showLogs"
+    :submit="false"
+    cancel-text="common.close"
+    title="scheduledtasks.logs"
+    width="90"
+    height="90"
+  >
+    <ScheduledTasksLogs />
   </Modal>
 </template>
 

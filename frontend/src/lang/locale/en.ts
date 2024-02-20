@@ -434,6 +434,13 @@ export default {
     'run::script': 'run::script'
   },
   scheduledtasks: {
+    logs: 'Logs',
+    name: 'Plugin',
+    duration: 'Duration',
+    startTime: 'Start Time',
+    endTime: 'End Time',
+    time: 'Time',
+    result: 'Result',
     empty: 'The scheduled task list is empty. Please {action} a scheduled task first.'
   },
   settings: {
