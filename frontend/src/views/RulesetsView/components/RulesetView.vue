@@ -130,7 +130,7 @@ if (r) {
       </Button>
     </div>
 
-    <Empty v-if="rulesetList.length === 0" class="empty" />
+    <Empty v-if="rulesetList.length === 0" />
 
     <div v-else v-draggable="[rulesetList, DraggableOptions]" class="rules">
       <div
@@ -165,8 +165,6 @@ if (r) {
 }
 .empty {
   flex: 1;
-  display: flex;
-  align-items: center;
   justify-content: center;
 }
 .rules {

@@ -102,11 +102,13 @@ export const useRulesetsStore = defineStore('rulesets', () => {
 
   const updateRuleset = async (id: string) => {
     const r = rulesets.value.find((v) => v.id === id)
-    if (!r || r.disabled) return
+    if (!r) throw id + ' Not Found'
+    if (r.disabled) throw r.name + ' Disabled'
     try {
       r.updating = true
       await _doUpdateRuleset(r)
       await saveRulesets()
+      return `Ruleset [${r.name}] updated successfully.`
     } finally {
       r.updating = false
     }

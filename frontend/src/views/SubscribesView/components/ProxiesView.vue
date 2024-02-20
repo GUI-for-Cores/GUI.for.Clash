@@ -255,13 +255,8 @@ const getProxyByName = async (name: string) => {
   height: 100%;
 }
 .form {
-  position: sticky;
-  top: 0;
-  z-index: 9;
   display: flex;
   align-items: center;
-  background-color: var(--modal-bg);
-  backdrop-filter: blur(2px);
   .label {
     padding: 0 8px;
     font-size: 12px;
@@ -269,8 +264,6 @@ const getProxyByName = async (name: string) => {
 }
 .empty {
   flex: 1;
-  display: flex;
-  align-items: center;
   justify-content: center;
 }
 .proxies {

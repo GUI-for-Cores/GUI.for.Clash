@@ -107,9 +107,9 @@ const handleInstallation = async (p: PluginType) => {
   p.loading = true
   try {
     if (p.installed) {
-      await pluginsStore.manualTrigger(p, PluginManualEvent.OnUninstall)
+      await pluginsStore.manualTrigger(p.id, PluginManualEvent.OnUninstall)
     } else {
-      await pluginsStore.manualTrigger(p, PluginManualEvent.OnInstall)
+      await pluginsStore.manualTrigger(p.id, PluginManualEvent.OnInstall)
     }
     p.installed = !p.installed
     await pluginsStore.editPlugin(p.id, p)
@@ -122,7 +122,7 @@ const handleInstallation = async (p: PluginType) => {
 const handleOnRun = async (p: PluginType) => {
   p.running = true
   try {
-    await pluginsStore.manualTrigger(p, PluginManualEvent.OnRun)
+    await pluginsStore.manualTrigger(p.id, PluginManualEvent.OnRun)
   } catch (error: any) {
     message.error(error)
   }
@@ -144,7 +144,7 @@ const generateMenus = (p: PluginType) => {
     handler: async () => {
       try {
         p.running = true
-        await pluginsStore.manualTrigger(p, fn as any)
+        await pluginsStore.manualTrigger(p.id, fn as any)
       } catch (error: any) {
         message.error(error)
       } finally {
