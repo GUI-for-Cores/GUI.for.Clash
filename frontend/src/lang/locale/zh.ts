@@ -434,6 +434,13 @@ export default {
     'run::script': '运行脚本'
   },
   scheduledtasks: {
+    logs: '日志',
+    name: '插件',
+    duration: '持续时间',
+    startTime: '开始时间',
+    endTime: '结束时间',
+    time: '执行时间',
+    result: '执行结果',
     empty: '计划任务列表为空，请先{action}计划任务。'
   },
   settings: {
