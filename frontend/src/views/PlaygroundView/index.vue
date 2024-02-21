@@ -6,7 +6,7 @@ import { useAppStore, useAppSettingsStore } from '@/stores'
 import { UpdateTray } from '@/utils/bridge'
 import { APP_TITLE, APP_VERSION, sleep } from '@/utils'
 import icons from '@/components/Icon/icons'
-import { useMessage, usePicker } from '@/hooks'
+import { useMessage, usePicker, useConfirm } from '@/hooks'
 
 const list = ref(['data 1', 'data 2', 'data 3', 'data 4'])
 
@@ -63,6 +63,7 @@ const handleUpdateMenus = async () => {
 
 const { message } = useMessage()
 const { picker } = usePicker()
+const { confirm } = useConfirm()
 
 const appSettings = useAppSettingsStore()
 
@@ -123,6 +124,15 @@ const handleShowMultiPicker = async () => {
     message.info(error)
   }
 }
+
+const handleShowConfirm = async () => {
+  try {
+    const res = await confirm('Title', 'Message')
+    console.log(res)
+  } catch (error: any) {
+    message.info(error)
+  }
+}
 </script>
 
 <template>
@@ -160,7 +170,7 @@ const handleShowMultiPicker = async () => {
     <Button @click="handleUpdateTray" type="link">Update Tray</Button>
   </div>
 
-  <h2>useMessage & usePicker</h2>
+  <h2>useMessage & usePicker & useConfirm</h2>
   <div>
     <Button @click="message.info('info', 100_000)">
       <Icon icon="messageInfo" />
@@ -182,6 +192,7 @@ const handleShowMultiPicker = async () => {
   </div>
   <div><Button @click="handleShowSinglePicker">Single Picker</Button></div>
   <div><Button @click="handleShowMultiPicker">Multi Picker</Button></div>
+  <div><Button @click="handleShowConfirm">Confirm</Button></div>
 </template>
 
 <style lang="less" scoped>
