@@ -192,7 +192,6 @@ export default {
         GEOIP: 'GEOIP',
         GEOSITE: 'GEOSITE',
         IPSET: 'IPSET',
-        SCRIPT: 'SCRIPT',
         MATCH: 'MATCH',
         'DOMAIN-SUFFIX': 'DOMAIN-SUFFIX',
         'DOMAIN-KEYWORD': 'DOMAIN-KEYWORD',
