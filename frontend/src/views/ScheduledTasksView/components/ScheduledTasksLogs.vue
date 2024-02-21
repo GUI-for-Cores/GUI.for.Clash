@@ -57,7 +57,7 @@ const pluginsOptions = computed(() =>
 const filteredLogs = computed(() => {
   return logsStore.scheduledtasksLogs.filter((v) => {
     const p = plugin.value ? v.name === plugin.value : true
-    const k = v.result.some((vv) => vv.includes(keywords.value))
+    const k = v.result.some((vv) => (vv ? vv.includes(keywords.value) : true))
     return p && k
   })
 })
@@ -77,23 +77,16 @@ const clearLogs = () => logsStore.scheduledtasksLogs.splice(0)
         v-model="keywords"
         size="small"
         :placeholder="t('common.keywords')"
-        class="ml-8"
-        style="flex: 1"
+        class="ml-8 flex-1"
       />
       <Button @click="clearLogs" v-tips="'common.clear'" size="small" type="text" class="ml-8">
         <Icon icon="clear" fill="var(--color)" />
       </Button>
     </div>
 
-    <Empty class="sdf" v-if="logsStore.scheduledtasksLogs.length === 0" />
+    <Empty v-if="logsStore.scheduledtasksLogs.length === 0" class="flex-1" />
 
-    <Table
-      v-else
-      :columns="columns"
-      :data-source="filteredLogs"
-      sort="start"
-      style="margin-top: 8px"
-    />
+    <Table v-else :columns="columns" :data-source="filteredLogs" sort="start" class="mt-8" />
   </div>
 </template>
 
@@ -111,19 +104,5 @@ const clearLogs = () => logsStore.scheduledtasksLogs.splice(0)
     padding: 0 8px;
     font-size: 12px;
   }
-}
-
-.ml-8 {
-  margin-left: 8px;
-}
-
-.empty {
-  flex: 1;
-  justify-content: center;
-}
-.center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 </style>

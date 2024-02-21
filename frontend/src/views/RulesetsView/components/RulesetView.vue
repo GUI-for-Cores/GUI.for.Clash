@@ -108,29 +108,17 @@ if (r) {
 <template>
   <div class="ruleset-view">
     <div class="form">
-      <Input
-        v-model="keywords"
-        size="small"
-        :placeholder="t('common.keywords')"
-        class="ml-8"
-        style="flex: 1"
-      />
+      <Input v-model="keywords" size="small" :placeholder="t('common.keywords')" />
       <Button @click="resetForm" size="small" class="ml-8">
         {{ t('common.reset') }}
       </Button>
-      <Input
-        v-model="ruleValue"
-        :placeholder="placeholder"
-        size="small"
-        class="ml-8"
-        style="flex: 1"
-      />
+      <Input v-model="ruleValue" :placeholder="placeholder" size="small" class="ml-8 flex-1" />
       <Button @click="handleAdd" type="primary" size="small" class="ml-8">
         {{ t('common.add') }}
       </Button>
     </div>
 
-    <Empty v-if="rulesetList.length === 0" />
+    <Empty v-if="rulesetList.length === 0" class="flex-1" />
 
     <div v-else v-draggable="[rulesetList, DraggableOptions]" class="rules">
       <div
@@ -163,10 +151,6 @@ if (r) {
   display: flex;
   align-items: center;
 }
-.empty {
-  flex: 1;
-  justify-content: center;
-}
 .rules {
   margin-top: 8px;
   flex: 1;
@@ -186,9 +170,5 @@ if (r) {
     background: var(--card-bg);
     overflow: hidden;
   }
-}
-
-.ml-8 {
-  margin-left: 8px;
 }
 </style>

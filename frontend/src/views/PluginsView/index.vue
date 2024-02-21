@@ -162,7 +162,7 @@ const onSortUpdate = debounce(pluginsStore.savePlugins, 1000)
 </script>
 
 <template>
-  <div v-if="pluginsStore.plugins.length === 0" class="empty">
+  <div v-if="pluginsStore.plugins.length === 0" class="grid-list-empty">
     <Empty>
       <template #description>
         <I18nT keypath="plugins.empty" tag="p" scope="global">
@@ -177,7 +177,7 @@ const onSortUpdate = debounce(pluginsStore.savePlugins, 1000)
     </Empty>
   </div>
 
-  <div v-else class="header">
+  <div v-else class="grid-list-header">
     <Radio
       v-model="appSettingsStore.app.pluginsView"
       :options="[
@@ -185,7 +185,7 @@ const onSortUpdate = debounce(pluginsStore.savePlugins, 1000)
         { label: 'common.list', value: View.List }
       ]"
     />
-    <Button class="ml-auto" @click="handleImportPlugin" type="link">
+    <Button @click="handleImportPlugin" type="link" class="ml-auto">
       {{ t('plugins.hub') }}
     </Button>
     <Button
@@ -202,8 +202,7 @@ const onSortUpdate = debounce(pluginsStore.savePlugins, 1000)
 
   <div
     v-draggable="[pluginsStore.plugins, { ...DraggableOptions, onUpdate: onSortUpdate }]"
-    :class="appSettingsStore.app.pluginsView"
-    class="plugins"
+    :class="'grid-list-' + appSettingsStore.app.pluginsView"
   >
     <Card
       v-for="p in pluginsStore.plugins"
@@ -211,7 +210,7 @@ const onSortUpdate = debounce(pluginsStore.savePlugins, 1000)
       :title="p.name"
       :disabled="p.disabled"
       v-menu="generateMenus(p)"
-      class="plugin"
+      class="item"
     >
       <template #title-prefix>
         <Tag v-if="p.updating" color="cyan">
@@ -368,47 +367,12 @@ const onSortUpdate = debounce(pluginsStore.savePlugins, 1000)
 </template>
 
 <style lang="less" scoped>
-.header {
-  display: flex;
-  align-items: center;
-  padding: 0 8px;
-  z-index: 9;
+.description {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.empty {
-  text-align: center;
-  height: 70vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.plugins {
-  flex: 1;
-  margin-top: 8px;
-  overflow-y: auto;
-  font-size: 12px;
-  line-height: 1.6;
-
-  .description {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-}
-
-.grid {
-  .plugin {
-    display: inline-block;
-    width: calc(33.333333% - 16px);
-    margin: 8px;
-  }
-}
-.list {
-  .plugin {
-    margin: 8px;
-  }
-}
 .action {
   display: flex;
   margin-top: 4px;
@@ -416,8 +380,5 @@ const onSortUpdate = debounce(pluginsStore.savePlugins, 1000)
     margin-left: -4px;
     padding-left: 4px;
   }
-}
-.ml-auto {
-  margin-left: auto;
 }
 </style>

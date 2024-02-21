@@ -52,23 +52,7 @@ const onSortUpdate = debounce(scheduledTasksStore.saveScheduledTasks, 1000)
 </script>
 
 <template>
-  <div v-if="scheduledTasksStore.scheduledtasks.length !== 0" class="header">
-    <Radio
-      v-model="appSettingsStore.app.scheduledtasksView"
-      :options="[
-        { label: 'common.grid', value: View.Grid },
-        { label: 'common.list', value: View.List }
-      ]"
-    />
-    <Button @click="toggleLogs" type="text" style="margin-left: auto">
-      {{ t('scheduledtasks.logs') }}
-    </Button>
-    <Button @click="handleAddTask" type="primary">
-      {{ t('common.add') }}
-    </Button>
-  </div>
-
-  <div v-else class="empty">
+  <div v-if="scheduledTasksStore.scheduledtasks.length === 0" class="grid-list-empty">
     <Empty>
       <template #description>
         <I18nT keypath="scheduledtasks.empty" tag="p" scope="global">
@@ -80,20 +64,35 @@ const onSortUpdate = debounce(scheduledTasksStore.saveScheduledTasks, 1000)
     </Empty>
   </div>
 
+  <div v-else class="grid-list-header">
+    <Radio
+      v-model="appSettingsStore.app.scheduledtasksView"
+      :options="[
+        { label: 'common.grid', value: View.Grid },
+        { label: 'common.list', value: View.List }
+      ]"
+    />
+    <Button @click="toggleLogs" type="text" class="ml-auto">
+      {{ t('scheduledtasks.logs') }}
+    </Button>
+    <Button @click="handleAddTask" type="primary">
+      {{ t('common.add') }}
+    </Button>
+  </div>
+
   <div
     v-draggable="[
       scheduledTasksStore.scheduledtasks,
       { ...DraggableOptions, onUpdate: onSortUpdate }
     ]"
-    :class="appSettingsStore.app.scheduledtasksView"
-    class="scheduledtasks"
+    :class="'grid-list-' + appSettingsStore.app.scheduledtasksView"
   >
     <Card
       v-for="s in scheduledTasksStore.scheduledtasks"
       :key="s.id"
       :title="s.name"
       :disabled="s.disabled"
-      class="task"
+      class="item"
     >
       <template v-if="appSettingsStore.app.scheduledtasksView === View.Grid" #extra>
         <Dropdown :trigger="['hover', 'click']">
@@ -170,41 +169,4 @@ const onSortUpdate = debounce(scheduledTasksStore.saveScheduledTasks, 1000)
   </Modal>
 </template>
 
-<style lang="less" scoped>
-.header {
-  display: flex;
-  align-items: center;
-  padding: 0 8px;
-  z-index: 9;
-}
-
-.empty {
-  text-align: center;
-  height: 70vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.scheduledtasks {
-  flex: 1;
-  margin-top: 8px;
-  overflow-y: auto;
-  font-size: 12px;
-  line-height: 1.6;
-}
-
-.grid {
-  .task {
-    position: relative;
-    display: inline-block;
-    width: calc(33.333333% - 16px);
-    margin: 8px;
-  }
-}
-.list {
-  .task {
-    margin: 8px;
-  }
-}
-</style>
+<style lang="less" scoped></style>

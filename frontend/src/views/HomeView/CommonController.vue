@@ -35,7 +35,7 @@ const handleUpdateGEO = async () => {
 
 <template>
   <div class="card-list">
-    <Divider class="w-100 mb-18">
+    <Divider class="w-full mb-8">
       {{ t('home.overview.settingsTips') }}
     </Divider>
 
@@ -73,7 +73,7 @@ const handleUpdateGEO = async () => {
       <Switch v-model="kernelApiStore.config['allow-lan']" @change="onAllowLanChange" />
     </Card>
 
-    <div class="w-100 mt-8"></div>
+    <div class="w-full mt-8"></div>
 
     <Card :title="t('kernel.tun.stack')" class="card-item">
       <Select
@@ -109,15 +109,5 @@ const handleUpdateGEO = async () => {
   .card-item {
     width: 24%;
   }
-}
-
-.w-100 {
-  width: 100%;
-}
-.mt-8 {
-  margin-top: 8px;
-}
-.mb-18 {
-  margin-bottom: 18px;
 }
 </style>

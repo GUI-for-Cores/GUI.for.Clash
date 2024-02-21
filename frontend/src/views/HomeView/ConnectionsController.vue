@@ -261,7 +261,7 @@ onUnmounted(disconnect)
 
 <template>
   <div class="connections">
-    <div class="tools">
+    <div class="form">
       <Radio
         v-model="isActive"
         :options="[
@@ -270,13 +270,8 @@ onUnmounted(disconnect)
         ]"
         size="small"
       />
-      <Input
-        v-model="keywords"
-        size="small"
-        placeholder="Search"
-        style="margin-left: 8px; flex: 1"
-      />
-      <Button @click="togglePause" size="small" type="text" style="margin-left: 8px">
+      <Input v-model="keywords" size="small" placeholder="Search" class="ml-8 flex-1" />
+      <Button @click="togglePause" size="small" type="text" class="ml-8">
         <Icon :icon="isPause ? 'play' : 'pause'" fill="var(--color)" />
       </Button>
       <Button
@@ -306,7 +301,7 @@ onUnmounted(disconnect)
       :menu="menu"
       :data-source="filteredConnections"
       sort="start"
-      style="margin-top: 8px"
+      class="mt-8"
     />
   </div>
 
@@ -335,8 +330,8 @@ onUnmounted(disconnect)
         :key="column"
         class="field-item"
       >
-        <span class="name">{{ t(columnTitleMap[column] || column) }}</span>
-        <Switch v-model="appSettingsStore.app.connections.visibility[column]" class="action" />
+        <span class="font-bold">{{ t(columnTitleMap[column] || column) }}</span>
+        <Switch v-model="appSettingsStore.app.connections.visibility[column]" class="ml-auto" />
       </Card>
     </div>
   </Modal>
@@ -348,7 +343,7 @@ onUnmounted(disconnect)
   flex-direction: column;
   height: 100%;
 }
-.tools {
+.form {
   display: flex;
   align-items: center;
 }
@@ -358,11 +353,5 @@ onUnmounted(disconnect)
   align-items: center;
   padding: 0 8px;
   margin-bottom: 2px;
-  .name {
-    font-weight: bold;
-  }
-  .action {
-    margin-left: auto;
-  }
 }
 </style>

@@ -2,9 +2,9 @@
 import { inject, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
+import { sampleID } from '@/utils'
 import { useMessage } from '@/hooks'
 import * as Defaults from '@/constant'
-import { sampleID, APP_TITLE, APP_VERSION } from '@/utils'
 import {
   useProfilesStore,
   useAppSettingsStore,
@@ -64,7 +64,7 @@ const handleSubmit = async () => {
     excludeProtocol: '',
     proxyPrefix: '',
     disabled: false,
-    userAgent: APP_TITLE + '/' + APP_VERSION,
+    userAgent: '',
     healthCheck: {
       enable: true,
       url: 'https://www.gstatic.com/generate_204',
@@ -105,8 +105,8 @@ const handleSubmit = async () => {
 
 <template>
   <div class="form-item">
-    <div class="name">{{ t('subscribe.url') }} *</div>
-    <Input v-model="url" auto-size placeholder="http(s)://" autofocus style="width: 86%" />
+    <div>{{ t('subscribe.url') }} *</div>
+    <Input v-model="url" auto-size placeholder="http(s)://" autofocus style="width: 76%" />
   </div>
 
   <div class="form-action">
