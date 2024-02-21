@@ -142,28 +142,7 @@ const onSortUpdate = debounce(rulesetsStore.saveRulesets, 1000)
 </script>
 
 <template>
-  <div v-if="rulesetsStore.rulesets.length !== 0" class="header">
-    <Radio
-      v-model="appSettingsStore.app.rulesetsView"
-      :options="[
-        { label: 'common.grid', value: View.Grid },
-        { label: 'common.list', value: View.List }
-      ]"
-    />
-    <Button
-      @click="handleUpdateRulesets"
-      :disable="noUpdateNeeded"
-      :type="noUpdateNeeded ? 'text' : 'link'"
-      style="margin-left: auto"
-    >
-      {{ t('common.updateAll') }}
-    </Button>
-    <Button @click="handleAddRuleset" type="primary">
-      {{ t('common.add') }}
-    </Button>
-  </div>
-
-  <div v-else class="empty">
+  <div v-if="rulesetsStore.rulesets.length === 0" class="grid-list-empty">
     <Empty>
       <template #description>
         <I18nT keypath="rulesets.empty" tag="p" scope="global">
@@ -175,10 +154,30 @@ const onSortUpdate = debounce(rulesetsStore.saveRulesets, 1000)
     </Empty>
   </div>
 
+  <div v-else class="grid-list-header">
+    <Radio
+      v-model="appSettingsStore.app.rulesetsView"
+      :options="[
+        { label: 'common.grid', value: View.Grid },
+        { label: 'common.list', value: View.List }
+      ]"
+    />
+    <Button
+      @click="handleUpdateRulesets"
+      :disable="noUpdateNeeded"
+      :type="noUpdateNeeded ? 'text' : 'link'"
+      class="ml-auto"
+    >
+      {{ t('common.updateAll') }}
+    </Button>
+    <Button @click="handleAddRuleset" type="primary">
+      {{ t('common.add') }}
+    </Button>
+  </div>
+
   <div
     v-draggable="[rulesetsStore.rulesets, { ...DraggableOptions, onUpdate: onSortUpdate }]"
-    :class="appSettingsStore.app.rulesetsView"
-    class="rulesets"
+    :class="'grid-list-' + appSettingsStore.app.rulesetsView"
   >
     <Card
       v-for="r in rulesetsStore.rulesets"
@@ -186,7 +185,7 @@ const onSortUpdate = debounce(rulesetsStore.saveRulesets, 1000)
       :title="r.name"
       :disabled="r.disabled"
       v-menu="menuList.map((v) => ({ ...v, handler: () => v.handler?.(r.id) }))"
-      class="ruleset"
+      class="item"
     >
       <template #title-prefix>
         <Tag v-if="r.updating" color="cyan">
@@ -290,40 +289,4 @@ const onSortUpdate = debounce(rulesetsStore.saveRulesets, 1000)
   </Modal>
 </template>
 
-<style lang="less" scoped>
-.header {
-  display: flex;
-  align-items: center;
-  padding: 0 8px;
-  z-index: 9;
-}
-
-.empty {
-  text-align: center;
-  height: 70vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.rulesets {
-  flex: 1;
-  margin-top: 8px;
-  overflow-y: auto;
-  font-size: 12px;
-  line-height: 1.6;
-}
-
-.grid {
-  .ruleset {
-    display: inline-block;
-    width: calc(33.333333% - 16px);
-    margin: 8px;
-  }
-}
-.list {
-  .ruleset {
-    margin: 8px;
-  }
-}
-</style>
+<style lang="less" scoped></style>

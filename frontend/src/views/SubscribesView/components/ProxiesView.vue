@@ -139,10 +139,6 @@ const onEditEnd = async () => {
     proxy = parse(details.value)
 
     if (typeof proxy !== 'object') throw 'wrong format'
-
-    if (sub.value.proxies.find((v) => v.name === proxy.name)) {
-      throw 'A proxy with the same name already exists.'
-    }
   } catch (error: any) {
     console.log(error)
     message.error(error.message || error)
@@ -199,8 +195,7 @@ const getProxyByName = async (name: string) => {
         v-model="keywords"
         size="small"
         :placeholder="t('subscribes.proxies.name')"
-        class="ml-8"
-        style="flex: 1"
+        class="ml-8 flex-1"
       />
       <Button @click="resetForm" size="small" class="ml-8">
         {{ t('common.reset') }}
@@ -210,9 +205,9 @@ const getProxyByName = async (name: string) => {
       </Button>
     </div>
 
-    <Empty v-if="filteredProxies.length === 0" class="empty" />
+    <Empty v-if="filteredProxies.length === 0" class="flex-1" />
 
-    <div v-else v-draggable="[sub.proxies, { ...DraggableOptions }]" class="proxies">
+    <div v-else v-draggable="[sub.proxies, DraggableOptions]" class="proxies">
       <Card
         v-for="proxy in filteredProxies"
         :key="proxy.name"
@@ -223,7 +218,7 @@ const getProxyByName = async (name: string) => {
         {{ proxy.type }}
       </Card>
     </div>
-    <div class="action">
+    <div class="form-action">
       <Button @click="handleCancel" :disable="loading">
         {{ t('common.cancel') }}
       </Button>
@@ -262,10 +257,6 @@ const getProxyByName = async (name: string) => {
     font-size: 12px;
   }
 }
-.empty {
-  flex: 1;
-  justify-content: center;
-}
 .proxies {
   margin-top: 8px;
   flex: 1;
@@ -276,15 +267,5 @@ const getProxyByName = async (name: string) => {
     width: calc(25% - 4px);
     margin: 2px;
   }
-}
-
-.ml-8 {
-  margin-left: 8px;
-}
-
-.action {
-  display: flex;
-  margin-top: 8px;
-  justify-content: flex-end;
 }
 </style>

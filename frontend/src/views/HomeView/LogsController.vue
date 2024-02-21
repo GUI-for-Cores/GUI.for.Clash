@@ -80,7 +80,7 @@ onUnmounted(disconnect)
 </script>
 
 <template>
-  <div class="logs">
+  <div class="logs-view">
     <div class="form">
       <span class="label">
         {{ t('kernel.log-level') }}
@@ -91,8 +91,7 @@ onUnmounted(disconnect)
         v-model="keywords"
         size="small"
         :placeholder="t('common.keywords')"
-        class="ml-8"
-        style="flex: 1"
+        class="ml-8 flex-1"
       />
       <Button @click="togglePause" type="text" size="small" class="ml-8">
         <Icon :icon="pause ? 'play' : 'pause'" fill="var(--color)" />
@@ -102,14 +101,14 @@ onUnmounted(disconnect)
       </Button>
     </div>
 
-    <Empty v-if="filteredLogs.length === 0" class="empty" />
+    <Empty v-if="filteredLogs.length === 0" class="flex-1" />
 
-    <div v-else>
+    <div v-else class="logs">
       <div
         v-for="log in filteredLogs"
         v-menu="menus.map((v) => ({ ...v, handler: () => v.handler?.(log) }))"
         :key="log.payload"
-        class="log user-select"
+        class="log select-text"
       >
         <span class="type">{{ log.type }}</span> {{ log.payload }}
       </div>
@@ -118,42 +117,39 @@ onUnmounted(disconnect)
 </template>
 
 <style lang="less" scoped>
-.logs {
+.logs-view {
   display: flex;
   flex-direction: column;
   height: 100%;
 }
 
-.log {
-  font-size: 12px;
-  padding: 2px 4px;
-  margin: 4px 0;
-  background: var(--card-bg);
-  &:hover {
-    color: #fff;
-    background: var(--primary-color);
-    .type {
+.logs {
+  margin-top: 8px;
+  flex: 1;
+  overflow-y: auto;
+
+  .log {
+    font-size: 12px;
+    padding: 2px 4px;
+    margin: 4px 0;
+    background: var(--card-bg);
+    &:hover {
       color: #fff;
+      background: var(--primary-color);
+      .type {
+        color: #fff;
+      }
     }
   }
 }
 
 .form {
-  position: sticky;
-  top: 0;
-  z-index: 9;
   display: flex;
   align-items: center;
-  background-color: var(--modal-bg);
-  backdrop-filter: blur(2px);
   .label {
     padding: 0 8px;
     font-size: 12px;
   }
-}
-
-.ml-8 {
-  margin-left: 8px;
 }
 
 .type {
@@ -161,10 +157,5 @@ onUnmounted(disconnect)
   width: 50px;
   text-align: center;
   color: var(--primary-color);
-}
-
-.empty {
-  flex: 1;
-  justify-content: center;
 }
 </style>

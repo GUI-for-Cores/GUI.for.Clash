@@ -94,7 +94,7 @@ const tableColumns = computed(() => {
             v-for="column in tableColumns"
             :key="column.key"
             :style="{ textAlign: column.align || 'left' }"
-            class="user-select"
+            class="select-text"
           >
             {{
               (column.customRender
