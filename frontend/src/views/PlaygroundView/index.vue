@@ -128,7 +128,7 @@ const handleShowMultiPicker = async () => {
 
 const handleShowConfirm = async () => {
   try {
-    const res = await confirm('Title', 'Message')
+    const res = await confirm('Title', 'Message\nline1\nline3')
     console.log(res)
   } catch (error: any) {
     message.info(error)
