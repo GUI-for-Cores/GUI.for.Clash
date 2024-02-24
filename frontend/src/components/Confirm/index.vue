@@ -4,9 +4,10 @@ import useI18n from '@/lang'
 interface Props {
   title: string
   message: string
+  cancel?: boolean
 }
 
-defineProps<Props>()
+withDefaults(defineProps<Props>(), { cancel: true })
 
 const emits = defineEmits(['confirm', 'cancel', 'finish'])
 
@@ -28,7 +29,7 @@ const handleCancel = () => {
     <div class="title">{{ title }}</div>
     <div class="message">{{ message }}</div>
     <div class="form-action">
-      <Button @click="handleCancel" size="small">{{ t('common.cancel') }}</Button>
+      <Button v-if="cancel" @click="handleCancel" size="small">{{ t('common.cancel') }}</Button>
       <Button @click="handleConfirm" size="small" type="primary">
         {{ t('common.confirm') }}
       </Button>
