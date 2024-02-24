@@ -52,8 +52,12 @@ const handleCancel = () => {
   }
   .message {
     font-size: 12px;
+    line-height: 1.6;
     padding: 6px;
     word-break: break-all;
+    white-space: pre-wrap;
+    max-height: 300px;
+    overflow-y: auto;
   }
 }
 </style>
