@@ -66,6 +66,10 @@ appSettings.setupAppSettings().then(async () => {
     ignoredError(scheduledTasksStore.setupScheduledTasks)
   ])
 
+  await sleep(1000)
+
+  loading.value = false
+
   kernelApiStore.updateKernelStatus().then(async (running) => {
     kernelApiStore.statusLoading = false
     try {
@@ -80,10 +84,6 @@ appSettings.setupAppSettings().then(async () => {
       message.error(error)
     }
   })
-
-  await sleep(1000)
-
-  loading.value = false
 
   try {
     await pluginsStore.onStartupTrigger()
