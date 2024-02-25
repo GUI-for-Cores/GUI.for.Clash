@@ -32,6 +32,7 @@ const plugin = ref<PluginType>({
   path: `data/plugins/plugin-${pluginID}.js`,
   triggers: [],
   menus: {},
+  configuration: [],
   disabled: false,
   install: false,
   installed: false
@@ -136,6 +137,15 @@ if (props.isUpdate) {
         <KeyValueEditor
           v-model="plugin.menus"
           :placeholder="[t('plugin.menuKey'), t('plugin.menuValue')]"
+        />
+      </div>
+      <div class="form-item" :class="{ 'flex-start': plugin.configuration.length == 0 }">
+        <div class="name">
+          {{ t('plugin.configuration') }}
+        </div>
+        <InputList
+          v-model="plugin.configuration"
+          placeholder="label,description,key,type,default"
         />
       </div>
     </div>

@@ -7,6 +7,14 @@ import { useAppSettingsStore, type ProfileType, type SubscribeType } from '@/sto
 import { PluginsFilePath, PluginTrigger, PluginManualEvent } from '@/constant'
 import { APP_TITLE, APP_VERSION, debounce, deepClone, ignoredError, isValidSubYAML } from '@/utils'
 
+export type PluginConfiguration = {
+  label: string
+  description: string
+  key: string
+  type: 'boolean' | 'number' | 'string'
+  default: boolean | number | string
+}
+
 export type PluginType = {
   id: string
   name: string
@@ -16,6 +24,7 @@ export type PluginType = {
   path: string
   triggers: PluginTrigger[]
   menus: Record<string, string>
+  configuration: PluginConfiguration[]
   disabled: boolean
   install: boolean
   installed: boolean
