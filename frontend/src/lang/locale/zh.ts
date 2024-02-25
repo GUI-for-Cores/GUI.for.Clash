@@ -403,6 +403,7 @@ export default {
     path: '保存路径',
     type: '类型',
     menus: '菜单',
+    configuration: '配置',
     menuKey: '菜单名称',
     menuValue: '触发方法名'
   },
@@ -411,6 +412,7 @@ export default {
     empty: '插件列表为空，请先{action}或{import}插件。',
     source: '源码',
     reload: '重载插件',
+    settings: '设置插件',
     hub: '插件中心',
     update: '更新列表',
     updateSuccess: '列表更新成功',

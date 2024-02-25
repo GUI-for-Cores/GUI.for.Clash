@@ -403,6 +403,7 @@ export default {
     path: 'Save Path',
     type: 'Type',
     menus: 'Menus',
+    configuration: ' Configuration',
     menuKey: 'Menu Title',
     menuValue: 'Trigger function name'
   },
@@ -411,6 +412,7 @@ export default {
     empty: 'The plugin list is empty. Please {action} or {import} a plugin first.',
     source: 'Source',
     reload: 'Reload',
+    settings: 'Settings',
     hub: 'Plugin-Hub',
     update: 'Update List',
     updateSuccess: 'updated successfully',
