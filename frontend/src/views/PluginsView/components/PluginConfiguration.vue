@@ -2,14 +2,8 @@
 import { ref, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { useBool, useMessage } from '@/hooks'
-import { deepClone } from '@/utils'
-import {
-  usePluginsStore,
-  useAppSettingsStore,
-  type PluginType,
-  type PluginConfiguration
-} from '@/stores'
+import { useMessage } from '@/hooks'
+import { usePluginsStore, useAppSettingsStore, type PluginConfiguration } from '@/stores'
 
 interface Props {
   id: string
@@ -18,7 +12,7 @@ interface Props {
 const props = defineProps<Props>()
 
 const settings = ref<Record<string, any>>({})
-const plugin = ref<PluginType>()
+const configuration = ref<PluginConfiguration[]>([])
 
 const { t } = useI18n()
 const { message } = useMessage()
@@ -27,23 +21,57 @@ const appSettingsStore = useAppSettingsStore()
 
 const handleCancel = inject('cancel') as any
 
-const handleSubmit = async () => {}
+const handleSubmit = async () => {
+  appSettingsStore.app.pluginSettings[props.id] = settings.value
+  handleCancel()
+  message.success('common.success')
+}
+
+const getOptions = (val: string[]) => {
+  return val.map((v) => {
+    const arr = v.split(',')
+    return { label: arr[0], value: arr[1] || arr[0] }
+  })
+}
+
+const handleRestoreConfiguration = () => {
+  settings.value = {}
+  configuration.value.forEach(({ key, value }) => (settings.value[key] = value))
+  message.success('common.success')
+}
 
 const p = pluginsStore.getPluginById(props.id)
 if (p) {
-  plugin.value = p
+  configuration.value = p.configuration
   settings.value = appSettingsStore.app.pluginSettings[p.id]
+  // Fill with default value
+  if (!settings.value) {
+    settings.value = {}
+    configuration.value.forEach(({ key, value }) => (settings.value[key] = value))
+  }
 }
 </script>
 
 <template>
-  {{ settings }}
   <div class="form">
-    <div v-for="key in Object.keys(settings)" :key="key" class="form-item">
-      <!-- <div class="name">{{ getLabel(key) }}</div> -->
-    </div>
+    <Card
+      v-for="(conf, index) in configuration"
+      :key="conf.id"
+      :title="index + 1 + '、' + conf.title"
+      class="mb-8"
+    >
+      <div class="mb-8" style="font-size: 12px">{{ conf.description }}</div>
+      <Component
+        v-model="settings[conf.key]"
+        :is="conf.component"
+        :options="getOptions(conf.options)"
+        :autofocus="false"
+        editable
+      />
+    </Card>
   </div>
   <div class="form-action">
+    <Button @click="handleRestoreConfiguration" type="link">{{ t('plugin.restore') }}</Button>
     <Button @click="handleCancel">{{ t('common.cancel') }}</Button>
     <Button @click="handleSubmit" type="primary">
       {{ t('common.save') }}

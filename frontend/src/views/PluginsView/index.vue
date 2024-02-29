@@ -37,7 +37,7 @@ const menuList: Menu[] = [
     }
   },
   {
-    label: 'plugins.settings',
+    label: 'plugins.configuration',
     handler: async (id: string) => {
       const plugin = pluginsStore.getPluginById(id)
       if (!plugin) return
@@ -376,7 +376,13 @@ const onSortUpdate = debounce(pluginsStore.savePlugins, 1000)
     <PluginHub />
   </Modal>
 
-  <Modal v-model:open="showPluginConfiguration" max-height="90" max-width="90">
+  <Modal
+    v-model:open="showPluginConfiguration"
+    title="plugins.configuration"
+    :footer="false"
+    max-height="90"
+    max-width="60"
+  >
     <PluginConfiguration :id="pluginFormID" />
   </Modal>
 </template>

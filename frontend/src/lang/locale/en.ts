@@ -405,14 +405,21 @@ export default {
     menus: 'Menus',
     configuration: ' Configuration',
     menuKey: 'Menu Title',
-    menuValue: 'Trigger function name'
+    menuValue: 'Trigger function name',
+    selectComponent: 'Select a component',
+    confName: 'Name',
+    confDescription: 'Description',
+    confKey: 'Key',
+    confDefault: 'Default',
+    options: 'Options',
+    restore: 'Restore to default'
   },
   plugins: {
     updating: 'Updating',
     empty: 'The plugin list is empty. Please {action} or {import} a plugin first.',
     source: 'Source',
     reload: 'Reload',
-    settings: 'Settings',
+    configuration: 'Configure',
     hub: 'Plugin-Hub',
     update: 'Update List',
     updateSuccess: 'updated successfully',
