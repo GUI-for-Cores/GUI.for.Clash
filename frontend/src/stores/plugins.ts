@@ -8,11 +8,22 @@ import { PluginsFilePath, PluginTrigger, PluginManualEvent } from '@/constant'
 import { APP_TITLE, APP_VERSION, debounce, deepClone, ignoredError, isValidSubYAML } from '@/utils'
 
 export type PluginConfiguration = {
-  label: string
+  id: string
+  title: string
   description: string
   key: string
-  type: 'boolean' | 'number' | 'string'
-  default: boolean | number | string
+  component:
+    | 'CheckBox'
+    | 'CodeViewer'
+    | 'Input'
+    | 'InputList'
+    | 'KeyValueEditor'
+    | 'Radio'
+    | 'Select'
+    | 'Switch'
+    | ''
+  value: any
+  options: any[]
 }
 
 export type PluginType = {
@@ -75,6 +86,16 @@ const PluginsTriggerMap: {
 }
 
 const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor
+
+const getUserConfiguration = (plugin: PluginType) => {
+  const appSettingsStore = useAppSettingsStore()
+  let configuration = appSettingsStore.app.pluginSettings[plugin.id]
+  if (!configuration) {
+    configuration = {}
+    plugin.configuration.forEach(({ key, value }) => (configuration[key] = value))
+  }
+  return configuration
+}
 
 export const usePluginsStore = defineStore('plugins', () => {
   const plugins = ref<PluginType[]>([])
@@ -244,10 +265,10 @@ export const usePluginsStore = defineStore('plugins', () => {
       } else {
         result = `\`${result}\``
       }
-
+      const configuration = getUserConfiguration(cache.plugin)
       try {
         const fn = new AsyncFunction(
-          `${cache.code}; return await ${fnName}(${result}, ${JSON.stringify(subscription)})`
+          `const Plugin = ${JSON.stringify(configuration)}; ${cache.code}; return await ${fnName}(${result}, ${JSON.stringify(subscription)})`
         )
         result = await fn(result)
       } catch (error: any) {
@@ -281,9 +302,11 @@ export const usePluginsStore = defineStore('plugins', () => {
         (cache.plugin.install && !cache.plugin.installed)
       )
         continue
-
+      const configuration = getUserConfiguration(cache.plugin)
       try {
-        const fn = new AsyncFunction(`${cache.code}; await ${fnName}()`)
+        const fn = new AsyncFunction(
+          `const Plugin = ${JSON.stringify(configuration)}; ${cache.code}; await ${fnName}()`
+        )
         await await fn()
       } catch (error: any) {
         throw `【${cache.plugin.name}】 Error: ` + (error.message || error)
@@ -307,9 +330,10 @@ export const usePluginsStore = defineStore('plugins', () => {
         (cache.plugin.install && !cache.plugin.installed)
       )
         continue
+      const configuration = getUserConfiguration(cache.plugin)
       try {
         const fn = new AsyncFunction(
-          `${cache.code}; return await ${fnName}(${JSON.stringify(params)}, ${JSON.stringify(profile)})`
+          `const Plugin = ${JSON.stringify(configuration)}; ${cache.code}; return await ${fnName}(${JSON.stringify(params)}, ${JSON.stringify(profile)})`
         )
         params = await fn()
       } catch (error: any) {
@@ -328,8 +352,11 @@ export const usePluginsStore = defineStore('plugins', () => {
     const cache = PluginsCache[plugin.id]
     if (!cache) throw `${plugin.name} is Missing source code`
     if (cache.plugin.disabled) throw `${plugin.name} Disabled`
+    const configuration = getUserConfiguration(plugin)
     try {
-      const fn = new AsyncFunction(`${cache.code}; return await ${event}()`)
+      const fn = new AsyncFunction(
+        `const Plugin = ${JSON.stringify(configuration)}; ${cache.code}; return await ${event}()`
+      )
       return await fn()
     } catch (error: any) {
       throw `${cache.plugin.name} Error: ` + (error.message || error)
