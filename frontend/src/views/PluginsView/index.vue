@@ -11,10 +11,12 @@ import { usePluginsStore, useAppSettingsStore, type PluginType, type Menu } from
 import PluginForm from './components/PluginForm.vue'
 import PluginView from './components/PluginView.vue'
 import PluginHub from './components/PluginHub.vue'
+import PluginConfiguration from './components/PluginConfiguration.vue'
 
 const showPluginForm = ref(false)
 const showPluginView = ref(false)
 const showPluginHub = ref(false)
+const showPluginConfiguration = ref(false)
 const pluginTitle = ref('')
 const pluginFormID = ref()
 const pluginFormIsUpdate = ref(false)
@@ -32,6 +34,15 @@ const menuList: Menu[] = [
         console.log(error)
         message.error(error)
       }
+    }
+  },
+  {
+    label: 'plugins.configuration',
+    handler: async (id: string) => {
+      const plugin = pluginsStore.getPluginById(id)
+      if (!plugin) return
+      pluginFormID.value = plugin.id
+      showPluginConfiguration.value = true
     }
   }
 ]
@@ -363,6 +374,16 @@ const onSortUpdate = debounce(pluginsStore.savePlugins, 1000)
     width="90"
   >
     <PluginHub />
+  </Modal>
+
+  <Modal
+    v-model:open="showPluginConfiguration"
+    title="plugins.configuration"
+    :footer="false"
+    max-height="90"
+    max-width="60"
+  >
+    <PluginConfiguration :id="pluginFormID" />
   </Modal>
 </template>
 
