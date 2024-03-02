@@ -239,14 +239,13 @@ export const usePluginsStore = defineStore('plugins', () => {
 
   const getPluginCodefromCache = (id: string) => PluginsCache[id]?.code
 
-  const onSubscribeTrigger = async (params: string, subscription: SubscribeType) => {
+  const onSubscribeTrigger = async (
+    proxies: Record<string, any>[],
+    subscription: SubscribeType
+  ) => {
     const { fnName, observers } = PluginsTriggerMap[PluginTrigger.OnSubscribe]
 
-    let result = params
-
-    if (isValidSubYAML(result)) {
-      result = parse(result).proxies
-    }
+    let result = proxies
 
     for (let i = 0; i < observers.length; i++) {
       const pluginId = observers[i]
@@ -260,16 +259,12 @@ export const usePluginsStore = defineStore('plugins', () => {
       )
         continue
 
-      if (typeof result !== 'string') {
-        result = JSON.stringify(result)
-      } else {
-        result = `\`${result}\``
-      }
       const configuration = getUserConfiguration(cache.plugin)
       try {
-        const fn = new AsyncFunction(
-          `const Plugin = ${JSON.stringify(configuration)}; ${cache.code}; return await ${fnName}(${result}, ${JSON.stringify(subscription)})`
-        )
+        const fn = new AsyncFunction(`const Plugin = ${JSON.stringify(configuration)};
+          ${cache.code};
+          return await ${fnName}(${JSON.stringify(result)}, ${JSON.stringify(subscription)})
+        `)
         result = await fn(result)
       } catch (error: any) {
         throw `【${cache.plugin.name}】 Error: ` + (error.message || error)
