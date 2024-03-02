@@ -5,7 +5,7 @@ import { stringify, parse } from 'yaml'
 import { SubscribesFilePath } from '@/constant'
 import { Readfile, Writefile, HttpGet } from '@/utils/bridge'
 import { useAppSettingsStore, usePluginsStore } from '@/stores'
-import { deepClone, debounce, sampleID, APP_TITLE, APP_VERSION } from '@/utils'
+import { deepClone, debounce, sampleID, APP_TITLE, APP_VERSION, isValidSubYAML } from '@/utils'
 
 export type SubscribeType = {
   id: string
@@ -138,9 +138,13 @@ export const useSubscribesStore = defineStore('subscribes', () => {
       body = b
     }
 
+    if (!isValidSubYAML(body)) {
+      throw 'Not a valid yaml format file'
+    }
+
     const pluginStore = usePluginsStore()
 
-    proxies = await pluginStore.onSubscribeTrigger(body, s)
+    proxies = await pluginStore.onSubscribeTrigger(parse(body).proxies, s)
 
     if (!Array.isArray(proxies)) {
       throw 'Not a valid subscription data'
