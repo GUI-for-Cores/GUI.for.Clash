@@ -3,9 +3,9 @@ import { defineStore } from 'pinia'
 import { parse, stringify } from 'yaml'
 
 import { HttpGet, Readfile, Writefile } from '@/utils/bridge'
-import { useAppSettingsStore, type ProfileType, type SubscribeType } from '@/stores'
 import { PluginsFilePath, PluginTrigger, PluginManualEvent } from '@/constant'
-import { APP_TITLE, APP_VERSION, debounce, deepClone, ignoredError, isValidSubYAML } from '@/utils'
+import { APP_TITLE, APP_VERSION, debounce, deepClone, ignoredError } from '@/utils'
+import { useAppSettingsStore, type ProfileType, type SubscribeType } from '@/stores'
 
 export type PluginConfiguration = {
   id: string
@@ -264,7 +264,7 @@ export const usePluginsStore = defineStore('plugins', () => {
         const fn = new AsyncFunction(`const Plugin = ${JSON.stringify(configuration)};
           ${cache.code};
           return await ${fnName}(${JSON.stringify(result)}, ${JSON.stringify(subscription)})
-        `)
+        `) as <T>(params: T) => Promise<T>
         result = await fn(result)
       } catch (error: any) {
         throw `【${cache.plugin.name}】 Error: ` + (error.message || error)
@@ -275,11 +275,7 @@ export const usePluginsStore = defineStore('plugins', () => {
       }
     }
 
-    if (typeof result === 'string') {
-      result = parse(result)
-    }
-
-    return result as unknown as Record<string, any>[]
+    return result
   }
 
   const noParamsTrigger = async (trigger: PluginTrigger) => {

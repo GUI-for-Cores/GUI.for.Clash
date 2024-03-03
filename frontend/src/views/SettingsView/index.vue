@@ -5,12 +5,10 @@ import { useI18n } from 'vue-i18n'
 import AboutView from '@/views/AboutView.vue'
 import GeneralSetting from './components/GeneralSetting.vue'
 import KernelView from '@/views/KernelView/index.vue'
-import ComponentsView from '@/views/ComponentsView.vue'
 
 const settings = [
   { key: 'general', tab: 'settings.general' },
   { key: 'kernel', tab: 'router.kernel' }
-  // { key: 'components', tab: 'router.components' }
 ]
 
 const showAbout = ref(false)
