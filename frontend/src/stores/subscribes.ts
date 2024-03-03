@@ -139,16 +139,12 @@ export const useSubscribesStore = defineStore('subscribes', () => {
     }
 
     if (!isValidSubYAML(body)) {
-      throw 'Not a valid yaml format file'
+      throw 'Not a valid subscription data'
     }
 
     const pluginStore = usePluginsStore()
 
     proxies = await pluginStore.onSubscribeTrigger(parse(body).proxies, s)
-
-    if (!Array.isArray(proxies)) {
-      throw 'Not a valid subscription data'
-    }
 
     proxies = proxies.filter((v) => {
       const flag1 = s.include ? new RegExp(s.include).test(v.name) : true
