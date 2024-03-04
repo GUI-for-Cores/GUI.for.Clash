@@ -490,6 +490,7 @@ export default {
     autoSetSystemProxy: '自动配置/清除系统代理',
     autoStartKernel: '自动启动内核程序',
     admin: '以管理员身份运行',
+    addToMenu: '将插件添加到托盘菜单',
     startup: {
       name: '开机时启动',
       delay: '延迟(秒)'
@@ -547,6 +548,7 @@ export default {
     proxy: '系统代理',
     startKernel: '开启内核',
     stopKernel: '关闭内核',
-    restartKernel: '重启内核'
+    restartKernel: '重启内核',
+    plugins: '插件'
   }
 }
