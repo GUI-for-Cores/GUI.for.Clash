@@ -1,10 +1,10 @@
-import { ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { defineStore } from 'pinia'
 import { parse, stringify } from 'yaml'
 
 import { HttpGet, Readfile, Writefile } from '@/utils/bridge'
 import { PluginsFilePath, PluginTrigger, PluginManualEvent } from '@/constant'
-import { APP_TITLE, APP_VERSION, debounce, deepClone, ignoredError } from '@/utils'
+import { APP_TITLE, APP_VERSION, debounce, deepClone, ignoredError, updateTrayMenus } from '@/utils'
 import { useAppSettingsStore, type ProfileType, type SubscribeType } from '@/stores'
 
 export type PluginConfiguration = {
@@ -353,6 +353,24 @@ export const usePluginsStore = defineStore('plugins', () => {
       throw `${cache.plugin.name} Error: ` + (error.message || error)
     }
   }
+
+  const _watchDisabled = computed(() =>
+    plugins.value
+      .map((v) => v.disabled)
+      .sort()
+      .join()
+  )
+
+  const _watchMenus = computed(() =>
+    plugins.value
+      .map((v) => Object.entries(v.menus).map((v) => v[0] + v[1]))
+      .sort()
+      .join()
+  )
+
+  watch([_watchMenus, _watchDisabled], () => {
+    updateTrayMenus()
+  })
 
   return {
     plugins,
