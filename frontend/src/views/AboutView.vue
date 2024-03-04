@@ -37,6 +37,9 @@ const downloadApp = async () => {
 
     await Download(downloadUrl, appName + '.tmp', (progress, total) => {
       message.update(id, 'Downloading...' + ((progress / total) * 100).toFixed(2) + '%')
+    }).catch((err) => {
+      message.destroy(id)
+      throw err
     })
 
     message.destroy(id)
