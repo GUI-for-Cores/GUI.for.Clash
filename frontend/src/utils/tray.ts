@@ -99,6 +99,7 @@ const getTrayMenus = () => {
   const envStore = useEnvStore()
   const appSettings = useAppSettingsStore()
   const kernelApiStore = useKernelApiStore()
+  const pluginsStore = usePluginsStore()
 
   const { providers, proxies } = kernelApiStore
 
@@ -333,6 +334,28 @@ const getTrayMenus = () => {
           ]
         }
       ]
+    },
+    {
+      type: 'item',
+      text: 'tray.plugins',
+      hidden: !appSettings.app.addPluginToMenu,
+      children: pluginsStore.plugins
+        .filter((plugin) => plugin.menus)
+        .map(({ id, name, menus }) => {
+          return {
+            type: 'item',
+            text: name,
+            children: Object.entries(menus).map(([text, event]) => {
+              return {
+                type: 'item',
+                text,
+                event: () => {
+                  pluginsStore.manualTrigger(id, event as any)
+                }
+              }
+            })
+          }
+        })
     },
     {
       type: 'separator'

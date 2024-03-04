@@ -38,6 +38,7 @@ type AppSettings = {
     cardMode: boolean
     sortByDelay: boolean
   }
+  addPluginToMenu: boolean
   pluginSettings: Record<string, Record<string, any>>
 }
 
@@ -110,6 +111,7 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
       cardMode: true,
       sortByDelay: false
     },
+    addPluginToMenu: false,
     pluginSettings: {}
   })
 
@@ -186,6 +188,7 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
       themeMode,
       () => app.value.color,
       () => app.value.lang,
+      () => app.value.addPluginToMenu,
       () => app.value.kernel.running,
       () => app.value.kernel.unAvailable,
       () => app.value.kernel.sortByDelay

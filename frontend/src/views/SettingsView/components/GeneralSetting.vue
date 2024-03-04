@@ -236,6 +236,10 @@ if (envStore.env.os === 'windows') {
       </div>
     </div>
     <div class="settings-item">
+      <div class="title">{{ t('settings.addToMenu') }}</div>
+      <Switch v-model="appSettings.app.addPluginToMenu" />
+    </div>
+    <div class="settings-item">
       <div class="title">{{ t('settings.userAgent.name') }}</div>
       <div style="display: flex; align-items: center">
         <Button @click="resetUserAgent" v-tips="'settings.userAgent.reset'" type="text">

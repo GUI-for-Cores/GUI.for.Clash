@@ -490,6 +490,7 @@ export default {
     autoSetSystemProxy: 'Auto Set / Clear System Proxy',
     autoStartKernel: 'Auto Start Kernel',
     admin: 'Run As Admin',
+    addToMenu: 'Add Plugin To Menu',
     startup: {
       name: 'Startup on boot',
       delay: 'Delay(s)'
@@ -547,6 +548,7 @@ export default {
     proxy: 'System Proxy',
     startKernel: 'Start Kernel',
     stopKernel: 'Stop Kernel',
-    restartKernel: 'Restart Kernel'
+    restartKernel: 'Restart Kernel',
+    plugins: 'Plugins'
   }
 }
