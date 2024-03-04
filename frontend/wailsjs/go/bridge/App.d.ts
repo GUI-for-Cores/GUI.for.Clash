@@ -37,6 +37,8 @@ export function Makedir(arg1:string):Promise<bridge.FlagResult>;
 
 export function Movefile(arg1:string,arg2:string):Promise<bridge.FlagResult>;
 
+export function Notify(arg1:string,arg2:string,arg3:string):Promise<bridge.FlagResult>;
+
 export function OnSecondInstanceLaunch(arg1:options.SecondInstanceData):Promise<void>;
 
 export function ProcessInfo(arg1:number):Promise<bridge.FlagResult>;

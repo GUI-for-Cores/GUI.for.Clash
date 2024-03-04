@@ -70,6 +70,10 @@ export function Movefile(arg1, arg2) {
   return window['go']['bridge']['App']['Movefile'](arg1, arg2);
 }
 
+export function Notify(arg1, arg2, arg3) {
+  return window['go']['bridge']['App']['Notify'](arg1, arg2, arg3);
+}
+
 export function OnSecondInstanceLaunch(arg1) {
   return window['go']['bridge']['App']['OnSecondInstanceLaunch'](arg1);
 }
