@@ -464,6 +464,7 @@ export default {
       default: '默认',
       orange: '橘色',
       pink: '粉色',
+      red: '红色',
       skyblue: '天蓝色'
     },
     fontFamily: '字体',
