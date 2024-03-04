@@ -46,6 +46,8 @@ const handleSubmit = async () => {
   loading.value = true
   try {
     if (props.isUpdate) {
+      // Refresh the key to re-render the view
+      plugin.value.key = sampleID()
       await pluginsStore.editPlugin(props.id, plugin.value)
       if (plugin.value.triggers.sort().join('') !== oldPluginTriggers.value) {
         pluginsStore.updatePluginTrigger(plugin.value)

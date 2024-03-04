@@ -40,6 +40,7 @@ export type PluginType = {
   install: boolean
   installed: boolean
   // Not Config
+  key?: string
   updating?: boolean
   loading?: boolean
   running?: boolean
@@ -140,6 +141,7 @@ export const usePluginsStore = defineStore('plugins', () => {
   const savePlugins = debounce(async () => {
     const p = deepClone(plugins.value)
     for (let i = 0; i < p.length; i++) {
+      delete p[i].key
       delete p[i].updating
       delete p[i].loading
       delete p[i].running
