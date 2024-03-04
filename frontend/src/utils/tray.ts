@@ -1,6 +1,7 @@
 import i18n from '@/lang'
-import { Theme, type MenuItem, Color, Lang } from '@/constant'
+import { Notify } from '@/utils/bridge'
 import { debounce, sampleID } from '@/utils'
+import { Theme, type MenuItem, Color, Lang } from '@/constant'
 import { deleteConnection, getConnections, useProxy } from '@/api/kernel'
 import { useAppSettingsStore, useKernelApiStore, useEnvStore, usePluginsStore } from '@/stores'
 import {
@@ -340,7 +341,7 @@ const getTrayMenus = () => {
       text: 'tray.plugins',
       hidden: !appSettings.app.addPluginToMenu,
       children: pluginsStore.plugins
-        .filter((plugin) => plugin.menus)
+        .filter((plugin) => plugin.menus && !plugin.disabled)
         .map(({ id, name, menus }) => {
           return {
             type: 'item',
@@ -350,7 +351,9 @@ const getTrayMenus = () => {
                 type: 'item',
                 text,
                 event: () => {
-                  pluginsStore.manualTrigger(id, event as any)
+                  pluginsStore.manualTrigger(id, event as any).catch((err: any) => {
+                    Notify('Error', err.message || err)
+                  })
                 }
               }
             })
