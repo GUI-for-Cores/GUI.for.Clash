@@ -27,10 +27,6 @@ const { t } = useI18n()
       <KernelView />
     </template>
 
-    <template #components>
-      <ComponentsView />
-    </template>
-
     <template #extra>
       <Button @click="showAbout = true" type="text">
         {{ t('router.about') }}
