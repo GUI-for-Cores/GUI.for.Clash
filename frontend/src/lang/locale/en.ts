@@ -464,6 +464,7 @@ export default {
       default: 'Default',
       orange: 'Orange',
       pink: 'Pink',
+      red: 'Red',
       skyblue: 'Skyblue'
     },
     fontFamily: 'Font-Family',

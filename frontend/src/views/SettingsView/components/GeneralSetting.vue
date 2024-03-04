@@ -55,6 +55,10 @@ const colors = [
     value: Color.Pink
   },
   {
+    label: 'settings.color.red',
+    value: Color.Red
+  },
+  {
     label: 'settings.color.skyblue',
     value: Color.Skyblue
   }
