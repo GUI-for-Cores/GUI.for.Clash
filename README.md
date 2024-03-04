@@ -8,27 +8,19 @@
 ## Preview
 
 <div align="center">
-  <img src="docs/imgs/1.png" width="400" height="270">
-  <img src="docs/imgs/11.png" width="400" height="270">
+  <img src="docs/imgs/light01.png" width="400" height="270">
+  <img src="docs/imgs/dark01.png" width="400" height="270">
   <br/>
-  <img src="docs/imgs/2.png" width="400" height="270">
-  <img src="docs/imgs/12.png" width="400" height="270">
+  <img src="docs/imgs/light02.png" width="400" height="270">
+  <img src="docs/imgs/dark02.png" width="400" height="270">
   <br/>
-  <img src="docs/imgs/3.png" width="400" height="270">
-  <img src="docs/imgs/13.png" width="400" height="270">
-  <br/>
-  <img src="docs/imgs/4.png" width="400" height="270">
-  <img src="docs/imgs/14.png" width="400" height="270">
-  <br/>
-  <img src="docs/imgs/5.png" width="400" height="270">
-  <img src="docs/imgs/15.png" width="400" height="270">
-  <br/>
-  <img src="docs/imgs/6.png" width="400" height="270">
-  <img src="docs/imgs/16.png" width="400" height="270">
-  <br/>
-  <img src="docs/imgs/7.png" width="400" height="270">
-  <img src="docs/imgs/17.png" width="400" height="270">
+  <img src="docs/imgs/light03.png" width="400" height="270">
+  <img src="docs/imgs/dark03.png" width="400" height="270">
 </div>
+
+## Document
+
+[how-to-use](https://gui-for-cores.github.io/gfc/04-how-to-use.html)
 
 ## Build
 
@@ -44,7 +36,7 @@
 
 2、Pull and Build
 
-```
+```bash
 git clone https://github.com/GUI-for-Cores/GUI.for.Clash.git
 
 cd GUI.for.Clash
