@@ -1,17 +1,17 @@
 import i18n from '@/lang'
-import { Notify } from '@/utils/bridge'
 import { debounce, sampleID } from '@/utils'
 import { Theme, type MenuItem, Color, Lang } from '@/constant'
 import { deleteConnection, getConnections, useProxy } from '@/api/kernel'
 import { useAppSettingsStore, useKernelApiStore, useEnvStore, usePluginsStore } from '@/stores'
 import {
+  Notify,
   RestartApp,
   EventsOn,
   EventsOff,
   ExitApp,
   UpdateTray,
   UpdateTrayMenus
-} from '@/utils/bridge'
+} from '@/bridge'
 
 const menuEvents: string[] = []
 

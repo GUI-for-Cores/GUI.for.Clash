@@ -2,10 +2,10 @@ import { computed, ref, watch } from 'vue'
 import { defineStore } from 'pinia'
 import { parse, stringify } from 'yaml'
 
-import { HttpGet, Readfile, Writefile } from '@/utils/bridge'
+import { HttpGet, Readfile, Writefile } from '@/bridge'
 import { PluginsFilePath, PluginTrigger, PluginManualEvent } from '@/constant'
-import { APP_TITLE, APP_VERSION, debounce, deepClone, ignoredError, updateTrayMenus } from '@/utils'
 import { useAppSettingsStore, type ProfileType, type SubscribeType } from '@/stores'
+import { APP_TITLE, APP_VERSION, debounce, deepClone, ignoredError, updateTrayMenus } from '@/utils'
 
 export type PluginConfiguration = {
   id: string

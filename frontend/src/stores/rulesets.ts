@@ -2,7 +2,7 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { stringify, parse } from 'yaml'
 
-import { Readfile, Writefile, HttpGet } from '@/utils/bridge'
+import { Readfile, Writefile, HttpGet } from '@/bridge'
 import { RulesetsFilePath, RulesetBehavior } from '@/constant'
 import { deepClone, debounce, isValidPaylodYAML } from '@/utils'
 

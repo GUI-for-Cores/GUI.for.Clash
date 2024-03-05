@@ -6,7 +6,7 @@ import { View } from '@/constant'
 import { useMessage } from '@/hooks'
 import { DraggableOptions } from '@/constant'
 import { updateProvidersProxies } from '@/api/kernel'
-import { BrowserOpenURL, Removefile } from '@/utils/bridge'
+import { BrowserOpenURL, Removefile } from '@/bridge'
 import { formatBytes, formatRelativeTime, debounce, ignoredError } from '@/utils'
 import {
   type SubscribeType,
