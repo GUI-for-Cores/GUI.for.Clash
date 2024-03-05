@@ -152,6 +152,33 @@ const getTrayMenus = () => {
       })
   })()
 
+  let pluginMenus: MenuItem[] = []
+  let pluginMenusHidden = !appSettings.app.addPluginToMenu
+
+  if (!pluginMenusHidden) {
+    const filtered = pluginsStore.plugins.filter(
+      (plugin) => Object.keys(plugin.menus).length && !plugin.disabled
+    )
+    pluginMenusHidden = filtered.length === 0
+    pluginMenus = filtered.map(({ id, name, menus }) => {
+      return {
+        type: 'item',
+        text: name,
+        children: Object.entries(menus).map(([text, event]) => {
+          return {
+            type: 'item',
+            text,
+            event: () => {
+              pluginsStore.manualTrigger(id, event as any).catch((err: any) => {
+                Notify('Error', err.message || err)
+              })
+            }
+          }
+        })
+      }
+    })
+  }
+
   const trayMenus: MenuItem[] = [
     {
       type: 'item',
@@ -345,26 +372,8 @@ const getTrayMenus = () => {
     {
       type: 'item',
       text: 'tray.plugins',
-      hidden: !appSettings.app.addPluginToMenu,
-      children: pluginsStore.plugins
-        .filter((plugin) => Object.keys(plugin.menus).length && !plugin.disabled)
-        .map(({ id, name, menus }) => {
-          return {
-            type: 'item',
-            text: name,
-            children: Object.entries(menus).map(([text, event]) => {
-              return {
-                type: 'item',
-                text,
-                event: () => {
-                  pluginsStore.manualTrigger(id, event as any).catch((err: any) => {
-                    Notify('Error', err.message || err)
-                  })
-                }
-              }
-            })
-          }
-        })
+      hidden: pluginMenusHidden,
+      children: pluginMenus
     },
     {
       type: 'separator'
