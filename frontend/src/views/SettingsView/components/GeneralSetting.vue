@@ -136,7 +136,7 @@ const onStartupDelayChange = async (delay: number) => {
 }
 
 const createSchTask = async (delay = 30) => {
-  const xmlPath = 'data/tasksch.xml'
+  const xmlPath = 'data/.cache/tasksch.xml'
   const xmlContent = await getTaskSchXmlString(delay)
   await Writefile(xmlPath, xmlContent)
   await CreateSchTask(APP_TITLE, xmlPath)

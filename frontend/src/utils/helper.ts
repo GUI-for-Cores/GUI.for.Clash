@@ -3,7 +3,7 @@ import { Exec, GetEnv } from '@/bridge'
 // Permissions Helper
 export const SwitchPermissions = async (enable: boolean) => {
   const { basePath, appName } = await GetEnv()
-  const command = enable
+  const args = enable
     ? [
         'add',
         'HKEY_CURRENT_USER\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers',
@@ -22,7 +22,7 @@ export const SwitchPermissions = async (enable: boolean) => {
         basePath + '\\' + appName,
         '/f'
       ]
-  await Exec('reg', command, true)
+  await Exec('reg', args, true)
 }
 
 export const CheckPermissions = async () => {
