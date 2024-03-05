@@ -98,8 +98,11 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
 
         await Promise.all([refreshConfig(), refreshProviderProxies()])
 
-        // Automatically set system proxy, but the priority is lower than tun mode
-        if (!config.value.tun.enable && appSettingsStore.app.autoSetSystemProxy) {
+        if (config.value.tun.enable) {
+          if (envStore.systemProxy) {
+            updateConfig({ tun: { enable: false } })
+          }
+        } else if (appSettingsStore.app.autoSetSystemProxy) {
           await envStore.setSystemProxy()
         }
       }
@@ -131,6 +134,7 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
   }
 
   const stopKernel = async () => {
+    const envStore = useEnvStore()
     const logsStore = useLogsStore()
     const appSettingsStore = useAppSettingsStore()
 
@@ -141,6 +145,10 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
 
     appSettingsStore.app.kernel.pid = 0
     appSettingsStore.app.kernel.running = false
+
+    if (appSettingsStore.app.autoSetSystemProxy) {
+      await envStore.clearSystemProxy()
+    }
 
     logsStore.clearKernelLog()
   }
