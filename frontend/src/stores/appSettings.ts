@@ -5,7 +5,7 @@ import { parse, stringify } from 'yaml'
 import i18n from '@/lang'
 import { debounce, updateTrayMenus, APP_TITLE, APP_VERSION } from '@/utils'
 import { Theme, WindowStartState, Lang, View, Color, Colors } from '@/constant'
-import { WindowSetDarkTheme, WindowSetLightTheme, Readfile, Writefile } from '@/utils/bridge'
+import { WindowSetDarkTheme, WindowSetLightTheme, Readfile, Writefile } from '@/bridge'
 
 type AppSettings = {
   lang: Lang

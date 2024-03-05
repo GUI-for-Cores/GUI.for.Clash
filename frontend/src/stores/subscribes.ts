@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 import { stringify, parse } from 'yaml'
 
 import { SubscribesFilePath } from '@/constant'
-import { Readfile, Writefile, HttpGet } from '@/utils/bridge'
+import { Readfile, Writefile, HttpGet } from '@/bridge'
 import { useAppSettingsStore, usePluginsStore } from '@/stores'
 import { deepClone, debounce, sampleID, APP_TITLE, APP_VERSION, isValidSubYAML } from '@/utils'
 

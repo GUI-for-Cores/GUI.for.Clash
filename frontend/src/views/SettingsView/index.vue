@@ -3,8 +3,8 @@ import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import AboutView from '@/views/AboutView.vue'
-import GeneralSetting from './components/GeneralSetting.vue'
 import KernelView from '@/views/KernelView/index.vue'
+import GeneralSetting from './components/GeneralSetting.vue'
 
 const settings = [
   { key: 'general', tab: 'settings.general' },

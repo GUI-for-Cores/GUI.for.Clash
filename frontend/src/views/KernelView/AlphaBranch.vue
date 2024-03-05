@@ -17,7 +17,7 @@ import {
   GetEnv,
   Makedir,
   UnzipGZFile
-} from '@/utils/bridge'
+} from '@/bridge'
 
 const alphaUrl = 'https://api.github.com/repos/MetaCubeX/mihomo/releases/tags/Prerelease-Alpha'
 const alphaVersionUrl =

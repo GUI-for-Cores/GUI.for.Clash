@@ -1,6 +1,6 @@
 import { parse, stringify } from 'yaml'
 
-import { Readfile, Writefile } from '@/utils/bridge'
+import { Readfile, Writefile } from '@/bridge'
 import { deepClone, ignoredError, APP_TITLE } from '@/utils'
 import { KernelConfigFilePath, ProxyGroup } from '@/constant/kernel'
 import { type ProfileType, useSubscribesStore, useRulesetsStore, usePluginsStore } from '@/stores'

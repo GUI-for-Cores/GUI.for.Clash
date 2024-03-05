@@ -6,17 +6,14 @@ import { useMessage } from '@/hooks'
 import { useAppSettingsStore, useEnvStore } from '@/stores'
 import { Theme, Lang, WindowStartState, Color } from '@/constant'
 import { APP_TITLE, APP_VERSION, getTaskSchXmlString } from '@/utils'
+import { BrowserOpenURL, GetEnv, Writefile, Removefile } from '@/bridge'
 import {
-  CheckPermissions,
-  SwitchPermissions,
-  BrowserOpenURL,
-  GetEnv,
-  Writefile,
   QuerySchTask,
   CreateSchTask,
   DeleteSchTask,
-  Removefile
-} from '@/utils/bridge'
+  CheckPermissions,
+  SwitchPermissions
+} from '@/utils'
 
 const isAdmin = ref(false)
 const isTaskScheduled = ref(false)

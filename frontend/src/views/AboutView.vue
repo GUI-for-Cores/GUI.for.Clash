@@ -4,7 +4,7 @@ import { ref, computed } from 'vue'
 
 import { useMessage } from '@/hooks'
 import { useAppSettingsStore } from '@/stores'
-import { Download, HttpGetJSON, BrowserOpenURL, Movefile, GetEnv, RestartApp } from '@/utils/bridge'
+import { Download, HttpGetJSON, BrowserOpenURL, Movefile, GetEnv, RestartApp } from '@/bridge'
 import { APP_TITLE, APP_VERSION, PROJECT_URL, TG_GROUP, TG_CHANNEL, APP_VERSION_API } from '@/utils'
 
 let downloadUrl = ''

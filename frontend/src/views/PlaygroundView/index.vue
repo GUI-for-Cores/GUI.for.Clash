@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 
 import { DraggableOptions, type MenuItem } from '@/constant'
 import { useAppStore, useAppSettingsStore } from '@/stores'
-import { UpdateTray } from '@/utils/bridge'
+import { UpdateTray } from '@/bridge'
 import { APP_TITLE, APP_VERSION, sleep } from '@/utils'
 import icons from '@/components/Icon/icons'
 import { useMessage, usePicker, useConfirm, usePrompt } from '@/hooks'

@@ -16,7 +16,7 @@ import {
   GetEnv,
   Makedir,
   UnzipGZFile
-} from '@/utils/bridge'
+} from '@/bridge'
 
 const releaseUrl = 'https://api.github.com/repos/MetaCubeX/mihomo/releases/latest'
 const localVersion = ref('')

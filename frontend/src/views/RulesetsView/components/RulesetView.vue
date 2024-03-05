@@ -4,7 +4,7 @@ import { parse, stringify } from 'yaml'
 import { ref, computed, inject } from 'vue'
 
 import { useMessage } from '@/hooks'
-import { Readfile, Writefile } from '@/utils/bridge'
+import { Readfile, Writefile } from '@/bridge'
 import { DraggableOptions, RulesetBehavior } from '@/constant'
 import { deepClone, ignoredError, isValidIPCIDR } from '@/utils'
 import { type RuleSetType, type Menu, useRulesetsStore } from '@/stores'

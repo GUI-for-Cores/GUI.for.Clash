@@ -7,13 +7,7 @@ export function AbsolutePath(arg1:string):Promise<bridge.FlagResult>;
 
 export function AddScheduledTask(arg1:string,arg2:string):Promise<bridge.FlagResult>;
 
-export function CheckPermissions(arg1:string):Promise<bridge.FlagResult>;
-
-export function CreateSchTask(arg1:string,arg2:string):Promise<bridge.FlagResult>;
-
-export function DeleteSchTask(arg1:string):Promise<bridge.FlagResult>;
-
-export function Download(arg1:string,arg2:string,arg3:string):Promise<bridge.FlagResult>;
+export function Download(arg1:string,arg2:string,arg3:string,arg4:string):Promise<bridge.FlagResult>;
 
 export function Exec(arg1:string,arg2:Array<string>,arg3:boolean):Promise<bridge.FlagResult>;
 
@@ -27,9 +21,9 @@ export function GetEnv():Promise<bridge.EnvResult>;
 
 export function GetInterfaces():Promise<bridge.FlagResult>;
 
-export function GetSystemProxy():Promise<bridge.FlagResult>;
+export function HttpGet(arg1:string,arg2:{[key: string]: string},arg3:string):Promise<bridge.HTTPResult>;
 
-export function HttpGet(arg1:string,arg2:{[key: string]: string}):Promise<bridge.HTTPResult>;
+export function HttpPost(arg1:string,arg2:{[key: string]: string},arg3:string,arg4:string):Promise<bridge.HTTPResult>;
 
 export function KillProcess(arg1:number):Promise<bridge.FlagResult>;
 
@@ -43,8 +37,6 @@ export function OnSecondInstanceLaunch(arg1:options.SecondInstanceData):Promise<
 
 export function ProcessInfo(arg1:number):Promise<bridge.FlagResult>;
 
-export function QuerySchTask(arg1:string):Promise<bridge.FlagResult>;
-
 export function Readfile(arg1:string):Promise<bridge.FlagResult>;
 
 export function RemoveScheduledTask(arg1:number):Promise<void>;
@@ -52,10 +44,6 @@ export function RemoveScheduledTask(arg1:number):Promise<void>;
 export function Removefile(arg1:string):Promise<bridge.FlagResult>;
 
 export function RestartApp():Promise<bridge.FlagResult>;
-
-export function SetSystemProxy(arg1:boolean,arg2:string):Promise<bridge.FlagResult>;
-
-export function SwitchPermissions(arg1:boolean,arg2:string):Promise<bridge.FlagResult>;
 
 export function UnzipGZFile(arg1:string,arg2:string):Promise<bridge.FlagResult>;
 
