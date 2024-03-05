@@ -347,7 +347,7 @@ const getTrayMenus = () => {
       text: 'tray.plugins',
       hidden: !appSettings.app.addPluginToMenu,
       children: pluginsStore.plugins
-        .filter((plugin) => plugin.menus && !plugin.disabled)
+        .filter((plugin) => Object.keys(plugin.menus).length && !plugin.disabled)
         .map(({ id, name, menus }) => {
           return {
             type: 'item',
