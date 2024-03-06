@@ -46,9 +46,11 @@ const handleRestoreConfiguration = (showMessage = false) => {
 const p = pluginsStore.getPluginById(props.id)
 if (p) {
   configuration.value = p.configuration
-  settings.value = appSettingsStore.app.pluginSettings[p.id]
-  // Fill with default value
-  if (!settings.value) {
+  const _settings = appSettingsStore.app.pluginSettings[p.id]
+  if (_settings) {
+    settings.value = deepClone(_settings)
+  } else {
+    // Fill with default value
     handleRestoreConfiguration()
   }
 }
