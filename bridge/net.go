@@ -110,12 +110,9 @@ func (a *App) HttpPost(url string, headers map[string]string, body string, proxy
 func (a *App) Download(url string, path string, event string, proxy string) FlagResult {
 	log.Printf("Download: %s %s %s", url, path, proxy)
 
-	path, err := GetPath(path)
-	if err != nil {
-		return FlagResult{false, err.Error()}
-	}
+	path = GetPath(path)
 
-	err = os.MkdirAll(filepath.Dir(path), os.ModePerm)
+	err := os.MkdirAll(filepath.Dir(path), os.ModePerm)
 	if err != nil {
 		return FlagResult{false, err.Error()}
 	}
