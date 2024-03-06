@@ -269,11 +269,11 @@ export const usePluginsStore = defineStore('plugins', () => {
         `) as <T>(params: T) => Promise<T>
         result = await fn(result)
       } catch (error: any) {
-        throw `【${cache.plugin.name}】 Error: ` + (error.message || error)
+        throw `${cache.plugin.name} : ` + (error.message || error)
       }
 
       if (!Array.isArray(result)) {
-        throw `【${cache.plugin.name}】 Error: Wrong result`
+        throw `${cache.plugin.name} : Wrong result`
       }
     }
 
@@ -302,7 +302,7 @@ export const usePluginsStore = defineStore('plugins', () => {
         )
         await await fn()
       } catch (error: any) {
-        throw `【${cache.plugin.name}】 Error: ` + (error.message || error)
+        throw `${cache.plugin.name} : ` + (error.message || error)
       }
     }
     return
@@ -330,10 +330,10 @@ export const usePluginsStore = defineStore('plugins', () => {
         )
         params = await fn()
       } catch (error: any) {
-        throw `【${cache.plugin.name}】 Error: ` + (error.message || error)
+        throw `${cache.plugin.name} : ` + (error.message || error)
       }
 
-      if (!params) throw `【${cache.plugin.name}】 Error: Wrong result`
+      if (!params) throw `${cache.plugin.name} : Wrong result`
     }
 
     return params as Record<string, any>
@@ -352,7 +352,7 @@ export const usePluginsStore = defineStore('plugins', () => {
       )
       return await fn()
     } catch (error: any) {
-      throw `${cache.plugin.name} Error: ` + (error.message || error)
+      throw `${cache.plugin.name} : ` + (error.message || error)
     }
   }
 
