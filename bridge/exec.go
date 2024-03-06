@@ -16,12 +16,9 @@ import (
 func (a *App) Exec(path string, args []string, convert bool) FlagResult {
 	log.Printf("Exec: %s %s", path, args)
 
-	exe_path, err := GetPath(path)
-	if err != nil {
-		return FlagResult{false, err.Error()}
-	}
+	exe_path := GetPath(path)
 
-	if _, err = os.Stat(exe_path); os.IsNotExist(err) {
+	if _, err := os.Stat(exe_path); os.IsNotExist(err) {
 		exe_path = path
 	}
 
@@ -46,12 +43,9 @@ func (a *App) Exec(path string, args []string, convert bool) FlagResult {
 func (a *App) ExecBackground(path string, args []string, outEvent string, endEvent string) FlagResult {
 	log.Printf("ExecBackground: %s %s", path, args)
 
-	exe_path, err := GetPath(path)
-	if err != nil {
-		return FlagResult{false, err.Error()}
-	}
+	exe_path := GetPath(path)
 
-	if _, err = os.Stat(exe_path); os.IsNotExist(err) {
+	if _, err := os.Stat(exe_path); os.IsNotExist(err) {
 		exe_path = path
 	}
 
