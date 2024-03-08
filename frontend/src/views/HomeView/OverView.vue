@@ -121,6 +121,7 @@ onUnmounted(disconnect)
     v-model:open="showKernelConnections"
     :title="t('home.overview.connections')"
     :submit="false"
+    mask-closable
     cancel-text="common.close"
     width="90"
     height="90"
