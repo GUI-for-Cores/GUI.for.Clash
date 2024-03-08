@@ -8,6 +8,7 @@ import { useMessage, usePicker, useConfirm, usePrompt, useAlert } from '@/hooks'
 
 import AboutView from '@/views/AboutView.vue'
 import SplashView from '@/views/SplashView.vue'
+import CommandView from './views/CommandView.vue'
 import { NavigationBar, MainPage, TitleBar } from '@/components'
 
 const loading = ref(true)
@@ -125,6 +126,8 @@ appSettings.setupAppSettings().then(async () => {
     :position="appStore.tipsPosition"
     :message="appStore.tipsMessage"
   />
+
+  <CommandView />
 </template>
 
 <style scoped>
