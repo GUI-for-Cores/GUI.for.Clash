@@ -1,17 +1,8 @@
 import i18n from '@/lang'
-import { debounce, sampleID } from '@/utils'
 import { Theme, type MenuItem, Color, Lang } from '@/constant'
-import { deleteConnection, getConnections, useProxy } from '@/api/kernel'
+import { debounce, exitApp, handleChangeMode, handleUseProxy, sampleID } from '@/utils'
 import { useAppSettingsStore, useKernelApiStore, useEnvStore, usePluginsStore } from '@/stores'
-import {
-  Notify,
-  RestartApp,
-  EventsOn,
-  EventsOff,
-  ExitApp,
-  UpdateTray,
-  UpdateTrayMenus
-} from '@/bridge'
+import { Notify, RestartApp, EventsOn, EventsOff, UpdateTray, UpdateTrayMenus } from '@/bridge'
 
 const menuEvents: string[] = []
 
@@ -40,60 +31,6 @@ const generateUniqueEventsForMenu = (menus: MenuItem[]) => {
   }
 
   return menus.map(processMenu)
-}
-
-const handleUseProxy = async (group: any, proxy: any) => {
-  if (group.type !== 'Selector' || group.now === proxy.name) return
-  const promises: Promise<null>[] = []
-  const appSettings = useAppSettingsStore()
-  const kernelApiStore = useKernelApiStore()
-  if (appSettings.app.kernel.autoClose) {
-    const { connections } = await getConnections()
-    promises.push(
-      ...(connections || [])
-        .filter((v) => v.chains.includes(group.name))
-        .map((v) => deleteConnection(v.id))
-    )
-  }
-  await useProxy(group.name, proxy.name)
-  await Promise.all(promises)
-  await kernelApiStore.refreshProviderProxies()
-}
-
-const handleChangeMode = async (mode: string) => {
-  const kernelApiStore = useKernelApiStore()
-
-  if (mode === kernelApiStore.config.mode) return
-
-  kernelApiStore.updateConfig({ mode })
-
-  const { connections } = await getConnections()
-  const promises = (connections || []).map((v) => deleteConnection(v.id))
-  await Promise.all(promises)
-}
-
-export const exitApp = async () => {
-  const envStore = useEnvStore()
-  const pluginsStore = usePluginsStore()
-  const appSettings = useAppSettingsStore()
-  const kernelApiStore = useKernelApiStore()
-
-  if (appSettings.app.kernel.running && appSettings.app.closeKernelOnExit) {
-    await kernelApiStore.stopKernel()
-    if (appSettings.app.autoSetSystemProxy) {
-      envStore.clearSystemProxy()
-    }
-  }
-
-  setTimeout(ExitApp, 3_000)
-
-  try {
-    await pluginsStore.onShutdownTrigger()
-  } catch (error: any) {
-    window.Plugins.message.error(error)
-  }
-
-  ExitApp()
 }
 
 const getTrayMenus = () => {
