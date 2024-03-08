@@ -6,6 +6,7 @@ import { EventsOn } from '@/bridge'
 import { ignoredError, sampleID, sleep } from '@/utils'
 import { useMessage, usePicker, useConfirm, usePrompt, useAlert } from '@/hooks'
 
+import AboutView from '@/views/AboutView.vue'
 import SplashView from '@/views/SplashView.vue'
 import { NavigationBar, MainPage, TitleBar } from '@/components'
 
@@ -102,6 +103,16 @@ appSettings.setupAppSettings().then(async () => {
       <MainPage />
     </div>
   </template>
+
+  <Modal
+    v-model:open="appStore.showAbout"
+    :cancel="false"
+    :submit="false"
+    mask-closable
+    min-width="50"
+  >
+    <AboutView />
+  </Modal>
 
   <Menu
     v-model="appStore.menuShow"

@@ -3,10 +3,10 @@ import { ref, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { useBool } from '@/hooks'
-import { formatBytes } from '@/utils'
+import { getKernelWS } from '@/api/kernel'
 import { useKernelApiStore } from '@/stores'
 import { ModeOptions } from '@/constant/kernel'
-import { getConnections, deleteConnection, getKernelWS } from '@/api/kernel'
+import { formatBytes, handleChangeMode } from '@/utils'
 
 import ConnectionsController from './ConnectionsController.vue'
 
@@ -25,16 +25,6 @@ const kernelApiStore = useKernelApiStore()
 const [showKernelConnections, toggleKernelConnections] = useBool(false)
 
 const isActiveMode = (mode: string) => kernelApiStore.config.mode === mode
-
-const handleChangeMode = async (mode: string) => {
-  if (mode === kernelApiStore.config.mode) return
-
-  kernelApiStore.updateConfig({ mode })
-
-  const { connections } = await getConnections()
-  const promises = (connections || []).map((v) => deleteConnection(v.id))
-  await Promise.all(promises)
-}
 
 const onConnections = (data: any) => {
   statistics.value.downloadTotal = data.downloadTotal
