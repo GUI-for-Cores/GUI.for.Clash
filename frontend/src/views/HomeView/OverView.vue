@@ -97,7 +97,7 @@ onUnmounted(disconnect)
           v-for="mode in ModeOptions"
           :key="mode.value"
           :selected="isActiveMode(mode.value)"
-          @click="handleChangeMode(mode.value)"
+          @click="handleChangeMode(mode.value as any)"
           :title="t(mode.label)"
           class="mode-card"
         >
