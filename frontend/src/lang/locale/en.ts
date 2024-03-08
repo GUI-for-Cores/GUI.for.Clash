@@ -51,6 +51,7 @@ export default {
     'socks-port': 'SOCKS5 Port',
     'mixed-port': 'Mixed Port',
     'allow-lan': 'Allow Lan',
+    'disallow-lan': 'Disallow Lan',
     'log-level': 'Log Level',
     'external-controller': 'External Controller',
     'external-ui': 'External UI',
@@ -551,5 +552,8 @@ export default {
     stopKernel: 'Stop Kernel',
     restartKernel: 'Restart Kernel',
     plugins: 'Plugins'
+  },
+  commands: {
+    noMatching: 'No matching commands'
   }
 }

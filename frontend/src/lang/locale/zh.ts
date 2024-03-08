@@ -51,6 +51,7 @@ export default {
     'socks-port': 'SOCKS5代理端口',
     'mixed-port': '混合代理端口',
     'allow-lan': '允许局域网访问',
+    'disallow-lan': '不允许局域网访问',
     'log-level': '日志级别',
     'external-controller': 'RESTful Web API监听地址',
     'external-ui': 'Web UI路径',
@@ -551,5 +552,8 @@ export default {
     stopKernel: '关闭内核',
     restartKernel: '重启内核',
     plugins: '插件'
+  },
+  commands: {
+    noMatching: '没有匹配到命令'
   }
 }
