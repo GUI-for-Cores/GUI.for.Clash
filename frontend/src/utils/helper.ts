@@ -1,4 +1,6 @@
-import { Exec, GetEnv } from '@/bridge'
+import { Exec, ExitApp, GetEnv } from '@/bridge'
+import { deleteConnection, getConnections, useProxy } from '@/api/kernel'
+import { useAppSettingsStore, useEnvStore, useKernelApiStore, usePluginsStore } from '@/stores'
 
 // Permissions Helper
 export const SwitchPermissions = async (enable: boolean) => {
@@ -181,4 +183,59 @@ export const CreateSchTask = async (taskName: string, xmlPath: string) => {
 
 export const DeleteSchTask = async (taskName: string) => {
   await Exec('SchTasks', ['/Delete', '/F', '/TN', taskName], true)
+}
+
+// Others
+export const handleUseProxy = async (group: any, proxy: any) => {
+  if (group.type !== 'Selector' || group.now === proxy.name) return
+  const promises: Promise<null>[] = []
+  const appSettings = useAppSettingsStore()
+  const kernelApiStore = useKernelApiStore()
+  if (appSettings.app.kernel.autoClose) {
+    const { connections } = await getConnections()
+    promises.push(
+      ...(connections || [])
+        .filter((v) => v.chains.includes(group.name))
+        .map((v) => deleteConnection(v.id))
+    )
+  }
+  await useProxy(group.name, proxy.name)
+  await Promise.all(promises)
+  await kernelApiStore.refreshProviderProxies()
+}
+
+export const handleChangeMode = async (mode: string) => {
+  const kernelApiStore = useKernelApiStore()
+
+  if (mode === kernelApiStore.config.mode) return
+
+  kernelApiStore.updateConfig({ mode })
+
+  const { connections } = await getConnections()
+  const promises = (connections || []).map((v) => deleteConnection(v.id))
+  await Promise.all(promises)
+}
+
+export const exitApp = async () => {
+  const envStore = useEnvStore()
+  const pluginsStore = usePluginsStore()
+  const appSettings = useAppSettingsStore()
+  const kernelApiStore = useKernelApiStore()
+
+  if (appSettings.app.kernel.running && appSettings.app.closeKernelOnExit) {
+    await kernelApiStore.stopKernel()
+    if (appSettings.app.autoSetSystemProxy) {
+      envStore.clearSystemProxy()
+    }
+  }
+
+  setTimeout(ExitApp, 3_000)
+
+  try {
+    await pluginsStore.onShutdownTrigger()
+  } catch (error: any) {
+    window.Plugins.message.error(error)
+  }
+
+  ExitApp()
 }
