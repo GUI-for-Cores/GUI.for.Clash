@@ -9,7 +9,6 @@ import { useAppSettingsStore, useEnvStore, useKernelApiStore } from '@/stores'
 import {
   Download,
   UnzipZIPFile,
-  HttpGetJSON,
   HttpGet,
   Exec,
   Movefile,
@@ -54,12 +53,12 @@ const updateRemoteVersion = async (showTips = false) => {
 const downloadCore = async () => {
   downloadLoading.value = true
   try {
-    const { json } = await HttpGetJSON(alphaUrl, {
+    const { body } = await HttpGet(alphaUrl, {
       'User-Agent': appSettings.app.userAgent
     })
     const { os, arch } = await GetEnv()
 
-    const { assets, message: msg } = json
+    const { assets, message: msg } = body
     if (msg) throw msg
 
     const envStore = useEnvStore()

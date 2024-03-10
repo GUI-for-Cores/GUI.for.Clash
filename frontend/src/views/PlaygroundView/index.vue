@@ -1,17 +1,10 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 
-import { DraggableOptions, type MenuItem } from '@/constant'
-import { useAppStore, useAppSettingsStore } from '@/stores'
-import { UpdateTray } from '@/bridge'
 import { APP_TITLE, APP_VERSION, sleep } from '@/utils'
 import icons from '@/components/Icon/icons'
-import { useMessage, usePicker, useConfirm, usePrompt } from '@/hooks'
-
-const list = ref(['data 1', 'data 2', 'data 3', 'data 4'])
-
-const radioValue = ref(list.value[0])
-const radioOptions = computed(() => list.value.map((v) => ({ label: v, value: v })))
+import { HttpGet, HttpPost, Upload } from '@/bridge'
+import { useMessage, usePicker, useConfirm, usePrompt, useAlert } from '@/hooks'
 
 const code = ref(`
 const appName = '${APP_TITLE}'
@@ -24,72 +17,18 @@ const kv = ref({
   count: '1'
 })
 
-const handleUpdateMenus = async () => {
-  const menus: MenuItem[] = [
-    {
-      type: 'item',
-      text: '一级菜单',
-      tooltip: '',
-      children: [
-        {
-          type: 'item',
-          text: '二级菜单',
-          tooltip: '',
-          children: [
-            {
-              type: 'item',
-              text: '三级菜单',
-              tooltip: '',
-              children: [
-                {
-                  type: 'item',
-                  text: '四级菜单',
-                  tooltip: '',
-                  event: () => {
-                    console.log('click')
-                  }
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    }
-  ]
-
-  // const appStore = useAppStore()
-  // appStore.updateTrayMenus()
-}
-
 const { message } = useMessage()
 const { picker } = usePicker()
 const { confirm } = useConfirm()
 const { prompt } = usePrompt()
-
-const appSettings = useAppSettingsStore()
-
-const theme = appSettings.app.theme
-
-const icos = [
-  `data/ico/normal_${theme}.ico`,
-  `data/ico/proxy_${theme}.ico`,
-  `data/ico/tun_${theme}.ico`
-]
-let i = 0
-const handleUpdateTray = async () => {
-  i += 1
-  await UpdateTray({
-    icon: icos[i % 3]
-  })
-}
+const { alert } = useAlert()
 
 const handleUpdateMessage = async () => {
   const { id } = message.info('success', 5_000)
   await sleep(1000)
   message.update(id, 'error', 'error')
-  message.destroy(id)
   await sleep(1000)
-  message.update(id, 'success', 'success')
+  message.destroy(id)
 }
 
 const handleShowSinglePicker = async () => {
@@ -147,6 +86,35 @@ const handleShowPrompt = async () => {
     message.info(error)
   }
 }
+
+const handleShowAlert = async () => {
+  await alert('Title', 'message')
+}
+const handleGetText = async () => {
+  const res = await HttpGet('http://127.0.0.1:8080/text')
+  alert('Result', JSON.stringify(res.header, null, 2) + '\n' + res.body)
+}
+
+const handleGetJson = async () => {
+  const res = await HttpGet('http://127.0.0.1:8080/json')
+  alert('Result', JSON.stringify(res.header, null, 2) + '\n' + JSON.stringify(res.body, null, 2))
+}
+
+const handlePost = async () => {
+  const res = await HttpPost(
+    'http://127.0.0.1:8080/post',
+    { Authorization: 'bearer' },
+    { username: 'admin' }
+  )
+  alert('Result', JSON.stringify(res.header, null, 2) + '\n' + res.body)
+}
+
+const handleUpload = async () => {
+  const res = await Upload('http://127.0.0.1:8080/upload', 'data/user.yaml', {
+    Authorization: 'bearer token'
+  })
+  alert('Result', JSON.stringify(res.header, null, 2) + '\n' + JSON.stringify(res.body, null, 2))
+}
 </script>
 
 <template>
@@ -156,37 +124,16 @@ const handleShowPrompt = async () => {
   </div>
 
   <h2>CodeViewer</h2>
-  <CodeViewer v-model="code" />
-
-  <h2>Drag</h2>
-  <div v-draggable="[list, DraggableOptions]" class="drag">
-    <div v-for="l in list" :key="l" class="drag-item">
-      {{ l }}
-    </div>
-  </div>
+  <CodeViewer v-model="code" lang="javascript" editable />
 
   <h2>Components</h2>
   <div>
-    <Radio v-model="radioValue" :options="radioOptions" />
-    {{ radioValue }}
-    <br />
-    <CheckBox v-model="list" :options="icons.map((v) => ({ label: v, value: v })).slice(0, 5)" />
-    {{ list }}
-    <br />
     <KeyValueEditor v-model="kv" />
-    <br />
-    kv: {{ kv }}
-  </div>
-
-  <h2>Tray Update/Destroy</h2>
-  <div>
-    <Button @click="handleUpdateMenus" type="link">Update Menus</Button>
-    <Button @click="handleUpdateTray" type="link">Update Tray</Button>
   </div>
 
   <h2>useMessage & usePicker & useConfirm & usePrompt</h2>
   <div>
-    <Button @click="message.info('info', 100_000)">
+    <Button @click="message.info('info', 1_000)">
       <Icon icon="messageInfo" />
       Info
     </Button>
@@ -204,10 +151,21 @@ const handleShowPrompt = async () => {
     </Button>
     <Button @click="handleUpdateMessage">Update Me</Button>
   </div>
-  <div><Button @click="handleShowSinglePicker">Single Picker</Button></div>
-  <div><Button @click="handleShowMultiPicker">Multi Picker</Button></div>
-  <div><Button @click="handleShowConfirm">Confirm</Button></div>
-  <div><Button @click="handleShowPrompt">Prompt</Button></div>
+  <div>
+    <Button @click="handleShowSinglePicker">Single Picker</Button>
+    <Button @click="handleShowMultiPicker">Multi Picker</Button>
+    <Button @click="handleShowConfirm">Confirm</Button>
+    <Button @click="handleShowPrompt">Prompt</Button>
+    <Button @click="handleShowAlert">Alert</Button>
+  </div>
+
+  <h2>HTTP</h2>
+  <div>
+    <Button @click="handleGetText">HttpGet Text</Button>
+    <Button @click="handleGetJson">HttpGet Json</Button>
+    <Button @click="handlePost">HttpPost</Button>
+    <Button @click="handleUpload">Upload</Button>
+  </div>
 </template>
 
 <style lang="less" scoped>

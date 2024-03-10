@@ -1,9 +1,11 @@
 package bridge
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"log"
+	"mime/multipart"
 	"net/http"
 	"net/url"
 	"os"
@@ -158,6 +160,70 @@ func (a *App) Download(url string, path string, event string, proxy string) Flag
 	}
 
 	return FlagResult{true, "Success"}
+}
+
+func (a *App) Upload(url string, filepath string, headers map[string]string, proxy string) HTTPResult {
+	log.Printf("Upload: %s %s %v", url, filepath, headers)
+
+	header := make(http.Header)
+	header.Set("User-Agent", Config.UserAgent)
+
+	for key, value := range headers {
+		header.Set(key, value)
+	}
+
+	filepath = GetPath(filepath)
+
+	file, err := os.Open(filepath)
+	if err != nil {
+		return HTTPResult{false, nil, err.Error()}
+	}
+	defer file.Close()
+
+	body := &bytes.Buffer{}
+	writer := multipart.NewWriter(body)
+
+	part, err := writer.CreateFormFile("file", filepath)
+	if err != nil {
+		return HTTPResult{false, nil, err.Error()}
+	}
+
+	_, err = io.Copy(part, file)
+	if err != nil {
+		return HTTPResult{false, nil, err.Error()}
+	}
+
+	err = writer.Close()
+	if err != nil {
+		return HTTPResult{false, nil, err.Error()}
+	}
+
+	req, err := http.NewRequest("POST", url, body)
+	if err != nil {
+		return HTTPResult{false, nil, err.Error()}
+	}
+	req.Header = header
+	req.Header.Set("Content-Type", writer.FormDataContentType())
+
+	client := &http.Client{
+		Timeout: 10 * time.Minute,
+		Transport: &http.Transport{
+			Proxy: getProxy(proxy),
+		},
+	}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return HTTPResult{false, nil, err.Error()}
+	}
+	defer resp.Body.Close()
+
+	b, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return HTTPResult{false, nil, err.Error()}
+	}
+
+	return HTTPResult{true, resp.Header, string(b)}
 }
 
 func (dt *DownloadTracker) Write(p []byte) (n int, err error) {

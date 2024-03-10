@@ -9,7 +9,7 @@ import { useAppSettingsStore, useEnvStore, useKernelApiStore } from '@/stores'
 import {
   Download,
   UnzipZIPFile,
-  HttpGetJSON,
+  HttpGet,
   Exec,
   Movefile,
   Removefile,
@@ -51,12 +51,12 @@ const updateRemoteVersion = async (showTips = false) => {
 const downloadCore = async () => {
   downloadLoading.value = true
   try {
-    const { json } = await HttpGetJSON(releaseUrl, {
+    const { body } = await HttpGet(releaseUrl, {
       'User-Agent': appSettings.app.userAgent
     })
     const { os, arch } = await GetEnv()
 
-    const { assets, tag_name, message: msg } = json
+    const { assets, tag_name, message: msg } = body
     if (msg) throw msg
 
     const envStore = useEnvStore()
@@ -130,10 +130,10 @@ const getLocalVersion = async (showTips = false) => {
 const getRemoteVersion = async (showTips = false) => {
   remoteVersionLoading.value = true
   try {
-    const { json } = await HttpGetJSON(releaseUrl, {
+    const { body } = await HttpGet(releaseUrl, {
       'User-Agent': appSettings.app.userAgent
     })
-    const { tag_name } = json
+    const { tag_name } = body
     return tag_name as string
   } catch (error: any) {
     console.log(error)

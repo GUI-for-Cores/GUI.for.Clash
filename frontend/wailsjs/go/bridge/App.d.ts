@@ -53,4 +53,6 @@ export function UpdateTray(arg1:bridge.TrayContent):Promise<void>;
 
 export function UpdateTrayMenus(arg1:Array<bridge.MenuItem>):Promise<void>;
 
+export function Upload(arg1:string,arg2:string,arg3:{[key: string]: string},arg4:string):Promise<bridge.HTTPResult>;
+
 export function Writefile(arg1:string,arg2:string):Promise<bridge.FlagResult>;
