@@ -24,7 +24,7 @@ export const SwitchPermissions = async (enable: boolean) => {
         basePath + '\\' + appName,
         '/f'
       ]
-  await Exec('reg', args, true)
+  await Exec('reg', args, { convert: true })
 }
 
 export const CheckPermissions = async () => {
@@ -40,7 +40,7 @@ export const CheckPermissions = async () => {
         '/t',
         'REG_SZ'
       ],
-      true
+      { convert: true }
     )
     return out.includes('RunAsAdmin')
   } catch (error) {
@@ -63,7 +63,7 @@ export const SetSystemProxy = async (enable: boolean, server: string) => {
       enable ? '1' : '0',
       '/f'
     ],
-    true
+    { convert: true }
   )
   await Exec(
     'reg',
@@ -76,7 +76,7 @@ export const SetSystemProxy = async (enable: boolean, server: string) => {
       enable ? server : '',
       '/f'
     ],
-    true
+    { convert: true }
   )
 }
 
@@ -92,7 +92,7 @@ export const GetSystemProxy = async () => {
         '/t',
         'REG_DWORD'
       ],
-      true
+      { convert: true }
     )
 
     if (/REG_DWORD\s+0x0/.test(out1)) return ''
@@ -107,7 +107,7 @@ export const GetSystemProxy = async () => {
         '/t',
         'REG_SZ'
       ],
-      true
+      { convert: true }
     )
 
     const regex = /ProxyServer\s+REG_SZ\s+(\S+)/
@@ -174,15 +174,15 @@ export const getTaskSchXmlString = async (delay = 30) => {
 }
 
 export const QuerySchTask = async (taskName: string) => {
-  await Exec('Schtasks', ['/Query', '/TN', taskName, '/XML'], true)
+  await Exec('Schtasks', ['/Query', '/TN', taskName, '/XML'], { convert: true })
 }
 
 export const CreateSchTask = async (taskName: string, xmlPath: string) => {
-  await Exec('SchTasks', ['/Create', '/F', '/TN', taskName, '/XML', xmlPath], true)
+  await Exec('SchTasks', ['/Create', '/F', '/TN', taskName, '/XML', xmlPath], { convert: true })
 }
 
 export const DeleteSchTask = async (taskName: string) => {
-  await Exec('SchTasks', ['/Delete', '/F', '/TN', taskName], true)
+  await Exec('SchTasks', ['/Delete', '/F', '/TN', taskName], { convert: true })
 }
 
 // Others
