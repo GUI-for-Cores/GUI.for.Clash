@@ -53,12 +53,10 @@ const updateRemoteVersion = async (showTips = false) => {
 const downloadCore = async () => {
   downloadLoading.value = true
   try {
-    const { body } = await HttpGet(alphaUrl, {
-      'User-Agent': appSettings.app.userAgent
-    })
+    const { body } = await HttpGet(alphaUrl)
     const { os, arch } = await GetEnv()
 
-    const { assets, message: msg } = body
+    const { assets, message: msg } = body as Record<string, any>
     if (msg) throw msg
 
     const envStore = useEnvStore()
@@ -75,7 +73,7 @@ const downloadCore = async () => {
 
     const { id } = message.info('Downloading...', 10 * 60 * 1_000)
 
-    await Download(asset.browser_download_url, tmp, (progress, total) => {
+    await Download(asset.browser_download_url, tmp, undefined, (progress, total) => {
       message.update(id, 'Downloading...' + ((progress / total) * 100).toFixed(2) + '%')
     }).catch((err) => {
       message.destroy(id)
@@ -141,7 +139,7 @@ const getRemoteVersion = async (showTips = false) => {
   remoteVersionLoading.value = true
   try {
     const { body } = await HttpGet(alphaVersionUrl)
-    return body.trim()
+    return (body as string).trim()
   } catch (error: any) {
     console.log(error)
     showTips && message.error(error)

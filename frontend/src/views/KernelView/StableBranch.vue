@@ -51,12 +51,10 @@ const updateRemoteVersion = async (showTips = false) => {
 const downloadCore = async () => {
   downloadLoading.value = true
   try {
-    const { body } = await HttpGet(releaseUrl, {
-      'User-Agent': appSettings.app.userAgent
-    })
+    const { body } = await HttpGet(releaseUrl)
     const { os, arch } = await GetEnv()
 
-    const { assets, tag_name, message: msg } = body
+    const { assets, tag_name, message: msg } = body as Record<string, any>
     if (msg) throw msg
 
     const envStore = useEnvStore()
@@ -73,7 +71,7 @@ const downloadCore = async () => {
 
     const { id } = message.info('Downloading...', 10 * 60 * 1_000)
 
-    await Download(asset.browser_download_url, tmp, (progress, total) => {
+    await Download(asset.browser_download_url, tmp, undefined, (progress, total) => {
       message.update(id, 'Downloading...' + ((progress / total) * 100).toFixed(2) + '%')
     }).catch((err) => {
       message.destroy(id)
@@ -130,10 +128,8 @@ const getLocalVersion = async (showTips = false) => {
 const getRemoteVersion = async (showTips = false) => {
   remoteVersionLoading.value = true
   try {
-    const { body } = await HttpGet(releaseUrl, {
-      'User-Agent': appSettings.app.userAgent
-    })
-    const { tag_name } = body
+    const { body } = await HttpGet(releaseUrl)
+    const { tag_name } = body as Record<string, any>
     return tag_name as string
   } catch (error: any) {
     console.log(error)

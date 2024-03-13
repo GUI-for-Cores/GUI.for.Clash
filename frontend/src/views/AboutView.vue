@@ -3,7 +3,6 @@ import { useI18n } from 'vue-i18n'
 import { ref, computed } from 'vue'
 
 import { useMessage } from '@/hooks'
-import { useAppSettingsStore } from '@/stores'
 import { Download, HttpGet, BrowserOpenURL, Movefile, GetEnv, RestartApp } from '@/bridge'
 import { APP_TITLE, APP_VERSION, PROJECT_URL, TG_GROUP, TG_CHANNEL, APP_VERSION_API } from '@/utils'
 
@@ -17,8 +16,6 @@ const needUpdate = computed(() => APP_VERSION !== remoteVersion.value)
 
 const { t } = useI18n()
 const { message } = useMessage()
-
-const appSettings = useAppSettingsStore()
 
 const downloadApp = async () => {
   if (loading.value || downloading.value) return
@@ -35,7 +32,7 @@ const downloadApp = async () => {
 
     const { id } = message.info('Downloading...', 10 * 60 * 1_000)
 
-    await Download(downloadUrl, appName + '.tmp', (progress, total) => {
+    await Download(downloadUrl, appName + '.tmp', undefined, (progress, total) => {
       message.update(id, 'Downloading...' + ((progress / total) * 100).toFixed(2) + '%')
     }).catch((err) => {
       message.destroy(id)
@@ -64,12 +61,10 @@ const checkForUpdates = async (showTips = false) => {
   loading.value = true
 
   try {
-    const { body } = await HttpGet(APP_VERSION_API, {
-      'User-Agent': appSettings.app.userAgent
-    })
+    const { body } = await HttpGet(APP_VERSION_API)
     const { os, arch } = await GetEnv()
 
-    const { tag_name, assets, message: msg } = body
+    const { tag_name, assets, message: msg } = body as Record<string, any>
     if (msg) throw msg
 
     const suffix = { windows: '.exe', linux: '' }[os]
