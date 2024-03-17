@@ -58,6 +58,7 @@ const profilesStore = useProfilesStore()
 const [showAdvancedSetting, toggleAdvancedSetting] = useBool(false)
 
 const handleCancel = inject('cancel') as any
+const handleSubmit = inject('submit') as any
 const handlePrevStep = () => currentStep.value--
 const handleNextStep = () => currentStep.value++
 
@@ -65,10 +66,11 @@ const handleSave = async () => {
   try {
     if (props.isUpdate) {
       await profilesStore.editProfile(props.id, profile.value)
+      handleSubmit()
     } else {
       await profilesStore.addProfile(profile.value)
+      handleCancel()
     }
-    handleCancel()
   } catch (error: any) {
     console.error('handleSave: ', error)
     message.error(error)
