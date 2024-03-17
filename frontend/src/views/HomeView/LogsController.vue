@@ -147,7 +147,7 @@ onUnmounted(disconnect)
   display: flex;
   align-items: center;
   .label {
-    padding: 0 8px;
+    padding-right: 8px;
     font-size: 12px;
   }
 }

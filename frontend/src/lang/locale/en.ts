@@ -41,7 +41,8 @@ export default {
     confirm: 'Confirm',
     selectAll: 'Select All',
     http: 'Remote',
-    file: 'Local'
+    file: 'Local',
+    openFile: 'Open File'
   },
   kernel: {
     port: 'HTTP(s) Port',
@@ -360,7 +361,9 @@ export default {
     },
     proxies: 'Reference proxies',
     use: 'Reference subscriptions',
-    noSubs: 'There are no available subscriptions.'
+    noSubs: 'There are no available subscriptions.',
+    group: 'Group Details',
+    rule: 'Rule Details'
   },
   profiles: {
     shouldStop: 'Unable to delete, this profile is in use.',
@@ -434,6 +437,7 @@ export default {
     rulesets: 'Rulesets',
     plugins: 'Plugins',
     cron: 'Cron',
+    notification: 'Task Completed Notification',
     cronTips: 'Seconds Minutes Hours "Day of month" Month "Day of week"',
     lastTime: 'Last Time',
     'update::subscription': 'update::subscription',
