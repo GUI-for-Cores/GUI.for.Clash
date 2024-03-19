@@ -5,8 +5,8 @@ import { ref, computed, onUnmounted } from 'vue'
 import type { Menu } from '@/stores'
 import { LogLevelOptions } from '@/constant'
 import { useBool, useMessage } from '@/hooks'
-import { isValidIPV4, addToRuleSet, ignoredError } from '@/utils'
 import { getKernelLogsWS, updateProvidersRules } from '@/api/kernel'
+import { isValidIPV4, addToRuleSet, ignoredError, setIntervalImmediately } from '@/utils'
 
 const logType = ref('info')
 const keywords = ref('')
@@ -74,9 +74,13 @@ const onLogs = (data: any) => {
   pause.value || logs.value.unshift(data)
 }
 
-const disconnect = getKernelLogsWS(onLogs)
+const { connect, disconnect } = getKernelLogsWS(onLogs)
+const timer = setIntervalImmediately(connect, 1000)
 
-onUnmounted(disconnect)
+onUnmounted(() => {
+  clearInterval(timer)
+  disconnect()
+})
 </script>
 
 <template>

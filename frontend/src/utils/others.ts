@@ -40,3 +40,8 @@ export const getValue = (obj: Record<string, any>, expr: string) => {
     return value[key]
   }, obj)
 }
+
+export const setIntervalImmediately = (func: () => void, interval: number) => {
+  func()
+  return setInterval(func, interval)
+}

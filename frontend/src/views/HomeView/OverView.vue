@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { ref, onUnmounted } from 'vue'
 
 import { useBool } from '@/hooks'
 import { getKernelWS } from '@/api/kernel'
 import { useKernelApiStore } from '@/stores'
 import { ModeOptions } from '@/constant/kernel'
-import { formatBytes, handleChangeMode } from '@/utils'
+import { formatBytes, handleChangeMode, setIntervalImmediately } from '@/utils'
 
 import ConnectionsController from './ConnectionsController.vue'
 
@@ -50,9 +50,13 @@ const onMemory = (data: any) => {
   statistics.value.inuse = data.inuse
 }
 
-const disconnect = getKernelWS({ onConnections, onTraffic, onMemory })
+const { connect, disconnect } = getKernelWS({ onConnections, onTraffic, onMemory })
+const timer = setIntervalImmediately(connect, 3000)
 
-onUnmounted(disconnect)
+onUnmounted(() => {
+  clearInterval(timer)
+  disconnect()
+})
 </script>
 
 <template>
