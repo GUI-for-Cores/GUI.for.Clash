@@ -319,6 +319,7 @@ onUnmounted(() => {
     v-model:open="showDetails"
     :submit="false"
     cancel-text="common.close"
+    title="home.connections.details"
     max-height="90"
     max-width="90"
     mask-closable

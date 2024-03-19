@@ -307,7 +307,8 @@ export default {
       active: 'Active',
       closed: 'Closed',
       closeAll: 'Close all connections',
-      sort: 'Sorting and Setting Visibility'
+      sort: 'Sorting and Setting Visibility',
+      details: 'Connection Details'
     }
   },
   subscribe: {

@@ -307,7 +307,8 @@ export default {
       active: '活动',
       closed: '已关闭',
       closeAll: '关闭所有连接',
-      sort: '排序和设置显示字段'
+      sort: '排序和设置显示字段',
+      details: '连接详情'
     }
   },
   subscribe: {

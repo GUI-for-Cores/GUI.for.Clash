@@ -299,9 +299,13 @@ export const usePluginsStore = defineStore('plugins', () => {
       const metadata = getPluginMetadata(cache.plugin)
       try {
         const fn = new AsyncFunction(
-          `const Plugin = ${JSON.stringify(metadata)}; ${cache.code}; await ${fnName}()`
+          `const Plugin = ${JSON.stringify(metadata)}; ${cache.code}; return await ${fnName}()`
         )
-        await await fn()
+        const exitCode = await fn()
+        if (exitCode !== undefined) {
+          cache.plugin.status = exitCode
+          editPlugin(cache.plugin.id, cache.plugin)
+        }
       } catch (error: any) {
         throw `${cache.plugin.name} : ` + (error.message || error)
       }
@@ -356,7 +360,6 @@ export const usePluginsStore = defineStore('plugins', () => {
         plugin.status = exitCode
         editPlugin(id, plugin)
       }
-      return exitCode
     } catch (error: any) {
       throw `${cache.plugin.name} : ` + (error.message || error)
     }
