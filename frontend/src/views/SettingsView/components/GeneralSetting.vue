@@ -58,6 +58,10 @@ const colors = [
   {
     label: 'settings.color.skyblue',
     value: Color.Skyblue
+  },
+  {
+    label: 'settings.color.green',
+    value: Color.Green
   }
 ]
 
