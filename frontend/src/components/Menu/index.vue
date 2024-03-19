@@ -28,44 +28,47 @@ const handleClick = (fn: Menu) => {
   secondaryMenu.value = undefined
 }
 
+const fixMenuPos = (x: number, y: number) => {
+  let left = x
+  let top = y
+
+  const { offsetWidth: clientWidth, offsetHeight: clientHeight } = document.body
+  const { offsetWidth: menuWidth, offsetHeight: menuHeight } = menuRef.value
+
+  if (x + menuWidth > clientWidth) left -= x + menuWidth - clientWidth
+  if (y + menuHeight > clientHeight) top -= y + menuHeight - clientHeight
+
+  menuPosition.value = { left: left + 'px', top: top + 'px' }
+}
+
+const fixSecondaryMenuPos = () => {
+  const { x, y } = props.position
+  const { offsetWidth: menuWidth, offsetHeight: menuHeight } = menuRef.value
+
+  let left = menuWidth
+  let top = menuHeight
+
+  const { offsetWidth: clientWidth, offsetHeight: clientHeight } = document.body
+  const { offsetWidth: sMenuWidth, offsetHeight: sMenuHeight } = secondaryMenuRef.value
+
+  if (left + sMenuWidth + x > clientWidth) left -= x + menuWidth + sMenuWidth - clientWidth
+  if (top + sMenuHeight + y > clientHeight) top -= y + menuHeight + sMenuHeight - clientHeight
+
+  secondaryMenuPosition.value = { left: left + 'px', top: top + 'px' }
+}
+
 watch(
   () => props.position,
-  ({ x, y }) => {
-    nextTick(() => {
-      let left = x
-      let top = y
-
-      const { offsetWidth: clientWidth, offsetHeight: clientHeight } = document.body
-      const { offsetWidth: menuWidth, offsetHeight: menuHeight } = menuRef.value
-
-      if (x + menuWidth > clientWidth) left -= x + menuWidth - clientWidth
-      if (y + menuHeight > clientHeight) top -= y + menuHeight - clientHeight
-
-      menuPosition.value = { left: left + 'px', top: top + 'px' }
-    })
-  }
+  ({ x, y }) => nextTick(() => fixMenuPos(x, y))
 )
 
 watch([() => secondaryMenu.value, () => props.position], () => {
-  nextTick(() => {
-    const { x, y } = props.position
-    const { offsetWidth: menuWidth, offsetHeight: menuHeight } = menuRef.value
-
-    let left = menuWidth
-    let top = menuHeight
-
-    const { offsetWidth: clientWidth, offsetHeight: clientHeight } = document.body
-    const { offsetWidth: sMenuWidth, offsetHeight: sMenuHeight } = secondaryMenuRef.value
-
-    if (left + sMenuWidth + x > clientWidth) left -= x + menuWidth + sMenuWidth - clientWidth
-    if (top + sMenuHeight + y > clientHeight) top -= y + menuHeight + sMenuHeight - clientHeight
-
-    secondaryMenuPosition.value = { left: left + 'px', top: top + 'px' }
-  })
+  nextTick(fixSecondaryMenuPos)
 })
 
 const onClick = () => {
   model.value = false
+  secondaryMenu.value = undefined
 }
 
 onMounted(() => document.addEventListener('click', onClick))
