@@ -61,10 +61,10 @@ const checkForUpdates = async (showTips = false) => {
   loading.value = true
 
   try {
-    const { body } = await HttpGet(APP_VERSION_API)
+    const { body } = await HttpGet<Record<string, any>>(APP_VERSION_API)
     const { os, arch } = await GetEnv()
 
-    const { tag_name, assets, message: msg } = body as Record<string, any>
+    const { tag_name, assets, message: msg } = body
     if (msg) throw msg
 
     const suffix = { windows: '.exe', linux: '' }[os]

@@ -53,10 +53,10 @@ const updateRemoteVersion = async (showTips = false) => {
 const downloadCore = async () => {
   downloadLoading.value = true
   try {
-    const { body } = await HttpGet(alphaUrl)
+    const { body } = await HttpGet<Record<string, any>>(alphaUrl)
     const { os, arch } = await GetEnv()
 
-    const { assets, message: msg } = body as Record<string, any>
+    const { assets, message: msg } = body
     if (msg) throw msg
 
     const envStore = useEnvStore()
@@ -138,8 +138,8 @@ const getLocalVersion = async (showTips = false) => {
 const getRemoteVersion = async (showTips = false) => {
   remoteVersionLoading.value = true
   try {
-    const { body } = await HttpGet(alphaVersionUrl)
-    return (body as string).trim()
+    const { body } = await HttpGet<string>(alphaVersionUrl)
+    return body.trim()
   } catch (error: any) {
     console.log(error)
     showTips && message.error(error)

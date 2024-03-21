@@ -91,28 +91,42 @@ const handleShowAlert = async () => {
   await alert('Title', 'message')
 }
 const handleGetText = async () => {
-  const res = await HttpGet('http://127.0.0.1:8080/text')
+  const res = await HttpGet('http://127.0.0.1:8080/text', { 'Content-Type': 'application/json' })
+  console.log(res)
   alert('Result', JSON.stringify(res.header, null, 2) + '\n' + res.body)
 }
 
 const handleGetJson = async () => {
   const res = await HttpGet('http://127.0.0.1:8080/json')
+  console.log(res)
   alert('Result', JSON.stringify(res.header, null, 2) + '\n' + JSON.stringify(res.body, null, 2))
 }
 
-const handlePost = async () => {
+const handlePostJSON = async () => {
   const res = await HttpPost(
-    'http://127.0.0.1:8080/post',
-    { Authorization: 'bearer' },
+    'http://127.0.0.1:8080/json',
+    { Authorization: 'bearer', 'Content-Type': 'application/json' },
     { username: 'admin' }
   )
-  alert('Result', JSON.stringify(res.header, null, 2) + '\n' + res.body)
+  console.log(res)
+  alert('Result', JSON.stringify(res.header, null, 2) + '\n' + JSON.stringify(res.body, null, 2))
+}
+
+const handlePostFORM = async () => {
+  const res = await HttpPost(
+    'http://127.0.0.1:8080/form',
+    { Authorization: 'bearer', 'Content-Type': 'application/x-www-form-urlencoded' },
+    { username: 'admin' }
+  )
+  console.log(res)
+  alert('Result', JSON.stringify(res.header, null, 2) + '\n' + JSON.stringify(res.body, null, 2))
 }
 
 const handleUpload = async () => {
   const res = await Upload('http://127.0.0.1:8080/upload', 'data/user.yaml', {
     Authorization: 'bearer token'
   })
+  console.log(res)
   alert('Result', JSON.stringify(res.header, null, 2) + '\n' + JSON.stringify(res.body, null, 2))
 }
 </script>
@@ -163,7 +177,8 @@ const handleUpload = async () => {
   <div>
     <Button @click="handleGetText">HttpGet Text</Button>
     <Button @click="handleGetJson">HttpGet Json</Button>
-    <Button @click="handlePost">HttpPost</Button>
+    <Button @click="handlePostJSON">HttpPost JSON</Button>
+    <Button @click="handlePostFORM">HttpPost FORM</Button>
     <Button @click="handleUpload">Upload</Button>
   </div>
 </template>

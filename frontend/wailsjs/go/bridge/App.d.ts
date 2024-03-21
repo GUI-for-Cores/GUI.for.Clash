@@ -21,9 +21,13 @@ export function GetEnv():Promise<bridge.EnvResult>;
 
 export function GetInterfaces():Promise<bridge.FlagResult>;
 
+export function HttpDelete(arg1:string,arg2:{[key: string]: string},arg3:string):Promise<bridge.HTTPResult>;
+
 export function HttpGet(arg1:string,arg2:{[key: string]: string},arg3:string):Promise<bridge.HTTPResult>;
 
 export function HttpPost(arg1:string,arg2:{[key: string]: string},arg3:string,arg4:string):Promise<bridge.HTTPResult>;
+
+export function HttpPut(arg1:string,arg2:{[key: string]: string},arg3:string,arg4:string):Promise<bridge.HTTPResult>;
 
 export function KillProcess(arg1:number):Promise<bridge.FlagResult>;
 

@@ -3,9 +3,9 @@ import { defineStore } from 'pinia'
 import { parse, stringify } from 'yaml'
 
 import { HttpGet, Readfile, Writefile } from '@/bridge'
+import { debounce, deepClone, ignoredError, updateTrayMenus } from '@/utils'
 import { PluginsFilePath, PluginTrigger, PluginManualEvent } from '@/constant'
 import { useAppSettingsStore, type ProfileType, type SubscribeType } from '@/stores'
-import { APP_TITLE, APP_VERSION, debounce, deepClone, ignoredError, updateTrayMenus } from '@/utils'
 
 export type PluginConfiguration = {
   id: string
@@ -195,10 +195,7 @@ export const usePluginsStore = defineStore('plugins', () => {
     }
 
     if (plugin.type === 'Http') {
-      const appSettings = useAppSettingsStore()
-      const { body } = await HttpGet(plugin.url, {
-        'User-Agent': appSettings.app.userAgent || APP_TITLE + '/' + APP_VERSION
-      })
+      const { body } = await HttpGet(plugin.url)
       code = body
     }
 
@@ -360,6 +357,7 @@ export const usePluginsStore = defineStore('plugins', () => {
         plugin.status = exitCode
         editPlugin(id, plugin)
       }
+      return exitCode
     } catch (error: any) {
       throw `${cache.plugin.name} : ` + (error.message || error)
     }

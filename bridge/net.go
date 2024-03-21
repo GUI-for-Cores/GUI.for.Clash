@@ -6,7 +6,6 @@ import (
 	"log"
 	"mime/multipart"
 	"net/http"
-	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -15,26 +14,8 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
-func getProxy(_proxy string) func(*http.Request) (*url.URL, error) {
-	proxy := http.ProxyFromEnvironment
-
-	if _proxy != "" {
-		if !strings.HasPrefix(_proxy, "http") {
-			_proxy = "http://" + _proxy
-		}
-		proxyUrl, err := url.Parse(_proxy)
-		if err == nil {
-			proxy = http.ProxyURL(proxyUrl)
-		}
-	}
-
-	return proxy
-}
-
-func (a *App) HttpGet(url string, headers map[string]string, proxy string) HTTPResult {
-	log.Printf("HttpGet: %s %v %v", url, headers, proxy)
-
-	req, err := http.NewRequest("GET", url, nil)
+func NewHTTPRequest(method string, url string, headers map[string]string, body string, proxy string) HTTPResult {
+	req, err := http.NewRequest(method, url, strings.NewReader(body))
 	if err != nil {
 		return HTTPResult{false, nil, err.Error()}
 	}
@@ -50,7 +31,7 @@ func (a *App) HttpGet(url string, headers map[string]string, proxy string) HTTPR
 	client := &http.Client{
 		Timeout: 15 * time.Second,
 		Transport: &http.Transport{
-			Proxy: getProxy(proxy),
+			Proxy: GetProxy(proxy),
 		},
 	}
 
@@ -68,41 +49,24 @@ func (a *App) HttpGet(url string, headers map[string]string, proxy string) HTTPR
 	return HTTPResult{true, resp.Header, string(b)}
 }
 
-func (a *App) HttpPost(url string, headers map[string]string, body string, proxy string) HTTPResult {
-	log.Printf("HttpPost: %s %v %v", url, headers, body)
+func (a *App) HttpGet(url string, header map[string]string, proxy string) HTTPResult {
+	log.Printf("HttpGet: %s %v %v", url, header, proxy)
+	return NewHTTPRequest("GET", url, header, "", proxy)
+}
 
-	req, err := http.NewRequest("POST", url, strings.NewReader(body))
-	if err != nil {
-		return HTTPResult{false, nil, err.Error()}
-	}
+func (a *App) HttpPost(url string, header map[string]string, body string, proxy string) HTTPResult {
+	log.Printf("HttpPost: %s %v %v", url, header, body)
+	return NewHTTPRequest("POST", url, header, body, proxy)
+}
 
-	header := make(http.Header)
+func (a *App) HttpDelete(url string, header map[string]string, proxy string) HTTPResult {
+	log.Printf("HttpDelete: %s %v", url, header)
+	return NewHTTPRequest("DELETE", url, header, "", proxy)
+}
 
-	for key, value := range headers {
-		header.Set(key, value)
-	}
-
-	req.Header = header
-
-	client := &http.Client{
-		Timeout: 15 * time.Second,
-		Transport: &http.Transport{
-			Proxy: getProxy(proxy),
-		},
-	}
-
-	resp, err := client.Do(req)
-	if err != nil {
-		return HTTPResult{false, nil, err.Error()}
-	}
-	defer resp.Body.Close()
-
-	b, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return HTTPResult{false, nil, err.Error()}
-	}
-
-	return HTTPResult{true, resp.Header, string(b)}
+func (a *App) HttpPut(url string, header map[string]string, body string, proxy string) HTTPResult {
+	log.Printf("HttpPut: %s %v %v", url, header, body)
+	return NewHTTPRequest("PUT", url, header, body, proxy)
 }
 
 func (a *App) Download(url string, path string, headers map[string]string, event string, proxy string) HTTPResult {
@@ -120,7 +84,7 @@ func (a *App) Download(url string, path string, headers map[string]string, event
 	client := &http.Client{
 		Timeout: 10 * time.Minute,
 		Transport: &http.Transport{
-			Proxy: getProxy(proxy),
+			Proxy: GetProxy(proxy),
 		},
 	}
 
@@ -206,7 +170,7 @@ func (a *App) Upload(url string, path string, headers map[string]string, event s
 	client := &http.Client{
 		Timeout: 10 * time.Minute,
 		Transport: &http.Transport{
-			Proxy: getProxy(proxy),
+			Proxy: GetProxy(proxy),
 		},
 	}
 

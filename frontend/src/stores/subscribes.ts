@@ -2,10 +2,10 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { stringify, parse } from 'yaml'
 
+import { usePluginsStore } from '@/stores'
 import { SubscribesFilePath } from '@/constant'
 import { Readfile, Writefile, HttpGet } from '@/bridge'
-import { useAppSettingsStore, usePluginsStore } from '@/stores'
-import { deepClone, debounce, sampleID, APP_TITLE, APP_VERSION, isValidSubYAML } from '@/utils'
+import { deepClone, debounce, sampleID, isValidSubYAML, getUserAgent } from '@/utils'
 
 export type SubscribeType = {
   id: string
@@ -127,10 +127,8 @@ export const useSubscribesStore = defineStore('subscribes', () => {
     }
 
     if (s.type === 'Http') {
-      const appSettings = useAppSettingsStore()
-
       const { header: h, body: b } = await HttpGet(s.url, {
-        'User-Agent': s.userAgent || appSettings.app.userAgent || APP_TITLE + '/' + APP_VERSION
+        'User-Agent': s.userAgent || getUserAgent()
       })
       h['Subscription-Userinfo'] && (userInfo = h['Subscription-Userinfo'])
       body = b
