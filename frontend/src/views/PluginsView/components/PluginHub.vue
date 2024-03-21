@@ -21,9 +21,11 @@ const pluginsStore = usePluginsStore()
 const updateList = async () => {
   loading.value = true
   try {
-    const { body: hub } = await HttpGet<PluginType[]>(hubUrl)
-    const { body: gfc } = await HttpGet<PluginType[]>(gfcUrl)
-    list.value = [...hub, ...gfc]
+    const { body: body1 } = await HttpGet<string>(hubUrl)
+    const { body: body2 } = await HttpGet<string>(gfcUrl)
+    const list1 = JSON.parse(body1)
+    const list2 = JSON.parse(body2)
+    list.value = [...list1, ...list2]
     await Writefile(cacheFile, JSON.stringify(list.value))
     message.success('plugins.updateSuccess')
   } catch (error: any) {
