@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, inject } from 'vue'
+import { ref, inject, type Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { deepClone, sampleID } from '@/utils'
@@ -26,6 +26,8 @@ const props = withDefaults(defineProps<Props>(), {
   step: 0
 })
 
+const groupsRef = ref()
+const rulesRef = ref()
 const currentStep = ref(props.step)
 
 const stepItems = [
@@ -57,36 +59,30 @@ const [showAdvancedSetting, toggleAdvancedSetting] = useBool(false)
 
 const handleCancel = inject('cancel') as any
 const handleSubmit = inject('submit') as any
+const handlePrevStep = () => currentStep.value--
+const handleNextStep = () => currentStep.value++
 
 const handleSave = async () => {
-  if (props.isUpdate) {
-    try {
+  try {
+    if (props.isUpdate) {
       await profilesStore.editProfile(props.id, profile.value)
       handleSubmit()
-    } catch (error: any) {
-      console.error('editProfile: ', error)
-      message.error(error)
-      return
+    } else {
+      await profilesStore.addProfile(profile.value)
+      handleCancel()
     }
-    return
-  }
-
-  try {
-    await profilesStore.addProfile(profile.value)
-    handleCancel()
   } catch (error: any) {
-    console.error('addProfile: ')
+    console.error('handleSave: ', error)
     message.error(error)
-    return
   }
 }
 
-const handlePrevStep = () => {
-  currentStep.value--
-}
-
-const handleNextStep = async () => {
-  currentStep.value++
+const handleAdd = () => {
+  const map: Record<number, Ref> = {
+    '4': groupsRef,
+    '5': rulesRef
+  }
+  map[currentStep.value].value.handleAdd()
 }
 
 if (props.isUpdate) {
@@ -98,7 +94,12 @@ if (props.isUpdate) {
 </script>
 
 <template>
-  <div class="title" style="--wails-draggable: drag">{{ t(stepItems[currentStep].title) }}</div>
+  <div class="header" style="--wails-draggable: drag">
+    <div class="header-title">{{ t(stepItems[currentStep].title) }}</div>
+    <Button v-show="[4, 5].includes(currentStep)" @click="handleAdd" type="link" class="ml-auto">
+      {{ t('common.add') }}
+    </Button>
+  </div>
 
   <div class="form">
     <div v-show="currentStep === 0">
@@ -129,11 +130,12 @@ if (props.isUpdate) {
     </div>
 
     <div v-show="currentStep === 4">
-      <ProxyGroupsConfig v-model="profile.proxyGroupsConfig" />
+      <ProxyGroupsConfig ref="groupsRef" v-model="profile.proxyGroupsConfig" />
     </div>
 
     <div v-show="currentStep === 5">
       <RulesConfig
+        ref="rulesRef"
         v-model="profile.rulesConfig"
         :proxy-groups="profile.proxyGroupsConfig"
         :profile="profile"
@@ -146,11 +148,7 @@ if (props.isUpdate) {
     <Button @click="handlePrevStep" :disable="currentStep == 0" type="text">
       {{ t('common.prevStep') }}
     </Button>
-    <Button
-      @click="handleNextStep"
-      :disable="!profile.name || currentStep == stepItems.length - 1"
-      type="text"
-    >
+    <Button @click="handleNextStep" :disable="!profile.name || currentStep == 5" type="text">
       {{ t('common.nextStep') }}
     </Button>
     <Button @click="handleSave" :disable="!profile.name" type="primary">
@@ -160,13 +158,18 @@ if (props.isUpdate) {
 </template>
 
 <style lang="less" scoped>
-.title {
-  font-size: 20px;
-  font-weight: bold;
-  margin: 0 0 16px 0;
+.header {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+  &-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 8px 0 16px 0;
+  }
 }
 .form {
-  padding: 0 8px;
+  padding-right: 8px;
   overflow-y: auto;
   max-height: 60vh;
 }

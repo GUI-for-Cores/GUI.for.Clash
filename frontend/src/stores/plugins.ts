@@ -39,6 +39,7 @@ export type PluginType = {
   disabled: boolean
   install: boolean
   installed: boolean
+  status: 0 | 1 | 2 // 0: Normal 1: Running 2: Stopped
   // Not Config
   key?: string
   updating?: boolean
@@ -88,14 +89,14 @@ const PluginsTriggerMap: {
 
 const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor
 
-const getUserConfiguration = (plugin: PluginType) => {
+const getPluginMetadata = (plugin: PluginType) => {
   const appSettingsStore = useAppSettingsStore()
   let configuration = appSettingsStore.app.pluginSettings[plugin.id]
   if (!configuration) {
     configuration = {}
     plugin.configuration.forEach(({ key, value }) => (configuration[key] = value))
   }
-  return configuration
+  return { ...plugin, ...configuration }
 }
 
 export const usePluginsStore = defineStore('plugins', () => {
@@ -261,9 +262,9 @@ export const usePluginsStore = defineStore('plugins', () => {
       )
         continue
 
-      const configuration = getUserConfiguration(cache.plugin)
+      const metadata = getPluginMetadata(cache.plugin)
       try {
-        const fn = new AsyncFunction(`const Plugin = ${JSON.stringify(configuration)};
+        const fn = new AsyncFunction(`const Plugin = ${JSON.stringify(metadata)};
           ${cache.code};
           return await ${fnName}(${JSON.stringify(result)}, ${JSON.stringify(subscription)})
         `) as <T>(params: T) => Promise<T>
@@ -295,12 +296,16 @@ export const usePluginsStore = defineStore('plugins', () => {
         (cache.plugin.install && !cache.plugin.installed)
       )
         continue
-      const configuration = getUserConfiguration(cache.plugin)
+      const metadata = getPluginMetadata(cache.plugin)
       try {
         const fn = new AsyncFunction(
-          `const Plugin = ${JSON.stringify(configuration)}; ${cache.code}; await ${fnName}()`
+          `const Plugin = ${JSON.stringify(metadata)}; ${cache.code}; return await ${fnName}()`
         )
-        await await fn()
+        const exitCode = await fn()
+        if (exitCode !== undefined) {
+          cache.plugin.status = exitCode
+          editPlugin(cache.plugin.id, cache.plugin)
+        }
       } catch (error: any) {
         throw `${cache.plugin.name} : ` + (error.message || error)
       }
@@ -323,10 +328,10 @@ export const usePluginsStore = defineStore('plugins', () => {
         (cache.plugin.install && !cache.plugin.installed)
       )
         continue
-      const configuration = getUserConfiguration(cache.plugin)
+      const metadata = getPluginMetadata(cache.plugin)
       try {
         const fn = new AsyncFunction(
-          `const Plugin = ${JSON.stringify(configuration)}; ${cache.code}; return await ${fnName}(${JSON.stringify(params)}, ${JSON.stringify(profile)})`
+          `const Plugin = ${JSON.stringify(metadata)}; ${cache.code}; return await ${fnName}(${JSON.stringify(params)}, ${JSON.stringify(profile)})`
         )
         params = await fn()
       } catch (error: any) {
@@ -345,12 +350,16 @@ export const usePluginsStore = defineStore('plugins', () => {
     const cache = PluginsCache[plugin.id]
     if (!cache) throw `${plugin.name} is Missing source code`
     if (cache.plugin.disabled) throw `${plugin.name} Disabled`
-    const configuration = getUserConfiguration(plugin)
+    const metadata = getPluginMetadata(plugin)
     try {
       const fn = new AsyncFunction(
-        `const Plugin = ${JSON.stringify(configuration)}; ${cache.code}; return await ${event}()`
+        `const Plugin = ${JSON.stringify(metadata)}; ${cache.code}; return await ${event}()`
       )
-      return await fn()
+      const exitCode = await fn()
+      if (exitCode !== undefined) {
+        plugin.status = exitCode
+        editPlugin(id, plugin)
+      }
     } catch (error: any) {
       throw `${cache.plugin.name} : ` + (error.message || error)
     }

@@ -9,9 +9,9 @@ export function AddScheduledTask(arg1:string,arg2:string):Promise<bridge.FlagRes
 
 export function Download(arg1:string,arg2:string,arg3:{[key: string]: string},arg4:string,arg5:string):Promise<bridge.HTTPResult>;
 
-export function Exec(arg1:string,arg2:Array<string>,arg3:boolean):Promise<bridge.FlagResult>;
+export function Exec(arg1:string,arg2:Array<string>,arg3:bridge.ExecOptions):Promise<bridge.FlagResult>;
 
-export function ExecBackground(arg1:string,arg2:Array<string>,arg3:string,arg4:string):Promise<bridge.FlagResult>;
+export function ExecBackground(arg1:string,arg2:Array<string>,arg3:string,arg4:string,arg5:bridge.ExecOptions):Promise<bridge.FlagResult>;
 
 export function ExitApp():Promise<void>;
 

@@ -50,7 +50,7 @@ const { t } = useI18n()
 const { message } = useMessage()
 const rulesetsStore = useRulesetsStore()
 
-const handleAddRule = () => {
+const handleAdd = () => {
   updateRuleId = -1
   fields.value = {
     id: sampleID(),
@@ -62,6 +62,8 @@ const handleAddRule = () => {
   }
   showModal.value = true
 }
+
+defineExpose({ handleAdd })
 
 const handleDeleteRule = (index: number) => {
   rules.value.splice(index, 1)
@@ -77,7 +79,7 @@ const handleAddEnd = () => {
   if (updateRuleId !== -1) {
     rules.value[updateRuleId] = fields.value
   } else {
-    rules.value.push(fields.value)
+    rules.value.unshift(fields.value)
   }
 }
 
@@ -101,31 +103,31 @@ const showLost = () => message.warn('kernel.rules.notFound')
 </script>
 
 <template>
-  <div>
-    <div v-draggable="[rules, DraggableOptions]">
-      <Card v-for="(r, index) in rules" :key="r.id" class="rules-item">
-        <div class="name">
-          <span v-if="hasLost(r)" @click="showLost" class="warn"> [ ! ] </span>
-          <span v-if="notSupport(r)" @click="showNotSupport" class="warn"> [ ! ] </span>
-          {{ generateRule(r, profile.proxyGroupsConfig) }}
-        </div>
-        <div class="action">
-          <Button @click="handleEditRule(index)" type="text" size="small">
-            {{ t('common.edit') }}
-          </Button>
-          <Button @click="handleDeleteRule(index)" type="text" size="small">
-            {{ t('common.delete') }}
-          </Button>
-        </div>
-      </Card>
-    </div>
-
-    <div style="display: flex; justify-content: center">
-      <Button type="link" @click="handleAddRule">{{ t('common.add') }}</Button>
-    </div>
+  <div v-draggable="[rules, DraggableOptions]">
+    <Card v-for="(r, index) in rules" :key="r.id" class="rules-item">
+      <div class="name">
+        <span v-if="hasLost(r)" @click="showLost" class="warn"> [ ! ] </span>
+        <span v-if="notSupport(r)" @click="showNotSupport" class="warn"> [ ! ] </span>
+        {{ generateRule(r, profile.proxyGroupsConfig) }}
+      </div>
+      <div class="action">
+        <Button @click="handleEditRule(index)" type="text" size="small">
+          {{ t('common.edit') }}
+        </Button>
+        <Button @click="handleDeleteRule(index)" type="text" size="small">
+          {{ t('common.delete') }}
+        </Button>
+      </div>
+    </Card>
   </div>
 
-  <Modal v-model:open="showModal" @ok="handleAddEnd" max-width="80" max-height="80">
+  <Modal
+    v-model:open="showModal"
+    @ok="handleAddEnd"
+    title="profile.rule"
+    max-width="80"
+    max-height="80"
+  >
     <div class="form-item">
       {{ t('kernel.rules.type.name') }}
       <Select v-model="fields.type" :options="filteredRulesTypeOptions" />

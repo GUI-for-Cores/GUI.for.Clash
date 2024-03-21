@@ -124,7 +124,7 @@ type KernelWSOptions = {
 }
 
 export const getKernelWS = ({ onConnections, onTraffic, onMemory }: KernelWSOptions) => {
-  return websockets.connect([
+  return websockets.createWS([
     { name: 'Connections', url: Api.Connections, cb: onConnections },
     { name: 'Traffic', url: Api.Traffic, cb: onTraffic },
     { name: 'Memory', url: Api.Memory, cb: onMemory }
@@ -132,11 +132,11 @@ export const getKernelWS = ({ onConnections, onTraffic, onMemory }: KernelWSOpti
 }
 
 export const getKernelLogsWS = (onLogs: (data: any) => void) => {
-  return websockets.connect([
+  return websockets.createWS([
     { name: 'Logs', url: Api.Logs, cb: onLogs, params: { level: 'debug' } }
   ])
 }
 
 export const getKernelConnectionsWS = (onConnections: (data: KernelConnectionsWS) => void) => {
-  return websockets.connect([{ name: 'Connections', url: Api.Connections, cb: onConnections }])
+  return websockets.createWS([{ name: 'Connections', url: Api.Connections, cb: onConnections }])
 }

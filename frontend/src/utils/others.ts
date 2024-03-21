@@ -48,3 +48,8 @@ export const getUserAgent = () => {
   const appSettings = useAppSettingsStore()
   return appSettings.app.userAgent || APP_TITLE + '/' + APP_VERSION
 }
+
+export const setIntervalImmediately = (func: () => void, interval: number) => {
+  func()
+  return setInterval(func, interval)
+}

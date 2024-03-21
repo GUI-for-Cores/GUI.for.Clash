@@ -49,7 +49,7 @@ const onKeydown = async (ev: KeyboardEvent) => {
     return
   }
 
-  if (loading.value) return
+  if (!showCommandPanel.value || loading.value) return
 
   if (ev.code === 'Escape') {
     if (userInput.value) {
@@ -61,7 +61,7 @@ const onKeydown = async (ev: KeyboardEvent) => {
   }
   if (ev.code === 'ArrowUp') {
     selected.value = selected.value - 1 < 0 ? 0 : selected.value - 1
-    commandsRefMap[hitCommand.value[selected.value].label].scrollIntoView({ block: 'center' })
+    commandsRefMap[hitCommand.value[selected.value].label].scrollIntoView({ block: 'nearest' })
     return
   }
   if (ev.code === 'ArrowDown') {
@@ -69,7 +69,7 @@ const onKeydown = async (ev: KeyboardEvent) => {
       selected.value + 1 >= hitCommand.value.length
         ? hitCommand.value.length - 1
         : selected.value + 1
-    commandsRefMap[hitCommand.value[selected.value].label].scrollIntoView({ block: 'center' })
+    commandsRefMap[hitCommand.value[selected.value].label].scrollIntoView({ block: 'nearest' })
     return
   }
   if (ev.code === 'Enter') {
