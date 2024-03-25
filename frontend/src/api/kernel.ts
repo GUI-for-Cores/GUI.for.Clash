@@ -38,12 +38,9 @@ const setupKernelApi = () => {
 
   if (profile) {
     const controller = profile.advancedConfig['external-controller'] || '127.0.0.1:20113'
+    const [, port = 20113] = controller.split(':')
     // TODO: tls
-    if (controller.startsWith(':')) {
-      base = 'http://127.0.0.1' + controller
-    } else {
-      base = 'http://' + controller
-    }
+    base = `http://127.0.0.1:${port}`
     bearer = profile.advancedConfig.secret
   }
 
@@ -59,11 +56,8 @@ const setupKernelWSApi = () => {
 
   if (profile) {
     const controller = profile.advancedConfig['external-controller'] || '127.0.0.1:20113'
-    if (controller.startsWith(':')) {
-      base = 'ws://127.0.0.1' + controller
-    } else {
-      base = 'ws://' + controller
-    }
+    const [, port = 20113] = controller.split(':')
+    base = `ws://127.0.0.1:${port}`
     bearer = profile.advancedConfig.secret
   }
 
