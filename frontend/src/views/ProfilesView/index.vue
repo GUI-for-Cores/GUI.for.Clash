@@ -3,8 +3,8 @@ import { ref } from 'vue'
 import { stringify } from 'yaml'
 import { useI18n, I18nT } from 'vue-i18n'
 
-import { useMessage } from '@/hooks'
 import { ClipboardSetText } from '@/bridge'
+import { useMessage, useAlert } from '@/hooks'
 import { DraggableOptions, View } from '@/constant'
 import { debounce, deepClone, generateConfig, sampleID } from '@/utils'
 import {
@@ -12,7 +12,8 @@ import {
   type Menu,
   useProfilesStore,
   useAppSettingsStore,
-  useKernelApiStore
+  useKernelApiStore,
+  useSubscribesStore
 } from '@/stores'
 
 import ProfileForm from './components/ProfileForm.vue'
@@ -24,7 +25,9 @@ const isUpdate = ref(false)
 
 const { t } = useI18n()
 const { message } = useMessage()
+const { alert } = useAlert()
 const profilesStore = useProfilesStore()
+const subscribesStore = useSubscribesStore()
 const appSettingsStore = useAppSettingsStore()
 const kernelApiStore = useKernelApiStore()
 
@@ -140,6 +143,12 @@ const onEditProfileEnd = async () => {
   }
 }
 
+const isCreatedBySubscription = (id: string) => {
+  return !!subscribesStore.getSubscribeById(id)
+}
+
+const showAuto = () => alert('Tips', 'profile.auto')
+
 const onSortUpdate = debounce(profilesStore.saveProfiles, 1000)
 </script>
 
@@ -189,6 +198,17 @@ const onSortUpdate = debounce(profilesStore.saveProfiles, 1000)
       "
       class="item"
     >
+      <template #title-prefix>
+        <Tag
+          v-if="isCreatedBySubscription(p.id)"
+          @click="showAuto"
+          color="primary"
+          style="margin-left: 0"
+        >
+          {{ t('common.auto') }}
+        </Tag>
+      </template>
+
       <template v-if="appSettingsStore.app.profilesView === View.Grid" #extra>
         <Dropdown :trigger="['hover', 'click']">
           <Button type="link" size="small">
@@ -247,6 +267,7 @@ const onSortUpdate = debounce(profilesStore.saveProfiles, 1000)
     :footer="false"
     @ok="onEditProfileEnd"
     min-width="70"
+    max-width="90"
     max-height="90"
   >
     <ProfileForm :is-update="isUpdate" :id="profileID" :step="profileStep" />

@@ -49,6 +49,7 @@ const handleSubmit = async () => {
   const subscribe: SubscribeType = {
     id: subscribeID,
     name: subscribeID,
+    useInternal: false,
     url: url.value,
     upload: 0,
     download: 0,

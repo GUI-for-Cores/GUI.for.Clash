@@ -22,6 +22,7 @@ const loading = ref(false)
 const sub = ref<SubscribeType>({
   id: sampleID(),
   name: '',
+  useInternal: false,
   upload: 0,
   download: 0,
   total: 0,
@@ -94,6 +95,10 @@ if (props.isUpdate) {
           { label: 'common.file', value: 'File' }
         ]"
       />
+    </div>
+    <div class="form-item">
+      <div class="name">{{ t('subscribe.useInternal') }}</div>
+      <Switch v-model="sub.useInternal" />
     </div>
     <div class="form-item">
       <div class="name">{{ t('subscribe.name') }} *</div>

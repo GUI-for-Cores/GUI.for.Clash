@@ -325,6 +325,7 @@ export default {
     updating: 'Updating',
     useragent: 'User-Agent',
     resetUserAgent: 'Reset User-Agent',
+    useInternal: 'Use internal proxy-groups and rules',
     healthCheck: {
       name: 'Health Check',
       interval: 'interval(s)',
@@ -364,7 +365,8 @@ export default {
     use: 'Reference subscriptions',
     noSubs: 'There are no available subscriptions.',
     group: 'Group Details',
-    rule: 'Rule Details'
+    rule: 'Rule Details',
+    auto: 'This configuration is managed by subscription and will be overwritten when the subscription is updated!\nIf you want to modify this profile, please use the plugin system.'
   },
   profiles: {
     shouldStop: 'Unable to delete, this profile is in use.',

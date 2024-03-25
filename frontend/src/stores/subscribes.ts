@@ -2,14 +2,22 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { stringify, parse } from 'yaml'
 
-import { usePluginsStore } from '@/stores'
+import { usePluginsStore, useProfilesStore } from '@/stores'
 import { SubscribesFilePath } from '@/constant'
 import { Readfile, Writefile, HttpGet } from '@/bridge'
-import { deepClone, debounce, sampleID, isValidSubYAML, getUserAgent } from '@/utils'
+import {
+  deepClone,
+  debounce,
+  sampleID,
+  isValidSubYAML,
+  getUserAgent,
+  restoreProfile
+} from '@/utils'
 
 export type SubscribeType = {
   id: string
   name: string
+  useInternal: boolean
   upload: number
   download: number
   total: number
@@ -67,6 +75,7 @@ export const useSubscribesStore = defineStore('subscribes', () => {
     await addSubscribe({
       id: id,
       name: name,
+      useInternal: false,
       upload: 0,
       download: 0,
       total: 0,
@@ -140,9 +149,9 @@ export const useSubscribesStore = defineStore('subscribes', () => {
 
     const pluginStore = usePluginsStore()
 
-    proxies = await pluginStore.onSubscribeTrigger(parse(body).proxies, s)
+    const config = parse(body)
 
-    proxies = proxies.filter((v) => {
+    proxies = (config.proxies as Record<string, any>[]).filter((v) => {
       const flag1 = s.include ? new RegExp(s.include).test(v.name) : true
       const flag2 = s.exclude ? !new RegExp(s.exclude).test(v.name) : true
       const flag3 = s.includeProtocol ? new RegExp(s.includeProtocol).test(v.type) : true
@@ -150,31 +159,51 @@ export const useSubscribesStore = defineStore('subscribes', () => {
       return flag1 && flag2 && flag3 && flag4
     })
 
-    if (s.proxyPrefix) {
-      proxies = proxies.map((v) => ({
-        ...v,
-        name: v.name.startsWith(s.proxyPrefix) ? v.name : s.proxyPrefix + v.name
-      }))
-    }
+    const NameIdMap: Record<string, string> = {}
+    const IdNameMap: Record<string, string> = {}
 
-    if (s.type === 'Http' || s.url !== s.path) {
-      await Writefile(s.path, stringify({ proxies }))
-    }
+    proxies.forEach((proxy: any) => {
+      // Keep the original ID value of the proxy unchanged
+      proxy.__id__ = s.proxies.find((v) => v.name === proxy.name)?.id || sampleID()
+      NameIdMap[proxy.name] = proxy.__id__
+
+      if (s.proxyPrefix) {
+        proxy.name = proxy.name.startsWith(s.proxyPrefix) ? proxy.name : s.proxyPrefix + proxy.name
+      }
+    })
+
+    proxies = await pluginStore.onSubscribeTrigger(proxies, s)
+
+    proxies.forEach((proxy: any) => {
+      IdNameMap[proxy.__id__] = proxy.name
+    })
 
     const match = userInfo.match(pattern) || [0, 0, 0, 0, 0]
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [_, upload = 0, download = 0, total = 0, expire = 0] = match
+    const [, upload = 0, download = 0, total = 0, expire = 0] = match
     s.upload = Number(upload)
     s.download = Number(download)
     s.total = Number(total)
     s.expire = Number(expire) ? new Date(Number(expire) * 1000).toLocaleString() : ''
     s.updateTime = new Date().toLocaleString()
-    s.proxies = proxies.map(({ name, type }) => {
-      // Keep the original ID value of the proxy unchanged
-      const id = s.proxies.find((v) => v.name === name)?.id || sampleID()
-      return { id, name, type }
-    })
+    s.proxies = proxies.map(({ name, type, __id__ }) => ({ id: __id__, name, type }))
+
+    if (s.useInternal) {
+      const profilesStore = useProfilesStore()
+      const profile = profilesStore.getProfileById(s.id)
+      const _profile = restoreProfile(config, s.id, NameIdMap, IdNameMap)
+      if (profile) {
+        profilesStore.editProfile(profile.id, _profile)
+      } else {
+        _profile.name = s.name
+        profilesStore.addProfile(_profile)
+      }
+    }
+
+    if (s.type === 'Http' || s.url !== s.path) {
+      proxies.forEach((proxy) => delete proxy.__id__)
+      await Writefile(s.path, stringify({ proxies }))
+    }
   }
 
   const updateSubscribe = async (id: string) => {
