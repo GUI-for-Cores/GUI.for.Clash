@@ -226,7 +226,7 @@ onActivated(() => {
         </Button>
       </div>
     </div>
-    <div v-show="isExpanded(group.name)" class="body">
+    <div v-if="isExpanded(group.name)" class="body">
       <template v-if="appSettings.app.kernel.cardMode">
         <Card
           v-for="proxy in group.all"

@@ -201,7 +201,7 @@ const isExpanded = (key: string) => expandedSet.value.has(key)
 
 const showLost = () => message.warn('kernel.proxyGroups.notFound')
 
-const showNeedToAdd = () => message.warn('kernel.proxyGroups.needToAdd')
+const showNeedToAdd = () => message.error('kernel.proxyGroups.needToAdd')
 
 subscribesStore.subscribes.forEach(async ({ id, name, proxies }) => {
   proxyGroup.value[1].proxies.push({ id, name, type: 'use' })
@@ -215,7 +215,7 @@ subscribesStore.subscribes.forEach(async ({ id, name, proxies }) => {
     <Card v-for="(g, index) in groups" :key="g.id" class="groups-item">
       <div class="name">
         <span v-if="hasLost(g)" @click="showLost" class="warn"> [ ! ] </span>
-        <span v-if="needToAdd(g)" @click="showNeedToAdd" class="warn"> [ ! ] </span>
+        <span v-if="needToAdd(g)" @click="showNeedToAdd" class="error"> [ ! ] </span>
         {{ g.name }}
       </div>
       <div class="count">
@@ -243,8 +243,9 @@ subscribesStore.subscribes.forEach(async ({ id, name, proxies }) => {
 
   <Modal
     v-model:open="showSortModal"
-    :title="t('kernel.proxyGroups.sort')"
     @ok="handleSortGroupEnd"
+    mask-closable
+    title="kernel.proxyGroups.sort"
     max-width="80"
     max-height="80"
   >
@@ -358,6 +359,10 @@ subscribesStore.subscribes.forEach(async ({ id, name, proxies }) => {
     min-width: 90px;
     .warn {
       color: rgb(200, 193, 11);
+      cursor: pointer;
+    }
+    .error {
+      color: red;
       cursor: pointer;
     }
   }
