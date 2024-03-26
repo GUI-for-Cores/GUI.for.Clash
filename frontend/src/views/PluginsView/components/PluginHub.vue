@@ -47,6 +47,9 @@ const getList = async () => {
 const handleAddPlugin = async (plugin: PluginType) => {
   try {
     await pluginsStore.addPlugin(plugin)
+    // Try to autoload the plugin
+    await ignoredError(pluginsStore.reloadPlugin, plugin)
+    pluginsStore.updatePluginTrigger(plugin)
     const { id } = message.info('plugins.updating')
     await pluginsStore.updatePlugin(plugin.id)
     message.update(id, 'common.success', 'success')
