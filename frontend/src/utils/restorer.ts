@@ -33,6 +33,10 @@ export const restoreProfile = (
     GroupIdNameMap[id] = group.name
   })
 
+  function isBuiltIn(proxy: string) {
+    return ['DIRECT', 'REJECT'].includes(proxy)
+  }
+
   config['proxy-groups'].forEach((group: any) => {
     const _group = {
       id: GroupNameIdMap[group.name],
@@ -41,12 +45,13 @@ export const restoreProfile = (
       proxies: (group.proxies || [])
         .map((proxy: string) => ({
           id: GroupNameIdMap[proxy] || NameIdMap[proxy] || proxy,
-          type: GroupNameIdMap[proxy] || ['DIRECT', 'REJECT'].includes(proxy) ? 'Built-In' : subID,
+          type: GroupNameIdMap[proxy] || isBuiltIn(proxy) ? 'Built-In' : subID,
           name: GroupNameIdMap[proxy]
             ? GroupIdNameMap[GroupNameIdMap[proxy]]
-            : IdNameMap[NameIdMap[proxy]] || proxy
+            : IdNameMap[NameIdMap[proxy]] || (isBuiltIn(proxy) && proxy)
         }))
-        .filter((v: any) => v),
+        // The absence of a 'name' attribute indicates that this proxy has been excluded after processing by filters or plugins.
+        .filter((v: any) => v.name),
       url: group.url ?? 'https://www.gstatic.com/generate_204',
       interval: group.interval ?? 300,
       strategy: group.strategy ?? 'consistent-hashing',
@@ -80,11 +85,19 @@ export const restoreProfile = (
     } else if (field === 'rules') {
       config[field].forEach((rule: string, index: number) => {
         const [type, payload, proxy = '', noResolve] = rule.split(',')
+
+        const _proxy = type === 'MATCH' ? getRuleProxy(payload) : getRuleProxy(proxy)
+
+        // Skip invalid rules：proxy missing
+        if (!_proxy) {
+          return
+        }
+
         profile.rulesConfig.push({
           id: index,
           type: type,
           payload: type === 'MATCH' ? '' : payload,
-          proxy: type === 'MATCH' ? getRuleProxy(payload) : getRuleProxy(proxy),
+          proxy: _proxy,
           'no-resolve': !!noResolve
         })
       })
