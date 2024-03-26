@@ -37,6 +37,7 @@ type AppSettings = {
     unAvailable: boolean
     cardMode: boolean
     sortByDelay: boolean
+    testUrl: string
   }
   addPluginToMenu: boolean
   pluginSettings: Record<string, Record<string, any>>
@@ -109,7 +110,8 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
       autoClose: true,
       unAvailable: true,
       cardMode: true,
-      sortByDelay: false
+      sortByDelay: false,
+      testUrl: 'https://www.gstatic.com/generate_204'
     },
     addPluginToMenu: false,
     pluginSettings: {}

@@ -2,9 +2,9 @@
 import { useI18n } from 'vue-i18n'
 import { ref, computed, onActivated } from 'vue'
 
-import { useMessage } from '@/hooks'
 import { ProxyGroupType } from '@/constant'
 import { ignoredError, sleep } from '@/utils'
+import { useMessage, usePrompt } from '@/hooks'
 import { useAppSettingsStore, useKernelApiStore } from '@/stores'
 import {
   useProxy,
@@ -20,6 +20,7 @@ const loading = ref(false)
 
 const { t } = useI18n()
 const { message } = useMessage()
+const { prompt } = usePrompt()
 const appSettings = useAppSettingsStore()
 const kernelApiStore = useKernelApiStore()
 
@@ -106,7 +107,10 @@ const isLoading = (group: string) => loadingSet.value.has(group)
 const handleGroupDelay = async (group: string) => {
   loadingSet.value.add(group)
   try {
-    await getGroupDelay(group)
+    await getGroupDelay(
+      group,
+      appSettings.app.kernel.testUrl || 'https://www.gstatic.com/generate_204'
+    )
     await kernelApiStore.refreshProviderProxies()
   } catch (error: any) {
     message.error(error)
@@ -116,7 +120,10 @@ const handleGroupDelay = async (group: string) => {
 
 const handleProxyDelay = async (proxy: string) => {
   try {
-    const { delay } = await getProxyDelay(proxy)
+    const { delay } = await getProxyDelay(
+      proxy,
+      appSettings.app.kernel.testUrl || 'https://www.gstatic.com/generate_204'
+    )
     const _proxy = kernelApiStore.proxies[proxy]
     _proxy.history.push({ delay })
   } catch (error: any) {
@@ -130,6 +137,22 @@ const handleRefresh = async () => {
   await ignoredError(kernelApiStore.refreshProviderProxies)
   await sleep(500)
   loading.value = false
+}
+
+const handleChangeTestUrl = async () => {
+  try {
+    const url = await prompt<string>(
+      'home.controller.testUrl',
+      appSettings.app.kernel.testUrl || 'https://www.gstatic.com/generate_204',
+      {
+        placeholder: 'https://www.gstatic.com/generate_204'
+      }
+    )
+    appSettings.app.kernel.testUrl = url
+    message.success('common.success')
+  } catch (error: any) {
+    message.info(error)
+  }
 }
 
 const locateGroup = (group: any, chain: string) => {
@@ -169,6 +192,9 @@ onActivated(() => {
       <Switch v-model="appSettings.app.kernel.sortByDelay" class="ml-8">
         {{ t('home.controller.sortBy') }}
       </Switch>
+      <Button @click="handleChangeTestUrl" type="primary" size="small" class="ml-8">
+        {{ t('home.controller.delay') }}
+      </Button>
       <Button @click="expandAll" v-tips="'home.overview.expandAll'" type="text" class="ml-auto">
         <Icon icon="expand" />
       </Button>
