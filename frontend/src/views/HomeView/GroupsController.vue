@@ -142,7 +142,7 @@ const handleRefresh = async () => {
 const handleChangeTestUrl = async () => {
   try {
     const url = await prompt<string>(
-      'home.controller.testUrl',
+      'home.controller.delayUrl',
       appSettings.app.kernel.testUrl || 'https://www.gstatic.com/generate_204',
       {
         placeholder: 'https://www.gstatic.com/generate_204'
