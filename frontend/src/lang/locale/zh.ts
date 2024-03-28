@@ -133,7 +133,8 @@ export default {
     'geox-url': {
       geoip: 'geoip下载地址',
       geosite: 'geosite下载地址',
-      mmdb: 'mmdb下载地址'
+      mmdb: 'mmdb下载地址',
+      asn: 'asn下载地址'
     },
     'global-ua': '自定客户端UA',
     tracing: '性能分析引擎',
@@ -197,8 +198,10 @@ export default {
         MATCH: '全匹配 (MATCH)',
         'DOMAIN-SUFFIX': '域名后缀 (DOMAIN-SUFFIX)',
         'DOMAIN-KEYWORD': '域名关键词 (DOMAIN-KEYWORD)',
+        'DOMAIN-REGEX': '域名正则表达式 (DOMAIN-REGEX)',
         'IP-CIDR': 'IPv4地址段 (IP-CIDR)',
         'IP-CIDR6': 'IPv6地址段 (IP-CIDR6)',
+        'IP-ASN': 'IP所属ASN (IP-ASN)',
         'SRC-PORT': '源端口 (SRC-PORT)',
         'DST-PORT': '目标端口 (DST-PORT)',
         'PROCESS-NAME': '源进程名 (PROCESS-NAME)',

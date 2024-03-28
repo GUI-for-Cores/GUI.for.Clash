@@ -152,6 +152,10 @@ const { t } = useI18n()
       {{ t('kernel.geox-url.mmdb') }}
       <Input v-model="fields['geox-url']['mmdb']" editable />
     </div>
+    <div class="form-item">
+      {{ t('kernel.geox-url.asn') }}
+      <Input v-model="fields['geox-url']['asn']" editable />
+    </div>
   </template>
 
   <div class="form-item">

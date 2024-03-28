@@ -151,12 +151,20 @@ export const RulesTypeOptions = [
     value: 'DOMAIN-KEYWORD'
   },
   {
+    label: 'kernel.rules.type.DOMAIN-REGEX',
+    value: 'DOMAIN-REGEX'
+  },
+  {
     label: 'kernel.rules.type.IP-CIDR',
     value: 'IP-CIDR'
   },
   {
     label: 'kernel.rules.type.IP-CIDR6',
     value: 'IP-CIDR6'
+  },
+  {
+    label: 'kernel.rules.type.IP-ASN',
+    value: 'IP-ASN'
   },
   {
     label: 'kernel.rules.type.SRC-IP-CIDR',

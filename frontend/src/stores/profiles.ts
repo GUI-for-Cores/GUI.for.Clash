@@ -45,6 +45,7 @@ export type ProfileType = {
       geoip: string
       geosite: string
       mmdb: string
+      asn: string
     }
     'global-ua': string
     profile: {

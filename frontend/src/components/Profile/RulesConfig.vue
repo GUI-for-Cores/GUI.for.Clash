@@ -35,7 +35,7 @@ const proxyOptions = computed(() => [
 ])
 
 const supportNoResolve = computed(() =>
-  ['GEOIP', 'IP-CIDR', 'IP-CIDR6', 'SCRIPT', 'RULE-SET'].includes(fields.value.type)
+  ['GEOIP', 'IP-CIDR', 'IP-CIDR6', 'SCRIPT', 'RULE-SET', 'IP-ASN'].includes(fields.value.type)
 )
 
 const supportPayload = computed(() => !['MATCH', 'RULE-SET'].includes(fields.value.type))

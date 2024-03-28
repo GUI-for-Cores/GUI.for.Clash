@@ -133,7 +133,8 @@ export default {
     'geox-url': {
       geoip: 'geoip',
       geosite: 'geosite',
-      mmdb: 'mmdb'
+      mmdb: 'mmdb',
+      asn: 'asn'
     },
     'global-ua': 'global-ua',
     tracing: 'Tracing',
@@ -197,8 +198,10 @@ export default {
         MATCH: 'MATCH',
         'DOMAIN-SUFFIX': 'DOMAIN-SUFFIX',
         'DOMAIN-KEYWORD': 'DOMAIN-KEYWORD',
+        'DOMAIN-REGEX': 'DOMAIN-REGEX',
         'IP-CIDR': 'IP-CIDR',
         'IP-CIDR6': 'IP-CIDR6',
+        'IP-ASN': 'IP-ASN',
         'SRC-PORT': 'SRC-PORT',
         'DST-PORT': 'DST-PORT',
         'PROCESS-NAME': 'PROCESS-NAME',

@@ -35,7 +35,14 @@ export const generateRule = (
 
   ruleStr += ',' + proxyStr
 
-  const supportNoResolve = ['GEOIP', 'IP-CIDR', 'IP-CIDR6', 'SCRIPT', 'RULE-SET'].includes(type)
+  const supportNoResolve = [
+    'GEOIP',
+    'IP-CIDR',
+    'IP-CIDR6',
+    'SCRIPT',
+    'RULE-SET',
+    'IP-ASN'
+  ].includes(type)
 
   if (noResolve && supportNoResolve) {
     ruleStr += ',no-resolve'
