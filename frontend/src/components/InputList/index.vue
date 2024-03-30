@@ -34,19 +34,20 @@ const handleDel = (i: number) => list.value.splice(i, 1)
       </Card>
     </div>
 
-    <div class="add">
-      <Input
-        ref="inputRef"
-        v-model="value"
-        :placeholder="placeholder"
-        @keydown.enter="handleAdd"
-        type="text"
-        auto-size
-        :autofocus="autofocus"
-        style="width: 100%"
-      />
-      <Button @click="handleAdd" type="primary">+</Button>
-    </div>
+    <Input
+      ref="inputRef"
+      v-model="value"
+      :placeholder="placeholder"
+      @keydown.enter="handleAdd"
+      type="text"
+      auto-size
+      :autofocus="autofocus"
+      style="width: 100%"
+    >
+      <template #extra>
+        <Button @click="handleAdd" type="primary">+</Button>
+      </template>
+    </Input>
   </div>
 </template>
 
@@ -62,10 +63,6 @@ const handleDel = (i: number) => list.value.splice(i, 1)
     justify-content: space-between;
     font-size: 14px;
     margin: 2px 0;
-  }
-  .add {
-    display: flex;
-    align-items: center;
   }
 }
 </style>
