@@ -270,11 +270,12 @@ watch(showController, (v) => {
 }
 
 .profiles {
-  margin-bottom: 16px;
+  padding-bottom: 16px;
   display: flex;
   max-width: 90%;
   overflow-x: hidden;
   &-card {
+    cursor: pointer;
     display: flex;
     flex-shrink: 0;
     align-items: center;

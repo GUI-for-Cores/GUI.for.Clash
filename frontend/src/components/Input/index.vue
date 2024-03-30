@@ -107,6 +107,7 @@ defineExpose({
   display: flex;
   align-items: center;
   .editable {
+    cursor: pointer;
     line-height: 30px;
     overflow: hidden;
     white-space: nowrap;
@@ -128,7 +129,7 @@ defineExpose({
   }
   .auto-size {
     flex: 1;
-    // width: calc(100% - 2px);
+    width: calc(100% - 2px);
   }
 }
 

@@ -4,8 +4,8 @@ import { parse, stringify } from 'yaml'
 
 import i18n from '@/lang'
 import { debounce, updateTrayMenus, APP_TITLE, APP_VERSION } from '@/utils'
+import { Readfile, Writefile, WindowSetSystemDefaultTheme } from '@/bridge'
 import { Theme, WindowStartState, Lang, View, Color, Colors } from '@/constant'
-import { WindowSetDarkTheme, WindowSetLightTheme, Readfile, Writefile } from '@/bridge'
 
 type AppSettings = {
   lang: Lang
@@ -145,8 +145,7 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
 
   const setAppTheme = (theme: Theme.Dark | Theme.Light) => {
     document.body.setAttribute('theme-mode', theme)
-    if (theme === Theme.Dark) WindowSetDarkTheme()
-    else WindowSetLightTheme()
+    WindowSetSystemDefaultTheme()
   }
 
   const updateAppSettings = (settings: AppSettings) => {

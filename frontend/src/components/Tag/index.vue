@@ -40,7 +40,7 @@ withDefaults(defineProps<Props>(), {
 }
 .default {
   color: #3d3d3d;
-  background-color: #fafafa;
+  background-color: #ffffff;
   border: 1px solid #898989;
 }
 .primary {

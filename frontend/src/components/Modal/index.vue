@@ -2,7 +2,7 @@
 import { useI18n } from 'vue-i18n'
 import { computed, provide } from 'vue'
 
-import { WindowFullscreen, WindowIsFullscreen, WindowUnfullscreen } from '@/bridge'
+import { toggleFullScreen } from '@/utils'
 
 interface Props {
   open: boolean
@@ -40,11 +40,6 @@ const props = withDefaults(defineProps<Props>(), {
 const { t } = useI18n()
 
 const emits = defineEmits(['update:open', 'ok'])
-
-const toggleFullScreen = async () => {
-  const isFull = await WindowIsFullscreen()
-  isFull ? WindowUnfullscreen() : WindowFullscreen()
-}
 
 const handleSubmit = () => {
   emits('update:open', false)

@@ -134,6 +134,9 @@ onUnmounted(() => {
     justify-content: space-between;
     &-card {
       width: calc(100% / 4 - 8px);
+      &:nth-child(3) {
+        cursor: pointer;
+      }
       .detail {
         padding: 4px 0;
         font-size: 12px;
@@ -155,6 +158,7 @@ onUnmounted(() => {
       margin-left: 8px;
       flex: 1;
       .mode-card {
+        cursor: pointer;
         &:nth-child(3) {
           margin: 12px 0;
         }

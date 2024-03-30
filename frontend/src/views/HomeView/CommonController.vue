@@ -80,6 +80,7 @@ const handleUpdateGEO = async () => {
         v-model="kernelApiStore.config.tun.stack"
         :options="StackOptions"
         :border="false"
+        auto-size
         @change="conStackChange"
       />
     </Card>
@@ -89,8 +90,9 @@ const handleUpdateGEO = async () => {
     <Card :title="t('kernel.interface-name')" class="card-item">
       <InterfaceSelect
         v-model="kernelApiStore.config['interface-name']"
-        @change="onInterfaceChange"
         :border="false"
+        auto-size
+        @change="onInterfaceChange"
       />
     </Card>
     <Card :title="t('common.update')" class="card-item">
@@ -106,6 +108,7 @@ const handleUpdateGEO = async () => {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+  padding-bottom: 16px;
   .card-item {
     width: 24%;
   }

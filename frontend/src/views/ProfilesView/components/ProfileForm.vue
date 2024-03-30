@@ -2,10 +2,10 @@
 import { ref, inject, type Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { deepClone, sampleID } from '@/utils'
 import { useMessage, useBool } from '@/hooks'
 import * as Defaults from '@/constant/profile'
 import { type ProfileType, useProfilesStore } from '@/stores'
+import { deepClone, sampleID, toggleFullScreen } from '@/utils'
 
 import GeneralConfig from '@/components/Profile/GeneralConfig.vue'
 import AdvancedConfig from '@/components/Profile/AdvancedConfig.vue'
@@ -94,7 +94,7 @@ if (props.isUpdate) {
 </script>
 
 <template>
-  <div class="header" style="--wails-draggable: drag">
+  <div @dblclick="toggleFullScreen" class="header" style="--wails-draggable: drag">
     <div class="header-title">{{ t(stepItems[currentStep].title) }}</div>
     <Button v-show="[4, 5].includes(currentStep)" @click="handleAdd" type="link" class="ml-auto">
       {{ t('common.add') }}
