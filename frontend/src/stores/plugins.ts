@@ -80,10 +80,6 @@ const PluginsTriggerMap: {
   [PluginTrigger.OnShutdown]: {
     fnName: 'onShutdown',
     observers: []
-  },
-  [PluginTrigger.OnUpdateRuleset]: {
-    fnName: 'onUpdateRuleset',
-    observers: []
   }
 }
 

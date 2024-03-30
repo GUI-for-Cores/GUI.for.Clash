@@ -77,8 +77,7 @@ export enum PluginTrigger {
   OnSubscribe = 'on::subscribe',
   OnGenerate = 'on::generate',
   OnStartup = 'on::startup',
-  OnShutdown = 'on::shutdown',
-  OnUpdateRuleset = 'on::update::ruleset'
+  OnShutdown = 'on::shutdown'
 }
 
 export enum PluginManualEvent {
