@@ -64,24 +64,44 @@ provide('submit', handleSubmit)
 </script>
 
 <template>
-  <div v-if="open" @click.self="onMaskClick" class="mask" style="--wails-draggable: drag">
-    <div :style="contentStyle" class="modal" style="--wails-draggable: false">
-      <div v-if="title" @dblclick="toggleFullScreen" class="title" style="--wails-draggable: drag">
-        {{ t(title) }}
-      </div>
-      <div class="content">
-        <slot />
-      </div>
-      <div v-if="footer" class="action">
-        <slot name="action" />
-        <Button v-if="cancel" @click="handleCancel" type="text">{{ t(cancelText) }}</Button>
-        <Button v-if="submit" @click="handleSubmit" type="primary">{{ t(submitText) }}</Button>
+  <Transition name="modal">
+    <div v-if="open" @click.self="onMaskClick" class="mask" style="--wails-draggable: drag">
+      <div :style="contentStyle" class="modal" style="--wails-draggable: false">
+        <div
+          v-if="title"
+          @dblclick="toggleFullScreen"
+          class="title"
+          style="--wails-draggable: drag"
+        >
+          {{ t(title) }}
+        </div>
+        <div class="content">
+          <slot />
+        </div>
+        <div v-if="footer" class="action">
+          <slot name="action" />
+          <Button v-if="cancel" @click="handleCancel" type="text">{{ t(cancelText) }}</Button>
+          <Button v-if="submit" @click="handleSubmit" type="primary">{{ t(submitText) }}</Button>
+        </div>
       </div>
     </div>
-  </div>
+  </Transition>
 </template>
 
 <style lang="less" scoped>
+.modal-enter-active,
+.modal-leave-active {
+  transition:
+    transform 0.2s ease-in-out,
+    opacity 0.2s ease-in-out;
+}
+
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+  transform: scale(0);
+}
+
 .mask {
   position: fixed;
   top: 0;

@@ -28,10 +28,12 @@ const handleDel = (i: number) => list.value.splice(i, 1)
 <template>
   <div class="input-list">
     <div v-draggable="[list, DraggableOptions]">
-      <Card v-for="(l, i) in list" :key="l" class="list-item">
-        <div>{{ l }}</div>
-        <Button @click="handleDel(i)" type="text" size="small"> × </Button>
-      </Card>
+      <TransitionGroup name="list">
+        <Card v-for="(l, i) in list" :key="l" class="list-item">
+          <div>{{ l }}</div>
+          <Button @click="handleDel(i)" type="text" size="small"> × </Button>
+        </Card>
+      </TransitionGroup>
     </div>
 
     <Input
@@ -52,6 +54,16 @@ const handleDel = (i: number) => list.value.splice(i, 1)
 </template>
 
 <style lang="less" scoped>
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.2s ease;
+}
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: scale(0);
+}
+
 .input-list {
   display: inline-block;
   border-radius: 4px;
