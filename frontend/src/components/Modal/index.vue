@@ -64,7 +64,7 @@ provide('submit', handleSubmit)
 </script>
 
 <template>
-  <Transition name="modal">
+  <Transition name="modal" :duration="200">
     <div v-if="open" @click.self="onMaskClick" class="mask" style="--wails-draggable: drag">
       <div :style="contentStyle" class="modal" style="--wails-draggable: false">
         <div
@@ -89,15 +89,15 @@ provide('submit', handleSubmit)
 </template>
 
 <style lang="less" scoped>
-.modal-enter-active,
-.modal-leave-active {
+.modal-enter-active .modal,
+.modal-leave-active .modal {
   transition:
     transform 0.2s ease-in-out,
     opacity 0.2s ease-in-out;
 }
 
-.modal-enter-from,
-.modal-leave-to {
+.modal-enter-from .modal,
+.modal-leave-to .modal {
   opacity: 0;
   transform: scale(0);
 }
