@@ -252,43 +252,58 @@ onActivated(() => {
         </Button>
       </div>
     </div>
-    <div v-if="isExpanded(group.name)" class="body">
-      <template v-if="appSettings.app.kernel.cardMode">
-        <Card
-          v-for="proxy in group.all"
-          :title="proxy.name"
-          :selected="proxy.name === group.now"
-          :key="proxy.name"
-          @click="handleUseProxy(group, proxy)"
-          class="proxy"
-        >
-          <Button
-            @click.stop="handleProxyDelay(proxy.name)"
-            :style="{ color: delayColor(proxy.delay) }"
-            type="text"
-            class="delay"
+    <Transition name="expand">
+      <div v-if="isExpanded(group.name)" class="body">
+        <template v-if="appSettings.app.kernel.cardMode">
+          <Card
+            v-for="proxy in group.all"
+            :title="proxy.name"
+            :selected="proxy.name === group.now"
+            :key="proxy.name"
+            @click="handleUseProxy(group, proxy)"
+            class="proxy"
           >
-            {{ proxy.delay && proxy.delay + 'ms' }}
-          </Button>
-          <div class="type">{{ proxy.type }} {{ proxy.udp ? ':: udp' : '' }}</div>
-        </Card>
-      </template>
-      <template v-else>
-        <div
-          v-for="proxy in group.all"
-          v-tips.fast="proxy.name"
-          @click="handleUseProxy(group, proxy)"
-          :key="proxy.name"
-          :style="{ background: delayColor(proxy.delay) }"
-          :class="{ selected: proxy.name === group.now }"
-          class="proxy-square"
-        ></div>
-      </template>
-    </div>
+            <Button
+              @click.stop="handleProxyDelay(proxy.name)"
+              :style="{ color: delayColor(proxy.delay) }"
+              type="text"
+              class="delay"
+            >
+              {{ proxy.delay && proxy.delay + 'ms' }}
+            </Button>
+            <div class="type">{{ proxy.type }} {{ proxy.udp ? ':: udp' : '' }}</div>
+          </Card>
+        </template>
+        <template v-else>
+          <div
+            v-for="proxy in group.all"
+            v-tips.fast="proxy.name"
+            @click="handleUseProxy(group, proxy)"
+            :key="proxy.name"
+            :style="{ background: delayColor(proxy.delay) }"
+            :class="{ selected: proxy.name === group.now }"
+            class="proxy-square"
+          ></div>
+        </template>
+      </div>
+    </Transition>
   </div>
 </template>
 
 <style lang="less" scoped>
+.expand-enter-active,
+.expand-leave-active {
+  transform-origin: top;
+  transition:
+    transform 0.2s ease-in-out,
+    opacity 0.2s ease-in-out;
+}
+
+.expand-enter-from,
+.expand-leave-to {
+  transform: scaleY(0);
+}
+
 .groups {
   margin: 8px;
 
