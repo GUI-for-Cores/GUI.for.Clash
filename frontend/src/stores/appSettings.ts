@@ -139,12 +139,17 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
     console.log('onSystemThemeChange')
     if (app.value.theme === Theme.Auto) {
       themeMode.value = matches ? Theme.Dark : Theme.Light
-      setAppTheme(themeMode.value)
     }
   })
 
   const setAppTheme = (theme: Theme.Dark | Theme.Light) => {
-    document.body.setAttribute('theme-mode', theme)
+    if (document.startViewTransition) {
+      document.startViewTransition(() => {
+        document.body.setAttribute('theme-mode', theme)
+      })
+    } else {
+      document.body.setAttribute('theme-mode', theme)
+    }
     WindowSetSystemDefaultTheme()
   }
 
@@ -160,7 +165,6 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
     document.documentElement.style.setProperty('--primary-color', primary)
     document.documentElement.style.setProperty('--secondary-color', secondary)
     document.body.style.fontFamily = settings['font-family']
-    setAppTheme(themeMode.value)
   }
 
   watch(
@@ -196,6 +200,8 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
     ],
     updateTrayMenus
   )
+
+  watch(themeMode, setAppTheme, { immediate: true })
 
   return { setupAppSettings, app, themeMode }
 })

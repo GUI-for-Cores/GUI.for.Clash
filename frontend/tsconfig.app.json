@@ -9,6 +9,9 @@
     "paths": {
       "@/*": ["./src/*"],
       "@wails/*": ["./wailsjs/*"]
-    }
+    },
+    "types": [
+      "@types/dom-view-transitions"
+    ]
   }
 }
