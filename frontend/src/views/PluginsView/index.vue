@@ -261,9 +261,9 @@ const onSortUpdate = debounce(pluginsStore.savePlugins, 1000)
           </Button>
           <template #overlay>
             <Button
-              :disable="p.disabled"
+              v-if="!p.disabled"
               :loading="p.updating"
-              :type="p.disabled ? 'text' : 'link'"
+              type="link"
               size="small"
               @click="handleUpdatePlugin(p)"
             >
@@ -275,7 +275,12 @@ const onSortUpdate = debounce(pluginsStore.savePlugins, 1000)
             <Button type="link" size="small" @click="handleEditPlugin(p)">
               {{ t('common.edit') }}
             </Button>
-            <Button type="link" size="small" @click="handleDeletePlugin(p)">
+            <Button
+              v-if="!p.install || !p.installed"
+              type="link"
+              size="small"
+              @click="handleDeletePlugin(p)"
+            >
               {{ t('common.delete') }}
             </Button>
           </template>
@@ -285,7 +290,7 @@ const onSortUpdate = debounce(pluginsStore.savePlugins, 1000)
           <Button
             :disable="p.disabled"
             :loading="p.updating"
-            :type="p.disabled ? 'text' : 'link'"
+            type="link"
             size="small"
             @click="handleUpdatePlugin(p)"
           >
@@ -297,7 +302,12 @@ const onSortUpdate = debounce(pluginsStore.savePlugins, 1000)
           <Button type="link" size="small" @click="handleEditPlugin(p)">
             {{ t('common.edit') }}
           </Button>
-          <Button type="link" size="small" @click="handleDeletePlugin(p)">
+          <Button
+            :disable="p.install && p.installed"
+            type="link"
+            size="small"
+            @click="handleDeletePlugin(p)"
+          >
             {{ t('common.delete') }}
           </Button>
         </template>
