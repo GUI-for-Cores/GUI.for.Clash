@@ -144,13 +144,18 @@ if (props.isUpdate) {
   </div>
 
   <div class="form-action">
-    <Button @click="handleCancel" type="text">{{ t('common.cancel') }}</Button>
     <Button @click="handlePrevStep" :disable="currentStep == 0" type="text">
       {{ t('common.prevStep') }}
     </Button>
-    <Button @click="handleNextStep" :disable="!profile.name || currentStep == 5" type="text">
+    <Button
+      @click="handleNextStep"
+      :disable="!profile.name || currentStep == 5"
+      type="text"
+      class="mr-auto"
+    >
       {{ t('common.nextStep') }}
     </Button>
+    <Button @click="handleCancel">{{ t('common.cancel') }}</Button>
     <Button @click="handleSave" :disable="!profile.name" type="primary">
       {{ t('common.save') }}
     </Button>

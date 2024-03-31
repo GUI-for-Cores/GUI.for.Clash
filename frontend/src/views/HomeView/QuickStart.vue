@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { inject, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { computed, inject, ref } from 'vue'
 
 import { sampleID } from '@/utils'
 import { useMessage } from '@/hooks'
@@ -24,9 +24,9 @@ const appSettingsStore = useAppSettingsStore()
 
 const handleCancel = inject('cancel') as any
 
-const handleSubmit = async () => {
-  if (!url.value || !url.value.toLocaleLowerCase().startsWith('http')) return
+const canSubmit = computed(() => url.value && url.value.toLocaleLowerCase().startsWith('http'))
 
+const handleSubmit = async () => {
   const profileID = sampleID()
   const subscribeID = sampleID()
 
@@ -111,8 +111,10 @@ const handleSubmit = async () => {
   </div>
 
   <div class="form-action">
-    <Button @click="handleCancel" :disable="loading">{{ t('common.cancel') }}</Button>
-    <Button @click="handleSubmit" :loading="loading" type="primary">{{ t('common.save') }}</Button>
+    <Button @click="handleCancel" :disable="loading" type="text">{{ t('common.cancel') }}</Button>
+    <Button @click="handleSubmit" :disable="!canSubmit" :loading="loading" type="primary">
+      {{ t('common.save') }}
+    </Button>
   </div>
 </template>
 

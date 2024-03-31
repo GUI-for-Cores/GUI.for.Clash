@@ -201,7 +201,12 @@ watch(showController, (v) => {
     <LogsController />
   </Modal>
 
-  <Modal v-model:open="showQuickStart" :title="t('subscribes.enterLink')" :footer="false">
+  <Modal
+    v-model:open="showQuickStart"
+    :title="t('subscribes.enterLink')"
+    :footer="false"
+    mask-closable
+  >
     <QuickStart />
   </Modal>
 

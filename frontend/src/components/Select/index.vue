@@ -6,7 +6,7 @@ interface Props {
   border?: boolean
   size?: 'default' | 'small'
   placeholder?: string
-  autoSize: boolean
+  autoSize?: boolean
 }
 
 const model = defineModel<string>({ default: '' })
