@@ -43,10 +43,6 @@ func ConvertByte2String(byte []byte) string {
 func (a *App) AbsolutePath(path string) FlagResult {
 	log.Printf("AbsolutePath: %s", path)
 
-	if filepath.IsAbs(path) {
-		return FlagResult{true, path}
-	}
-
 	path = GetPath(path)
 
 	return FlagResult{true, path}
