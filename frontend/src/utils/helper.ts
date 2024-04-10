@@ -1,17 +1,11 @@
 import { deleteConnection, getConnections, useProxy } from '@/api/kernel'
 import { useAppSettingsStore, useEnvStore, useKernelApiStore, usePluginsStore } from '@/stores'
-import {
-  Exec,
-  ExitApp,
-  GetEnv,
-  WindowFullscreen,
-  WindowIsFullscreen,
-  WindowUnfullscreen
-} from '@/bridge'
+import { Exec, ExitApp, WindowFullscreen, WindowIsFullscreen, WindowUnfullscreen } from '@/bridge'
+import { ignoredError } from './others'
 
 // Permissions Helper
 export const SwitchPermissions = async (enable: boolean) => {
-  const { basePath, appName } = await GetEnv()
+  const { basePath, appName } = useEnvStore().env
   const args = enable
     ? [
         'add',
@@ -35,7 +29,7 @@ export const SwitchPermissions = async (enable: boolean) => {
 }
 
 export const CheckPermissions = async () => {
-  const { basePath, appName } = await GetEnv()
+  const { basePath, appName } = useEnvStore().env
   try {
     const out = await Exec(
       'reg',
@@ -56,80 +50,138 @@ export const CheckPermissions = async () => {
 }
 
 // SystemProxy Helper
-export const SetSystemProxy = async (enable: boolean, server: string) => {
-  await Exec(
-    'reg',
-    [
-      'add',
-      'HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings',
-      '/v',
-      'ProxyEnable',
-      '/t',
-      'REG_DWORD',
-      '/d',
-      enable ? '1' : '0',
-      '/f'
-    ],
-    { convert: true }
-  )
-  await Exec(
-    'reg',
-    [
-      'add',
-      'HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings',
-      '/v',
-      'ProxyServer',
-      '/d',
-      enable ? server : '',
-      '/f'
-    ],
-    { convert: true }
-  )
-}
-
-export const GetSystemProxy = async () => {
-  try {
-    const out1 = await Exec(
+export const SetSystemProxy = async (enable: boolean, server: string, proxyType = 0) => {
+  const { os } = useEnvStore().env
+  if (os === 'windows') {
+    await Exec(
       'reg',
       [
-        'query',
+        'add',
         'HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings',
         '/v',
         'ProxyEnable',
         '/t',
-        'REG_DWORD'
+        'REG_DWORD',
+        '/d',
+        enable ? '1' : '0',
+        '/f'
       ],
       { convert: true }
     )
-
-    if (/REG_DWORD\s+0x0/.test(out1)) return ''
-
-    const out2 = await Exec(
+    await Exec(
       'reg',
       [
-        'query',
+        'add',
         'HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings',
         '/v',
         'ProxyServer',
-        '/t',
-        'REG_SZ'
+        '/d',
+        enable ? server : '',
+        '/f'
       ],
       { convert: true }
     )
+    return
+  }
 
-    const regex = /ProxyServer\s+REG_SZ\s+(\S+)/
-    const match = out2.match(regex)
+  function setSystemProxy(device: string) {
+    // proxyType    0: Mixed    1: Http    2: Socks
+    const state = enable ? 'on' : 'off'
 
-    return match ? match[1] : ''
+    const httpState = proxyType === 2 ? 'off' : state
+    const socksState = [0, 2].includes(proxyType) ? state : 'off'
+
+    ignoredError(Exec, 'networksetup', ['-setwebproxystate', device, httpState])
+    ignoredError(Exec, 'networksetup', ['-setsecurewebproxystate', device, httpState])
+    ignoredError(Exec, 'networksetup', ['-setsocksfirewallproxystate', device, socksState])
+
+    const [serverName, serverPort] = server.split(':')
+
+    if (httpState === 'on') {
+      ignoredError(Exec, 'networksetup', ['-setwebproxy', device, serverName, serverPort])
+      ignoredError(Exec, 'networksetup', ['-setsecurewebproxy', device, serverName, serverPort])
+    }
+    if (socksState === 'on') {
+      ignoredError(Exec, 'networksetup', ['-setsocksfirewallproxy', device, serverName, serverPort])
+    }
+  }
+
+  if (os === 'darwin') {
+    setSystemProxy('Ethernet')
+    setSystemProxy('Wi-Fi')
+  }
+}
+
+export const GetSystemProxy = async () => {
+  const { os } = useEnvStore().env
+  try {
+    if (os === 'windows') {
+      const out1 = await Exec(
+        'reg',
+        [
+          'query',
+          'HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings',
+          '/v',
+          'ProxyEnable',
+          '/t',
+          'REG_DWORD'
+        ],
+        { convert: true }
+      )
+
+      if (/REG_DWORD\s+0x0/.test(out1)) return ''
+
+      const out2 = await Exec(
+        'reg',
+        [
+          'query',
+          'HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings',
+          '/v',
+          'ProxyServer',
+          '/t',
+          'REG_SZ'
+        ],
+        { convert: true }
+      )
+
+      const regex = /ProxyServer\s+REG_SZ\s+(\S+)/
+      const match = out2.match(regex)
+
+      return match ? match[1] : ''
+    }
+
+    if (os === 'darwin') {
+      const out = await Exec('scutil', ['--proxy'])
+      const regex =
+        /(?:HTTPEnable|HTTPPort|HTTPProxy|SOCKSEnable|SOCKSPort|SOCKSProxy)\s*:\s*([^}\n]+)/g
+      const map: Record<string, any> = {}
+      let match
+
+      while ((match = regex.exec(out)) !== null) {
+        const value = match[1].trim()
+        const key = match[0].split(':')[0].trim()
+        map[key] = value
+      }
+
+      if (map['HTTPEnable'] === '1') {
+        return map['HTTPProxy'] + ':' + map['HTTPPort']
+      }
+
+      if (map['SOCKSEnable'] === '1') {
+        return map['SOCKSProxy'] + ':' + map['SOCKSPort']
+      }
+
+      return ''
+    }
   } catch (error) {
     console.log('error', error)
-    return ''
   }
+  return ''
 }
 
 // System ScheduledTask Helper
 export const getTaskSchXmlString = async (delay = 30) => {
-  const { basePath, appName } = await GetEnv()
+  const { basePath, appName } = useEnvStore().env
 
   const xml = /*xml*/ `<?xml version="1.0" encoding="UTF-16"?>
 <Task version="1.2" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">

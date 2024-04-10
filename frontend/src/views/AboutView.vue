@@ -67,7 +67,7 @@ const checkForUpdates = async (showTips = false) => {
     const { tag_name, assets, message: msg } = body
     if (msg) throw msg
 
-    const suffix = { windows: '.exe', linux: '' }[os]
+    const suffix = { windows: '.exe', linux: '', darwin: '.app' }[os]
     const assetName = `GUI.for.Clash-${os}-${arch}${suffix}`
 
     const asset = assets.find((v: any) => v.name === assetName)

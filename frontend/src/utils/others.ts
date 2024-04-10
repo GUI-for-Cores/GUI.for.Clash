@@ -1,5 +1,5 @@
-import { useAppSettingsStore } from '@/stores'
 import { APP_TITLE, APP_VERSION } from '@/utils'
+import { useAppSettingsStore, useEnvStore } from '@/stores'
 
 export const deepClone = <T>(json: T): T => JSON.parse(JSON.stringify(json))
 
@@ -47,6 +47,15 @@ export const getValue = (obj: Record<string, any>, expr: string) => {
 export const getUserAgent = () => {
   const appSettings = useAppSettingsStore()
   return appSettings.app.userAgent || APP_TITLE + '/' + APP_VERSION
+}
+
+export const getFontFamily = () => {
+  const envStore = useEnvStore()
+  return {
+    windows: '"Microsoft Yahei", "Arial", sans-serif, "Twemoji Mozilla"',
+    darwin: '"Twemoji Mozilla"',
+    linux: ""
+  }[envStore.env.os]!
 }
 
 export const setIntervalImmediately = (func: () => void, interval: number) => {

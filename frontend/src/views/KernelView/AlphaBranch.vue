@@ -15,7 +15,8 @@ import {
   Removefile,
   GetEnv,
   Makedir,
-  UnzipGZFile
+  UnzipGZFile,
+  AbsolutePath
 } from '@/bridge'
 
 const alphaUrl = 'https://api.github.com/repos/MetaCubeX/mihomo/releases/tags/Prerelease-Alpha'
@@ -82,7 +83,7 @@ const downloadCore = async () => {
 
     message.destroy(id)
 
-    const fileName = await getKernelFileName() // mihomo-windows-amd64.exe
+    const fileName = await getKernelFileName() // mihomo-window/≥s-amd64.exe
     const alphaFileName = await getKernelFileName(true) // mihomo-windows-amd64-alpha.exe
 
     const alphaKernelFilePath = KernelWorkDirectory + '/' + alphaFileName
@@ -91,13 +92,16 @@ const downloadCore = async () => {
 
     if (suffix === '.zip') {
       await UnzipZIPFile(tmp, 'data')
+      await Movefile('data/' + fileName, alphaKernelFilePath)
     } else {
       await UnzipGZFile(tmp, alphaKernelFilePath)
     }
 
-    await Movefile('data/' + fileName, alphaKernelFilePath)
-
     await Removefile(tmp)
+
+    if(["darwin", "linux"].includes(os)) {
+      await ignoredError(Exec, 'chmod', ['+x', await AbsolutePath(alphaKernelFilePath)])
+    }
 
     downloadSuccessful.value = true
 

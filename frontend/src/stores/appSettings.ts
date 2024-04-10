@@ -3,9 +3,9 @@ import { defineStore } from 'pinia'
 import { parse, stringify } from 'yaml'
 
 import i18n from '@/lang'
-import { debounce, updateTrayMenus, APP_TITLE, APP_VERSION } from '@/utils'
 import { Readfile, Writefile, WindowSetSystemDefaultTheme } from '@/bridge'
 import { Theme, WindowStartState, Lang, View, Color, Colors } from '@/constant'
+import { debounce, updateTrayMenus, APP_TITLE, APP_VERSION, getFontFamily } from '@/utils'
 
 type AppSettings = {
   lang: Lang
@@ -53,7 +53,7 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
     lang: Lang.EN,
     theme: Theme.Auto,
     color: Color.Default,
-    'font-family': '"Microsoft Yahei", "Arial", sans-serif, "Twemoji Mozilla"',
+    'font-family': getFontFamily(),
     profilesView: View.Grid,
     subscribesView: View.Grid,
     rulesetsView: View.Grid,

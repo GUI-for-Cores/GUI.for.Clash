@@ -5,7 +5,7 @@ import { useI18n } from 'vue-i18n'
 import { useMessage } from '@/hooks'
 import { useAppSettingsStore, useEnvStore } from '@/stores'
 import { Theme, Lang, WindowStartState, Color } from '@/constant'
-import { APP_TITLE, APP_VERSION, getTaskSchXmlString } from '@/utils'
+import { APP_TITLE, APP_VERSION, getFontFamily, getTaskSchXmlString } from '@/utils'
 import { BrowserOpenURL, GetEnv, Writefile, Removefile } from '@/bridge'
 import {
   QuerySchTask,
@@ -84,7 +84,7 @@ const windowStates = [
 ]
 
 const resetFontFamily = () => {
-  appSettings.app['font-family'] = '"Microsoft Yahei", "Arial", sans-serif, "Twemoji Mozilla"'
+  appSettings.app['font-family'] = getFontFamily()
 }
 
 const resetUserAgent = () => {
@@ -245,7 +245,7 @@ if (envStore.env.os === 'windows') {
         </template>
       </div>
     </div>
-    <div class="settings-item">
+    <div v-if="envStore.env.os === 'windows'" class="settings-item">
       <div class="title">{{ t('settings.addToMenu') }}</div>
       <Switch v-model="appSettings.app.addPluginToMenu" />
     </div>

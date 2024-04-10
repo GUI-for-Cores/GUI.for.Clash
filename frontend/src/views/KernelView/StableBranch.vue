@@ -15,7 +15,8 @@ import {
   Removefile,
   GetEnv,
   Makedir,
-  UnzipGZFile
+  UnzipGZFile,
+  AbsolutePath
 } from '@/bridge'
 
 const releaseUrl = 'https://api.github.com/repos/MetaCubeX/mihomo/releases/latest'
@@ -93,6 +94,10 @@ const downloadCore = async () => {
     }
 
     await Removefile(tmp)
+
+    if(["darwin", "linux"].includes(os)) {
+      await ignoredError(Exec, 'chmod', ['+x', await AbsolutePath(kernelFilePath)])
+    }
 
     downloadSuccessful.value = true
 
