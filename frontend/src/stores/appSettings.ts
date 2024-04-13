@@ -4,8 +4,8 @@ import { parse, stringify } from 'yaml'
 
 import i18n from '@/lang'
 import { Readfile, Writefile, WindowSetSystemDefaultTheme } from '@/bridge'
-import { Theme, WindowStartState, Lang, View, Color, Colors } from '@/constant'
-import { debounce, updateTrayMenus, APP_TITLE, APP_VERSION, getFontFamily } from '@/utils'
+import { debounce, updateTrayMenus, APP_TITLE, APP_VERSION } from '@/utils'
+import { Theme, WindowStartState, Lang, View, Color, Colors, DefaultFontFamily } from '@/constant'
 
 type AppSettings = {
   lang: Lang
@@ -53,7 +53,7 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
     lang: Lang.EN,
     theme: Theme.Auto,
     color: Color.Default,
-    'font-family': getFontFamily(),
+    'font-family': DefaultFontFamily,
     profilesView: View.Grid,
     subscribesView: View.Grid,
     rulesetsView: View.Grid,

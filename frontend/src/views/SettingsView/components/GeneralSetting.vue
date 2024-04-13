@@ -4,9 +4,9 @@ import { useI18n } from 'vue-i18n'
 
 import { useMessage } from '@/hooks'
 import { useAppSettingsStore, useEnvStore } from '@/stores'
-import { Theme, Lang, WindowStartState, Color } from '@/constant'
-import { APP_TITLE, APP_VERSION, getFontFamily, getTaskSchXmlString } from '@/utils'
+import { APP_TITLE, APP_VERSION, getTaskSchXmlString } from '@/utils'
 import { BrowserOpenURL, GetEnv, Writefile, Removefile } from '@/bridge'
+import { Theme, Lang, WindowStartState, Color, DefaultFontFamily } from '@/constant'
 import {
   QuerySchTask,
   CreateSchTask,
@@ -84,7 +84,7 @@ const windowStates = [
 ]
 
 const resetFontFamily = () => {
-  appSettings.app['font-family'] = getFontFamily()
+  appSettings.app['font-family'] = DefaultFontFamily
 }
 
 const resetUserAgent = () => {
