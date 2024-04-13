@@ -64,8 +64,9 @@ jobs:
 
       - name: Install dependencies
         run: |
+          npm i -g pnpm
+          cd frontend && pnpm install
           go install github.com/wailsapp/wails/v2/cmd/wails@latest
-          cd frontend && npm install
 
       - name: Build Frontend
         run: cd frontend && npm run build
