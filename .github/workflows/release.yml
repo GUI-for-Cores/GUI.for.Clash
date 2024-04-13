@@ -1,3 +1,5 @@
+name: Build GUI.for.Clash
+
 on:
   push:
     tags:
@@ -21,13 +23,33 @@ jobs:
             Auto-generated release from GitHub Actions.
 
   Build:
-    runs-on: ubuntu-latest
     needs: CreateRelease
     permissions: write-all
     strategy:
+      fail-fast: false
       matrix:
-        GOOS: [windows]
-        GOARCH: [amd64, arm64, 386]
+        build:
+          - name: GUI.for.Clash-windows-amd64.zip
+            os: ubuntu-latest
+            GOOS: windows
+            GOARCH: amd64
+          - name: GUI.for.Clash-windows-arm64.zip
+            os: ubuntu-latest
+            GOOS: windows
+            GOARCH: arm64
+          - name: GUI.for.Clash-windows-386.zip
+            os: ubuntu-latest
+            GOOS: windows
+            GOARCH: 386
+          - name: GUI.for.Clash-darwin-amd64.zip
+            os: macos-latest
+            GOOS: darwin
+            GOARCH: amd64
+          - name: GUI.for.Clash-darwin-arm64.zip
+            os: macos-latest
+            GOOS: darwin
+            GOARCH: arm64
+    runs-on: ${{ matrix.build.os }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -48,20 +70,35 @@ jobs:
       - name: Build Frontend
         run: cd frontend && npm run build
 
-      - name: Build for ${{ matrix.GOOS }}-${{ matrix.GOARCH }}
+      - name: Build for ${{ matrix.build.GOOS }}-${{ matrix.build.GOARCH }}
         env:
-          GOOS: ${{ matrix.GOOS }}
-          GOARCH: ${{ matrix.GOARCH }}
-          FILE_NAME: GUI.for.Clash-${{ matrix.GOOS }}-${{ matrix.GOARCH }}.exe
-        run: $HOME/go/bin/wails build -m -s -trimpath -skipbindings -devtools -o ${{ env.FILE_NAME }}
+          GOOS: ${{ matrix.build.GOOS }}
+          GOARCH: ${{ matrix.build.GOARCH }}
+        run: $HOME/go/bin/wails build -m -s -trimpath -skipbindings -devtools -o GUI.for.Clash.exe
 
-      - name: Upload ${{ matrix.GOOS }}-${{ matrix.GOARCH }}
+      - name: Create a compressed file for Darwin
+        if: ${{ matrix.build.GOOS == 'darwin' }}
+        run: |
+          (
+            cd ./build/bin
+            # The compiled product name of macos is always "GUI.for.Clash.app"
+            zip -q -r ${{ matrix.build.name }} GUI.for.Clash.app
+          )
+
+      - name: Create a compressed file for Windows
+        if: ${{ matrix.build.GOOS == 'windows' }}
+        run: |
+          (
+            cd ./build/bin
+            zip ${{ matrix.build.name }} GUI.for.Clash.exe
+          )
+
+      - name: Upload ${{ matrix.build.GOOS }}-${{ matrix.build.GOARCH }}
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          FILE_NAME: GUI.for.Clash-${{ matrix.GOOS }}-${{ matrix.GOARCH }}.exe
         with:
           upload_url: ${{ needs.CreateRelease.outputs.upload_url }}
-          asset_path: ./build/bin/${{ env.FILE_NAME }}
-          asset_name: ${{ env.FILE_NAME }}
+          asset_path: ./build/bin/${{ matrix.build.name }}
+          asset_name: ${{ matrix.build.name }}
           asset_content_type: application/x-msdownload

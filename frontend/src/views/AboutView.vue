@@ -3,7 +3,17 @@ import { useI18n } from 'vue-i18n'
 import { ref, computed } from 'vue'
 
 import { useMessage } from '@/hooks'
-import { Download, HttpGet, BrowserOpenURL, Movefile, GetEnv, RestartApp } from '@/bridge'
+import { useEnvStore } from '@/stores'
+import {
+  Download,
+  HttpGet,
+  BrowserOpenURL,
+  Movefile,
+  RestartApp,
+  UnzipZIPFile,
+  Makedir,
+  Removefile
+} from '@/bridge'
 import { APP_TITLE, APP_VERSION, PROJECT_URL, TG_GROUP, TG_CHANNEL, APP_VERSION_API } from '@/utils'
 
 let downloadUrl = ''
@@ -16,6 +26,7 @@ const needUpdate = computed(() => APP_VERSION !== remoteVersion.value)
 
 const { t } = useI18n()
 const { message } = useMessage()
+const envStore = useEnvStore()
 
 const downloadApp = async () => {
   if (loading.value || downloading.value) return
@@ -27,23 +38,31 @@ const downloadApp = async () => {
 
   downloading.value = true
 
-  try {
-    const { appName } = await GetEnv()
+  const { appName, os } = envStore.env
 
+  if (os === 'darwin') {
+    message.error('Updates not supported')
+    return
+  }
+
+  const tmpFile = 'data/.cache/gui.zip'
+
+  try {
     const { id } = message.info('Downloading...', 10 * 60 * 1_000)
 
-    await Download(downloadUrl, appName + '.tmp', undefined, (progress, total) => {
+    await Makedir('data/.cache')
+
+    await Download(downloadUrl, tmpFile, {}, (progress, total) => {
       message.update(id, 'Downloading...' + ((progress / total) * 100).toFixed(2) + '%')
-    }).catch((err) => {
+    }).finally(() => {
       message.destroy(id)
-      throw err
     })
 
-    message.destroy(id)
+    await Movefile(appName, appName + '.bak')
 
-    await Movefile(appName, appName + '_' + APP_VERSION + '.bak')
+    await UnzipZIPFile(tmpFile, '.')
 
-    await Movefile(appName + '.tmp', appName)
+    await Removefile(tmpFile)
 
     needRestart.value = true
     message.success('about.updateSuccessful')
@@ -62,13 +81,11 @@ const checkForUpdates = async (showTips = false) => {
 
   try {
     const { body } = await HttpGet<Record<string, any>>(APP_VERSION_API)
-    const { os, arch } = await GetEnv()
-
     const { tag_name, assets, message: msg } = body
     if (msg) throw msg
 
-    const suffix = { windows: '.exe', linux: '', darwin: '.app' }[os]
-    const assetName = `GUI.for.Clash-${os}-${arch}${suffix}`
+    const { os, arch } = envStore.env
+    const assetName = `GUI.for.Clash-${os}-${arch}.zip`
 
     const asset = assets.find((v: any) => v.name === assetName)
     if (!asset) throw 'Asset Not Found:' + assetName
