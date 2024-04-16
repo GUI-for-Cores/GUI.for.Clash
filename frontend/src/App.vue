@@ -64,6 +64,8 @@ EventsOn('beforeClose', async () => {
   }
 })
 
+EventsOn('quitApp', () => exitApp())
+
 window.addEventListener('beforeunload', scheduledTasksStore.removeScheduledTasks)
 
 appSettings.setupAppSettings().then(async () => {
