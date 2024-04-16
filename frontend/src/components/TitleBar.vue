@@ -92,7 +92,7 @@ const menus: Menu[] = [
       </Button>
     </div>
   </div>
-  <div v-else class="placeholder" style="--wails-draggable: drag">
+  <div v-else-if="envStore.env.os === 'darwin'" class="placeholder" style="--wails-draggable: drag">
     <div
       :style="{
         color: appSettingsStore.app.kernel.running ? 'var(--primary-color)' : 'var(--color)'

@@ -2,8 +2,8 @@
 import { ref } from 'vue'
 
 import * as Stores from '@/stores'
-import { EventsOn } from '@/bridge'
-import { ignoredError, sampleID, sleep } from '@/utils'
+import { EventsOn, WindowHide } from '@/bridge'
+import { exitApp, ignoredError, sampleID, sleep } from '@/utils'
 import { useMessage, usePicker, useConfirm, usePrompt, useAlert } from '@/hooks'
 
 import AboutView from '@/views/AboutView.vue'
@@ -53,6 +53,14 @@ EventsOn('launchArgs', async (args: string[]) => {
     } catch (error: any) {
       message.error(error)
     }
+  }
+})
+
+EventsOn('beforeClose', async () => {
+  if (appSettings.app.exitOnClose) {
+    exitApp()
+  } else {
+    WindowHide()
   }
 })
 

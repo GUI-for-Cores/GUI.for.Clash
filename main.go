@@ -8,8 +8,10 @@ import (
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
+	"github.com/wailsapp/wails/v2/pkg/options/linux"
 	"github.com/wailsapp/wails/v2/pkg/options/mac"
 	"github.com/wailsapp/wails/v2/pkg/options/windows"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 //go:embed all:frontend/dist
@@ -26,9 +28,14 @@ func main() {
 
 	// Create application with options
 	err := wails.Run(&options.App{
-		Title:         "GUI.for.Clash",
-		Width:         800,
-		Height:        540,
+		Title: "GUI.for.Clash",
+		Width: 800,
+		Height: func() int {
+			if bridge.Env.OS == "linux" {
+				return 520
+			}
+			return 540
+		}(),
 		MinWidth:      600,
 		MinHeight:     400,
 		Frameless:     bridge.Env.OS == "windows",
@@ -61,6 +68,10 @@ func main() {
 				Icon:    icon,
 			},
 		},
+		Linux: &linux.Options{
+			Icon:                icon,
+			WindowIsTranslucent: false,
+		},
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
@@ -73,6 +84,10 @@ func main() {
 			app.Ctx = ctx
 			bridge.CreateTray(app, icon, assets)
 			bridge.InitScheduledTasks()
+		},
+		OnBeforeClose: func(ctx context.Context) (prevent bool) {
+			runtime.EventsEmit(ctx, "beforeClose")
+			return true
 		},
 		Bind: []interface{}{
 			app,

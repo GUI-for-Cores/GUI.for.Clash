@@ -52,43 +52,63 @@ export const CheckPermissions = async () => {
 // SystemProxy Helper
 export const SetSystemProxy = async (enable: boolean, server: string, proxyType = 0) => {
   const { os } = useEnvStore().env
+
   if (os === 'windows') {
-    await Exec(
-      'reg',
-      [
-        'add',
-        'HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings',
-        '/v',
-        'ProxyEnable',
-        '/t',
-        'REG_DWORD',
-        '/d',
-        enable ? '1' : '0',
-        '/f'
-      ],
-      { convert: true }
-    )
-    await Exec(
-      'reg',
-      [
-        'add',
-        'HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings',
-        '/v',
-        'ProxyServer',
-        '/d',
-        enable ? server : '',
-        '/f'
-      ],
-      { convert: true }
-    )
+    setWindowsSystemProxy(server, enable, proxyType)
     return
   }
 
-  function setSystemProxy(device: string) {
-    // proxyType    0: Mixed    1: Http    2: Socks
-    const state = enable ? 'on' : 'off'
+  if (os === 'darwin') {
+    setDarwinSystemProxy(server, enable, proxyType)
+    return
+  }
 
-    const httpState = proxyType === 2 ? 'off' : state
+  if (os === 'linux') {
+    setLinuxSystemProxy(server, enable, proxyType)
+  }
+}
+
+function setWindowsSystemProxy(server: string, enabled: boolean, proxyType: number) {
+  if (proxyType === 2) throw 'home.overview.notSupportSocks'
+
+  ignoredError(
+    Exec,
+    'reg',
+    [
+      'add',
+      'HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings',
+      '/v',
+      'ProxyEnable',
+      '/t',
+      'REG_DWORD',
+      '/d',
+      enabled ? '1' : '0',
+      '/f'
+    ],
+    { convert: true }
+  )
+
+  ignoredError(
+    Exec,
+    'reg',
+    [
+      'add',
+      'HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings',
+      '/v',
+      'ProxyServer',
+      '/d',
+      enabled ? server : '',
+      '/f'
+    ],
+    { convert: true }
+  )
+}
+
+function setDarwinSystemProxy(server: string, enabled: boolean, proxyType: number) {
+  function _set(device: string) {
+    const state = enabled ? 'on' : 'off'
+
+    const httpState = [0, 1].includes(proxyType) ? state : 'off'
     const socksState = [0, 2].includes(proxyType) ? state : 'off'
 
     ignoredError(Exec, 'networksetup', ['-setwebproxystate', device, httpState])
@@ -105,11 +125,57 @@ export const SetSystemProxy = async (enable: boolean, server: string, proxyType 
       ignoredError(Exec, 'networksetup', ['-setsocksfirewallproxy', device, serverName, serverPort])
     }
   }
+  _set('Ethernet')
+  _set('Wi-Fi')
+}
 
-  if (os === 'darwin') {
-    setSystemProxy('Ethernet')
-    setSystemProxy('Wi-Fi')
-  }
+function setLinuxSystemProxy(server: string, enabled: boolean, proxyType: number) {
+  const [serverName, serverPort] = server.split(':')
+  const httpEnabled = enabled && [0, 1].includes(proxyType)
+  const socksEnabled = enabled && [0, 2].includes(proxyType)
+
+  ignoredError(Exec, 'gsettings', [
+    'set',
+    'org.gnome.system.proxy',
+    'mode',
+    enabled ? 'manual' : 'none'
+  ])
+  ignoredError(Exec, 'gsettings', [
+    'set',
+    'org.gnome.system.proxy.http',
+    'host',
+    httpEnabled ? serverName : ''
+  ])
+  ignoredError(Exec, 'gsettings', [
+    'set',
+    'org.gnome.system.proxy.http',
+    'port',
+    httpEnabled ? serverPort : '0'
+  ])
+  ignoredError(Exec, 'gsettings', [
+    'set',
+    'org.gnome.system.proxy.https',
+    'host',
+    httpEnabled ? serverName : ''
+  ])
+  ignoredError(Exec, 'gsettings', [
+    'set',
+    'org.gnome.system.proxy.https',
+    'port',
+    httpEnabled ? serverPort : '0'
+  ])
+  ignoredError(Exec, 'gsettings', [
+    'set',
+    'org.gnome.system.proxy.socks',
+    'host',
+    socksEnabled ? serverName : ''
+  ])
+  ignoredError(Exec, 'gsettings', [
+    'set',
+    'org.gnome.system.proxy.socks',
+    'port',
+    socksEnabled ? serverPort : '0'
+  ])
 }
 
 export const GetSystemProxy = async () => {
@@ -172,6 +238,31 @@ export const GetSystemProxy = async () => {
       }
 
       return ''
+    }
+
+    if (os === 'linux') {
+      const out = await Exec('gsettings', ['get', 'org.gnome.system.proxy', 'mode'])
+      if (out.includes('none')) {
+        return ''
+      }
+
+      if (out.includes('manual')) {
+        const out1 = await Exec('gsettings', ['get', 'org.gnome.system.proxy.http', 'host'])
+        const out2 = await Exec('gsettings', ['get', 'org.gnome.system.proxy.http', 'port'])
+        const httpHost = out1.replace(/['"\n]/g, '')
+        const httpPort = out2.replace(/['"\n]/g, '')
+        if (httpHost && httpPort !== '0') {
+          return httpHost + ':' + httpPort
+        }
+
+        const out3 = await Exec('gsettings', ['get', 'org.gnome.system.proxy.socks', 'host'])
+        const out4 = await Exec('gsettings', ['get', 'org.gnome.system.proxy.socks', 'port'])
+        const socksHost = out3.replace(/['"\n]/g, '')
+        const socksPort = out4.replace(/['"\n]/g, '')
+        if (socksHost && socksPort !== '0') {
+          return socksHost + ':' + socksPort
+        }
+      }
     }
   } catch (error) {
     console.log('error', error)

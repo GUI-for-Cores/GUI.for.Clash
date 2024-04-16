@@ -56,7 +56,6 @@ export const useEnvStore = defineStore('env', () => {
       port = _port
       proxyType = 1
     } else if (socksPort) {
-      if (envStore.env.os === 'windows') throw 'home.overview.notSupportSocks'
       port = socksPort
       proxyType = 2
     }
