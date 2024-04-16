@@ -79,6 +79,12 @@ jobs:
       - name: Build Frontend
         run: cd frontend && npm run build
 
+      - name: Update system and dependencies
+        if: ${{ matrix.build.GOOS == 'linux' }}
+        run: |
+          sudo apt update
+          sudo apt install libgtk-3-dev libwebkit2gtk-4.0-dev
+
       - name: Build for ${{ matrix.build.GOOS }}-${{ matrix.build.GOARCH }}
         env:
           GOOS: ${{ matrix.build.GOOS }}
