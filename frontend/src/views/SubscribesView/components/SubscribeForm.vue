@@ -38,6 +38,7 @@ const sub = ref<SubscribeType>({
   excludeProtocol: '',
   proxyPrefix: '',
   disabled: false,
+  inSecure: false,
   userAgent: '',
   healthCheck: {
     enable: true,
@@ -175,6 +176,10 @@ if (props.isUpdate) {
             </Button>
           </template>
         </Input>
+      </div>
+      <div class="form-item">
+        <div class="name">{{ t('subscribe.inSecure') }}</div>
+        <Switch v-model="sub.inSecure" />
       </div>
       <div class="form-item">
         <div class="name">{{ t('subscribe.healthCheck.name') }}</div>

@@ -7,7 +7,7 @@ export function AbsolutePath(arg1:string):Promise<bridge.FlagResult>;
 
 export function AddScheduledTask(arg1:string,arg2:string):Promise<bridge.FlagResult>;
 
-export function Download(arg1:string,arg2:string,arg3:{[key: string]: string},arg4:string,arg5:string):Promise<bridge.HTTPResult>;
+export function Download(arg1:string,arg2:string,arg3:{[key: string]: string},arg4:string,arg5:any):Promise<bridge.HTTPResult>;
 
 export function Exec(arg1:string,arg2:Array<string>,arg3:bridge.ExecOptions):Promise<bridge.FlagResult>;
 
@@ -21,13 +21,13 @@ export function GetEnv():Promise<bridge.EnvResult>;
 
 export function GetInterfaces():Promise<bridge.FlagResult>;
 
-export function HttpDelete(arg1:string,arg2:{[key: string]: string},arg3:string):Promise<bridge.HTTPResult>;
+export function HttpDelete(arg1:string,arg2:{[key: string]: string},arg3:any):Promise<bridge.HTTPResult>;
 
-export function HttpGet(arg1:string,arg2:{[key: string]: string},arg3:string):Promise<bridge.HTTPResult>;
+export function HttpGet(arg1:string,arg2:{[key: string]: string},arg3:any):Promise<bridge.HTTPResult>;
 
-export function HttpPost(arg1:string,arg2:{[key: string]: string},arg3:string,arg4:string):Promise<bridge.HTTPResult>;
+export function HttpPost(arg1:string,arg2:{[key: string]: string},arg3:string,arg4:any):Promise<bridge.HTTPResult>;
 
-export function HttpPut(arg1:string,arg2:{[key: string]: string},arg3:string,arg4:string):Promise<bridge.HTTPResult>;
+export function HttpPut(arg1:string,arg2:{[key: string]: string},arg3:string,arg4:any):Promise<bridge.HTTPResult>;
 
 export function KillProcess(arg1:number):Promise<bridge.FlagResult>;
 
@@ -57,6 +57,6 @@ export function UpdateTray(arg1:bridge.TrayContent):Promise<void>;
 
 export function UpdateTrayMenus(arg1:Array<bridge.MenuItem>):Promise<void>;
 
-export function Upload(arg1:string,arg2:string,arg3:{[key: string]: string},arg4:string,arg5:string):Promise<bridge.HTTPResult>;
+export function Upload(arg1:string,arg2:string,arg3:{[key: string]: string},arg4:string,arg5:any):Promise<bridge.HTTPResult>;
 
 export function Writefile(arg1:string,arg2:string):Promise<bridge.FlagResult>;

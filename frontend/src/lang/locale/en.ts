@@ -331,6 +331,7 @@ export default {
     useragent: 'User-Agent',
     resetUserAgent: 'Reset User-Agent',
     useInternal: 'Use internal proxy-groups and rules',
+    inSecure: 'InsecureSkipVerify',
     healthCheck: {
       name: 'Health Check',
       interval: 'interval(s)',

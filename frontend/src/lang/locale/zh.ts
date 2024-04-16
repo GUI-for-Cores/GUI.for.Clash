@@ -331,6 +331,7 @@ export default {
     useragent: '用户代理',
     resetUserAgent: '重置用户代理',
     useInternal: '使用订阅内的代理组和分流规则',
+    inSecure: '跳过证书验证',
     healthCheck: {
       name: '健康检查',
       interval: '时间间隔(秒)',

@@ -33,6 +33,7 @@ export type SubscribeType = {
   excludeProtocol: string
   proxyPrefix: string
   disabled: boolean
+  inSecure: boolean
   proxies: { id: string; name: string; type: string }[]
   userAgent: string
   healthCheck: {
@@ -91,6 +92,7 @@ export const useSubscribesStore = defineStore('subscribes', () => {
       excludeProtocol: '',
       proxyPrefix: '',
       disabled: false,
+      inSecure: false,
       userAgent: '',
       healthCheck: {
         enable: true,
@@ -136,9 +138,13 @@ export const useSubscribesStore = defineStore('subscribes', () => {
     }
 
     if (s.type === 'Http') {
-      const { header: h, body: b } = await HttpGet(s.url, {
-        'User-Agent': s.userAgent || getUserAgent()
-      })
+      const { header: h, body: b } = await HttpGet(
+        s.url,
+        {
+          'User-Agent': s.userAgent || getUserAgent()
+        },
+        { Insecure: s.inSecure }
+      )
       h['Subscription-Userinfo'] && (userInfo = h['Subscription-Userinfo'])
       body = b
     }
