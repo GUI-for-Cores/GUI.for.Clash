@@ -49,6 +49,14 @@ jobs:
             os: macos-latest
             GOOS: darwin
             GOARCH: arm64
+          - name: GUI.for.Clash-linux-amd64.zip
+            os: ubuntu-latest
+            GOOS: linux
+            GOARCH: amd64
+          - name: GUI.for.Clash-linux-arm64.zip
+            os: ubuntu-latest
+            GOOS: linux
+            GOARCH: arm64
     runs-on: ${{ matrix.build.os }}
     steps:
       - name: Checkout code
@@ -92,6 +100,15 @@ jobs:
           (
             cd ./build/bin
             zip ${{ matrix.build.name }} GUI.for.Clash.exe
+          )
+
+      - name: Create a compressed file for Linux
+        if: ${{ matrix.build.GOOS == 'linux' }}
+        run: |
+          (
+            cd ./build/bin
+            mv GUI.for.Clash.exe GUI.for.Clash
+            zip ${{ matrix.build.name }} GUI.for.Clash
           )
 
       - name: Upload ${{ matrix.build.GOOS }}-${{ matrix.build.GOARCH }}
