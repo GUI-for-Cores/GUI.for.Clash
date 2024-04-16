@@ -95,7 +95,7 @@ const downloadCore = async () => {
 
     await Removefile(tmp)
 
-    if(["darwin", "linux"].includes(os)) {
+    if (['darwin', 'linux'].includes(os)) {
       await ignoredError(Exec, 'chmod', ['+x', await AbsolutePath(kernelFilePath)])
     }
 
