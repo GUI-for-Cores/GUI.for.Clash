@@ -10,6 +10,10 @@ export function AddScheduledTask(arg1, arg2) {
   return window['go']['bridge']['App']['AddScheduledTask'](arg1, arg2);
 }
 
+export function Copyfile(arg1, arg2) {
+  return window['go']['bridge']['App']['Copyfile'](arg1, arg2);
+}
+
 export function Download(arg1, arg2, arg3, arg4, arg5) {
   return window['go']['bridge']['App']['Download'](arg1, arg2, arg3, arg4, arg5);
 }

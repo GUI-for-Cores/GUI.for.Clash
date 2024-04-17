@@ -15,11 +15,6 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
-type RequestOptions = struct {
-	Proxy    string
-	Insecure bool
-}
-
 func NewHTTPRequest(method string, url string, headers map[string]string, body string, options RequestOptions) HTTPResult {
 	req, err := http.NewRequest(method, url, strings.NewReader(body))
 	if err != nil {

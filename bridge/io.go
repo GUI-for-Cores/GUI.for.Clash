@@ -68,6 +68,32 @@ func (a *App) Removefile(path string) FlagResult {
 	return FlagResult{true, "Success"}
 }
 
+func (a *App) Copyfile(src string, dst string) FlagResult {
+	log.Printf("Copyfile: %s -> %s", src, dst)
+
+	src = GetPath(src)
+	dst = GetPath(dst)
+
+	srcFile, err := os.Open(src)
+	if err != nil {
+		return FlagResult{false, err.Error()}
+	}
+	defer srcFile.Close()
+
+	dstFile, err := os.Create(dst)
+	if err != nil {
+		return FlagResult{false, err.Error()}
+	}
+	defer dstFile.Close()
+
+	_, err = io.Copy(dstFile, srcFile)
+	if err != nil {
+		return FlagResult{false, err.Error()}
+	}
+
+	return FlagResult{true, "Success"}
+}
+
 func (a *App) Makedir(path string) FlagResult {
 	log.Printf("Makedir: %s", path)
 
