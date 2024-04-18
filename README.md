@@ -8,14 +8,8 @@
 ## Preview
 
 <div align="center">
-  <img src="docs/imgs/light01.png" width="400" height="270">
-  <img src="docs/imgs/dark01.png" width="400" height="270">
-  <br/>
-  <img src="docs/imgs/light02.png" width="400" height="270">
-  <img src="docs/imgs/dark02.png" width="400" height="270">
-  <br/>
-  <img src="docs/imgs/light03.png" width="400" height="270">
-  <img src="docs/imgs/dark03.png" width="400" height="270">
+  <img src="docs/imgs/light.png">
+  <img src="docs/imgs/dark.png">
 </div>
 
 ## Document
