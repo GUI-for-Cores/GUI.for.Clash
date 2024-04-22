@@ -9,7 +9,7 @@ export const PluginsFilePath = 'data/plugins.yaml'
 export const ScheduledTasksFilePath = 'data/scheduledtasks.yaml'
 
 export const DefaultFontFamily =
-  '"PingFang SC","Hiragino Sans GB","Microsoft YaHei UI","Microsoft YaHei","Source Han Sans CN",sans-serif,"Twemoji Mozilla"'
+  'system-ui, "Microsoft YaHei UI", "Source Han Sans CN", "Twemoji Mozilla", sans-serif'
 
 export enum WindowStartState {
   Normal = 0,
