@@ -199,6 +199,7 @@ export const useSubscribesStore = defineStore('subscribes', () => {
       const profile = profilesStore.getProfileById(s.id)
       const _profile = restoreProfile(config, s.id, NameIdMap, IdNameMap)
       if (profile) {
+        _profile.name = profile.name
         profilesStore.editProfile(profile.id, _profile)
       } else {
         _profile.name = s.name
