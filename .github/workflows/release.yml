@@ -53,10 +53,10 @@ jobs:
             os: ubuntu-latest
             GOOS: linux
             GOARCH: amd64
-          - name: GUI.for.Clash-linux-arm64.zip
-            os: ubuntu-latest
-            GOOS: linux
-            GOARCH: arm64
+          # - name: GUI.for.Clash-linux-arm64.zip
+          #   os: ubuntu-latest
+          #   GOOS: linux
+          #   GOARCH: arm64
     runs-on: ${{ matrix.build.os }}
     steps:
       - name: Checkout code
