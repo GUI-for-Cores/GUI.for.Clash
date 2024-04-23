@@ -62,6 +62,10 @@ const downloadApp = async () => {
 
     await UnzipZIPFile(tmpFile, '.')
 
+    const suffix = { windows: '.exe', linux: '' }[os]
+
+    await Movefile(APP_TITLE + suffix, appName)
+
     await Removefile(tmpFile)
 
     needRestart.value = true
