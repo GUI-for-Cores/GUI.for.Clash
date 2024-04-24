@@ -58,7 +58,7 @@ export const Colors = {
   },
   [Color.Red]: {
     primary: 'red',
-    secondary: '#f76363'
+    secondary: '#9e0404'
   },
   [Color.Skyblue]: {
     primary: 'skyblue',
@@ -66,7 +66,7 @@ export const Colors = {
   },
   [Color.Green]: {
     primary: 'green',
-    secondary: '#008000'
+    secondary: '#025f02'
   }
 }
 
