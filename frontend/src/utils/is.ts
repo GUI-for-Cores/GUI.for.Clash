@@ -35,3 +35,5 @@ export const isValidIPCIDR = (str: string) => /^(\d{1,3}\.){3}\d{1,3}\/\d{1,2}$/
 
 export const isValidIPV4 = (ip: string) =>
   /^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$/.test(ip)
+
+export const isNumber = (v: any) => typeof v === 'number'
