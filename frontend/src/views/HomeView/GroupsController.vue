@@ -64,7 +64,7 @@ const groups = computed(() => {
 })
 
 const handleUseProxy = async (group: any, proxy: any) => {
-  if (group.type !== 'Selector') return
+  if (![ProxyGroupType.Selector, ProxyGroupType.Fallback].includes(group.type)) return
 
   if (group.now === proxy.name) return
 

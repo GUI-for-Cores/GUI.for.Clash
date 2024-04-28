@@ -172,6 +172,7 @@ export default {
         'round-robin': 'round-robin'
       },
       empty: '该订阅分组内没有可用节点',
+      noSubs: '订阅列表为空',
       'built-in': {
         select: '🚀 节点选择',
         auto: '🎈 自动选择',

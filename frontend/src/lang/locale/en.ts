@@ -171,7 +171,8 @@ export default {
         'consistent-hashing': 'consistent-hashing',
         'round-robin': 'round-robin'
       },
-      empty: 'The subscription group is empty',
+      empty: 'The subscription group is empty.',
+      noSubs: 'The subscription list is empty.',
       'built-in': {
         select: '🚀 Select',
         auto: '🎈 Auto',
