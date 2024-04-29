@@ -2,8 +2,8 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { parse, stringify } from 'yaml'
 
-import { debounce } from '@/utils'
 import { Readfile, Writefile } from '@/bridge'
+import { debounce, ignoredError } from '@/utils'
 import { ProfilesFilePath, ProxyGroup } from '@/constant'
 
 export type ProfileType = {
@@ -120,8 +120,8 @@ export const useProfilesStore = defineStore('profiles', () => {
   const profiles = ref<ProfileType[]>([])
 
   const setupProfiles = async () => {
-    const data = await Readfile(ProfilesFilePath)
-    profiles.value = parse(data)
+    const data = await ignoredError(Readfile, ProfilesFilePath)
+    data && (profiles.value = parse(data))
   }
 
   const saveProfiles = debounce(async () => {

@@ -56,6 +56,11 @@ EventsOn('launchArgs', async (args: string[]) => {
   }
 })
 
+EventsOn('onStartup', () => {
+  console.log('onStartup')
+  pluginsStore.onStartupTrigger().catch(message.error)
+})
+
 EventsOn('beforeClose', async () => {
   if (appSettings.app.exitOnClose) {
     exitApp()
@@ -70,38 +75,19 @@ window.addEventListener('beforeunload', scheduledTasksStore.removeScheduledTasks
 
 appSettings.setupAppSettings().then(async () => {
   await Promise.all([
-    ignoredError(envStore.setupEnv),
-    ignoredError(profilesStore.setupProfiles),
-    ignoredError(subscribesStore.setupSubscribes),
-    ignoredError(rulesetsStore.setupRulesets),
-    ignoredError(pluginsStore.setupPlugins),
-    ignoredError(scheduledTasksStore.setupScheduledTasks)
+    envStore.setupEnv(),
+    profilesStore.setupProfiles(),
+    subscribesStore.setupSubscribes(),
+    rulesetsStore.setupRulesets(),
+    pluginsStore.setupPlugins(),
+    scheduledTasksStore.setupScheduledTasks()
   ])
 
   await sleep(1000)
 
   loading.value = false
 
-  kernelApiStore.updateKernelStatus().then(async (running) => {
-    kernelApiStore.statusLoading = false
-    try {
-      if (running) {
-        await kernelApiStore.refreshConfig()
-        await kernelApiStore.refreshProviderProxies()
-        await envStore.updateSystemProxyStatus()
-      } else if (appSettings.app.autoStartKernel) {
-        await kernelApiStore.startKernel()
-      }
-    } catch (error: any) {
-      message.error(error)
-    }
-  })
-
-  try {
-    await pluginsStore.onStartupTrigger()
-  } catch (error: any) {
-    message.error(error)
-  }
+  kernelApiStore.updateKernelState()
 })
 </script>
 

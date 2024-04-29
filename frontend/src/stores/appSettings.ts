@@ -4,7 +4,7 @@ import { parse, stringify } from 'yaml'
 
 import i18n from '@/lang'
 import { Readfile, Writefile, WindowSetSystemDefaultTheme } from '@/bridge'
-import { debounce, updateTrayMenus, APP_TITLE, APP_VERSION } from '@/utils'
+import { debounce, updateTrayMenus, APP_TITLE, APP_VERSION, ignoredError } from '@/utils'
 import { Theme, WindowStartState, Lang, View, Color, Colors, DefaultFontFamily } from '@/constant'
 
 type AppSettings = {
@@ -123,13 +123,10 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
   }, 1500)
 
   const setupAppSettings = async () => {
-    try {
-      const b = await Readfile('data/user.yaml')
-      app.value = Object.assign(app.value, parse(b))
-    } catch (error) {
-      firstOpen = false
-      console.log(error)
-    }
+    const data = await ignoredError(Readfile, 'data/user.yaml')
+    data && (app.value = Object.assign(app.value, parse(data)))
+
+    firstOpen = !!data
 
     updateAppSettings(app.value)
   }

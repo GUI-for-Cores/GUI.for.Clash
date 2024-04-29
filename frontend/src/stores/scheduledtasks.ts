@@ -3,7 +3,7 @@ import { stringify, parse } from 'yaml'
 import { computed, ref, watch } from 'vue'
 
 import { Notify } from '@/bridge'
-import { debounce } from '@/utils'
+import { debounce, ignoredError } from '@/utils'
 import { ScheduledTasksFilePath, ScheduledTasksType } from '@/constant'
 import { useSubscribesStore, useRulesetsStore, usePluginsStore, useLogsStore } from '@/stores'
 import {
@@ -35,8 +35,8 @@ export const useScheduledTasksStore = defineStore('scheduledtasks', () => {
   const ScheduledTasksIDs: number[] = []
 
   const setupScheduledTasks = async () => {
-    const data = await Readfile(ScheduledTasksFilePath)
-    scheduledtasks.value = parse(data)
+    const data = await ignoredError(Readfile, ScheduledTasksFilePath)
+    data && (scheduledtasks.value = parse(data))
   }
 
   const initScheduledTasks = async () => {

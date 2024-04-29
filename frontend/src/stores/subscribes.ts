@@ -11,7 +11,8 @@ import {
   sampleID,
   isValidSubYAML,
   getUserAgent,
-  restoreProfile
+  restoreProfile,
+  ignoredError
 } from '@/utils'
 
 export type SubscribeType = {
@@ -49,8 +50,8 @@ export const useSubscribesStore = defineStore('subscribes', () => {
   const subscribes = ref<SubscribeType[]>([])
 
   const setupSubscribes = async () => {
-    const data = await Readfile(SubscribesFilePath)
-    subscribes.value = parse(data)
+    const data = await ignoredError(Readfile, SubscribesFilePath)
+    data && (subscribes.value = parse(data))
   }
 
   const saveSubscribes = debounce(async () => {
