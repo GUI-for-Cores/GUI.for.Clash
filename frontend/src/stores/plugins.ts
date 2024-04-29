@@ -80,6 +80,10 @@ const PluginsTriggerMap: {
   [PluginTrigger.OnShutdown]: {
     fnName: 'onShutdown',
     observers: []
+  },
+  [PluginTrigger.OnReady]: {
+    fnName: 'onReady',
+    observers: []
   }
 }
 
@@ -379,6 +383,7 @@ export const usePluginsStore = defineStore('plugins', () => {
     onGenerateTrigger,
     onStartupTrigger: () => noParamsTrigger(PluginTrigger.OnStartup),
     onShutdownTrigger: () => noParamsTrigger(PluginTrigger.OnShutdown),
+    onReadyTrigger: () => noParamsTrigger(PluginTrigger.OnReady),
     manualTrigger,
     updatePluginTrigger,
     getPluginCodefromCache

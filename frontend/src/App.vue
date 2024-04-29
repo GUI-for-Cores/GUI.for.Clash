@@ -56,8 +56,12 @@ EventsOn('launchArgs', async (args: string[]) => {
   }
 })
 
-EventsOn('onStartup', () => {
-  console.log('onStartup')
+let startupResolve: (value: unknown) => void
+const startupPromise = new Promise((resolve) => (startupResolve = resolve))
+
+EventsOn('onStartup', async () => {
+  console.log('OnStartup')
+  await startupPromise
   pluginsStore.onStartupTrigger().catch(message.error)
 })
 
@@ -82,6 +86,12 @@ appSettings.setupAppSettings().then(async () => {
     pluginsStore.setupPlugins(),
     scheduledTasksStore.setupScheduledTasks()
   ])
+
+  startupResolve(0)
+
+  console.log('OnReady')
+
+  pluginsStore.onReadyTrigger().catch(message.error)
 
   await sleep(1000)
 
