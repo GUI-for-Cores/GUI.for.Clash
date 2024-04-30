@@ -4,7 +4,7 @@ import { stringify, parse } from 'yaml'
 
 import { Readfile, Writefile, HttpGet } from '@/bridge'
 import { RulesetsFilePath, RulesetBehavior } from '@/constant'
-import { deepClone, debounce, isValidPaylodYAML, ignoredError } from '@/utils'
+import { debounce, isValidPaylodYAML, ignoredError, omitArray } from '@/utils'
 
 export type RuleSetType = {
   id: string
@@ -31,10 +31,7 @@ export const useRulesetsStore = defineStore('rulesets', () => {
   }
 
   const saveRulesets = debounce(async () => {
-    const r = deepClone(rulesets.value)
-    for (let i = 0; i < r.length; i++) {
-      delete r[i].updating
-    }
+    const r = omitArray(rulesets.value, ['updating'])
     await Writefile(RulesetsFilePath, stringify(r))
   }, 500)
 

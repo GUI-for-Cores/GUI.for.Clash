@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 
-import { APP_TITLE, APP_VERSION, sleep } from '@/utils'
 import icons from '@/components/Icon/icons'
-import { HttpGet, HttpPost, Upload } from '@/bridge'
+import { APP_TITLE, APP_VERSION, sleep } from '@/utils'
+import { HttpGet, HttpPost, Upload, Notify } from '@/bridge'
 import { useMessage, usePicker, useConfirm, usePrompt, useAlert } from '@/hooks'
 
 const code = ref(`
@@ -129,6 +129,10 @@ const handleUpload = async () => {
   console.log(res)
   alert('Result', JSON.stringify(res.header, null, 2) + '\n' + JSON.stringify(res.body, null, 2))
 }
+
+const handleNotify = (type: string) => {
+  Notify('Notification', 'test', type)
+}
 </script>
 
 <template>
@@ -180,6 +184,13 @@ const handleUpload = async () => {
     <Button @click="handlePostJSON">HttpPost JSON</Button>
     <Button @click="handlePostFORM">HttpPost FORM</Button>
     <Button @click="handleUpload">Upload</Button>
+  </div>
+
+  <h2>Notify</h2>
+  <div>
+    <Button @click="handleNotify('success')">Success</Button>
+    <Button @click="handleNotify('error')">Error</Button>
+    <Button @click="handleNotify('')">Normal</Button>
   </div>
 </template>
 

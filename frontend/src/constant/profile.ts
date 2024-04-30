@@ -188,7 +188,7 @@ export const RulesConfigDefaults = (ids: string[]): ProfileType['rulesConfig'] =
     id: sampleID(),
     type: 'LOGIC',
     payload: 'AND,((DST-PORT,443),(NETWORK,udp))',
-    proxy: ids[3], // '🛑 全球拦截',
+    proxy: ids[3],
     'no-resolve': false,
     filter: ''
   },
@@ -196,7 +196,7 @@ export const RulesConfigDefaults = (ids: string[]): ProfileType['rulesConfig'] =
     id: sampleID(),
     type: 'GEOSITE',
     payload: 'category-ads-all',
-    proxy: ids[3], // '🛑 全球拦截',
+    proxy: ids[3],
     'no-resolve': false,
     filter: ''
   },
@@ -204,7 +204,7 @@ export const RulesConfigDefaults = (ids: string[]): ProfileType['rulesConfig'] =
     id: sampleID(),
     type: 'GEOIP',
     payload: 'private',
-    proxy: ids[2], // '🎯 全球直连',
+    proxy: ids[2],
     'no-resolve': true,
     filter: ''
   },
@@ -212,7 +212,7 @@ export const RulesConfigDefaults = (ids: string[]): ProfileType['rulesConfig'] =
     id: sampleID(),
     type: 'GEOIP',
     payload: 'CN',
-    proxy: ids[2], // '🎯 全球直连',
+    proxy: ids[2],
     'no-resolve': true,
     filter: ''
   },
@@ -220,7 +220,7 @@ export const RulesConfigDefaults = (ids: string[]): ProfileType['rulesConfig'] =
     id: sampleID(),
     type: 'GEOSITE',
     payload: 'private',
-    proxy: ids[2], // '🎯 全球直连',
+    proxy: ids[2],
     'no-resolve': false,
     filter: ''
   },
@@ -228,7 +228,7 @@ export const RulesConfigDefaults = (ids: string[]): ProfileType['rulesConfig'] =
     id: sampleID(),
     type: 'GEOSITE',
     payload: 'CN',
-    proxy: ids[2], // '🎯 全球直连',
+    proxy: ids[2],
     'no-resolve': false,
     filter: ''
   },
@@ -236,7 +236,7 @@ export const RulesConfigDefaults = (ids: string[]): ProfileType['rulesConfig'] =
     id: sampleID(),
     type: 'GEOSITE',
     payload: 'geolocation-!cn',
-    proxy: ids[0], // '🚀 节点选择',
+    proxy: ids[0],
     'no-resolve': false,
     filter: ''
   },
@@ -244,7 +244,7 @@ export const RulesConfigDefaults = (ids: string[]): ProfileType['rulesConfig'] =
     id: sampleID(),
     type: 'MATCH',
     payload: '',
-    proxy: ids[4], // '🐟 漏网之鱼',
+    proxy: ids[4],
     'no-resolve': false,
     filter: ''
   }

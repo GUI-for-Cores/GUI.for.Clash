@@ -1,6 +1,6 @@
 import useI18n from '@/lang'
-import { Color, Lang, Theme } from '@/constant'
 import { handleChangeMode } from '@/utils'
+import { Color, Lang, Theme } from '@/constant'
 import { ExitApp, RestartApp, WindowReloadApp } from '@/bridge'
 import {
   useAppSettingsStore,

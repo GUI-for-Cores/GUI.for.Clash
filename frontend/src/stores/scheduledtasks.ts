@@ -4,7 +4,7 @@ import { computed, ref, watch } from 'vue'
 
 import { Notify } from '@/bridge'
 import { debounce, ignoredError } from '@/utils'
-import { ScheduledTasksFilePath, ScheduledTasksType } from '@/constant'
+import { PluginManualEvent, ScheduledTasksFilePath, ScheduledTasksType } from '@/constant'
 import { useSubscribesStore, useRulesetsStore, usePluginsStore, useLogsStore } from '@/stores'
 import {
   Readfile,
@@ -111,7 +111,7 @@ export const useScheduledTasksStore = defineStore('scheduledtasks', () => {
       case ScheduledTasksType.RunPlugin: {
         const pluginsStores = usePluginsStore()
         return withOutput(task.plugins, async (id: string) =>
-          pluginsStores.manualTrigger(id, 'onTask' as any)
+          pluginsStores.manualTrigger(id, PluginManualEvent.OnTask)
         )
       }
       case ScheduledTasksType.RunScript: {

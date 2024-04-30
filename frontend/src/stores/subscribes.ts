@@ -2,17 +2,17 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { stringify, parse } from 'yaml'
 
-import { usePluginsStore, useProfilesStore } from '@/stores'
 import { SubscribesFilePath } from '@/constant'
 import { Readfile, Writefile, HttpGet } from '@/bridge'
+import { usePluginsStore, useProfilesStore } from '@/stores'
 import {
-  deepClone,
   debounce,
   sampleID,
   isValidSubYAML,
   getUserAgent,
   restoreProfile,
-  ignoredError
+  ignoredError,
+  omitArray
 } from '@/utils'
 
 export type SubscribeType = {
@@ -55,10 +55,7 @@ export const useSubscribesStore = defineStore('subscribes', () => {
   }
 
   const saveSubscribes = debounce(async () => {
-    const s = deepClone(subscribes.value)
-    for (let i = 0; i < s.length; i++) {
-      delete s[i].updating
-    }
+    const s = omitArray(subscribes.value, ['updating'])
     await Writefile(SubscribesFilePath, stringify(s))
   }, 500)
 

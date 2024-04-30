@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, inject, type Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { ref, inject, type Ref } from 'vue'
 
 import { useMessage, useBool } from '@/hooks'
 import * as Defaults from '@/constant/profile'

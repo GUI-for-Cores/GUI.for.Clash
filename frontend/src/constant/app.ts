@@ -87,7 +87,8 @@ export enum PluginTrigger {
 export enum PluginManualEvent {
   OnInstall = 'onInstall',
   OnUninstall = 'onUninstall',
-  OnRun = 'onRun'
+  OnRun = 'onRun',
+  OnTask = 'onTask'
 }
 
 export const PluginsTriggerOptions = [

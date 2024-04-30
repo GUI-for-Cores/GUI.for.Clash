@@ -9,7 +9,6 @@ export enum ProxyGroup {
   LoadBalance = 'load-balance'
 }
 
-// Why not unify the design with the above?
 export enum ProxyGroupType {
   Selector = 'Selector',
   UrlTest = 'URLTest',
