@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import StableBranch from './StableBranch.vue'
-import AlphaBranch from './AlphaBranch.vue'
-import SwitchBranch from './SwitchBranch.vue'
+import StableBranch from './components/StableBranch.vue'
+import AlphaBranch from './components/AlphaBranch.vue'
+import SwitchBranch from './components/SwitchBranch.vue'
 </script>
 
 <template>

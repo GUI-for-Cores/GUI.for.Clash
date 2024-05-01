@@ -1,6 +1,4 @@
-import { useI18n } from 'vue-i18n'
-
-import i18n from '@/lang'
+import useI18n from '@/lang'
 
 export function formatBytes(bytes: number, decimals: number = 1): string {
   if (bytes === 0) return '0 B'
@@ -23,12 +21,12 @@ export function formatRelativeTime(d: string) {
   const months = Math.abs(Math.floor(days / 30))
   const years = Math.abs(Math.floor(months / 12))
 
-  const { t } = useI18n()
+  const { t, locale } = useI18n.global
 
-  const prefix = i18n.global.locale.value === 'en' ? ' ' : ''
+  const prefix = locale.value === 'en' ? ' ' : ''
 
   const suffix =
-    (i18n.global.locale.value === 'en' ? ' ' : '') +
+    (locale.value === 'en' ? ' ' : '') +
     (diffInMilliseconds >= 0 ? t('format.ago') : t('format.later'))
 
   if (seconds < 60) {

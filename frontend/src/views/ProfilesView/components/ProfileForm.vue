@@ -7,12 +7,12 @@ import * as Defaults from '@/constant/profile'
 import { type ProfileType, useProfilesStore } from '@/stores'
 import { deepClone, sampleID, toggleFullScreen } from '@/utils'
 
-import GeneralConfig from '@/components/Profile/GeneralConfig.vue'
-import AdvancedConfig from '@/components/Profile/AdvancedConfig.vue'
-import TunConfig from '@/components/Profile/TunConfig.vue'
-import DnsConfig from '@/components/Profile/DnsConfig.vue'
-import ProxyGroupsConfig from '@/components/Profile/ProxyGroupsConfig.vue'
-import RulesConfig from '@/components/Profile/RulesConfig.vue'
+import GeneralConfig from './GeneralConfig.vue'
+import AdvancedConfig from './AdvancedConfig.vue'
+import TunConfig from './TunConfig.vue'
+import DnsConfig from './DnsConfig.vue'
+import ProxyGroupsConfig from './ProxyGroupsConfig.vue'
+import RulesConfig from './RulesConfig.vue'
 
 interface Props {
   id?: string

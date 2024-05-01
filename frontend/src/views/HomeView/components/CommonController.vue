@@ -6,8 +6,6 @@ import { updateGEO } from '@/api/kernel'
 import { StackOptions } from '@/constant'
 import { useKernelApiStore } from '@/stores'
 
-import InterfaceSelect from '@/components/Profile/InterfaceSelect.vue'
-
 const { t } = useI18n()
 const { message } = useMessage()
 const kernelApiStore = useKernelApiStore()
