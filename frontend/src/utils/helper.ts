@@ -1,3 +1,4 @@
+import { ProxyGroupType } from '@/constant'
 import { ignoredError, APP_TITLE } from '@/utils'
 import { deleteConnection, getConnections, useProxy } from '@/api/kernel'
 import { useAppSettingsStore, useEnvStore, useKernelApiStore, usePluginsStore } from '@/stores'
@@ -337,7 +338,8 @@ export const DeleteSchTask = async (taskName: string) => {
 
 // Others
 export const handleUseProxy = async (group: any, proxy: any) => {
-  if (group.type !== 'Selector' || group.now === proxy.name) return
+  if (![ProxyGroupType.Selector, ProxyGroupType.Fallback].includes(group.type)) return
+  if (group.now === proxy.name) return
   const promises: Promise<null>[] = []
   const appSettings = useAppSettingsStore()
   const kernelApiStore = useKernelApiStore()
