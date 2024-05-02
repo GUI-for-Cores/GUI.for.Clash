@@ -68,6 +68,18 @@ const secondaryMenus: Menu[] = [
         message.error(error.message || error)
       }
     }
+  },
+  {
+    label: 'profiles.generateAndView',
+    handler: async (id: string) => {
+      const p = profilesStore.getProfileById(id)!
+      try {
+        const config = await generateConfig(p)
+        alert(p.name, stringify(config))
+      } catch (error: any) {
+        message.error(error.message || error)
+      }
+    }
   }
 ]
 

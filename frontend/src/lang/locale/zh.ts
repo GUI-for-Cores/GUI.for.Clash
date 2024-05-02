@@ -350,6 +350,8 @@ export default {
     enterLink: '输入订阅链接',
     proxyCount: '代理数量',
     editProxies: '编辑节点',
+    editSourceFile: '编辑节点(源文件)',
+    copySub: '复制订阅链接',
     proxies: {
       type: '协议',
       name: '名称',
@@ -379,6 +381,7 @@ export default {
     shouldStop: '当前配置正在使用，无法删除',
     empty: '配置列表为空，请先{action}配置。',
     copytoClipboard: '生成配置到剪切板',
+    generateAndView: '生成配置并查看',
     copy: '复制并粘贴',
     start: '使用此配置启动/重启'
   },
@@ -400,7 +403,7 @@ export default {
   rulesets: {
     empty: '规则集列表为空. 请先{action}规则集。',
     rulesetCount: '规则数量',
-    editRuleset: '编辑规则集列表'
+    editRuleset: '编辑规则'
   },
   plugin: {
     trigger: '触发器',
