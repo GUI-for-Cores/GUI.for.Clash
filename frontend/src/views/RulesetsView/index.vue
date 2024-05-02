@@ -275,9 +275,7 @@ const onSortUpdate = debounce(rulesetsStore.saveRulesets, 1000)
       <template v-else>
         {{ t('rulesets.rulesetCount') }}
         :
-        <Button @click="handleEditRulesetList(r.id)" type="text" size="small">
-          {{ r.count }}
-        </Button>
+        {{ r.count }}
         <div>
           {{ t('common.updateTime') }}
           :

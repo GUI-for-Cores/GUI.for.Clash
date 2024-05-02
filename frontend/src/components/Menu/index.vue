@@ -76,34 +76,55 @@ onUnmounted(() => document.removeEventListener('click', onClick))
 </script>
 
 <template>
-  <div v-show="model" ref="menuRef" :style="menuPosition" class="menu">
-    <template v-for="menu in menuList">
-      <Divider v-if="menu.separator" :key="menu.label + '_divider'">{{ t(menu.label) }}</Divider>
+  <Transition name="menu">
+    <div v-show="model" ref="menuRef" :style="menuPosition" class="menu">
+      <template v-for="menu in menuList">
+        <Divider v-if="menu.separator" :key="menu.label + '_divider'">{{ t(menu.label) }}</Divider>
+        <div
+          v-else
+          :key="menu.label"
+          @click="handleClick(menu)"
+          @mouseenter="secondaryMenu = menu.children"
+          class="menu-item"
+        >
+          {{ t(menu.label) }}
+          <Icon v-if="menu.children" icon="arrowRight" class="ml-8" />
+        </div>
+      </template>
       <div
-        v-else
-        :key="menu.label"
-        @click="handleClick(menu)"
-        @mouseenter="secondaryMenu = menu.children"
-        class="menu-item"
+        v-show="secondaryMenu"
+        ref="secondaryMenuRef"
+        :style="secondaryMenuPosition"
+        class="secondary menu"
       >
-        {{ t(menu.label) }}
-        <Icon v-if="menu.children" icon="arrowRight" class="ml-8" />
-      </div>
-    </template>
-    <div
-      v-show="secondaryMenu"
-      ref="secondaryMenuRef"
-      :style="secondaryMenuPosition"
-      class="secondary menu"
-    >
-      <div v-for="m in secondaryMenu" :key="m.label" @click.stop="handleClick(m)" class="menu-item">
-        {{ t(m.label) }}
+        <div
+          v-for="m in secondaryMenu"
+          :key="m.label"
+          @click.stop="handleClick(m)"
+          class="menu-item"
+        >
+          {{ t(m.label) }}
+        </div>
       </div>
     </div>
-  </div>
+  </Transition>
 </template>
 
 <style lang="less" scoped>
+.menu-enter-active,
+.menu-leave-active {
+  transition:
+    transform 0.2s ease-in-out,
+    opacity 0.2s ease-in-out;
+  transform-origin: top;
+}
+
+.menu-enter-from,
+.menu-leave-to {
+  opacity: 0;
+  transform: scaleY(0);
+}
+
 .menu {
   position: fixed;
   z-index: 9999;
