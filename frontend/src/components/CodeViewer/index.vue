@@ -39,7 +39,7 @@ const extensions = computed(() => (appSettings.themeMode === Theme.Dark ? [oneDa
 </template>
 
 <style lang="less" scoped>
-::v-deep .cm-editor {
+:deep(.cm-editor) {
   height: 100%;
 }
 </style>
