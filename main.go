@@ -56,7 +56,7 @@ func main() {
 		Width: 800,
 		Height: func() int {
 			if bridge.Env.OS == "linux" {
-				return 520
+				return 510
 			}
 			return 540
 		}(),
