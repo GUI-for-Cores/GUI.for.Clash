@@ -158,8 +158,11 @@ checkForUpdates()
     padding: 8px 0;
   }
   .appver {
+    display: flex;
+    align-items: center;
     font-size: 12px;
     margin-bottom: 12px;
+    min-height: 40px;
   }
   .url {
     cursor: pointer;

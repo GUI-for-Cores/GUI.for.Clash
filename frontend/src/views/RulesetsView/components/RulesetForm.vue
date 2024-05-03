@@ -145,7 +145,7 @@ if (props.isUpdate) {
     <Button
       @click="handleSubmit"
       :loading="loading"
-      :disable="!ruleset.name || !ruleset.path || (ruleset.type === 'Http' && !ruleset.url)"
+      :disabled="!ruleset.name || !ruleset.path || (ruleset.type === 'Http' && !ruleset.url)"
       type="primary"
     >
       {{ t('common.save') }}

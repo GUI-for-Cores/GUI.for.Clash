@@ -24,9 +24,9 @@ const { prompt } = usePrompt()
 const { alert } = useAlert()
 
 const handleUpdateMessage = async () => {
-  const { id } = message.info('success', 5_000)
+  const { id } = message.info('Loading', 5_000)
   await sleep(1000)
-  message.update(id, 'error', 'error')
+  message.update(id, 'success', 'success')
   await sleep(1000)
   message.destroy(id)
 }
@@ -138,7 +138,14 @@ const handleNotify = (type: string) => {
 <template>
   <h2>Icons</h2>
   <div class="icons">
-    <Icon v-for="icon in icons" v-tips.fast="icon" :key="icon" :icon="icon" class="icon" />
+    <Icon
+      v-for="icon in icons"
+      v-tips.fast="icon"
+      :key="icon"
+      :icon="icon"
+      :size="32"
+      class="icon"
+    />
   </div>
 
   <h2>CodeViewer</h2>
@@ -151,22 +158,10 @@ const handleNotify = (type: string) => {
 
   <h2>useMessage & usePicker & useConfirm & usePrompt</h2>
   <div>
-    <Button @click="message.info('info', 1_000)">
-      <Icon icon="messageInfo" />
-      Info
-    </Button>
-    <Button @click="message.warn('warn', 1_000)">
-      <Icon icon="messageWarn" />
-      Warn
-    </Button>
-    <Button @click="message.error('error', 1_000)">
-      <Icon icon="messageError" />
-      Error
-    </Button>
-    <Button @click="message.success('success', 1_000)">
-      <Icon icon="messageSuccess" />
-      Success
-    </Button>
+    <Button @click="message.info('info', 1_000)" icon="messageInfo"> Info </Button>
+    <Button @click="message.warn('warn', 1_000)" icon="messageWarn"> Warn </Button>
+    <Button @click="message.error('error', 1_000)" icon="messageError"> Error </Button>
+    <Button @click="message.success('success', 1_000)" icon="messageSuccess"> Success </Button>
     <Button @click="handleUpdateMessage">Update Me</Button>
   </div>
   <div>
@@ -197,8 +192,6 @@ const handleNotify = (type: string) => {
 <style lang="less" scoped>
 .icons {
   .icon {
-    width: 32px;
-    height: 32px;
     margin: 2px;
     background: var(--card-bg);
   }

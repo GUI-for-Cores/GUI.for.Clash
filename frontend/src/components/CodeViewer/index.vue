@@ -34,6 +34,7 @@ const extensions = computed(() => (appSettings.themeMode === Theme.Dark ? [oneDa
     :extensions="extensions"
     tab
     basic
+    style="background: #fff"
   />
 </template>
 

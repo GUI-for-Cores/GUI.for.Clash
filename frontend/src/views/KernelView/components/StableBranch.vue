@@ -182,34 +182,36 @@ initVersion()
 
 <template>
   <h3>{{ t('kernel.name') }}</h3>
-  <Tag @click="updateLocalVersion(true)" style="cursor: pointer">
-    {{ t('kernel.local') }}
-    :
-    {{ localVersionLoading ? 'Loading' : localVersion || t('kernel.notFound') }}
-  </Tag>
-  <Tag @click="updateRemoteVersion(true)" style="cursor: pointer">
-    {{ t('kernel.remote') }}
-    :
-    {{ remoteVersionLoading ? 'Loading' : remoteVersion }}
-  </Tag>
-  <Button
-    v-show="!localVersionLoading && !remoteVersionLoading && needUpdate"
-    @click="downloadCore"
-    :loading="downloadLoading"
-    size="small"
-    type="primary"
-  >
-    {{ t('kernel.update') }} : {{ remoteVersion }}
-  </Button>
-  <Button
-    v-show="!localVersionLoading && !remoteVersionLoading && needRestart"
-    @click="handleRestartKernel"
-    :loading="kernelApiStore.loading"
-    size="small"
-    type="primary"
-  >
-    {{ t('kernel.restart') }}
-  </Button>
+  <div class="tags">
+    <Tag @click="updateLocalVersion(true)" style="cursor: pointer">
+      {{ t('kernel.local') }}
+      :
+      {{ localVersionLoading ? 'Loading' : localVersion || t('kernel.notFound') }}
+    </Tag>
+    <Tag @click="updateRemoteVersion(true)" style="cursor: pointer">
+      {{ t('kernel.remote') }}
+      :
+      {{ remoteVersionLoading ? 'Loading' : remoteVersion }}
+    </Tag>
+    <Button
+      v-show="!localVersionLoading && !remoteVersionLoading && needUpdate"
+      @click="downloadCore"
+      :loading="downloadLoading"
+      size="small"
+      type="primary"
+    >
+      {{ t('kernel.update') }} : {{ remoteVersion }}
+    </Button>
+    <Button
+      v-show="!localVersionLoading && !remoteVersionLoading && needRestart"
+      @click="handleRestartKernel"
+      :loading="kernelApiStore.loading"
+      size="small"
+      type="primary"
+    >
+      {{ t('kernel.restart') }}
+    </Button>
+  </div>
   <div class="detail">
     {{ versionDetail }}
   </div>
@@ -221,5 +223,11 @@ initVersion()
   padding: 8px 4px;
   word-wrap: break-word;
   word-break: break-all;
+}
+
+.tags {
+  display: flex;
+  align-items: center;
+  min-height: 34px;
 }
 </style>

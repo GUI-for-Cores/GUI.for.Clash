@@ -155,21 +155,23 @@ watch(showController, (v) => {
             v-tips="'home.overview.viewlog'"
             type="text"
             size="small"
+            icon="log"
             class="ml-auto"
-          >
-            <Icon icon="log" />
-          </Button>
+          />
           <Button
             @click="handleRestartKernel"
             v-tips="'home.overview.restart'"
             type="text"
             size="small"
-          >
-            <Icon icon="restart" />
-          </Button>
-          <Button @click="handleStopKernel" v-tips="'home.overview.stop'" type="text" size="small">
-            <Icon icon="stop" />
-          </Button>
+            icon="restart"
+          />
+          <Button
+            @click="handleStopKernel"
+            v-tips="'home.overview.stop'"
+            type="text"
+            size="small"
+            icon="stop"
+          />
         </div>
         <OverView />
         <Divider>

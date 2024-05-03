@@ -64,9 +64,10 @@ const handleSelectAll = () => {
         <span>{{ o.label }}</span>
         <Icon
           v-show="isSelected(o.value)"
-          style="flex-shrink: 0"
+          :size="32"
           icon="selected"
           fill="var(--primary-color)"
+          style="flex-shrink: 0"
         />
       </div>
     </div>

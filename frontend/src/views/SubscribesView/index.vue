@@ -183,7 +183,7 @@ const onSortUpdate = debounce(subscribeStore.saveSubscribes, 1000)
     />
     <Button
       @click="handleUpdateSubs"
-      :disable="noUpdateNeeded"
+      :disabled="noUpdateNeeded"
       :type="noUpdateNeeded ? 'text' : 'link'"
     >
       {{ t('common.updateAll') }}
@@ -216,6 +216,7 @@ const onSortUpdate = debounce(subscribeStore.saveSubscribes, 1000)
           v-if="s.type !== 'File' && s.website"
           v-tips="'subscribe.website'"
           icon="link"
+          :size="18"
           @click="BrowserOpenURL(s.website)"
           style="cursor: pointer"
         />
@@ -228,7 +229,7 @@ const onSortUpdate = debounce(subscribeStore.saveSubscribes, 1000)
           </Button>
           <template #overlay>
             <Button
-              :disable="s.disabled"
+              :disabled="s.disabled"
               :loading="s.updating"
               :type="s.disabled ? 'text' : 'link'"
               size="small"
@@ -251,7 +252,7 @@ const onSortUpdate = debounce(subscribeStore.saveSubscribes, 1000)
 
       <template v-else #extra>
         <Button
-          :disable="s.disabled"
+          :disabled="s.disabled"
           :loading="s.updating"
           :type="s.disabled ? 'text' : 'link'"
           size="small"

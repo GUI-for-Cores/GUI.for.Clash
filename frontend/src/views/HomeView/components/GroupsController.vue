@@ -178,10 +178,9 @@ onActivated(() => {
         @click="handleRefresh"
         v-tips="'home.overview.refresh'"
         :loading="loading"
+        icon="refresh"
         type="text"
-      >
-        <Icon icon="refresh" />
-      </Button>
+      />
     </div>
   </div>
   <div v-for="group in groups" :key="group.name" class="groups">
@@ -213,9 +212,8 @@ onActivated(() => {
           v-tips="'home.overview.delayTest'"
           :loading="isLoading(group.name)"
           type="text"
-        >
-          <Icon icon="speedTest" />
-        </Button>
+          icon="speedTest"
+        />
         <Button @click="toggleExpanded(group.name)" type="text">
           <Icon
             :class="{ 'rotate-z': isExpanded(group.name) }"
