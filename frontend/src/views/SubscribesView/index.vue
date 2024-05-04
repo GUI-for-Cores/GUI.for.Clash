@@ -43,7 +43,7 @@ const menuList: Menu[] = [
     handler: async (id: string) => {
       const sub = subscribeStore.getSubscribeById(id)!
       if (sub) {
-        await ClipboardSetText(sub.path)
+        await ClipboardSetText(sub.url)
         message.success('common.copied')
       }
     }
