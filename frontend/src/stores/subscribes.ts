@@ -198,6 +198,7 @@ export const useSubscribesStore = defineStore('subscribes', () => {
       const _profile = restoreProfile(config, s.id, NameIdMap, IdNameMap)
       if (profile) {
         _profile.name = profile.name
+        _profile.advancedConfig.secret = profile.advancedConfig.secret
         profilesStore.editProfile(profile.id, _profile)
       } else {
         _profile.name = s.name
