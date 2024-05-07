@@ -22,6 +22,10 @@ const [showMore, toggleMore] = useBool(false)
       <Switch v-model="fields['use-hosts']" />
     </div>
     <div class="form-item">
+      {{ t('kernel.dns.use-system-hosts') }}
+      <Switch v-model="fields['use-system-hosts']" />
+    </div>
+    <div class="form-item">
       {{ t('kernel.dns.ipv6') }}
       <Switch v-model="fields['ipv6']" />
     </div>

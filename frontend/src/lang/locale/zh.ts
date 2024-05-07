@@ -101,7 +101,8 @@ export default {
     dns: {
       enable: '启用DNS',
       listen: '服务监听地址',
-      'use-hosts': '是否查询系统hosts',
+      'use-hosts': '查询配置hosts',
+      'use-system-hosts': '查询系统hosts',
       'proxy-server-nameserver': '代理节点域名解析服务器',
       'nameserver-policy': '域名服务器策略',
       fallback: '后备域名解析服务器',

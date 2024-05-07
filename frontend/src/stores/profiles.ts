@@ -70,6 +70,7 @@ export type ProfileType = {
     enable: boolean
     listen: string
     'use-hosts': boolean
+    'use-system-hosts': boolean
     ipv6: boolean
     'default-nameserver': string[]
     nameserver: string[]

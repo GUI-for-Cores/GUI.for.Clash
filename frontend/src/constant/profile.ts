@@ -70,6 +70,7 @@ export const DnsConfigDefaults = (): ProfileType['dnsConfig'] => ({
   listen: '',
   ipv6: false,
   'use-hosts': true,
+  'use-system-hosts': true,
   'default-nameserver': [],
   nameserver: ['https://223.5.5.5/dns-query'],
   'proxy-server-nameserver': [],

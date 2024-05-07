@@ -103,6 +103,7 @@ export default {
       listen: 'Listen',
       ipv6: 'IPv6',
       'use-hosts': 'Use Hosts',
+      'use-system-hosts': 'Use System Hosts',
       'proxy-server-nameserver': 'Proxy Server Nameserver',
       'nameserver-policy': 'Nameserver Policy',
       fallback: 'Fallback',
