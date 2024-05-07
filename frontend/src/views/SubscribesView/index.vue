@@ -64,7 +64,12 @@ const handleAddSub = async () => {
 const handleUpdateSubs = async () => {
   try {
     await subscribeStore.updateSubscribes()
-    await _updateAllProviderProxies()
+    const { running, profile } = appSettingsStore.app.kernel
+    if (running && subscribeStore.getSubscribeById(profile)?.useInternal) {
+      await kernelApiStore.restartKernel()
+    } else {
+      await _updateAllProviderProxies()
+    }
     message.success('success')
   } catch (error: any) {
     console.error('updateSubscribes: ', error)
@@ -94,7 +99,12 @@ const handleEditProxies = (id: string, editor = false) => {
 const handleUpdateSub = async (s: SubscribeType) => {
   try {
     await subscribeStore.updateSubscribe(s.id)
-    await _updateProviderProxies(s.id)
+    const { running, profile } = appSettingsStore.app.kernel
+    if (running && s.useInternal && profile === s.id) {
+      await kernelApiStore.restartKernel()
+    } else {
+      await _updateProviderProxies(s.id)
+    }
   } catch (error: any) {
     console.error('updateSubscribe: ', error)
     message.error(error)
