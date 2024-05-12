@@ -62,6 +62,10 @@ export function KillProcess(arg1) {
   return window['go']['bridge']['App']['KillProcess'](arg1);
 }
 
+export function ListServer() {
+  return window['go']['bridge']['App']['ListServer']();
+}
+
 export function Makedir(arg1) {
   return window['go']['bridge']['App']['Makedir'](arg1);
 }
@@ -96,6 +100,14 @@ export function Removefile(arg1) {
 
 export function RestartApp() {
   return window['go']['bridge']['App']['RestartApp']();
+}
+
+export function StartServer(arg1) {
+  return window['go']['bridge']['App']['StartServer'](arg1);
+}
+
+export function StopServer(arg1) {
+  return window['go']['bridge']['App']['StopServer'](arg1);
 }
 
 export function UnzipGZFile(arg1, arg2) {

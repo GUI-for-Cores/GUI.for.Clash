@@ -33,6 +33,8 @@ export function HttpPut(arg1:string,arg2:{[key: string]: string},arg3:string,arg
 
 export function KillProcess(arg1:number):Promise<bridge.FlagResult>;
 
+export function ListServer():Promise<void>;
+
 export function Makedir(arg1:string):Promise<bridge.FlagResult>;
 
 export function Movefile(arg1:string,arg2:string):Promise<bridge.FlagResult>;
@@ -50,6 +52,10 @@ export function RemoveScheduledTask(arg1:number):Promise<void>;
 export function Removefile(arg1:string):Promise<bridge.FlagResult>;
 
 export function RestartApp():Promise<bridge.FlagResult>;
+
+export function StartServer(arg1:string):Promise<bridge.FlagResult>;
+
+export function StopServer(arg1:string):Promise<bridge.FlagResult>;
 
 export function UnzipGZFile(arg1:string,arg2:string):Promise<bridge.FlagResult>;
 
