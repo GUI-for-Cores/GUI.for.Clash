@@ -34,7 +34,7 @@ export const StartServer = async (address: string, id: string, handler: HttpServ
       }
     )
   })
-  return { close: () => App.StopServer(id) }
+  return { close: () => StopServer(id) }
 }
 
 export const StopServer = async (serverID: string) => {
@@ -51,5 +51,5 @@ export const ListServer = async () => {
   if (!flag) {
     throw data
   }
-  return data.split('|')
+  return data.split('|').filter((id) => id.length)
 }
