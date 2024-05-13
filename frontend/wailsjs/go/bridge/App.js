@@ -102,8 +102,8 @@ export function RestartApp() {
   return window['go']['bridge']['App']['RestartApp']();
 }
 
-export function StartServer(arg1) {
-  return window['go']['bridge']['App']['StartServer'](arg1);
+export function StartServer(arg1, arg2) {
+  return window['go']['bridge']['App']['StartServer'](arg1, arg2);
 }
 
 export function StopServer(arg1) {
