@@ -33,7 +33,7 @@ func (a *App) StartServer(address string, serverID string) FlagResult {
 				w.WriteHeader(500)
 				return
 			}
-			runtime.EventsEmit(a.Ctx, serverID, requestID, r.Method, r.URL.Path, r.Header, string(b))
+			runtime.EventsEmit(a.Ctx, serverID, requestID, r.Method, r.URL.RequestURI(), r.Header, string(b))
 			runtime.EventsOn(a.Ctx, requestID, func(data ...interface{}) {
 				runtime.EventsOff(a.Ctx, requestID)
 				resp := ResponseData{200, make(map[string]string), "A sample http server"}
