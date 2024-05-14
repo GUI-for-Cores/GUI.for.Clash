@@ -50,6 +50,14 @@ export function HttpGet(arg1, arg2, arg3) {
   return window['go']['bridge']['App']['HttpGet'](arg1, arg2, arg3);
 }
 
+export function HttpHead(arg1, arg2, arg3) {
+  return window['go']['bridge']['App']['HttpHead'](arg1, arg2, arg3);
+}
+
+export function HttpPatch(arg1, arg2, arg3, arg4) {
+  return window['go']['bridge']['App']['HttpPatch'](arg1, arg2, arg3, arg4);
+}
+
 export function HttpPost(arg1, arg2, arg3, arg4) {
   return window['go']['bridge']['App']['HttpPost'](arg1, arg2, arg3, arg4);
 }
@@ -96,6 +104,10 @@ export function RemoveScheduledTask(arg1) {
 
 export function Removefile(arg1) {
   return window['go']['bridge']['App']['Removefile'](arg1);
+}
+
+export function Requests(arg1, arg2, arg3, arg4, arg5) {
+  return window['go']['bridge']['App']['Requests'](arg1, arg2, arg3, arg4, arg5);
 }
 
 export function RestartApp() {

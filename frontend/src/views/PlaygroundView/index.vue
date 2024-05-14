@@ -93,13 +93,13 @@ const handleShowAlert = async () => {
 const handleGetText = async () => {
   const res = await HttpGet('http://127.0.0.1:8080/text', { 'Content-Type': 'application/json' })
   console.log(res)
-  alert('Result', JSON.stringify(res.header, null, 2) + '\n' + res.body)
+  alert('Result', JSON.stringify(res.headers, null, 2) + '\n' + res.body)
 }
 
 const handleGetJson = async () => {
   const res = await HttpGet('http://127.0.0.1:8080/json')
   console.log(res)
-  alert('Result', JSON.stringify(res.header, null, 2) + '\n' + JSON.stringify(res.body, null, 2))
+  alert('Result', JSON.stringify(res.headers, null, 2) + '\n' + JSON.stringify(res.body, null, 2))
 }
 
 const handlePostJSON = async () => {
@@ -109,7 +109,7 @@ const handlePostJSON = async () => {
     { username: 'admin' }
   )
   console.log(res)
-  alert('Result', JSON.stringify(res.header, null, 2) + '\n' + JSON.stringify(res.body, null, 2))
+  alert('Result', JSON.stringify(res.headers, null, 2) + '\n' + JSON.stringify(res.body, null, 2))
 }
 
 const handlePostFORM = async () => {
@@ -119,7 +119,7 @@ const handlePostFORM = async () => {
     { username: 'admin' }
   )
   console.log(res)
-  alert('Result', JSON.stringify(res.header, null, 2) + '\n' + JSON.stringify(res.body, null, 2))
+  alert('Result', JSON.stringify(res.headers, null, 2) + '\n' + JSON.stringify(res.body, null, 2))
 }
 
 const handleUpload = async () => {
@@ -127,7 +127,7 @@ const handleUpload = async () => {
     Authorization: 'bearer token'
   })
   console.log(res)
-  alert('Result', JSON.stringify(res.header, null, 2) + '\n' + JSON.stringify(res.body, null, 2))
+  alert('Result', JSON.stringify(res.headers, null, 2) + '\n' + JSON.stringify(res.body, null, 2))
 }
 
 const handleNotify = (type: string) => {
