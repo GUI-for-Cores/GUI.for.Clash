@@ -527,6 +527,10 @@ export default {
     userAgent: {
       name: '用户代理(User-Agent)',
       reset: ' 重置用户代理'
+    },
+    githubapi: {
+      name: '向 REST API 进行身份验证',
+      tips: '拥有更高的速率限制'
     }
   },
   about: {

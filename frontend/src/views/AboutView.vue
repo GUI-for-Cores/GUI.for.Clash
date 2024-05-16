@@ -14,7 +14,15 @@ import {
   Makedir,
   Removefile
 } from '@/bridge'
-import { APP_TITLE, APP_VERSION, PROJECT_URL, TG_GROUP, TG_CHANNEL, APP_VERSION_API } from '@/utils'
+import {
+  APP_TITLE,
+  APP_VERSION,
+  PROJECT_URL,
+  TG_GROUP,
+  TG_CHANNEL,
+  APP_VERSION_API,
+  getGitHubApiAuthorization
+} from '@/utils'
 
 let downloadUrl = ''
 
@@ -52,9 +60,16 @@ const downloadApp = async () => {
 
     await Makedir('data/.cache')
 
-    await Download(downloadUrl, tmpFile, {}, (progress, total) => {
-      message.update(id, 'Downloading...' + ((progress / total) * 100).toFixed(2) + '%')
-    }).finally(() => {
+    await Download(
+      downloadUrl,
+      tmpFile,
+      {
+        Authorization: getGitHubApiAuthorization()
+      },
+      (progress, total) => {
+        message.update(id, 'Downloading...' + ((progress / total) * 100).toFixed(2) + '%')
+      }
+    ).finally(() => {
       message.destroy(id)
     })
 
@@ -84,12 +99,14 @@ const checkForUpdates = async (showTips = false) => {
   loading.value = true
 
   try {
-    const { body } = await HttpGet<Record<string, any>>(APP_VERSION_API)
+    const { body } = await HttpGet<Record<string, any>>(APP_VERSION_API, {
+      Authorization: getGitHubApiAuthorization()
+    })
     const { tag_name, assets, message: msg } = body
     if (msg) throw msg
 
     const { os, arch } = envStore.env
-    const assetName = `GUI.for.Clash-${os}-${arch}.zip`
+    const assetName = `${APP_TITLE}-${os}-${arch}.zip`
 
     const asset = assets.find((v: any) => v.name === assetName)
     if (!asset) throw 'Asset Not Found:' + assetName

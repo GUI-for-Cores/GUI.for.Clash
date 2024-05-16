@@ -67,6 +67,11 @@ export const getUserAgent = () => {
   return appSettings.app.userAgent || APP_TITLE + '/' + APP_VERSION
 }
 
+export const getGitHubApiAuthorization = () => {
+  const appSettings = useAppSettingsStore()
+  return appSettings.app.githubApiToken ? `Bearer ${appSettings.app.githubApiToken}` : ''
+}
+
 export const setIntervalImmediately = (func: () => void, interval: number) => {
   func()
   return setInterval(func, interval)
