@@ -1,15 +1,19 @@
 import * as App from '@wails/go/bridge/App'
 
-export const Writefile = async (path: string, content: string) => {
-  const { flag, data } = await App.Writefile(path, content)
+type IOOptions = {
+  Mode?: 'Binary' | 'Text'
+}
+
+export const Writefile = async (path: string, content: string, options: IOOptions = {}) => {
+  const { flag, data } = await App.Writefile(path, content, { Mode: 'Text', ...options })
   if (!flag) {
     throw data
   }
   return data
 }
 
-export const Readfile = async (path: string) => {
-  const { flag, data } = await App.Readfile(path)
+export const Readfile = async (path: string, options: IOOptions = {}) => {
+  const { flag, data } = await App.Readfile(path, { Mode: 'Text', ...options })
   if (!flag) {
     throw data
   }

@@ -3,6 +3,7 @@ package bridge
 import (
 	"archive/zip"
 	"compress/gzip"
+	"encoding/base64"
 	"io"
 	"log"
 	"os"
@@ -10,8 +11,13 @@ import (
 	"strings"
 )
 
-func (a *App) Writefile(path string, content string) FlagResult {
-	log.Printf("Writefile: %s", path)
+const (
+	Binary = "Binary"
+	Text   = "Text"
+)
+
+func (a *App) Writefile(path string, content string, options IOOptions) FlagResult {
+	log.Printf("Writefile [%s]: %s", options.Mode, path)
 
 	path = GetPath(path)
 
@@ -20,7 +26,19 @@ func (a *App) Writefile(path string, content string) FlagResult {
 		return FlagResult{false, err.Error()}
 	}
 
-	err = os.WriteFile(path, []byte(content), 0644)
+	b := []byte{}
+
+	switch options.Mode {
+	case Text:
+		b = []byte(content)
+	case Binary:
+		b, err = base64.StdEncoding.DecodeString(content)
+		if err != nil {
+			return FlagResult{false, err.Error()}
+		}
+	}
+
+	err = os.WriteFile(path, b, 0644)
 	if err != nil {
 		return FlagResult{false, err.Error()}
 	}
@@ -28,8 +46,8 @@ func (a *App) Writefile(path string, content string) FlagResult {
 	return FlagResult{true, "Success"}
 }
 
-func (a *App) Readfile(path string) FlagResult {
-	log.Printf("Readfile: %s", path)
+func (a *App) Readfile(path string, options IOOptions) FlagResult {
+	log.Printf("Readfile [%s]: %s", options.Mode, path)
 
 	path = GetPath(path)
 
@@ -38,7 +56,15 @@ func (a *App) Readfile(path string) FlagResult {
 		return FlagResult{false, err.Error()}
 	}
 
-	return FlagResult{true, string(b)}
+	content := ""
+	switch options.Mode {
+	case Text:
+		content = string(b)
+	case Binary:
+		content = base64.StdEncoding.EncodeToString(b)
+	}
+
+	return FlagResult{true, content}
 }
 
 func (a *App) Movefile(source string, target string) FlagResult {
