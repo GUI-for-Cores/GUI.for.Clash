@@ -94,6 +94,10 @@ export function ProcessInfo(arg1) {
   return window['go']['bridge']['App']['ProcessInfo'](arg1);
 }
 
+export function Readdir(arg1) {
+  return window['go']['bridge']['App']['Readdir'](arg1);
+}
+
 export function Readfile(arg1, arg2) {
   return window['go']['bridge']['App']['Readfile'](arg1, arg2);
 }

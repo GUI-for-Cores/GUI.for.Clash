@@ -49,6 +49,8 @@ export function OnSecondInstanceLaunch(arg1:options.SecondInstanceData):Promise<
 
 export function ProcessInfo(arg1:number):Promise<bridge.FlagResult>;
 
+export function Readdir(arg1:string):Promise<bridge.FlagResult>;
+
 export function Readfile(arg1:string,arg2:bridge.IOOptions):Promise<bridge.FlagResult>;
 
 export function RemoveScheduledTask(arg1:number):Promise<void>;

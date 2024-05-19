@@ -4,6 +4,7 @@ import (
 	"archive/zip"
 	"compress/gzip"
 	"encoding/base64"
+	"fmt"
 	"io"
 	"log"
 	"os"
@@ -130,6 +131,28 @@ func (a *App) Makedir(path string) FlagResult {
 		return FlagResult{false, err.Error()}
 	}
 	return FlagResult{true, "Success"}
+}
+
+func (a *App) Readdir(path string) FlagResult {
+	log.Printf("Readdir: %s", path)
+
+	path = GetPath(path)
+
+	files, err := os.ReadDir(path)
+	if err != nil {
+		return FlagResult{false, err.Error()}
+	}
+
+	var result []string
+
+	for _, file := range files {
+		info, err := file.Info()
+		if err == nil {
+			result = append(result, fmt.Sprintf("%v,%v,%v", info.Name(), info.Size(), info.IsDir()))
+		}
+	}
+
+	return FlagResult{true, strings.Join(result, "|")}
 }
 
 func (a *App) UnzipZIPFile(path string, output string) FlagResult {

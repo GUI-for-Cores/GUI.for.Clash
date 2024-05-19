@@ -60,6 +60,20 @@ export const Makedir = async (path: string) => {
   return data
 }
 
+export const Readdir = async (path: string) => {
+  const { flag, data } = await App.Readdir(path)
+  if (!flag) {
+    throw data
+  }
+  return data
+    .split('|')
+    .filter((v) => v)
+    .map((v) => {
+      const [name, size, isDir] = v.split(',')
+      return { name, size: Number(size), isDir: isDir === 'true' }
+    })
+}
+
 export const UnzipZIPFile = async (path: string, output: string) => {
   const { flag, data } = await App.UnzipZIPFile(path, output)
   if (!flag) {
