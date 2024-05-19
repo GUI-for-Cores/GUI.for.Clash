@@ -1,7 +1,6 @@
 package bridge
 
 import (
-	"context"
 	"encoding/base64"
 	"encoding/json"
 	"io"
@@ -95,7 +94,7 @@ func (a *App) StopServer(id string) FlagResult {
 		return FlagResult{false, "server not found"}
 	}
 
-	err := server.Shutdown(context.TODO())
+	err := server.Close()
 	if err != nil {
 		return FlagResult{false, err.Error()}
 	}

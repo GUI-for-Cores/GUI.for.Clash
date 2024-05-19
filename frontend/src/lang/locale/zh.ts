@@ -402,7 +402,7 @@ export default {
     updating: '更新中'
   },
   rulesets: {
-    empty: '规则集列表为空. 请先{action}规则集。',
+    empty: '规则集列表为空，请先{action}规则集。',
     rulesetCount: '规则数量',
     editRuleset: '编辑规则'
   },

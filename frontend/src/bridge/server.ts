@@ -43,7 +43,13 @@ export const StartServer = async (address: string, id: string, handler: HttpServ
       )
     } catch (err: any) {
       console.log('Server handler err:', err)
-      EventsEmit(id, 500, { 'Content-Type': 'text/plain; charset=utf-8' }, err.message || err)
+      EventsEmit(
+        id,
+        500,
+        JSON.stringify({ 'Content-Type': 'text/plain; charset=utf-8' }),
+        err.message || err,
+        JSON.stringify({ Mode: 'Text' })
+      )
     } finally {
       EventsOff(id)
     }
