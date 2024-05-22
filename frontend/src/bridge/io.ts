@@ -36,6 +36,14 @@ export const Removefile = async (path: string) => {
   return data
 }
 
+export const Copyfile = async (source: string, target: string) => {
+  const { flag, data } = await App.Copyfile(source, target)
+  if (!flag) {
+    throw data
+  }
+  return data
+}
+
 export const FileExists = async (path: string) => {
   const { flag, data } = await App.FileExists(path)
   if (!flag) {
