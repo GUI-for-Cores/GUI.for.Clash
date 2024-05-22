@@ -75,6 +75,14 @@ EventsOn('beforeClose', async () => {
 
 EventsOn('quitApp', () => exitApp())
 
+EventsOn('onTrayClick', () => {
+  console.log('You clicked the tray')
+})
+
+EventsOn('onTrayRClick', () => {
+  console.log('You right-clicked the tray')
+})
+
 window.addEventListener('beforeunload', scheduledTasksStore.removeScheduledTasks)
 
 appSettings.setupAppSettings().then(async () => {
