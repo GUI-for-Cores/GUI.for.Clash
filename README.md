@@ -32,9 +32,15 @@
 ```bash
 git clone https://github.com/GUI-for-Cores/GUI.for.Clash.git
 
-cd GUI.for.Clash
+cd GUI.for.Clash/frontend
 
-wails build -m -trimpath
+pnpm install
+
+pnpm build
+
+cd ..
+
+wails build
 ```
 
 ## Stargazers over time
