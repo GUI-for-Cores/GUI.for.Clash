@@ -144,9 +144,7 @@ const getLocalVersion = async (showTips = false) => {
 const getRemoteVersion = async (showTips = false) => {
   remoteVersionLoading.value = true
   try {
-    const { body } = await HttpGet<string>(alphaVersionUrl, {
-      Authorization: getGitHubApiAuthorization()
-    })
+    const { body } = await HttpGet<string>(alphaVersionUrl)
     return body.trim()
   } catch (error: any) {
     console.log(error)

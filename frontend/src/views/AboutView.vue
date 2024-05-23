@@ -60,16 +60,9 @@ const downloadApp = async () => {
 
     await Makedir('data/.cache')
 
-    await Download(
-      downloadUrl,
-      tmpFile,
-      {
-        Authorization: getGitHubApiAuthorization()
-      },
-      (progress, total) => {
-        message.update(id, 'Downloading...' + ((progress / total) * 100).toFixed(2) + '%')
-      }
-    ).finally(() => {
+    await Download(downloadUrl, tmpFile, {}, (progress, total) => {
+      message.update(id, 'Downloading...' + ((progress / total) * 100).toFixed(2) + '%')
+    }).finally(() => {
       message.destroy(id)
     })
 

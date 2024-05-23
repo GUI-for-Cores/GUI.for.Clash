@@ -74,16 +74,9 @@ const downloadCore = async () => {
 
     const { id } = message.info('Downloading...', 10 * 60 * 1_000)
 
-    await Download(
-      asset.browser_download_url,
-      tmp,
-      {
-        Authorization: getGitHubApiAuthorization()
-      },
-      (progress, total) => {
-        message.update(id, 'Downloading...' + ((progress / total) * 100).toFixed(2) + '%')
-      }
-    ).catch((err) => {
+    await Download(asset.browser_download_url, tmp, {}, (progress, total) => {
+      message.update(id, 'Downloading...' + ((progress / total) * 100).toFixed(2) + '%')
+    }).catch((err) => {
       message.destroy(id)
       throw err
     })
