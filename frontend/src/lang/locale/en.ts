@@ -384,7 +384,9 @@ export default {
     copytoClipboard: 'Generate config to clipboard',
     generateAndView: 'Generate and View',
     copy: 'Copy and Paste',
-    start: 'Start/Restart with this Profile'
+    start: 'Start/Restart with this Profile',
+    proxyGroups: 'Proxy Groups',
+    rules: 'Rules'
   },
   ruleset: {
     behavior: {

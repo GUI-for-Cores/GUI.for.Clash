@@ -384,7 +384,9 @@ export default {
     copytoClipboard: '生成配置到剪切板',
     generateAndView: '生成配置并查看',
     copy: '复制并粘贴',
-    start: '使用此配置启动/重启'
+    start: '使用此配置启动/重启',
+    proxyGroups: '代理组',
+    rules: '规则'
   },
   ruleset: {
     behavior: {
