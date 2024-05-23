@@ -4,8 +4,9 @@ import { ref, inject, type Ref } from 'vue'
 
 import { useMessage, useBool } from '@/hooks'
 import * as Defaults from '@/constant/profile'
+import { deepClone, sampleID } from '@/utils'
+import { WindowToggleMaximise } from '@/bridge'
 import { type ProfileType, useProfilesStore } from '@/stores'
-import { deepClone, sampleID, toggleFullScreen } from '@/utils'
 
 import GeneralConfig from './GeneralConfig.vue'
 import AdvancedConfig from './AdvancedConfig.vue'
@@ -97,7 +98,7 @@ if (props.isUpdate) {
 </script>
 
 <template>
-  <div @dblclick="toggleFullScreen" class="header" style="--wails-draggable: drag">
+  <div @dblclick="WindowToggleMaximise" class="header" style="--wails-draggable: drag">
     <div class="header-title">{{ t(stepItems[currentStep].title) }}</div>
     <Button v-show="[4, 5].includes(currentStep)" @click="handleAdd" type="link" class="ml-auto">
       {{ t('common.add') }}

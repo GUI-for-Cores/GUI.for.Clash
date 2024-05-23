@@ -391,8 +391,3 @@ export const exitApp = async () => {
 
   ExitApp()
 }
-
-export const toggleFullScreen = async () => {
-  const isFull = await WindowIsFullscreen()
-  isFull ? WindowUnfullscreen() : WindowFullscreen()
-}
