@@ -116,6 +116,7 @@ func main() {
 			app.Ctx = ctx
 			bridge.CreateTray(app, icon, assets)
 			bridge.InitScheduledTasks()
+			bridge.InitNotification(assets)
 		},
 		OnDomReady: func(ctx context.Context) {
 			if isStartup {
