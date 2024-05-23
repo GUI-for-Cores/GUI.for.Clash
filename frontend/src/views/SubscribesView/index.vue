@@ -340,7 +340,13 @@ const onSortUpdate = debounce(subscribeStore.saveSubscribes, 1000)
     </Card>
   </div>
 
-  <Modal v-model:open="showSubForm" :title="subFormTitle" max-height="80" :footer="false">
+  <Modal
+    v-model:open="showSubForm"
+    :title="subFormTitle"
+    max-height="90"
+    min-width="70"
+    :footer="false"
+  >
     <SubscribeForm :is-update="subFormIsUpdate" :id="subFormSubID" />
   </Modal>
 
@@ -349,8 +355,8 @@ const onSortUpdate = debounce(subscribeStore.saveSubscribes, 1000)
     @ok="onEditProxiesEnd"
     :title="proxiesTitle"
     :footer="false"
-    height="80"
-    width="80"
+    height="90"
+    width="90"
   >
     <ProxiesView :sub="proxiesSub" />
   </Modal>
@@ -360,8 +366,8 @@ const onSortUpdate = debounce(subscribeStore.saveSubscribes, 1000)
     @ok="onEditProxiesEnd"
     :title="proxiesTitle"
     :footer="false"
-    height="80"
-    width="80"
+    height="90"
+    width="90"
   >
     <ProxiesEditor :sub="proxiesSub" />
   </Modal>

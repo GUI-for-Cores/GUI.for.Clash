@@ -179,6 +179,6 @@ if (props.isUpdate) {
 .form {
   padding-right: 8px;
   overflow-y: auto;
-  max-height: 60vh;
+  max-height: calc(70vh - 8px);
 }
 </style>

@@ -382,7 +382,7 @@ const onSortUpdate = debounce(pluginsStore.savePlugins, 1000)
   <Modal
     v-model:open="showPluginForm"
     :title="pluginFormTitle"
-    min-width="66"
+    min-width="70"
     max-height="90"
     :footer="false"
   >
