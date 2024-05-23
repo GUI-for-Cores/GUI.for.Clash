@@ -3,8 +3,8 @@ import { defineStore } from 'pinia'
 import { parse, stringify } from 'yaml'
 
 import i18n from '@/lang'
-import { Readfile, Writefile, WindowSetSystemDefaultTheme } from '@/bridge'
 import { debounce, updateTrayMenus, APP_TITLE, APP_VERSION, ignoredError } from '@/utils'
+import { Readfile, Writefile, WindowSetSystemDefaultTheme, WindowIsMaximised } from '@/bridge'
 import { Theme, WindowStartState, Lang, View, Color, Colors, DefaultFontFamily } from '@/constant'
 
 type AppSettings = {
@@ -191,9 +191,11 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
     { deep: true }
   )
 
-  window.addEventListener('resize', () => {
-    app.value.width = document.documentElement.clientWidth
-    app.value.height = document.documentElement.clientHeight
+  window.addEventListener('resize', async () => {
+    if (!(await WindowIsMaximised())) {
+      app.value.width = document.documentElement.clientWidth
+      app.value.height = document.documentElement.clientHeight
+    }
   })
 
   watch(

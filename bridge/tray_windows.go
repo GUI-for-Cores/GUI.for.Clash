@@ -15,7 +15,7 @@ var assets embed.FS
 
 func CreateTray(a *App, icon []byte, fs embed.FS) {
 	assets = fs
-	systray.Run(func() {
+	go systray.Run(func() {
 		systray.SetIcon([]byte(icon))
 		systray.SetTitle("GUI.for.Clash")
 		systray.SetTooltip("GUI.for.Clash")
