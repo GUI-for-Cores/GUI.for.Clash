@@ -21,7 +21,7 @@ const showModal = ref(false)
 
 const fields = ref({
   id: sampleID(),
-  type: 'DOMAIN',
+  type: 'RULE-SET',
   payload: '',
   proxy: '',
   'no-resolve': false,
@@ -54,7 +54,7 @@ const handleAdd = () => {
   updateRuleId = -1
   fields.value = {
     id: sampleID(),
-    type: 'DOMAIN',
+    type: 'RULE-SET',
     payload: '',
     proxy: '',
     'no-resolve': false,
@@ -163,6 +163,7 @@ const showLost = () => message.warn('kernel.rules.notFound')
             @click="handleUseRuleset(ruleset)"
             :selected="fields.payload === ruleset.id"
             :title="ruleset.name"
+            v-tips="ruleset.path"
             class="ruleset"
           >
             {{ ruleset.path }}
@@ -198,6 +199,9 @@ const showLost = () => message.warn('kernel.rules.notFound')
     width: calc(33.3333% - 16px);
     margin: 8px;
     font-size: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 </style>
