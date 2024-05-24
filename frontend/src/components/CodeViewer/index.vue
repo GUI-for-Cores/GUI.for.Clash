@@ -47,4 +47,8 @@ onMounted(() => setTimeout(() => (ready.value = true), 100))
 :deep(.cm-editor) {
   height: 100%;
 }
+:deep(.cm-scroller) {
+  font-family: monaco, Consolas, Menlo, Courier, monospace;
+  font-size: 12px;
+}
 </style>
