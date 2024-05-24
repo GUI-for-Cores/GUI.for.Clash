@@ -22,10 +22,21 @@ const ruleset = ref<RuleSetType>()
 
 const rulesetList = ref<string[]>([])
 
-const keywordsRegexp = computed(() => new RegExp(keywords.value))
+const keywordsRegexp = computed(() => {
+  try {
+    return new RegExp(keywords.value, 'i')
+  } catch (error: any) {
+    return keywords.value
+  }
+})
 
 const filteredList = computed(() => {
-  return rulesetList.value.filter((v) => keywordsRegexp.value.test(v))
+  return rulesetList.value.filter((v) => {
+    if (typeof keywordsRegexp.value === 'string') {
+      return v.toLowerCase().includes(keywordsRegexp.value.toLowerCase())
+    }
+    return keywordsRegexp.value.test(v)
+  })
 })
 
 const placeholder = computed(() => {
