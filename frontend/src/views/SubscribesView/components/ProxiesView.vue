@@ -250,7 +250,7 @@ const getProxyByName = async (name: string) => {
     max-height="80"
     max-width="80"
   >
-    <CodeViewer v-model="details" :editable="isEdit" />
+    <CodeViewer v-model="details" :editable="isEdit" lang="yaml" />
   </Modal>
 </template>
 
