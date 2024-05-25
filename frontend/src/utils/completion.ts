@@ -1,102 +1,120 @@
-import type {
-  CompletionContext,
-  CompletionResult,
-  CompletionSource
-} from '@codemirror/autocomplete'
+import type { CompletionContext, Completion } from '@codemirror/autocomplete'
+import { snippetCompletion, completeFromList } from '@codemirror/autocomplete'
+import { scopeCompletionSource, localCompletionSource, snippets } from '@codemirror/lang-javascript'
 
-type CompletionsGroup = {
-  groupName: string
-  options: CompletionResult['options']
-}
+import i18n from '@/lang'
 
-const processCompletions = (groups: CompletionsGroup[]) => {
-  const result: CompletionSource[] = []
+export const getCompletions = (pluginScope: any = undefined) => {
+  const { t } = i18n.global
 
-  groups.forEach((group) => {
-    result.push((context: CompletionContext) => {
-      const labels = group.options.map((v) => v.label)
-      const pattern = labels.reduce((p, c, i) => {
-        const chars = c.split('')
-        const cc = chars
-          .reverse()
-          .reduce((p, c, i) => {
-            const isLast = i === chars.length - 1
-            return (isLast ? '' : '(') + `${c}${p}` + (isLast ? '' : ')')
-          }, '')
-          .replace(/\)/g, '?)')
-        return p + cc + (i === labels.length - 1 ? '' : '|')
-      }, '')
+  console.log(pluginScope)
 
-      const regExp = new RegExp(pattern, 'i')
+  const snippetsCompletions: Completion[] = [
+    /**
+     * Built-In
+     */
+    ...snippets,
+    /**
+     * Plugin Triggers
+     */
+    snippetCompletion(
+      `/* ${t('plugin.trigger') + ' ' + t('common.install')} */\n` +
+        'const onInstall = async () => {\n\t${}\n\treturn 0\n}',
+      {
+        label: 'onInstall',
+        type: 'keyword',
+        detail: t('plugin.trigger') + ' ' + t('common.install')
+      }
+    ),
+    snippetCompletion(
+      `/* ${t('plugin.trigger') + ' ' + t('common.uninstall')} */\n` +
+        'const onUninstall = async () => {\n\t${}\n\treturn 0\n}',
+      {
+        label: 'onUninstall',
+        type: 'keyword',
+        detail: t('plugin.trigger') + ' ' + t('common.uninstall')
+      }
+    ),
+    snippetCompletion(
+      `/* ${t('plugin.trigger') + ' ' + t('plugin.on::manual')} */\n` +
+        'const onRun = async () => {\n\t${}\n}',
+      {
+        label: 'onRun',
+        type: 'keyword',
+        detail: t('plugin.trigger') + ' ' + t('plugin.on::manual')
+      }
+    ),
+    snippetCompletion(
+      `/* ${t('plugin.trigger') + ' ' + t('plugin.on::subscribe')} */\n` +
+        'const onSubscribe = async (proxies, subscription) => {\n\t${}\n}',
+      {
+        label: 'onSubscribe',
+        type: 'keyword',
+        detail: t('plugin.trigger') + ' ' + t('plugin.on::subscribe')
+      }
+    ),
+    snippetCompletion(
+      `/* ${t('plugin.trigger') + ' ' + t('plugin.on::generate')} */\n` +
+        'const onGenerate = async (config, profile) => {\n\t${}\n}',
+      {
+        label: 'onGenerate',
+        type: 'keyword',
+        detail: t('plugin.trigger') + ' ' + t('plugin.on::generate')
+      }
+    ),
+    snippetCompletion(
+      `/* ${t('plugin.trigger') + ' ' + t('plugin.on::startup')} */\n` +
+        'const onStartup = async () => {\n\t${}\n}',
+      {
+        label: 'onStartup',
+        type: 'keyword',
+        detail: t('plugin.trigger') + ' ' + t('plugin.on::startup')
+      }
+    ),
+    snippetCompletion(
+      `/* ${t('plugin.trigger') + ' ' + t('plugin.on::shutdown')} */\n` +
+        'const onShutdown = async () => {\n\t${}\n}',
+      {
+        label: 'onShutdown',
+        type: 'keyword',
+        detail: t('plugin.trigger') + ' ' + t('plugin.on::shutdown')
+      }
+    ),
+    snippetCompletion(
+      `/* ${t('plugin.trigger') + ' ' + t('plugin.on::ready')} */\n` +
+        'const onReady = async () => {\n\t${}\n}',
+      {
+        label: 'onReady',
+        type: 'keyword',
+        detail: t('plugin.trigger') + ' ' + t('plugin.on::ready')
+      }
+    )
+  ]
 
-      const word = context.matchBefore(regExp)
+  const completions = [
+    /**
+     * Global methods include all APIs of `Plugins` and `Plugin Metadata`
+     */
+    scopeCompletionSource({ ...window, Plugin: pluginScope }),
+    /**
+     * Code Snippets
+     */
+    completeFromList(snippetsCompletions),
+    /**
+     * Locally Defined
+     */
+    (context: CompletionContext) => {
+      const word = context.matchBefore(/\w*/)
       if (!word || context.explicit) return null
-      return { from: word.from ? word.from : context.pos, options: group.options }
-    })
-  })
 
-  return result
-}
+      const codeCompletion = localCompletionSource(context) || { options: [] }
 
-export const getCompletions = () => {
-  const rawCompletions: CompletionsGroup[] = [
-    {
-      groupName: 'Triggers',
-      options: [
-        {
-          label: 'onRun',
-          type: 'function',
-          apply: 'const onRun = async () => {}\n',
-          detail: 'on::manual'
-        },
-        {
-          label: 'onSubscribe',
-          type: 'function',
-          apply: 'const onSubscribe = async () => {}\n',
-          detail: 'on::subscribe'
-        },
-        {
-          label: 'onGenerate',
-          type: 'function',
-          apply: 'const onGenerate = async () => {}\n',
-          detail: 'on::generate'
-        },
-        {
-          label: 'onStartup',
-          type: 'function',
-          apply: 'const onStartup = async () => {}\n',
-          detail: 'on::startup'
-        },
-        {
-          label: 'onShutdown',
-          type: 'function',
-          apply: 'const onShutdown = async () => {}\n',
-          detail: 'on::shutdown'
-        },
-        {
-          label: 'onReady',
-          type: 'function',
-          apply: 'const onReady = async () => {}\n',
-          detail: 'on::ready'
-        }
-      ]
-    },
-    {
-      groupName: 'IO',
-      options: [
-        {
-          label: 'Plugins.Readfile',
-          type: 'function',
-          apply: "Plugins.Readfile('')"
-        },
-        {
-          label: 'Plugins.Writefile',
-          type: 'function',
-          apply: "Plugins.Writefile('')"
-        }
-      ]
+      return {
+        from: word.from,
+        options: codeCompletion.options
+      }
     }
   ]
 
-  return processCompletions(rawCompletions)
+  return completions
 }

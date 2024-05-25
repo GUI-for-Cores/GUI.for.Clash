@@ -386,6 +386,7 @@ export const usePluginsStore = defineStore('plugins', () => {
     onReadyTrigger: () => noParamsTrigger(PluginTrigger.OnReady),
     manualTrigger,
     updatePluginTrigger,
-    getPluginCodefromCache
+    getPluginCodefromCache,
+    getPluginMetadata
   }
 })
