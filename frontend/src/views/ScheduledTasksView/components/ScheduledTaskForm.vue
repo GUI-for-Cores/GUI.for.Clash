@@ -51,6 +51,21 @@ const handleCancel = inject('cancel') as any
 const handleSubmit = async () => {
   loading.value = true
 
+  switch (task.value.type) {
+    case ScheduledTasksType.UpdateSubscription:
+      task.value.subscriptions = task.value.subscriptions.filter((id) =>
+        subscribesStore.getSubscribeById(id)
+      )
+      break
+    case ScheduledTasksType.UpdateRuleset:
+      task.value.rulesets = task.value.rulesets.filter((id) => rulesetsStore.getRulesetById(id))
+      break
+    case ScheduledTasksType.UpdatePlugin:
+    case ScheduledTasksType.RunPlugin:
+      task.value.plugins = task.value.plugins.filter((id) => pluginsStore.getPluginById(id))
+      break
+  }
+
   try {
     if (props.isUpdate) {
       await scheduledTasksStore.editScheduledTask(props.id, task.value)
