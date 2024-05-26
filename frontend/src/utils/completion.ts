@@ -7,8 +7,6 @@ import i18n from '@/lang'
 export const getCompletions = (pluginScope: any = undefined) => {
   const { t } = i18n.global
 
-  console.log(pluginScope)
-
   const snippetsCompletions: Completion[] = [
     /**
      * Built-In
@@ -87,6 +85,15 @@ export const getCompletions = (pluginScope: any = undefined) => {
         label: 'onReady',
         type: 'keyword',
         detail: t('plugin.trigger') + ' ' + t('plugin.on::ready')
+      }
+    ),
+    snippetCompletion(
+      `/* ${t('plugin.trigger') + ' ' + t('plugin.on::task')} */\n` +
+        'const onTask = async () => {\n\t${}\n}',
+      {
+        label: 'onTask',
+        type: 'keyword',
+        detail: t('plugin.trigger') + ' ' + t('plugin.on::task')
       }
     ),
     /**

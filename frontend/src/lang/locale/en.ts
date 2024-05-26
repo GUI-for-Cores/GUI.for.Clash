@@ -416,6 +416,7 @@ export default {
     'on::generate': 'on::generate',
     'on::subscribe': 'on::subscribe',
     'on::ready': 'on::ready',
+    'on::task': 'on::task',
     name: 'Name',
     description: 'Description',
     url: 'Remote Url',
