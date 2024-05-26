@@ -88,6 +88,48 @@ export const getCompletions = (pluginScope: any = undefined) => {
         type: 'keyword',
         detail: t('plugin.trigger') + ' ' + t('plugin.on::ready')
       }
+    ),
+    /**
+     * Others
+     */
+    snippetCompletion('console.log(`[$\\{Plugin.name\\}]`, ${})', {
+      label: 'log',
+      type: 'keyword'
+    }),
+    snippetCompletion(
+      "const { close } = await Plugins.StartServer('${address}', '${serverID}', async (req, res) => {\n\tres.end(200, {'Content-Type': 'application/json'}, 'Server is running...')\n})",
+      {
+        label: 'StartServer',
+        type: 'keyword'
+      }
+    ),
+    snippetCompletion(
+      "await Plugins.Download('${url}', '${path}', {${headers}}, (progress, total) => {\n\t${}\n})",
+      {
+        label: 'Download',
+        type: 'keyword'
+      }
+    ),
+    snippetCompletion(
+      "await Plugins.Upload('${url}', '${path}', {${headers}}, (progress, total) => {\n\t${}\n})",
+      {
+        label: 'Upload',
+        type: 'keyword'
+      }
+    ),
+    snippetCompletion(
+      "const { status, headers, body } = await Plugins.Requests({\n\turl: '${url}', \n\tmethod: '${GET}', \n\theaders: {}, \n\tbody: '${body}'\n})",
+      {
+        label: 'Requests',
+        type: 'keyword'
+      }
+    ),
+    snippetCompletion(
+      "const pid = await Plugins.ExecBackground(\n\t'${path}', \n\t[${args}], \n\tasync (out) => {\n\t\t${}\n\t}, \n\tasync () => {\n\t\t${}\n\t}\n)",
+      {
+        label: 'ExecBackground',
+        type: 'keyword'
+      }
     )
   ]
 
