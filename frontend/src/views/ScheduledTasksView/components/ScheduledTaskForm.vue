@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 
 import { useMessage } from '@/hooks'
 import { deepClone, sampleID } from '@/utils'
+import { ValidateCron } from '@/bridge/scheduledTasks'
 import { ScheduledTasksType, ScheduledTaskOptions } from '@/constant'
 import {
   type ScheduledTaskType,
@@ -49,6 +50,13 @@ const pluginsStore = usePluginsStore()
 const handleCancel = inject('cancel') as any
 
 const handleSubmit = async () => {
+  try {
+    await ValidateCron(task.value.cron)
+  } catch (error: any) {
+    message.error(error)
+    return
+  }
+
   loading.value = true
 
   switch (task.value.type) {
