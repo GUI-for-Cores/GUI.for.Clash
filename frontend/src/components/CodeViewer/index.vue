@@ -56,6 +56,7 @@ onMounted(() => setTimeout(() => (ready.value = true), 100))
     wrap
     style="background: #fff"
   />
+  <Button v-else loading type="link" style="display: flex; justify-content: center" />
 </template>
 
 <style lang="less" scoped>
