@@ -38,7 +38,6 @@ withDefaults(defineProps<Props>(), {})
   background-color: var(--card-bg);
   padding: 0 8px 8px 8px;
   border-radius: 8px;
-  backdrop-filter: blur(4px);
   transition:
     box-shadow 0.4s,
     background-color 0.4s;

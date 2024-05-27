@@ -82,6 +82,7 @@ const clearLogs = () => logsStore.scheduledtasksLogs.splice(0)
       <Input
         v-model="keywords"
         size="small"
+        clearable
         :placeholder="t('common.keywords')"
         class="ml-8 flex-1"
       />

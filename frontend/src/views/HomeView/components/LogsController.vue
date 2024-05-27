@@ -93,6 +93,7 @@ onUnmounted(() => {
       <Select v-model="logType" :options="LogLevelOptions" size="small" />
       <Input
         v-model="keywords"
+        clearable
         size="small"
         :placeholder="t('common.keywords')"
         class="ml-8 flex-1"

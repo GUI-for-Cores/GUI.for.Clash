@@ -123,7 +123,13 @@ if (r) {
       <Button @click="resetForm" size="small" class="ml-8">
         {{ t('common.reset') }}
       </Button>
-      <Input v-model="ruleValue" :placeholder="placeholder" size="small" class="ml-8 flex-1" />
+      <Input
+        v-model="ruleValue"
+        :placeholder="placeholder"
+        clearable
+        size="small"
+        class="ml-8 flex-1"
+      />
       <Button @click="handleAdd" type="primary" size="small" class="ml-8">
         {{ t('common.add') }}
       </Button>
