@@ -254,8 +254,13 @@ const filteredConnections = computed(() => {
 
 const handleCloseAll = async () => {
   try {
-    await Promise.all(dataSource.value.map((connection) => deleteConnection(connection.id)))
-    dataSource.value = []
+    await Promise.all(
+      filteredConnections.value.map((connection) => deleteConnection(connection.id))
+    )
+    disconnectedData.value.push(...filteredConnections.value)
+    dataSource.value = dataSource.value.filter(
+      (connection) => !filteredConnections.value.find((c) => c.id === connection.id)
+    )
   } catch (error: any) {
     message.error(error.message || error)
   }
