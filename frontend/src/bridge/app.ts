@@ -16,8 +16,8 @@ export const UpdateTray = async (tray: TrayContent) => {
 
 export const Notify = async (title: string, message: string, icon = '') => {
   const icons: Record<string, string> = {
-    success: 'data/.cache/notify_success.png',
-    error: 'data/.cache/notify_error.png'
+    success: 'data/.cache/imgs/notify_success.png',
+    error: 'data/.cache/imgs/notify_error.png'
   }
-  await App.Notify(title, message, icons[icon] || 'data/.cache/favicon.ico')
+  await App.Notify(title, message, icons[icon] || 'data/.cache/imgs/notify_normal.ico')
 }
