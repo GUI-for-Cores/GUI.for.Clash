@@ -344,13 +344,13 @@ const getTrayIcons = () => {
   const kernelApiStore = useKernelApiStore()
 
   const themeMode = appSettings.themeMode
-  let icon = `normal_${themeMode}.ico`
+  let icon = `data/.cache/icons/tray_normal_${themeMode}.ico`
 
   if (appSettings.app.kernel.running) {
     if (kernelApiStore.config.tun.enable) {
-      icon = `tun_${themeMode}.ico`
+      icon = `data/.cache/icons/tray_tun_${themeMode}.ico`
     } else if (envStore.systemProxy) {
-      icon = `proxy_${themeMode}.ico`
+      icon = `data/.cache/icons/tray_proxy_${themeMode}.ico`
     }
   }
   return icon
