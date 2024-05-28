@@ -46,11 +46,16 @@ const groups = computed(() => {
           return a.delay - b.delay
         })
 
-      const chains = [group.now]
-      let tmp = proxies[group.now]
-      while (tmp) {
-        tmp.now && chains.push(tmp.now)
-        tmp = proxies[tmp.now]
+      const chains = []
+      if (group.type === ProxyGroupType.Relay) {
+        chains.push(...group.all)
+      } else {
+        chains.push(group.now)
+        let tmp = proxies[group.now]
+        while (tmp) {
+          tmp.now && chains.push(tmp.now)
+          tmp = proxies[tmp.now]
+        }
       }
 
       return { ...group, all, chains }
@@ -292,6 +297,8 @@ onActivated(() => {
       font-size: 14px;
       display: flex;
       align-items: center;
+      overflow: hidden;
+      white-space: nowrap;
       .group-name {
         font-weight: bold;
         font-size: 18px;
@@ -304,6 +311,7 @@ onActivated(() => {
 
     .action {
       margin-left: auto;
+      white-space: nowrap;
 
       .rotate-z {
         transform: rotateZ(0deg);
