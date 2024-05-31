@@ -2,7 +2,14 @@ import { ProxyGroupType } from '@/constant'
 import { ignoredError, APP_TITLE } from '@/utils'
 import { deleteConnection, getConnections, useProxy } from '@/api/kernel'
 import { useAppSettingsStore, useEnvStore, useKernelApiStore, usePluginsStore } from '@/stores'
-import { Exec, ExitApp, WindowFullscreen, WindowIsFullscreen, WindowUnfullscreen } from '@/bridge'
+import {
+  AbsolutePath,
+  Exec,
+  ExitApp,
+  WindowFullscreen,
+  WindowIsFullscreen,
+  WindowUnfullscreen
+} from '@/bridge'
 
 // Permissions Helper
 export const SwitchPermissions = async (enable: boolean) => {
@@ -269,6 +276,20 @@ export const GetSystemProxy = async () => {
     console.log('error', error)
   }
   return ''
+}
+
+export const setupKernelPermissions = async (kernelFilePath: string) => {
+  const { os } = useEnvStore().env
+  const absKernelFilePath = await AbsolutePath(kernelFilePath)
+
+  if (os === 'darwin') {
+    const shell = `chown root:admin ${absKernelFilePath}\nchmod +sx ${absKernelFilePath}`
+    const command = `'do shell script "${shell}" with administrator privileges'`
+    console.log(`osascript -e ${command}`)
+    await ignoredError(Exec, 'osascript', ['-e', command])
+  } else if (os === 'linux') {
+    await ignoredError(Exec, 'chmod', ['+x', absKernelFilePath])
+  }
 }
 
 // System ScheduledTask Helper
