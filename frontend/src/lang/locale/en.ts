@@ -417,6 +417,8 @@ export default {
     'on::subscribe': 'on::subscribe',
     'on::ready': 'on::ready',
     'on::task': 'on::task',
+    'on::install': 'on::install',
+    'on::uninstall': 'on::uninstall',
     name: 'Name',
     description: 'Description',
     url: 'Remote Url',
@@ -446,7 +448,8 @@ export default {
     update: 'Update List',
     updateSuccess: 'updated successfully',
     total: 'Number of plug-ins',
-    removeConfiguration: 'Do you want to remove the plugin configuration?'
+    removeConfiguration: 'Do you want to remove the plugin configuration?',
+    testRun: 'TestRun'
   },
   scheduledtask: {
     name: 'Name',

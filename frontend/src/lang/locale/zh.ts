@@ -417,6 +417,8 @@ export default {
     'on::subscribe': '更新订阅时',
     'on::ready': 'APP就绪后',
     'on::task': '计划任务执行时',
+    'on::install': '点击安装时',
+    'on::uninstall': '点击卸载时',
     name: '名称',
     description: '描述',
     url: '远程地址',
@@ -446,7 +448,8 @@ export default {
     update: '更新列表',
     updateSuccess: '列表更新成功',
     total: '插件数量为',
-    removeConfiguration: '是否删除插件配置？'
+    removeConfiguration: '是否删除插件配置？',
+    testRun: '运行测试'
   },
   scheduledtask: {
     name: '名称',
