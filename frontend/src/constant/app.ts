@@ -84,10 +84,15 @@ export enum PluginTrigger {
   OnReady = 'on::ready'
 }
 
-export enum PluginManualEvent {
+export enum PluginTriggerEvent {
   OnInstall = 'onInstall',
   OnUninstall = 'onUninstall',
-  OnRun = 'onRun',
+  OnManual = 'onRun',
+  OnSubscribe = 'onSubscribe',
+  OnGenerate = 'onGenerate',
+  OnStartup = 'onStartup',
+  OnShutdown = 'onShutdown',
+  OnReady = 'onReady',
   OnTask = 'onTask'
 }
 
