@@ -40,10 +40,13 @@ const handleSave = async () => {
   loading.value = false
 }
 
+const testing = ref(false)
+
 const handleTest = async (event: PluginTriggerEvent, arg1?: any, arg2?: any) => {
-  if (!plugin.value) return
+  if (!plugin.value || testing.value) return
+  testing.value = true
   try {
-    const metadata = pluginsStore.getPluginMetadata(plugin.value)
+    const metadata = { ...pluginsStore.getPluginMetadata(plugin.value), Mode: 'Dev' }
     const fn = new AsyncFunction(
       `const Plugin = ${JSON.stringify(metadata)};\n${code.value}\nreturn await ${event}(${arg1}, ${arg2})`
     )
@@ -52,6 +55,7 @@ const handleTest = async (event: PluginTriggerEvent, arg1?: any, arg2?: any) => 
   } catch (error: any) {
     message.error(error.message || error)
   }
+  testing.value = false
 }
 
 const initPluginCode = async (p: PluginType) => {
@@ -78,7 +82,7 @@ if (p) {
   </div>
   <div class="form-action">
     <Dropdown :trigger="['hover']" placement="top" class="mr-auto">
-      <Button type="link">{{ t('plugins.testRun') }}</Button>
+      <Button :loading="testing" type="link">{{ t('plugins.testRun') }}</Button>
       <template #overlay>
         <Button @click="handleTest(PluginTriggerEvent.OnManual)" type="link" size="small">
           {{ t('plugin.on::manual') }}
