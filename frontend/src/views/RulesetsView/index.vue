@@ -209,9 +209,7 @@ const onSortUpdate = debounce(rulesetsStore.saveRulesets, 1000)
 
       <template v-if="appSettingsStore.app.rulesetsView === View.Grid" #extra>
         <Dropdown :trigger="['hover', 'click']">
-          <Button type="link" size="small">
-            {{ t('common.more') }}
-          </Button>
+          <Button type="link" size="small" icon="more" />
           <template #overlay>
             <Button
               :disabled="r.disabled"

@@ -266,9 +266,7 @@ const onSortUpdate = debounce(pluginsStore.savePlugins, 1000)
           v-if="appSettingsStore.app.pluginsView === View.Grid"
           :trigger="['hover', 'click']"
         >
-          <Button type="link" size="small">
-            {{ t('common.more') }}
-          </Button>
+          <Button type="link" size="small" icon="more" />
           <template #overlay>
             <Button
               v-if="!p.disabled"
