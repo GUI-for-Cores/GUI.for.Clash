@@ -1,4 +1,4 @@
-module guiforclash
+module guiforcores
 
 go 1.21
 

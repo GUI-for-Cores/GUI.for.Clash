@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"embed"
-	"guiforclash/bridge"
+	"guiforcores/bridge"
 
 	"github.com/google/uuid"
 	"github.com/wailsapp/wails/v2"
@@ -52,7 +52,7 @@ func main() {
 
 	// Create application with options
 	err := wails.Run(&options.App{
-		Title: "GUI.for.Clash",
+		Title: bridge.Env.AppName,
 		Menu:  AppMenu,
 		Width: func() int {
 			if bridge.Config.Width != 0 {
@@ -96,7 +96,7 @@ func main() {
 			WebviewIsTransparent: true,
 			WindowIsTranslucent:  true,
 			About: &mac.AboutInfo{
-				Title:   "GUI.for.Clash",
+				Title:   bridge.Env.AppName,
 				Message: "© 2024 GUI.for.Cores",
 				Icon:    icon,
 			},
@@ -114,7 +114,7 @@ func main() {
 				if bridge.Config.MultipleInstance {
 					return uuid.New().String()
 				}
-				return "GUI.for.Cores-GUI.for.Clash"
+				return bridge.Env.AppName
 			}(),
 			OnSecondInstanceLaunch: app.OnSecondInstanceLaunch,
 		},

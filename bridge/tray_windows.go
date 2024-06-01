@@ -34,8 +34,8 @@ func InitTray(a *App, icon []byte, fs embed.FS) {
 
 	go systray.Run(func() {
 		systray.SetIcon([]byte(icon))
-		systray.SetTitle("GUI.for.Clash")
-		systray.SetTooltip("GUI.for.Clash")
+		systray.SetTitle("GUI.for.Cores")
+		systray.SetTooltip("GUI.for.Cores")
 		systray.SetOnClick(func(menu systray.IMenu) {
 			runtime.EventsEmit(a.Ctx, "onTrayClick")
 			runtime.WindowShow(a.Ctx)
@@ -56,6 +56,7 @@ func (a *App) UpdateTray(tray TrayContent) {
 	}
 	if tray.Title != "" {
 		systray.SetTitle(tray.Title)
+		runtime.WindowSetTitle(a.Ctx, tray.Title)
 	}
 	if tray.Tooltip != "" {
 		systray.SetTooltip(tray.Tooltip)

@@ -1,8 +1,16 @@
 import i18n from '@/lang'
 import { Theme, type MenuItem, Color, Lang } from '@/constant'
-import { debounce, exitApp, handleChangeMode, handleUseProxy, sampleID } from '@/utils'
 import { useAppSettingsStore, useKernelApiStore, useEnvStore, usePluginsStore } from '@/stores'
 import { Notify, RestartApp, EventsOn, EventsOff, UpdateTray, UpdateTrayMenus } from '@/bridge'
+import {
+  debounce,
+  exitApp,
+  handleChangeMode,
+  handleUseProxy,
+  sampleID,
+  APP_TITLE,
+  APP_VERSION
+} from '@/utils'
 
 const menuEvents: string[] = []
 
@@ -359,6 +367,6 @@ const getTrayIcons = () => {
 export const updateTrayMenus = debounce(async () => {
   const trayMenus = getTrayMenus()
   const trayIcons = getTrayIcons()
-  await UpdateTray({ icon: trayIcons })
+  await UpdateTray({ icon: trayIcons, title: APP_TITLE, tooltip: APP_TITLE + ' ' + APP_VERSION })
   await UpdateTrayMenus(trayMenus as any)
 }, 500)
