@@ -21,3 +21,13 @@ export const Notify = async (title: string, message: string, icon = '') => {
   }
   await App.Notify(title, message, icons[icon] || 'data/.cache/imgs/notify_normal.ico')
 }
+
+export const GetEnv = App.GetEnv
+
+export const GetInterfaces = async () => {
+  const { flag, data } = await App.GetInterfaces()
+  if (!flag) {
+    throw data
+  }
+  return data.split('|')
+}

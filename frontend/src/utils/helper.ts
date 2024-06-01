@@ -1,15 +1,10 @@
+import { parse, stringify } from 'yaml'
+
 import { ProxyGroupType } from '@/constant'
 import { ignoredError, APP_TITLE } from '@/utils'
 import { deleteConnection, getConnections, useProxy } from '@/api/kernel'
+import { AbsolutePath, Exec, ExitApp, Readfile, Writefile } from '@/bridge'
 import { useAppSettingsStore, useEnvStore, useKernelApiStore, usePluginsStore } from '@/stores'
-import {
-  AbsolutePath,
-  Exec,
-  ExitApp,
-  WindowFullscreen,
-  WindowIsFullscreen,
-  WindowUnfullscreen
-} from '@/bridge'
 
 // Permissions Helper
 export const SwitchPermissions = async (enable: boolean) => {
@@ -387,6 +382,14 @@ export const handleChangeMode = async (mode: 'direct' | 'global' | 'rule') => {
   const { connections } = await getConnections()
   const promises = (connections || []).map((v) => deleteConnection(v.id))
   await Promise.all(promises)
+}
+
+export const addToRuleSet = async (ruleset: 'direct' | 'reject' | 'proxy', payload: string) => {
+  const path = `data/rulesets/${ruleset}.yaml`
+  const content = (await ignoredError(Readfile, path)) || '{}'
+  const { payload: p = [] } = parse(content)
+  p.unshift(payload)
+  await Writefile(path, stringify({ payload: [...new Set(p)] }))
 }
 
 export const exitApp = async () => {
