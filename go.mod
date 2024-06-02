@@ -12,6 +12,7 @@ require (
 require (
 	github.com/energye/systray v1.0.2
 	github.com/klauspost/cpuid/v2 v2.2.7
+	github.com/oschwald/geoip2-golang v1.9.0
 	github.com/robfig/cron/v3 v3.0.1
 	golang.org/x/text v0.15.0
 	gopkg.in/yaml.v3 v3.0.1
@@ -20,6 +21,7 @@ require (
 require (
 	github.com/go-toast/toast v0.0.0-20190211030409-01e6764cf0a4 // indirect
 	github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d // indirect
+	github.com/oschwald/maxminddb-golang v1.11.0 // indirect
 	github.com/tadvi/systray v0.0.0-20190226123456-11a2b8fa57af // indirect
 	github.com/tevino/abool v0.0.0-20220530134649-2bfc934cb23c // indirect
 )

@@ -7,6 +7,8 @@ export function AbsolutePath(arg1:string):Promise<bridge.FlagResult>;
 
 export function AddScheduledTask(arg1:string,arg2:string):Promise<bridge.FlagResult>;
 
+export function CloseMMDB(arg1:string,arg2:string):Promise<bridge.FlagResult>;
+
 export function Copyfile(arg1:string,arg2:string):Promise<bridge.FlagResult>;
 
 export function Download(arg1:string,arg2:string,arg3:{[key: string]: string},arg4:string,arg5:any):Promise<bridge.HTTPResult>;
@@ -35,7 +37,11 @@ export function Notify(arg1:string,arg2:string,arg3:string):Promise<bridge.FlagR
 
 export function OnSecondInstanceLaunch(arg1:options.SecondInstanceData):Promise<void>;
 
+export function OpenMMDB(arg1:string,arg2:string):Promise<bridge.FlagResult>;
+
 export function ProcessInfo(arg1:number):Promise<bridge.FlagResult>;
+
+export function QueryMMDB(arg1:string,arg2:string,arg3:string):Promise<bridge.FlagResult>;
 
 export function Readdir(arg1:string):Promise<bridge.FlagResult>;
 
