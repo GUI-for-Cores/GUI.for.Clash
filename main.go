@@ -7,6 +7,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/wailsapp/wails/v2"
+	"github.com/wailsapp/wails/v2/pkg/logger"
 	"github.com/wailsapp/wails/v2/pkg/menu"
 	"github.com/wailsapp/wails/v2/pkg/menu/keys"
 	"github.com/wailsapp/wails/v2/pkg/options"
@@ -119,6 +120,7 @@ func main() {
 			OnSecondInstanceLaunch: app.OnSecondInstanceLaunch,
 		},
 		OnStartup: func(ctx context.Context) {
+			runtime.LogSetLogLevel(ctx, logger.INFO)
 			app.Ctx = ctx
 			bridge.InitTray(app, icon, assets)
 			bridge.InitScheduledTasks()
