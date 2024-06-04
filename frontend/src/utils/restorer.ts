@@ -8,7 +8,7 @@ import {
 } from '@/constant'
 
 export const restoreProfile = (
-  config: any,
+  config: Record<string, any>,
   subID: string,
   NameIdMap: Record<string, string>,
   IdNameMap: Record<string, string>

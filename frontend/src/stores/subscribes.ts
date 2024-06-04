@@ -12,7 +12,8 @@ import {
   getUserAgent,
   restoreProfile,
   ignoredError,
-  omitArray
+  omitArray,
+  isValidBase64
 } from '@/utils'
 
 export type SubscribeType = {
@@ -147,40 +148,70 @@ export const useSubscribesStore = defineStore('subscribes', () => {
       body = b
     }
 
-    if (!isValidSubYAML(body)) {
-      throw 'Not a valid subscription data'
-    }
-
-    const pluginStore = usePluginsStore()
-
-    const config = parse(body)
-
-    proxies = (config.proxies as Record<string, any>[]).filter((v) => {
-      const flag1 = s.include ? new RegExp(s.include).test(v.name) : true
-      const flag2 = s.exclude ? !new RegExp(s.exclude).test(v.name) : true
-      const flag3 = s.includeProtocol ? new RegExp(s.includeProtocol).test(v.type) : true
-      const flag4 = s.excludeProtocol ? !new RegExp(s.excludeProtocol).test(v.type) : true
-      return flag1 && flag2 && flag3 && flag4
-    })
+    let config: Record<string, any> | undefined
+    let haveRules = false
 
     const NameIdMap: Record<string, string> = {}
     const IdNameMap: Record<string, string> = {}
 
+    if (isValidSubYAML(body)) {
+      config = parse(body) as Record<string, any>
+      proxies = config.proxies
+      haveRules = !!config.rules
+      if (haveRules) {
+        proxies.forEach((proxy, index) => {
+          proxy.__tmp__id__ = index
+          NameIdMap[proxy.name] = proxy.__tmp__id__
+        })
+      }
+    } else if (isValidBase64(body)) {
+      proxies = [{ base64: body }]
+    } else {
+      throw 'Not a valid subscription data'
+    }
+
+    const pluginStore = usePluginsStore()
+    proxies = await pluginStore.onSubscribeTrigger(proxies, s)
+
+    if (proxies.some((proxy) => proxy.base64)) {
+      throw 'You need to install the [节点转换] plugin first'
+    }
+
+    proxies = proxies.filter((v) => {
+      const flag1 = s.include ? new RegExp(s.include, 'i').test(v.name) : true
+      const flag2 = s.exclude ? !new RegExp(s.exclude, 'i').test(v.name) : true
+      const flag3 = s.includeProtocol ? new RegExp(s.includeProtocol, 'i').test(v.type) : true
+      const flag4 = s.excludeProtocol ? !new RegExp(s.excludeProtocol, 'i').test(v.type) : true
+      return flag1 && flag2 && flag3 && flag4
+    })
+
+    if (s.proxyPrefix) {
+      proxies.forEach((v) => {
+        v.name = v.name.startsWith(s.proxyPrefix) ? v.name : s.proxyPrefix + v.name
+      })
+    }
+
     proxies.forEach((proxy: any) => {
       // Keep the original ID value of the proxy unchanged
       proxy.__id__ = s.proxies.find((v) => v.name === proxy.name)?.id || sampleID()
-      NameIdMap[proxy.name] = proxy.__id__
+    })
 
-      if (s.proxyPrefix) {
-        proxy.name = proxy.name.startsWith(s.proxyPrefix) ? proxy.name : s.proxyPrefix + proxy.name
+    if (s.useInternal && haveRules) {
+      proxies.forEach((proxy: any) => {
+        IdNameMap[proxy.__tmp__id__] = proxy.name
+      })
+      const profilesStore = useProfilesStore()
+      const profile = profilesStore.getProfileById(s.id)
+      const _profile = restoreProfile(config!, s.id, NameIdMap, IdNameMap)
+      if (profile) {
+        _profile.name = profile.name
+        _profile.advancedConfig.secret = profile.advancedConfig.secret
+        profilesStore.editProfile(profile.id, _profile)
+      } else {
+        _profile.name = s.name
+        profilesStore.addProfile(_profile)
       }
-    })
-
-    proxies = await pluginStore.onSubscribeTrigger(proxies, s)
-
-    proxies.forEach((proxy: any) => {
-      IdNameMap[proxy.__id__] = proxy.name
-    })
+    }
 
     const match = userInfo.match(pattern) || [0, 0, 0, 0, 0]
 
@@ -192,22 +223,8 @@ export const useSubscribesStore = defineStore('subscribes', () => {
     s.updateTime = new Date().toLocaleString()
     s.proxies = proxies.map(({ name, type, __id__ }) => ({ id: __id__, name, type }))
 
-    if (s.useInternal) {
-      const profilesStore = useProfilesStore()
-      const profile = profilesStore.getProfileById(s.id)
-      const _profile = restoreProfile(config, s.id, NameIdMap, IdNameMap)
-      if (profile) {
-        _profile.name = profile.name
-        _profile.advancedConfig.secret = profile.advancedConfig.secret
-        profilesStore.editProfile(profile.id, _profile)
-      } else {
-        _profile.name = s.name
-        profilesStore.addProfile(_profile)
-      }
-    }
-
     if (s.type === 'Http' || s.url !== s.path) {
-      proxies.forEach((proxy) => delete proxy.__id__)
+      proxies = omitArray(proxies, ['__id__', '__tmp__id__'])
       await Writefile(s.path, stringify({ proxies }))
     }
   }
