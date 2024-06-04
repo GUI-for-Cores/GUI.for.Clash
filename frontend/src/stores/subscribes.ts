@@ -127,7 +127,8 @@ export const useSubscribesStore = defineStore('subscribes', () => {
   }
 
   const _doUpdateSub = async (s: SubscribeType) => {
-    const pattern = /upload=(\d*);\s*download=(\d*);\s*total=(\d*);\s*expire=(\d*)/
+    const pattern =
+      /upload=(-?)([E+.\d]+);\s*download=(-?)([E+.\d]+);\s*total=([E+.\d]+);\s*expire=(\d*)/
     let userInfo = 'upload=0; download=0; total=0; expire=0'
     let body = ''
     let proxies: Record<string, any>[] = []
@@ -215,7 +216,7 @@ export const useSubscribesStore = defineStore('subscribes', () => {
 
     const match = userInfo.match(pattern) || [0, 0, 0, 0, 0]
 
-    const [, upload = 0, download = 0, total = 0, expire = 0] = match
+    const [, , upload = 0, , download = 0, total = 0, expire = 0] = match
     s.upload = Number(upload)
     s.download = Number(download)
     s.total = Number(total)
