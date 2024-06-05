@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { useLogsStore, useScheduledTasksStore } from '@/stores'
 
 import type { Column } from '@/components/Table/index.vue'
+import { formatDate } from '@/utils'
 
 interface Props {
   id?: string
@@ -28,13 +29,13 @@ const columns: Column[] = [
     title: 'scheduledtasks.startTime',
     align: 'center',
     key: 'startTime',
-    customRender: ({ value }) => new Date(value).toLocaleString()
+    customRender: ({ value }) => formatDate(value, 'YYYY-MM-DD HH:mm:ss')
   },
   {
     title: 'scheduledtasks.endTime',
     align: 'center',
     key: 'endTime',
-    customRender: ({ value }) => new Date(value).toLocaleString()
+    customRender: ({ value }) => formatDate(value, 'YYYY-MM-DD HH:mm:ss')
   },
   {
     title: 'scheduledtasks.duration',

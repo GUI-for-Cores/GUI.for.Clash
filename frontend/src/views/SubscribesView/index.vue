@@ -7,7 +7,7 @@ import { useMessage } from '@/hooks'
 import { DraggableOptions } from '@/constant'
 import { updateProvidersProxies } from '@/api/kernel'
 import { BrowserOpenURL, ClipboardSetText, Removefile } from '@/bridge'
-import { formatBytes, formatRelativeTime, debounce, ignoredError } from '@/utils'
+import { formatBytes, formatRelativeTime, debounce, ignoredError, formatDate } from '@/utils'
 import {
   type SubscribeType,
   type Menu,
@@ -303,11 +303,11 @@ const onSortUpdate = debounce(subscribeStore.saveSubscribes, 1000)
         <div>
           {{ t('subscribes.expire') }}
           :
-          {{ s.expire || '--' }}
+          {{ s.expire ? formatDate(s.expire, 'YYYY-MM-DD HH:mm:ss') : '--' }}
           /
           {{ t('common.updateTime') }}
           :
-          {{ s.updateTime || '--' }}
+          {{ s.updateTime ? formatDate(s.updateTime, 'YYYY-MM-DD HH:mm:ss') : '--' }}
         </div>
       </template>
       <template v-else>

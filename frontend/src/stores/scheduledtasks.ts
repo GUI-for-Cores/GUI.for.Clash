@@ -26,7 +26,7 @@ export type ScheduledTaskType = {
   cron: string
   notification: boolean
   disabled: boolean
-  lastTime: string
+  lastTime: number
 }
 
 export const useScheduledTasksStore = defineStore('scheduledtasks', () => {
@@ -57,7 +57,7 @@ export const useScheduledTasksStore = defineStore('scheduledtasks', () => {
 
     const logsStore = useLogsStore()
 
-    task.lastTime = new Date().toLocaleString()
+    task.lastTime = Date.now()
     editScheduledTask(id, task)
 
     const startTime = Date.now()

@@ -9,7 +9,7 @@ import { debounce, isValidPaylodYAML, ignoredError, omitArray } from '@/utils'
 export type RuleSetType = {
   id: string
   name: string
-  updateTime: string
+  updateTime: number
   disabled: boolean
   type: 'Http' | 'File'
   behavior: RulesetBehavior
@@ -94,7 +94,7 @@ export const useRulesetsStore = defineStore('rulesets', () => {
     }
 
     r.count = ruleset.payload.length
-    r.updateTime = new Date().toLocaleString()
+    r.updateTime = Date.now()
   }
 
   const updateRuleset = async (id: string) => {

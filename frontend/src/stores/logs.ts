@@ -1,6 +1,8 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 
+import { formatDate } from '@/utils'
+
 const MAX_LINES = 9000
 
 type TaskLogType = {
@@ -18,7 +20,7 @@ export const useLogsStore = defineStore('logs', () => {
   const recordKernelLog = (msg: string) => {
     const match = msg.match(regExp)
     if (match) {
-      kernelLogs.value.unshift(new Date(match[1]).toLocaleString() + ' ' + match[3])
+      kernelLogs.value.unshift(formatDate(match[1], 'YYYY-MM-DD HH:mm:ss') + ' ' + match[3])
     } else {
       kernelLogs.value.unshift(msg)
     }

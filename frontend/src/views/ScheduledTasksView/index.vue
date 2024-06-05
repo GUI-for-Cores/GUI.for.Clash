@@ -5,7 +5,7 @@ import { useI18n, I18nT } from 'vue-i18n'
 import { View } from '@/constant'
 import { useMessage, useBool } from '@/hooks'
 import { DraggableOptions } from '@/constant'
-import { debounce, formatRelativeTime } from '@/utils'
+import { debounce, formatRelativeTime, formatDate } from '@/utils'
 import {
   type ScheduledTaskType,
   useAppSettingsStore,
@@ -167,7 +167,7 @@ const onSortUpdate = debounce(scheduledTasksStore.saveScheduledTasks, 1000)
       <div v-else>
         {{ t('scheduledtask.lastTime') }}
         :
-        {{ s.lastTime || '--' }}
+        {{ s.lastTime ? formatDate(s.lastTime, 'YYYY-MM-DD HH:mm:ss') : '--' }}
       </div>
     </Card>
   </div>

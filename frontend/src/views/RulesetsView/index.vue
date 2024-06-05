@@ -7,8 +7,8 @@ import { View } from '@/constant'
 import { useMessage } from '@/hooks'
 import { DraggableOptions } from '@/constant'
 import { Removefile, Writefile, BrowserOpenURL } from '@/bridge'
-import { debounce, formatRelativeTime, ignoredError } from '@/utils'
 import { getProvidersRules, updateProvidersRules } from '@/api/kernel'
+import { debounce, formatRelativeTime, ignoredError, formatDate } from '@/utils'
 import {
   type RuleSetType,
   type Menu,
@@ -277,7 +277,7 @@ const onSortUpdate = debounce(rulesetsStore.saveRulesets, 1000)
         <div>
           {{ t('common.updateTime') }}
           :
-          {{ r.updateTime || '--' }}
+          {{ r.updateTime ? formatDate(r.updateTime, 'YYYY-MM-DD HH:mm:ss') : '--' }}
         </div>
       </template>
     </Card>

@@ -23,7 +23,7 @@ const loading = ref(false)
 const ruleset = ref<RuleSetType>({
   id: sampleID(),
   name: '',
-  updateTime: '',
+  updateTime: 0,
   behavior: RulesetBehavior.Classical,
   type: 'Http',
   format: 'yaml',
