@@ -46,7 +46,8 @@ const fields = ref<GroupsType[0]>({
   tolerance: 0,
   lazy: true,
   'disable-udp': false,
-  filter: ''
+  filter: '',
+  'exclude-filter': ''
 })
 
 const { t } = useI18n()
@@ -67,7 +68,8 @@ const handleAdd = () => {
     tolerance: 150,
     lazy: true,
     'disable-udp': false,
-    filter: ''
+    filter: '',
+    'exclude-filter': ''
   }
   showModal.value = true
 }
@@ -275,6 +277,10 @@ subscribesStore.subscribes.forEach(async ({ id, name, proxies }) => {
     <div class="form-item">
       {{ t('kernel.proxyGroups.filter') }}
       <Input v-model="fields.filter" placeholder="keyword1|keyword2" />
+    </div>
+    <div class="form-item">
+      {{ t('kernel.proxyGroups.exclude-filter') }}
+      <Input v-model="fields['exclude-filter']" placeholder="keyword1|keyword2" />
     </div>
     <div class="form-item">
       {{ t('kernel.proxyGroups.type.name') }}

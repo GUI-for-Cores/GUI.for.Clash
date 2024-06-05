@@ -149,6 +149,7 @@ export default {
       tolerance: '容差',
       url: '测速链接',
       filter: '过滤',
+      'exclude-filter': '排除',
       notFound: '部分订阅或节点已丢失，请清理',
       needToAdd: '至少引用一个订阅或节点',
       sort: '查看和排序',

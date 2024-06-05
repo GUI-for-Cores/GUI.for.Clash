@@ -149,6 +149,7 @@ export default {
       tolerance: 'Tolerance',
       url: 'URL',
       filter: 'Filter',
+      'exclude-filter': 'Exclude Filter',
       notFound: 'Some subscriptions or proxies are missing, please clean them up',
       needToAdd: 'References at least one proxy or subscription',
       sort: 'View and Sort',

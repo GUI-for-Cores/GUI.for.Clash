@@ -114,7 +114,8 @@ export const ProxyGroupsConfigDefaults = (ids: string[]): ProfileType['proxyGrou
       tolerance: 150,
       lazy: true,
       'disable-udp': false,
-      filter: ''
+      filter: '',
+      'exclude-filter': ''
     },
     {
       id: ids[1],
@@ -128,7 +129,8 @@ export const ProxyGroupsConfigDefaults = (ids: string[]): ProfileType['proxyGrou
       tolerance: 150,
       lazy: true,
       'disable-udp': false,
-      filter: ''
+      filter: '',
+      'exclude-filter': ''
     },
     {
       id: ids[2],
@@ -145,7 +147,8 @@ export const ProxyGroupsConfigDefaults = (ids: string[]): ProfileType['proxyGrou
       tolerance: 150,
       lazy: true,
       'disable-udp': false,
-      filter: ''
+      filter: '',
+      'exclude-filter': ''
     },
     {
       id: ids[3],
@@ -162,7 +165,8 @@ export const ProxyGroupsConfigDefaults = (ids: string[]): ProfileType['proxyGrou
       tolerance: 150,
       lazy: true,
       'disable-udp': false,
-      filter: ''
+      filter: '',
+      'exclude-filter': ''
     },
     {
       id: ids[4],
@@ -179,7 +183,8 @@ export const ProxyGroupsConfigDefaults = (ids: string[]): ProfileType['proxyGrou
       tolerance: 150,
       lazy: true,
       'disable-udp': false,
-      filter: ''
+      filter: '',
+      'exclude-filter': ''
     }
   ]
 }

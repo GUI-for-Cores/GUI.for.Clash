@@ -106,6 +106,7 @@ export type ProfileType = {
     lazy: boolean
     'disable-udp': boolean
     filter: string
+    'exclude-filter': string
   }[]
   rulesConfig: {
     id: string
