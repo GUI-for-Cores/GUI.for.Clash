@@ -32,24 +32,26 @@ const handleCancel = () => {
 </script>
 
 <template>
-  <div class="confirm">
-    <div class="title">{{ t(title) }}</div>
-    <Input
-      v-model="value"
-      v-bind="props.props"
-      @keydown.enter="handleSubmit"
-      :type="type"
-      autofocus
-      clearable
-      size="small"
-    />
-    <div class="form-action">
-      <Button @click="handleCancel" size="small">{{ t('common.cancel') }}</Button>
-      <Button @click="handleSubmit" size="small" type="primary">
-        {{ t('common.confirm') }}
-      </Button>
+  <Transition name="slide-down" appear>
+    <div class="confirm">
+      <div class="title">{{ t(title) }}</div>
+      <Input
+        v-model="value"
+        v-bind="props.props"
+        @keydown.enter="handleSubmit"
+        :type="type"
+        autofocus
+        clearable
+        size="small"
+      />
+      <div class="form-action">
+        <Button @click="handleCancel" size="small">{{ t('common.cancel') }}</Button>
+        <Button @click="handleSubmit" size="small" type="primary">
+          {{ t('common.confirm') }}
+        </Button>
+      </div>
     </div>
-  </div>
+  </Transition>
 </template>
 
 <style lang="less" scoped>

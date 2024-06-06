@@ -32,16 +32,18 @@ const getMessage = () => {
 </script>
 
 <template>
-  <div class="confirm">
-    <div class="title">{{ t(title) }}</div>
-    <div class="message select-text">{{ getMessage() }}</div>
-    <div class="form-action">
-      <Button v-if="cancel" @click="handleCancel" size="small">{{ t('common.cancel') }}</Button>
-      <Button @click="handleConfirm" size="small" type="primary">
-        {{ t('common.confirm') }}
-      </Button>
+  <Transition name="slide-down" appear>
+    <div class="confirm">
+      <div class="title">{{ t(title) }}</div>
+      <div class="message select-text">{{ getMessage() }}</div>
+      <div class="form-action">
+        <Button v-if="cancel" @click="handleCancel" size="small">{{ t('common.cancel') }}</Button>
+        <Button @click="handleConfirm" size="small" type="primary">
+          {{ t('common.confirm') }}
+        </Button>
+      </div>
     </div>
-  </div>
+  </Transition>
 </template>
 
 <style lang="less" scoped>

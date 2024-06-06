@@ -56,35 +56,37 @@ const handleSelectAll = () => {
 </script>
 
 <template>
-  <div class="picker">
-    <div class="title">{{ title }}</div>
+  <Transition name="slide-down" appear>
+    <div class="picker">
+      <div class="title">{{ title }}</div>
 
-    <div class="options">
-      <div v-for="(o, i) in options" :key="i" @click="handleSelect(o.value)" class="item">
-        <span>{{ o.label }}</span>
-        <Icon
-          v-show="isSelected(o.value)"
-          :size="32"
-          icon="selected"
-          fill="var(--primary-color)"
-          style="flex-shrink: 0"
-        />
+      <div class="options">
+        <div v-for="(o, i) in options" :key="i" @click="handleSelect(o.value)" class="item">
+          <span>{{ o.label }}</span>
+          <Icon
+            v-show="isSelected(o.value)"
+            :size="32"
+            icon="selected"
+            fill="var(--primary-color)"
+            style="flex-shrink: 0"
+          />
+        </div>
+      </div>
+
+      <div class="form-action">
+        <Button v-if="type === 'multi'" @click="handleSelectAll" type="text" size="small">
+          {{ t('common.selectAll') }}
+        </Button>
+        <Button type="text" size="small" class="mr-auto">
+          {{ selected.size }} / {{ options.length }}
+        </Button>
+        <Button @click="handleCancel" size="small">{{ t('common.cancel') }}</Button>
+        <Button @click="handleConfirm" size="small" type="primary">
+          {{ t('common.confirm') }}
+        </Button>
       </div>
     </div>
-
-    <div class="form-action">
-      <Button v-if="type === 'multi'" @click="handleSelectAll" type="text" size="small">
-        {{ t('common.selectAll') }}
-      </Button>
-      <Button type="text" size="small" class="mr-auto">
-        {{ selected.size }} / {{ options.length }}
-      </Button>
-      <Button @click="handleCancel" size="small">{{ t('common.cancel') }}</Button>
-      <Button @click="handleConfirm" size="small" type="primary">
-        {{ t('common.confirm') }}
-      </Button>
-    </div>
-  </div>
+  </Transition>
 </template>
 
 <style lang="less" scoped>

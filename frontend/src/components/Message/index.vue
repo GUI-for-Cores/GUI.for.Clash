@@ -27,10 +27,12 @@ const icon = computed(() => iconMap[props.icon] as any)
 </script>
 
 <template>
-  <div class="message">
-    <Icon style="flex-shrink: 0" :icon="icon" />
-    <div class="content">{{ t(content) }}</div>
-  </div>
+  <Transition name="slide-down" appear>
+    <div class="message">
+      <Icon style="flex-shrink: 0" :icon="icon" />
+      <div class="content">{{ t(content) }}</div>
+    </div>
+  </Transition>
 </template>
 
 <style lang="less" scoped>
