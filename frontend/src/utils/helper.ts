@@ -274,20 +274,6 @@ export const GetSystemProxy = async () => {
   return ''
 }
 
-export const setupKernelPermissions = async (kernelFilePath: string) => {
-  const { os } = useEnvStore().env
-  const absKernelFilePath = await AbsolutePath(kernelFilePath)
-
-  if (os === 'darwin') {
-    const shell = `chown root:admin ${absKernelFilePath}\nchmod +sx ${absKernelFilePath}`
-    const command = `'do shell script "${shell}" with administrator privileges'`
-    console.log(`osascript -e ${command}`)
-    await ignoredError(Exec, 'osascript', ['-e', command])
-  } else if (os === 'linux') {
-    await ignoredError(Exec, 'chmod', ['+x', absKernelFilePath])
-  }
-}
-
 // System ScheduledTask Helper
 export const getTaskSchXmlString = async (delay = 30) => {
   const { basePath, appName } = useEnvStore().env
