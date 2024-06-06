@@ -36,13 +36,18 @@ func InitTray(a *App, icon []byte, fs embed.FS) {
 		systray.SetIcon([]byte(icon))
 		systray.SetTitle("GUI.for.Cores")
 		systray.SetTooltip("GUI.for.Cores")
-		systray.SetOnClick(func(menu systray.IMenu) {
-			runtime.EventsEmit(a.Ctx, "onTrayClick")
-			runtime.WindowShow(a.Ctx)
+		systray.SetOnClick(func(menu systray.IMenu) { runtime.WindowShow(a.Ctx) })
+		systray.SetOnRClick(func(menu systray.IMenu) { menu.ShowMenu() })
+
+		mRestart := systray.AddMenuItem("Restart", "Restart App")
+		mExit := systray.AddMenuItem("Exit", "Exit App")
+
+		mRestart.Click(func() {
+			a.RestartApp()
 		})
-		systray.SetOnRClick(func(menu systray.IMenu) {
-			runtime.EventsEmit(a.Ctx, "onTrayRClick")
-			menu.ShowMenu()
+
+		mExit.Click(func() {
+			runtime.EventsEmit(a.Ctx, "quitApp")
 		})
 	}, nil)
 }
@@ -60,42 +65,6 @@ func (a *App) UpdateTray(tray TrayContent) {
 	}
 	if tray.Tooltip != "" {
 		systray.SetTooltip(tray.Tooltip)
-	}
-}
-
-func (a *App) UpdateTrayMenus(menus []MenuItem) {
-	log.Printf("UpdateTrayMenus")
-
-	systray.ResetMenu()
-
-	for _, menu := range menus {
-		createMenuItem(menu, a, nil)
-	}
-}
-
-func createMenuItem(menu MenuItem, a *App, parent *systray.MenuItem) {
-	if menu.Hidden {
-		return
-	}
-	switch menu.Type {
-	case "item":
-		var m *systray.MenuItem
-		if parent == nil {
-			m = systray.AddMenuItem(menu.Text, menu.Tooltip)
-		} else {
-			m = parent.AddSubMenuItem(menu.Text, menu.Tooltip)
-		}
-		m.Click(func() { runtime.EventsEmit(a.Ctx, menu.Event) })
-
-		if menu.Checked {
-			m.Check()
-		}
-
-		for _, child := range menu.Children {
-			createMenuItem(child, a, m)
-		}
-	case "separator":
-		systray.AddSeparator()
 	}
 }
 

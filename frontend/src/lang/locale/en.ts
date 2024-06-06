@@ -570,24 +570,6 @@ export default {
     ago: 'Ago',
     later: 'Later'
   },
-  tray: {
-    restart: 'Restart',
-    restartTip: 'Restart App',
-    exit: 'Exit',
-    exitTip: 'Exit App',
-    proxyGroup: 'Proxy Group',
-    setSystemProxy: 'Set System Proxy',
-    clearSystemProxy: 'Clear System Proxy',
-    tun: 'Tun Mode',
-    enableTunMode: 'Enable Tun Mode',
-    disableTunMode: 'Disable Tun Mode',
-    kernel: 'Kernel',
-    proxy: 'System Proxy',
-    startKernel: 'Start Kernel',
-    stopKernel: 'Stop Kernel',
-    restartKernel: 'Restart Kernel',
-    plugins: 'Plugins'
-  },
   commands: {
     noMatching: 'No matching commands'
   }
