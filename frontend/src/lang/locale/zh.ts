@@ -552,7 +552,11 @@ export default {
   },
   titlebar: {
     resetSize: '重置窗口',
-    reload: '重载界面'
+    reload: '重载界面',
+    restart: '重启程序',
+    exitApp: '退出程序',
+    waiting: '正在等待程序退出...',
+    timeout: '程序退出超时，是否强制退出？\n\n原因：插件退出超时。'
   },
   format: {
     seconds: '秒',

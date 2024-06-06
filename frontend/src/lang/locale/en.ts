@@ -551,8 +551,12 @@ export default {
     latestVersion: 'Already the latest version'
   },
   titlebar: {
-    resetSize: 'Reset window',
-    reload: 'Reload'
+    resetSize: 'Reset Window',
+    reload: 'Reload Window',
+    restart: 'Restart App',
+    exitApp: 'Exit App',
+    waiting: 'Waiting for the program to exit...',
+    timeout: 'Exit timed out. Force exit？\n\nReason: Plugin exit timed out.'
   },
   format: {
     seconds: 'Seconds',
