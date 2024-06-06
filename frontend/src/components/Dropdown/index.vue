@@ -92,6 +92,9 @@ onUnmounted(() => {
   text-align: center;
   position: relative;
   word-break: keep-all;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .overlay {
   position: absolute;
