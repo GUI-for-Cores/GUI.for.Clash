@@ -20,7 +20,7 @@ const buildMessage = (icon: IconType, ctx: MessageContext) => {
   return (content: string, duration = 3_000) => {
     const id = sampleID()
 
-    const vnode = createVNode(MessageComp, { icon, content })
+    const vnode = createVNode(MessageComp, { icon, content, onClose: () => ctx.destroy(id) })
     const dom = document.createElement('div')
     dom.id = id
     dom.style.cssText = `display: flex; align-items: center; justify-content: center;`
@@ -28,10 +28,7 @@ const buildMessage = (icon: IconType, ctx: MessageContext) => {
     ctx.instances[id] = {
       dom,
       vnode,
-      timer: setTimeout(() => {
-        dom.remove()
-        delete ctx.instances[id]
-      }, duration)
+      timer: setTimeout(() => ctx.destroy(id), duration)
     }
 
     ctx.dom.appendChild(dom)

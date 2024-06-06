@@ -14,6 +14,8 @@ const props = withDefaults(defineProps<Props>(), {
   icon: 'info'
 })
 
+defineEmits(['close'])
+
 const { t } = i18n.global
 
 const iconMap = {
@@ -31,6 +33,7 @@ const icon = computed(() => iconMap[props.icon] as any)
     <div class="message">
       <Icon style="flex-shrink: 0" :icon="icon" />
       <div class="content">{{ t(content) }}</div>
+      <Button @click="$emit('close')" icon="close" :icon-size="10" type="text" size="small" />
     </div>
   </Transition>
 </template>
@@ -39,7 +42,7 @@ const icon = computed(() => iconMap[props.icon] as any)
 .message {
   display: flex;
   align-items: center;
-  padding: 8px;
+  padding: 8px 8px 8px 16px;
   border-radius: 8px;
   margin: 4px 0;
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.2);
