@@ -22,10 +22,10 @@ export const KernelConfigFilePath = KernelWorkDirectory + '/config.yaml'
 
 export const getKernelFileName = async (isAlpha = false) => {
   const envStore = useEnvStore()
-  const { os, arch } = await GetEnv()
+  const { os, arch, x64Level } = envStore.env
   const fileSuffix = { windows: '.exe', linux: '', darwin: '' }[os]
   const alpha = isAlpha ? '-alpha' : ''
-  const amd64Compatible = arch === 'amd64' && envStore.env.x64Level < 3 ? '-compatible' : ''
+  const amd64Compatible = arch === 'amd64' && x64Level < 3 ? '-compatible' : ''
   return `mihomo-${os}-${arch}${amd64Compatible}${alpha}${fileSuffix}`
 }
 

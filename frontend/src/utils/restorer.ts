@@ -100,7 +100,6 @@ export const restoreProfile = (
           type: type,
           payload: type === 'MATCH' ? '' : payload,
           proxy: _proxy,
-          filter: '',
           'no-resolve': !!noResolve
         })
       })

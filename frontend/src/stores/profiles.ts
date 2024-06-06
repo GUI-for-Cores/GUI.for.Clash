@@ -114,7 +114,6 @@ export type ProfileType = {
     payload: string
     proxy: string
     'no-resolve': boolean
-    filter: string
   }[]
 }
 

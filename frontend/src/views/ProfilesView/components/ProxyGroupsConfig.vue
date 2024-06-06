@@ -34,7 +34,7 @@ const proxyGroup = ref([
   }
 ])
 
-const fields = ref<GroupsType[0]>({
+const fields = ref<GroupsType[number]>({
   id: sampleID(),
   name: '',
   type: ProxyGroup.Select,

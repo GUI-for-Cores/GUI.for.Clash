@@ -19,13 +19,12 @@ const rules = defineModel<ProfileType['rulesConfig']>({ default: [] })
 let updateRuleId = 0
 const showModal = ref(false)
 
-const fields = ref({
+const fields = ref<ProfileType['rulesConfig'][number]>({
   id: sampleID(),
   type: 'RULE-SET',
   payload: '',
   proxy: '',
-  'no-resolve': false,
-  filter: ''
+  'no-resolve': false
 })
 
 const proxyOptions = computed(() => [
@@ -57,8 +56,7 @@ const handleAdd = () => {
     type: 'RULE-SET',
     payload: '',
     proxy: '',
-    'no-resolve': false,
-    filter: ''
+    'no-resolve': false
   }
   showModal.value = true
 }

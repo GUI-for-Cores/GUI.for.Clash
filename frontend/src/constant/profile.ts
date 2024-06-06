@@ -195,63 +195,55 @@ export const RulesConfigDefaults = (ids: string[]): ProfileType['rulesConfig'] =
     type: 'LOGIC',
     payload: 'AND,((DST-PORT,443),(NETWORK,udp))',
     proxy: ids[3],
-    'no-resolve': false,
-    filter: ''
+    'no-resolve': false
   },
   {
     id: sampleID(),
     type: 'GEOSITE',
     payload: 'category-ads-all',
     proxy: ids[3],
-    'no-resolve': false,
-    filter: ''
+    'no-resolve': false
   },
   {
     id: sampleID(),
     type: 'GEOIP',
     payload: 'private',
     proxy: ids[2],
-    'no-resolve': true,
-    filter: ''
+    'no-resolve': true
   },
   {
     id: sampleID(),
     type: 'GEOIP',
     payload: 'CN',
     proxy: ids[2],
-    'no-resolve': true,
-    filter: ''
+    'no-resolve': true
   },
   {
     id: sampleID(),
     type: 'GEOSITE',
     payload: 'private',
     proxy: ids[2],
-    'no-resolve': false,
-    filter: ''
+    'no-resolve': false
   },
   {
     id: sampleID(),
     type: 'GEOSITE',
     payload: 'CN',
     proxy: ids[2],
-    'no-resolve': false,
-    filter: ''
+    'no-resolve': false
   },
   {
     id: sampleID(),
     type: 'GEOSITE',
     payload: 'geolocation-!cn',
     proxy: ids[0],
-    'no-resolve': false,
-    filter: ''
+    'no-resolve': false
   },
   {
     id: sampleID(),
     type: 'MATCH',
     payload: '',
     proxy: ids[4],
-    'no-resolve': false,
-    filter: ''
+    'no-resolve': false
   }
 ]
