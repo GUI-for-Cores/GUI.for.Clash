@@ -99,10 +99,6 @@ const handleAdd = () => {
   ruleValue.value = ''
 }
 
-const resetForm = () => {
-  keywords.value = ''
-}
-
 const initRulesetList = async (r: RuleSetType) => {
   const content = (await ignoredError(Readfile, r.path)) || '{}'
   const { payload = [] } = parse(content)
@@ -119,10 +115,7 @@ if (r) {
 <template>
   <div class="ruleset-view">
     <div class="form">
-      <Input v-model="keywords" size="small" :placeholder="t('common.keywords')" />
-      <Button @click="resetForm" size="small" class="ml-8">
-        {{ t('common.reset') }}
-      </Button>
+      <Input v-model="keywords" clearable size="small" :placeholder="t('common.keywords')" />
       <Input
         v-model="ruleValue"
         :placeholder="placeholder"

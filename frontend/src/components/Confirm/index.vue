@@ -51,7 +51,7 @@ const getMessage = () => {
   min-width: 340px;
   max-width: 60%;
   padding: 8px;
-  background: var(--modal-bg);
+  background: var(--toast-bg);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   border-radius: 4px;
 

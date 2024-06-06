@@ -49,7 +49,7 @@ const icon = computed(() => iconMap[props.icon] as any)
   background: var(--toast-bg);
   .content {
     font-size: 14px;
-    padding: 0 8px;
+    padding: 0 0 0 8px;
     word-wrap: break-word;
     word-break: break-all;
   }
