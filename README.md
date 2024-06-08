@@ -13,7 +13,7 @@
 
 ## Document
 
-[how-to-use](https://gui-for-cores.github.io/gfc/04-how-to-use.html)
+[how-to-use](https://gui-for-cores.github.io/gfc/how-to-use.html)
 
 ## Build
 
