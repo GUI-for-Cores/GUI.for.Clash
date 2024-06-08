@@ -394,16 +394,20 @@ export const exitApp = async () => {
     }
   }
 
+  let canceled = false
+  let timedout = false
+
   const { destroy, error } = message.info('titlebar.waiting', 10 * 60 * 1000)
 
   setTimeout(async () => {
-    const ok = await confirm('Tips', 'titlebar.timeout').catch(() => destroy())
-    ok && ExitApp()
+    timedout = true
+    canceled = !(await confirm('Tips', 'titlebar.timeout').catch(() => destroy()))
+    !canceled && ExitApp()
   }, 5_000)
 
   try {
     await pluginsStore.onShutdownTrigger()
-    ExitApp()
+    !timedout && ExitApp()
   } catch (err: any) {
     error(err)
   }
