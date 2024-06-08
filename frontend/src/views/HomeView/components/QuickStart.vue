@@ -68,7 +68,7 @@ const handleSubmit = async () => {
     inSecure: false,
     userAgent: '',
     healthCheck: {
-      enable: true,
+      enable: false,
       url: 'https://www.gstatic.com/generate_204',
       interval: 300
     },
