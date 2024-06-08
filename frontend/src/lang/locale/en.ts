@@ -522,7 +522,6 @@ export default {
     autoSetSystemProxy: 'Auto Set / Clear System Proxy',
     autoStartKernel: 'Auto Start Kernel',
     admin: 'Run As Admin',
-    addToMenu: 'Add Plugin To Menu',
     multipleInstance: 'Allow Multiple Instances',
     startup: {
       name: 'Startup on boot',
