@@ -150,6 +150,8 @@ export default {
       url: '测速链接',
       filter: '过滤',
       'exclude-filter': '排除',
+      hidden: '隐藏策略组',
+      icon: '策略组图标',
       notFound: '部分订阅或节点已丢失，请清理',
       needToAdd: '至少引用一个订阅或节点',
       sort: '查看和排序',

@@ -107,6 +107,8 @@ export type ProfileType = {
     'disable-udp': boolean
     filter: string
     'exclude-filter': string
+    hidden: boolean
+    icon: string
   }[]
   rulesConfig: {
     id: string

@@ -63,7 +63,9 @@ export const restoreProfile = (
       lazy: group.lazy ?? true,
       'disable-udp': group['disable-udp'] ?? false,
       filter: group.filter ?? '',
-      'exclude-filter': group['exclude-filter'] ?? ''
+      'exclude-filter': group['exclude-filter'] ?? '',
+      hidden: group.hidden ?? false,
+      icon: group.icon ?? ''
     }
 
     profile.proxyGroupsConfig.push(_group)

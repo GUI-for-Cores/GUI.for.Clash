@@ -47,7 +47,9 @@ const fields = ref<GroupsType[number]>({
   lazy: true,
   'disable-udp': false,
   filter: '',
-  'exclude-filter': ''
+  'exclude-filter': '',
+  hidden: false,
+  icon: ''
 })
 
 const { t } = useI18n()
@@ -69,7 +71,9 @@ const handleAdd = () => {
     lazy: true,
     'disable-udp': false,
     filter: '',
-    'exclude-filter': ''
+    'exclude-filter': '',
+    hidden: false,
+    icon: ''
   }
   showModal.value = true
 }
@@ -215,6 +219,7 @@ subscribesStore.subscribes.forEach(async ({ id, name, proxies }) => {
 <template>
   <div v-draggable="[groups, DraggableOptions]">
     <Card v-for="(g, index) in groups" :key="g.id" class="groups-item">
+      <img v-if="g.icon" :src="g.icon" class="icon" />
       <div class="name">
         <span v-if="hasLost(g)" @click="showLost" class="warn"> [ ! ] </span>
         <span v-if="needToAdd(g)" @click="showNeedToAdd" class="error"> [ ! ] </span>
@@ -273,6 +278,14 @@ subscribesStore.subscribes.forEach(async ({ id, name, proxies }) => {
     <div class="form-item">
       {{ t('kernel.proxyGroups.name') }}
       <Input v-model="fields.name" autofocus />
+    </div>
+    <div class="form-item">
+      {{ t('kernel.proxyGroups.icon') }}
+      <Input v-model="fields.icon" clearable />
+    </div>
+    <div class="form-item">
+      {{ t('kernel.proxyGroups.hidden') }}
+      <Switch v-model="fields.hidden" />
     </div>
     <div class="form-item">
       {{ t('kernel.proxyGroups.filter') }}
@@ -361,6 +374,11 @@ subscribesStore.subscribes.forEach(async ({ id, name, proxies }) => {
   align-items: center;
   padding: 0 8px;
   margin-bottom: 2px;
+  .icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 4px;
+  }
   .name {
     font-weight: bold;
     min-width: 90px;

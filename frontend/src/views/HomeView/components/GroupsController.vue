@@ -23,7 +23,7 @@ const groups = computed(() => {
   if (!providers.default) return []
   return providers.default.proxies
     .concat([proxies.GLOBAL])
-    .filter((v) => v.all)
+    .filter((v) => v.all && !v.hidden)
     .map((group) => {
       const all = group.all
         .filter((proxy) => {
@@ -191,6 +191,7 @@ onActivated(() => {
   <div v-for="group in groups" :key="group.name" class="groups">
     <div class="header">
       <div class="group-info">
+        <img v-if="group.icon" :src="group.icon" class="group-icon" />
         <span class="group-name">{{ group.name }}</span>
         <span class="group-type">
           {{
@@ -299,6 +300,11 @@ onActivated(() => {
       align-items: center;
       overflow: hidden;
       white-space: nowrap;
+      .group-icon {
+        width: 32px;
+        height: 32px;
+        margin-right: 8px;
+      }
       .group-name {
         font-weight: bold;
         font-size: 18px;

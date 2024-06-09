@@ -115,10 +115,12 @@ export const generateProxyGroup = (
     lazy,
     'disable-udp': disableUDP,
     filter,
-    'exclude-filter': ExcludeFilter
+    'exclude-filter': ExcludeFilter,
+    hidden,
+    icon
   } = proxyGruoup
 
-  const group: any = { name, type, filter, 'exclude-filter': ExcludeFilter }
+  const group: any = { name, type, filter, 'exclude-filter': ExcludeFilter, hidden, icon }
 
   if (use.length !== 0) {
     group.use = use

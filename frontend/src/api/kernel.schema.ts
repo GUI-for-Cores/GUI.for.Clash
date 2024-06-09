@@ -15,6 +15,8 @@ export type KernelApiConfig = {
 export type Proxy = {
   alive: boolean
   all: string[]
+  hidden: boolean
+  icon: string
   name: string
   now: string
   type: string
