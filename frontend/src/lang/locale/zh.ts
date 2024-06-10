@@ -150,8 +150,8 @@ export default {
       url: '测速链接',
       filter: '过滤',
       'exclude-filter': '排除',
-      hidden: '隐藏策略组',
-      icon: '策略组图标',
+      hidden: '隐藏',
+      icon: '图标',
       notFound: '部分订阅或节点已丢失，请清理',
       needToAdd: '至少引用一个订阅或节点',
       sort: '查看和排序',
@@ -192,7 +192,7 @@ export default {
       ruleset: '规则集',
       rulesets: '规则集列表',
       needGeodataMode: '请在高级设置中打开"GEO数据模式"',
-      notFound: '代理组不存在',
+      notFound: '策略组不存在',
       empty: '规则集列表为空',
       type: {
         name: '类型',
@@ -335,7 +335,7 @@ export default {
     updating: '更新中',
     useragent: '用户代理',
     resetUserAgent: '重置用户代理',
-    useInternal: '使用订阅内的代理组和分流规则',
+    useInternal: '使用订阅内的策略组和分流规则',
     inSecure: '跳过证书验证',
     healthCheck: {
       name: '健康检查',
@@ -371,13 +371,13 @@ export default {
       general: '通用设置',
       tun: 'TUN 设置',
       dns: 'DNS 设置',
-      groups: '代理组设置',
+      groups: '策略组设置',
       rules: '规则设置'
     },
     proxies: '引用节点',
     use: '引用订阅',
     noSubs: '没有可用的订阅',
-    group: '代理组详情',
+    group: '策略组详情',
     rule: '规则详情',
     auto: '此配置由订阅接管，更新订阅时会被覆盖！\n如果你想修改此配置，请使用插件系统。'
   },
@@ -388,7 +388,7 @@ export default {
     generateAndView: '生成配置并查看',
     copy: '复制并粘贴',
     start: '使用此配置启动/重启',
-    proxyGroups: '代理组',
+    proxyGroups: '策略组',
     rules: '规则'
   },
   ruleset: {
