@@ -219,8 +219,8 @@ subscribesStore.subscribes.forEach(async ({ id, name, proxies }) => {
 <template>
   <div v-draggable="[groups, DraggableOptions]">
     <Card v-for="(g, index) in groups" :key="g.id" class="groups-item">
-      <img v-if="g.icon" :src="g.icon" class="icon" />
       <div class="name">
+        <img v-if="g.icon" :src="g.icon" class="icon" />
         <span v-if="hasLost(g)" @click="showLost" class="warn"> [ ! ] </span>
         <span v-if="needToAdd(g)" @click="showNeedToAdd" class="error"> [ ! ] </span>
         {{ g.name }}
@@ -374,14 +374,16 @@ subscribesStore.subscribes.forEach(async ({ id, name, proxies }) => {
   align-items: center;
   padding: 0 8px;
   margin-bottom: 2px;
-  .icon {
-    width: 20px;
-    height: 20px;
-    margin-right: 4px;
-  }
   .name {
+    display: flex;
+    align-items: center;
     font-weight: bold;
     min-width: 90px;
+    .icon {
+      width: 20px;
+      height: 20px;
+      margin-right: 4px;
+    }
     .warn {
       color: rgb(200, 193, 11);
       cursor: pointer;

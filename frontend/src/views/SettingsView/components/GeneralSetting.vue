@@ -188,8 +188,7 @@ if (envStore.env.os === 'windows') {
     </div>
     <div class="settings-item">
       <div class="title">{{ t('settings.appFolder.name') }}</div>
-      <Button @click="handleOpenFolder" type="primary">
-        <Icon icon="folder" fill="var(--btn-primary-color)" />
+      <Button @click="handleOpenFolder" type="primary" icon="folder">
         <span style="margin-left: 8px">{{ t('settings.appFolder.open') }}</span>
       </Button>
     </div>

@@ -120,6 +120,7 @@ if (r) {
         v-model="ruleValue"
         :placeholder="placeholder"
         clearable
+        auto-size
         size="small"
         class="ml-8 flex-1"
       />

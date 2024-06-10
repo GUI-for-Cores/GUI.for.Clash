@@ -292,7 +292,14 @@ onUnmounted(() => {
         ]"
         size="small"
       />
-      <Input v-model="keywords" clearable size="small" placeholder="Search" class="ml-8 flex-1" />
+      <Input
+        v-model="keywords"
+        clearable
+        auto-size
+        size="small"
+        placeholder="Search"
+        class="ml-8 flex-1"
+      />
       <Button
         @click="togglePause"
         :icon="isPause ? 'play' : 'pause'"
@@ -346,7 +353,7 @@ onUnmounted(() => {
     v-model:open="showSettings"
     :submit="false"
     mask-closable
-    max-height="90"
+    max-height="80"
     cancel-text="common.close"
     title="home.connections.sort"
   >

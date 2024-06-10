@@ -201,6 +201,7 @@ const getProxyByName = async (name: string) => {
         v-model="keywords"
         :placeholder="t('subscribes.proxies.name')"
         clearable
+        auto-size
         size="small"
         class="ml-8 flex-1"
       />
