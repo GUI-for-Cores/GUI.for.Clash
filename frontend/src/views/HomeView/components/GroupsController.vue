@@ -10,6 +10,8 @@ import { useAppSettingsStore, useKernelApiStore } from '@/stores'
 
 const expandedSet = ref<Set<string>>(new Set())
 const loadingSet = ref<Set<string>>(new Set())
+const filterKeywordsMap = ref<Record<string, string>>({})
+
 const loading = ref(false)
 
 const { t } = useI18n()
@@ -27,12 +29,14 @@ const groups = computed(() => {
     .map((group) => {
       const all = group.all
         .filter((proxy) => {
-          return (
+          const condition1 =
             appSettings.app.kernel.unAvailable ||
             ['DIRECT', 'REJECT'].includes(proxy) ||
             proxies[proxy].all ||
             proxies[proxy].alive
-          )
+          const keywords = filterKeywordsMap.value[group.name]
+          const condition2 = keywords ? new RegExp(keywords, 'i').test(proxy) : true
+          return condition1 && condition2
         })
         .map((proxy) => {
           const history = proxies[proxy].history || []
@@ -74,6 +78,21 @@ const toggleExpanded = (group: string) => {
   }
 }
 
+const handleFilter = async (group: string) => {
+  const keywords =
+    (await ignoredError(prompt<string>, 'Tips', filterKeywordsMap.value[group], {
+      placeholder: 'keywords'
+    })) || ''
+  try {
+    new RegExp(keywords, 'i')
+  } catch (error) {
+    message.error('Incorrect regular expression')
+    await handleFilter(group)
+    return
+  }
+  filterKeywordsMap.value[group] = keywords
+}
+
 const expandAll = () => groups.value.forEach(({ name }) => expandedSet.value.add(name))
 
 const collapseAll = () => expandedSet.value.clear()
@@ -81,6 +100,8 @@ const collapseAll = () => expandedSet.value.clear()
 const isExpanded = (group: string) => expandedSet.value.has(group)
 
 const isLoading = (group: string) => loadingSet.value.has(group)
+
+const isFiltered = (group: string) => filterKeywordsMap.value[group]
 
 const handleGroupDelay = async (group: string) => {
   loadingSet.value.add(group)
@@ -214,6 +235,12 @@ onActivated(() => {
       </div>
       <div class="action">
         <Button
+          @click="handleFilter(group.name)"
+          type="text"
+          icon="filter"
+          :icon-color="isFiltered(group.name) ? 'var(--primary-color)' : ''"
+        />
+        <Button
           @click="handleGroupDelay(group.name)"
           v-tips="'home.overview.delayTest'"
           :loading="isLoading(group.name)"
@@ -231,7 +258,8 @@ onActivated(() => {
     </div>
     <Transition name="expand">
       <div v-if="isExpanded(group.name)" class="body">
-        <template v-if="appSettings.app.kernel.cardMode">
+        <Empty v-if="group.all.length === 0" />
+        <template v-else-if="appSettings.app.kernel.cardMode">
           <Card
             v-for="proxy in group.all"
             :title="proxy.name"
