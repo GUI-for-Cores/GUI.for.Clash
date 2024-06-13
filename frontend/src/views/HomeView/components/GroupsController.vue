@@ -191,7 +191,7 @@ onActivated(() => {
   <div v-for="group in groups" :key="group.name" class="groups">
     <div class="header">
       <div class="group-info">
-        <img v-if="group.icon" :src="group.icon" class="group-icon" />
+        <img v-if="group.icon" :src="group.icon" class="group-icon" draggable="false" />
         <span class="group-name">{{ group.name }}</span>
         <span class="group-type">
           {{
