@@ -227,7 +227,8 @@ export const generateConfig = async (originalProfile: ProfileType) => {
     ...profile.generalConfig,
     ...profile.advancedConfig,
     tun: profile.tunConfig,
-    dns: profile.dnsConfig
+    dns: profile.dnsConfig,
+    hosts: {}
   }
 
   if (!config.dns.listen) {
@@ -241,6 +242,12 @@ export const generateConfig = async (originalProfile: ProfileType) => {
   if (config.dns['nameserver'].length === 0) {
     delete config.dns['nameserver']
   }
+
+  Object.entries<string>(config.dns['hosts']).forEach(([key, value]) => {
+    const _value = value.split(',')
+    config.hosts[key] = _value.length === 1 ? _value[0] : _value
+  })
+  delete config.dns['hosts']
 
   if (config.dns['fallback'].length === 0) {
     delete config.dns['fallback']

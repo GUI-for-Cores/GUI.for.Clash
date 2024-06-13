@@ -88,6 +88,7 @@ export type ProfileType = {
       ipcidr: string[]
       domain: string[]
     }
+    hosts: Record<string, string>
   }
   proxyGroupsConfig: {
     id: string
@@ -125,6 +126,10 @@ export const useProfilesStore = defineStore('profiles', () => {
   const setupProfiles = async () => {
     const data = await ignoredError(Readfile, ProfilesFilePath)
     data && (profiles.value = parse(data))
+    // compatibility code
+    profiles.value.forEach((profile) => {
+      profile.dnsConfig.hosts = profile.dnsConfig.hosts ?? {}
+    })
   }
 
   const saveProfiles = debounce(async () => {

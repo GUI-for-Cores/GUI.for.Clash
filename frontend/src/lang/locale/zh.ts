@@ -122,7 +122,8 @@ export default {
       'default-nameserver': '默认DNS',
       nameserver: '域名服务器',
       'fake-ip': 'Fake-IP',
-      'redir-host': 'Redir-Host'
+      'redir-host': 'Redir-Host',
+      hosts: 'Hosts'
     },
     tls: {
       certificate: '证书(PEM格式/路径)',

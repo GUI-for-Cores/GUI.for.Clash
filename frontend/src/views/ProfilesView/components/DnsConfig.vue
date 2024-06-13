@@ -58,6 +58,14 @@ const [showMore, toggleMore] = useBool(false)
         <InputList v-model="fields['default-nameserver']" />
       </div>
 
+      <div class="form-item" :class="{ 'flex-start': Object.keys(fields['hosts']).length !== 0 }">
+        {{ t('kernel.dns.hosts') }}
+        <KeyValueEditor
+          v-model="fields['hosts']"
+          :placeholder="['google.com', '1.1.1.1,8.8.8.8']"
+        />
+      </div>
+
       <div v-if="fields['enhanced-mode'] === 'fake-ip'">
         <div class="form-item">
           {{ t('kernel.dns.fake-ip-range') }}

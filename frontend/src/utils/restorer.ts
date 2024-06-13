@@ -86,6 +86,14 @@ export const restoreProfile = (
       profile.dnsConfig = deepAssign(profile.dnsConfig, value)
     } else if (field === 'tun') {
       profile.tunConfig = deepAssign(profile.tunConfig, value)
+    } else if (field === 'hosts') {
+      Object.entries<string | string[]>(value).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+          profile.dnsConfig.hosts[key] = value.join(',')
+        } else {
+          profile.dnsConfig.hosts[key] = value
+        }
+      })
     } else if (field === 'rules') {
       config[field].forEach((rule: string, index: number) => {
         const [type, payload, proxy = '', noResolve] = rule.split(',')

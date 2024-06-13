@@ -97,7 +97,8 @@ export const DnsConfigDefaults = (): ProfileType['dnsConfig'] => ({
     ipcidr: ['240.0.0.0/4'],
     domain: ['+.google.com', '+.facebook.com', '+.youtube.com']
   },
-  'prefer-h3': false
+  'prefer-h3': false,
+  hosts: {}
 })
 
 export const ProxyGroupsConfigDefaults = (ids: string[]): ProfileType['proxyGroupsConfig'] => {

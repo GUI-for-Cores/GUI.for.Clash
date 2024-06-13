@@ -122,7 +122,8 @@ export default {
       'default-nameserver': 'Default Nameserver',
       nameserver: 'NameServer',
       'fake-ip': 'Fake-IP',
-      'redir-host': 'Redir-Host'
+      'redir-host': 'Redir-Host',
+      hosts: 'Hosts'
     },
     tls: {
       certificate: 'certificate',
