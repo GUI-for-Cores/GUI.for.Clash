@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 
 import { useMessage } from '@/hooks'
 import { deepClone, sampleID } from '@/utils'
+import { PluginTriggerEvent } from '@/constant'
 import { usePluginsStore, useAppSettingsStore, type PluginConfiguration } from '@/stores'
 
 interface Props {
@@ -14,6 +15,7 @@ const props = defineProps<Props>()
 
 const key = ref(sampleID())
 const settings = ref<Record<string, any>>({})
+const oldSettings = ref<Record<string, any>>({})
 const configuration = ref<PluginConfiguration[]>([])
 
 const { t } = useI18n()
@@ -24,6 +26,25 @@ const appSettingsStore = useAppSettingsStore()
 const handleCancel = inject('cancel') as any
 
 const handleSubmit = async () => {
+  try {
+    await pluginsStore.manualTrigger(
+      props.id,
+      PluginTriggerEvent.OnConfigure,
+      settings.value,
+      oldSettings.value
+    )
+  } catch (error: any) {
+    const errors = [
+      props.id + ' Not Found',
+      'is Missing source code',
+      'Disabled',
+      PluginTriggerEvent.OnConfigure + ' is not defined'
+    ]
+    if (errors.every((v) => !error.includes(v))) {
+      message.error(error)
+      return
+    }
+  }
   appSettingsStore.app.pluginSettings[props.id] = settings.value
   handleCancel()
   message.success('common.success')
@@ -49,9 +70,11 @@ if (p) {
   const _settings = appSettingsStore.app.pluginSettings[p.id]
   if (_settings) {
     settings.value = deepClone(_settings)
+    oldSettings.value = deepClone(_settings)
   } else {
     // Fill with default value
     handleRestoreConfiguration()
+    oldSettings.value = deepClone(settings.value)
   }
 }
 </script>
