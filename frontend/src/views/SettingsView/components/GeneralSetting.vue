@@ -5,7 +5,7 @@ import { useI18n } from 'vue-i18n'
 import { useMessage } from '@/hooks'
 import { useAppSettingsStore, useEnvStore } from '@/stores'
 import { APP_TITLE, APP_VERSION, getTaskSchXmlString } from '@/utils'
-import { BrowserOpenURL, GetEnv, Writefile, Removefile } from '@/bridge'
+import { BrowserOpenURL, GetEnv, Writefile, Removefile, AbsolutePath } from '@/bridge'
 import { Theme, Lang, WindowStartState, Color, DefaultFontFamily } from '@/constant'
 import {
   QuerySchTask,
@@ -143,7 +143,7 @@ const createSchTask = async (delay = 30) => {
   const xmlPath = 'data/.cache/tasksch.xml'
   const xmlContent = await getTaskSchXmlString(delay)
   await Writefile(xmlPath, xmlContent)
-  await CreateSchTask(APP_TITLE, xmlPath)
+  await CreateSchTask(APP_TITLE, await AbsolutePath(xmlPath))
   await Removefile(xmlPath)
 }
 
