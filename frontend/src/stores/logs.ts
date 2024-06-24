@@ -21,7 +21,7 @@ export const useLogsStore = defineStore('logs', () => {
   const regExp = /time="([^"]*)" level=([^ ]*) msg="([^"]*)"/
   const recordKernelLog = (msg: string) => {
     const match = msg.match(regExp)
-    if (msg.includes('level=error')) {
+    if (msg.includes('level=error') || msg.includes('Parse config error')) {
       message.error(msg)
     }
     if (match) {
