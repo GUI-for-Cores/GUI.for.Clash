@@ -24,6 +24,7 @@ const proxyGroup = ref([
     proxies: [
       { id: 'DIRECT', name: 'DIRECT', type: 'Built-In' },
       { id: 'REJECT', name: 'REJECT', type: 'Built-In' },
+      { id: 'PASS', name: 'PASS', type: 'Built-In' },
       ...groups.value.map(({ id, name, type }) => ({ id, name, type }))
     ]
   },
@@ -92,7 +93,7 @@ const handleDeleteGroup = (index: number) => {
 const handleClearGroup = async (g: GroupsType[0]) => {
   g.proxies = g.proxies.filter(({ type, name, id }) => {
     if (type === 'Built-In') {
-      if (['DIRECT', 'REJECT'].includes(name)) {
+      if (['DIRECT', 'REJECT', 'PASS'].includes(name)) {
         return true
       }
       return groups.value.some((v) => v.id === id)
@@ -165,7 +166,7 @@ const isSupportInverval = computed(() =>
 const hasLost = (g: GroupsType[0]) => {
   const isProxiesLost = g.proxies.some(({ type, id }) => {
     if (type === 'Built-In') {
-      if (['DIRECT', 'REJECT'].includes(id)) {
+      if (['DIRECT', 'REJECT', 'PASS'].includes(id)) {
         return false
       }
       return groups.value.every((v) => v.id !== id)

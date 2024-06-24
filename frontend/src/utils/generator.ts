@@ -128,7 +128,7 @@ export const generateProxyGroup = (
 
   if (proxies.length !== 0) {
     group.proxies = proxies.map((v) => {
-      if (['DIRECT', 'REJECT'].includes(v.id)) {
+      if (['DIRECT', 'REJECT', 'PASS'].includes(v.id)) {
         return v.name
       }
       const group = groups.find((vv) => vv.id === v.id)
