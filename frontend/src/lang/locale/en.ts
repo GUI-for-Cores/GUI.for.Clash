@@ -132,6 +132,11 @@ export default {
     'global-client-fingerprint': 'global-client-fingerprint',
     'geodata-mode': 'geodata-mode',
     'geodata-loader': 'geodata-loader',
+    'geosite-matcher': {
+      name: 'geosite-matcher',
+      succinct: 'succinct',
+      mph: 'mph'
+    },
     'geox-url': {
       geoip: 'geoip',
       geosite: 'geosite',

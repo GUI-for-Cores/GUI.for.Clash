@@ -132,6 +132,11 @@ export default {
     'global-client-fingerprint': '全局客户端指纹',
     'geodata-mode': 'GEO数据模式',
     'geodata-loader': 'GEO文件加载模式',
+    'geosite-matcher': {
+      name: 'GeoSite匹配器',
+      succinct: 'succinct',
+      mph: 'mph'
+    },
     'geox-url': {
       geoip: 'geoip下载地址',
       geosite: 'geosite下载地址',
