@@ -66,7 +66,7 @@ export default {
     global: '全局',
     direct: '直连',
     ruleDesp: '按照规则文件分流',
-    globalDesp: '仅走Global规则组',
+    globalDesp: '仅走Global策略组',
     directDesp: '直接连接所有流量',
     'keep-alive-interval': 'TCP Keep Alive 间隔',
     'find-process-mode': '进程匹配模式',

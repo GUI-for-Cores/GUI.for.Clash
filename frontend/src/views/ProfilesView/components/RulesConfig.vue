@@ -109,12 +109,8 @@ const showLost = () => message.warn('kernel.rules.notFound')
         {{ generateRule(r, profile.proxyGroupsConfig) }}
       </div>
       <div class="action">
-        <Button @click="handleEditRule(index)" type="text" size="small">
-          {{ t('common.edit') }}
-        </Button>
-        <Button @click="handleDeleteRule(index)" type="text" size="small">
-          {{ t('common.delete') }}
-        </Button>
+        <Button @click="handleEditRule(index)" icon="edit" type="text" size="small" />
+        <Button @click="handleDeleteRule(index)" icon="delete" type="text" size="small" />
       </div>
     </Card>
   </div>
