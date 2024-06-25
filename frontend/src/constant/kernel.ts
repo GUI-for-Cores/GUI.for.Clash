@@ -102,6 +102,11 @@ export const GeodataLoaderOptions = [
   { label: 'kernel.memconservative', value: 'memconservative' }
 ]
 
+export const GeoSiteMatcherOptions = [
+  { label: 'kernel.geosite-matcher.succinct', value: 'succinct' },
+  { label: 'kernel.geosite-matcher.mph', value: 'mph' }
+]
+
 export const GroupsTypeOptions = [
   {
     label: 'kernel.proxyGroups.type.select',

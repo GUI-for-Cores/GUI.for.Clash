@@ -2,6 +2,7 @@ import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 
 import { formatDate } from '@/utils'
+import { useMessage } from '@/hooks'
 
 const MAX_LINES = 9000
 
@@ -15,10 +16,14 @@ type TaskLogType = {
 export const useLogsStore = defineStore('logs', () => {
   const kernelLogs = ref<string[]>([])
   const scheduledtasksLogs = ref<TaskLogType[]>([])
+  const { message } = useMessage()
 
   const regExp = /time="([^"]*)" level=([^ ]*) msg="([^"]*)"/
   const recordKernelLog = (msg: string) => {
     const match = msg.match(regExp)
+    if (msg.includes('level=error') || msg.includes('Parse config error')) {
+      message.error(msg)
+    }
     if (match) {
       kernelLogs.value.unshift(formatDate(match[1], 'YYYY-MM-DD HH:mm:ss') + ' ' + match[3])
     } else {

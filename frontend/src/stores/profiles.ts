@@ -41,6 +41,7 @@ export type ProfileType = {
     'geo-auto-update': boolean
     'geo-update-interval': number
     'geodata-loader': string
+    'geosite-matcher': string
     'geox-url': {
       geoip: string
       geosite: string

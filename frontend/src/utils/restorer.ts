@@ -35,7 +35,7 @@ export const restoreProfile = (
   })
 
   function isBuiltIn(proxy: string) {
-    return ['DIRECT', 'REJECT'].includes(proxy)
+    return ['DIRECT', 'REJECT', 'PASS'].includes(proxy)
   }
 
   config['proxy-groups'].forEach((group: any) => {
@@ -72,7 +72,7 @@ export const restoreProfile = (
   })
 
   function getRuleProxy(type: string) {
-    return ['DIRECT', 'REJECT'].includes(type.toUpperCase())
+    return ['DIRECT', 'REJECT', 'PASS'].includes(type.toUpperCase())
       ? type.toUpperCase()
       : GroupNameIdMap[type] || IdNameMap[NameIdMap[type]]
   }

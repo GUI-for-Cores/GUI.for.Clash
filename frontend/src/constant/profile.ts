@@ -38,6 +38,7 @@ export const AdvancedConfigDefaults = (): ProfileType['advancedConfig'] => ({
   'geo-auto-update': false,
   'geo-update-interval': 24,
   'geodata-loader': 'standard',
+  'geosite-matcher': 'succinct',
   'geox-url': {
     geoip: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.dat',
     geosite: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geosite.dat',

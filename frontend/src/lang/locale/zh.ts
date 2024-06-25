@@ -66,7 +66,7 @@ export default {
     global: '全局',
     direct: '直连',
     ruleDesp: '按照规则文件分流',
-    globalDesp: '仅走Global规则组',
+    globalDesp: '仅走Global策略组',
     directDesp: '直接连接所有流量',
     'keep-alive-interval': 'TCP Keep Alive 间隔',
     'find-process-mode': '进程匹配模式',
@@ -132,6 +132,11 @@ export default {
     'global-client-fingerprint': '全局客户端指纹',
     'geodata-mode': 'GEO数据模式',
     'geodata-loader': 'GEO文件加载模式',
+    'geosite-matcher': {
+      name: 'GeoSite匹配器',
+      succinct: 'succinct',
+      mph: 'mph'
+    },
     'geox-url': {
       geoip: 'geoip下载地址',
       geosite: 'geosite下载地址',

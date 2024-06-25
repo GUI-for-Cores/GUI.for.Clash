@@ -30,6 +30,7 @@ const fields = ref<ProfileType['rulesConfig'][number]>({
 const proxyOptions = computed(() => [
   { label: 'DIRECT', value: 'DIRECT' },
   { label: 'REJECT', value: 'REJECT' },
+  { label: 'PASS', value: 'PASS' },
   ...props.proxyGroups.map(({ id, name }) => ({ label: name, value: id }))
 ])
 
@@ -87,7 +88,7 @@ const handleUseRuleset = (ruleset: RuleSetType) => {
 }
 
 const hasLost = (r: ProfileType['rulesConfig'][0]) => {
-  if (['DIRECT', 'REJECT'].includes(r.proxy)) return false
+  if (['DIRECT', 'REJECT', 'PASS'].includes(r.proxy)) return false
   return !props.profile.proxyGroupsConfig.find((v) => v.id === r.proxy)
 }
 
@@ -109,12 +110,8 @@ const showLost = () => message.warn('kernel.rules.notFound')
         {{ generateRule(r, profile.proxyGroupsConfig) }}
       </div>
       <div class="action">
-        <Button @click="handleEditRule(index)" type="text" size="small">
-          {{ t('common.edit') }}
-        </Button>
-        <Button @click="handleDeleteRule(index)" type="text" size="small">
-          {{ t('common.delete') }}
-        </Button>
+        <Button @click="handleEditRule(index)" icon="edit" type="text" size="small" />
+        <Button @click="handleDeleteRule(index)" icon="delete" type="text" size="small" />
       </div>
     </Card>
   </div>

@@ -18,14 +18,6 @@ const [showMore, toggleMore] = useBool(false)
   </div>
   <template v-if="fields.enable">
     <div class="form-item">
-      {{ t('kernel.dns.use-hosts') }}
-      <Switch v-model="fields['use-hosts']" />
-    </div>
-    <div class="form-item">
-      {{ t('kernel.dns.use-system-hosts') }}
-      <Switch v-model="fields['use-system-hosts']" />
-    </div>
-    <div class="form-item">
       {{ t('kernel.dns.ipv6') }}
       <Switch v-model="fields['ipv6']" />
     </div>
@@ -53,17 +45,30 @@ const [showMore, toggleMore] = useBool(false)
         <Switch v-model="fields['prefer-h3']" />
       </div>
 
-      <div class="form-item" :class="{ 'flex-start': fields['default-nameserver'].length !== 0 }">
-        {{ t('kernel.dns.default-nameserver') }}
-        <InputList v-model="fields['default-nameserver']" />
+      <div class="form-item">
+        {{ t('kernel.dns.use-system-hosts') }}
+        <Switch v-model="fields['use-system-hosts']" />
+      </div>
+      <div class="form-item">
+        {{ t('kernel.dns.use-hosts') }}
+        <Switch v-model="fields['use-hosts']" />
       </div>
 
-      <div class="form-item" :class="{ 'flex-start': Object.keys(fields['hosts']).length !== 0 }">
+      <div
+        v-if="fields['use-hosts']"
+        class="form-item"
+        :class="{ 'flex-start': Object.keys(fields['hosts']).length !== 0 }"
+      >
         {{ t('kernel.dns.hosts') }}
         <KeyValueEditor
           v-model="fields['hosts']"
           :placeholder="['google.com', '1.1.1.1,8.8.8.8']"
         />
+      </div>
+
+      <div class="form-item" :class="{ 'flex-start': fields['default-nameserver'].length !== 0 }">
+        {{ t('kernel.dns.default-nameserver') }}
+        <InputList v-model="fields['default-nameserver']" />
       </div>
 
       <div v-if="fields['enhanced-mode'] === 'fake-ip'">

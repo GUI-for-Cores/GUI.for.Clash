@@ -31,7 +31,7 @@ const groups = computed(() => {
         .filter((proxy) => {
           const condition1 =
             appSettings.app.kernel.unAvailable ||
-            ['DIRECT', 'REJECT'].includes(proxy) ||
+            ['DIRECT', 'REJECT', 'PASS'].includes(proxy) ||
             proxies[proxy].all ||
             proxies[proxy].alive
           const keywords = filterKeywordsMap.value[group.name]

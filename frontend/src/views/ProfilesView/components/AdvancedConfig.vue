@@ -5,6 +5,7 @@ import { type ProfileType } from '@/stores'
 import {
   FindProcessModeOptions,
   GeodataLoaderOptions,
+  GeoSiteMatcherOptions,
   GlobalClientFingerprintOptions,
   AdvancedConfigDefaults
 } from '@/constant'
@@ -124,6 +125,10 @@ const { t } = useI18n()
     <div class="form-item">
       {{ t('kernel.geodata-loader') }}
       <Radio v-model="fields['geodata-loader']" :options="GeodataLoaderOptions" />
+    </div>
+    <div class="form-item">
+      {{ t('kernel.geosite-matcher.name') }}
+      <Radio v-model="fields['geosite-matcher']" :options="GeoSiteMatcherOptions" />
     </div>
     <div class="form-item">
       {{ t('kernel.geo-auto-update') }}
