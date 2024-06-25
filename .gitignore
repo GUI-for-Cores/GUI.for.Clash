@@ -2,3 +2,9 @@ build/bin
 frontend/dist
 
 .DS_Store
+
+frontend/bindings
+
+.task
+
+bin
