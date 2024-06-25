@@ -129,6 +129,8 @@ export const useRulesetsStore = defineStore('rulesets', () => {
 
   const getRulesetById = (id: string) => rulesets.value.find((v) => v.id === id)
 
+  const getRulesetByName = (name: string) => rulesets.value.find((v) => v.name === name)
+
   return {
     rulesets,
     setupRulesets,
@@ -138,6 +140,7 @@ export const useRulesetsStore = defineStore('rulesets', () => {
     deleteRuleset,
     updateRuleset,
     updateRulesets,
-    getRulesetById
+    getRulesetById,
+    getRulesetByName
   }
 })

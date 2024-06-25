@@ -200,7 +200,10 @@ export const generateProxyProviders = async (groups: ProfileType['proxyGroupsCon
   return providers
 }
 
-const generateRuleProviders = async (rules: ProfileType['rulesConfig']) => {
+const generateRuleProviders = async (
+  dns: ProfileType['dnsConfig'],
+  rules: ProfileType['rulesConfig']
+) => {
   const rulesetsStore = useRulesetsStore()
   const providers: Record<string, any> = {}
   rules
@@ -217,6 +220,26 @@ const generateRuleProviders = async (rules: ProfileType['rulesConfig']) => {
         }
       }
     })
+
+  Object.keys(dns['nameserver-policy']).forEach((key) => {
+    if (key.startsWith('rule-set:')) {
+      key
+        .substring(9)
+        .split(',')
+        .forEach((rule) => {
+          const ruleset = rulesetsStore.getRulesetByName(rule)
+          if (ruleset) {
+            providers[ruleset.name] = {
+              type: 'file',
+              behavior: ruleset.behavior,
+              path: ruleset.path.replace('data/', '../'),
+              interval: ruleset.interval,
+              format: ruleset.format
+            }
+          }
+        })
+    }
+  })
   return providers
 }
 
@@ -258,18 +281,14 @@ export const generateConfig = async (originalProfile: ProfileType) => {
     delete config.dns['proxy-server-nameserver']
   }
 
-  if (Object.keys(config.dns['nameserver-policy']).length === 0) {
-    delete config.dns['nameserver-policy']
-  } else {
-    Object.entries(config.dns['nameserver-policy']).forEach(([key, value]: any) => {
-      const _value = value.split(',')
-      config.dns['nameserver-policy'][key] = _value.length === 1 ? _value[0] : _value
-    })
-  }
+  Object.entries(config.dns['nameserver-policy']).forEach(([key, value]: any) => {
+    const _value = value.split(',')
+    config.dns['nameserver-policy'][key] = _value.length === 1 ? _value[0] : _value
+  })
 
   config['proxy-providers'] = await generateProxyProviders(profile.proxyGroupsConfig)
 
-  config['rule-providers'] = await generateRuleProviders(profile.rulesConfig)
+  config['rule-providers'] = await generateRuleProviders(profile.dnsConfig, profile.rulesConfig)
 
   config['proxies'] = await generateProxies(profile.proxyGroupsConfig)
 
