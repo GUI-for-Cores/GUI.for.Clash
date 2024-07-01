@@ -42,7 +42,7 @@ func main() {
 		})
 		appMenu.AddSeparator()
 		appMenu.AddText("Quit", keys.CmdOrCtrl("q"), func(_ *menu.CallbackData) {
-			runtime.EventsEmit(app.Ctx, "quitApp")
+			runtime.EventsEmit(app.Ctx, "exitApp")
 		})
 
 		// on macos platform, we should append EditMenu to enable Cmd+C,Cmd+V,Cmd+Z... shortcut
@@ -105,7 +105,7 @@ func main() {
 			bridge.InitNotification(assets)
 		},
 		OnBeforeClose: func(ctx context.Context) (prevent bool) {
-			runtime.EventsEmit(ctx, "beforeClose")
+			runtime.EventsEmit(ctx, "onBeforeExitApp")
 			return true
 		},
 		Bind: []interface{}{

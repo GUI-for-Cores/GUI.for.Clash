@@ -1,8 +1,6 @@
 import * as App from '@wails/go/bridge/App'
 import type { TrayContent } from '@/constant'
 
-export * from '@wails/runtime/runtime'
-
 export const RestartApp = App.RestartApp
 
 export const ExitApp = App.ExitApp

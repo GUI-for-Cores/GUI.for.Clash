@@ -36,7 +36,6 @@ window.Plugins.prompt = prompt
 window.Plugins.alert = alert
 
 EventsOn('launchArgs', async (args: string[]) => {
-  console.log('launchArgs', args)
   const url = new URL(args[0])
   if (url.pathname === '//install-config/') {
     const _url = url.searchParams.get('url')
@@ -56,7 +55,7 @@ EventsOn('launchArgs', async (args: string[]) => {
   }
 })
 
-EventsOn('beforeClose', async () => {
+EventsOn('onBeforeExitApp', async () => {
   if (appSettings.app.exitOnClose) {
     exitApp()
   } else {
@@ -64,7 +63,7 @@ EventsOn('beforeClose', async () => {
   }
 })
 
-EventsOn('quitApp', () => exitApp())
+EventsOn('exitApp', () => exitApp())
 
 appSettings.setupAppSettings().then(async () => {
   await Promise.all([
@@ -82,13 +81,10 @@ appSettings.setupAppSettings().then(async () => {
   }
 
   console.log('OnReady')
-
   pluginsStore.onReadyTrigger().catch(message.error)
 
   await sleep(1000)
-
   loading.value = false
-
   kernelApiStore.updateKernelState()
 })
 </script>

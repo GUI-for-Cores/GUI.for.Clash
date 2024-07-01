@@ -13,9 +13,7 @@ export const DefaultFontFamily =
 
 export enum WindowStartState {
   Normal = 0,
-  // Maximised = 1,
   Minimised = 2
-  // Fullscreen = 3
 }
 
 export enum Theme {

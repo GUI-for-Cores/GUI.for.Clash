@@ -14,22 +14,25 @@ import (
 )
 
 func InitTray(a *App, icon []byte, fs embed.FS) {
-	icons := [6][2]string{
-		{"frontend/dist/icons/tray_normal_light.ico", "data/.cache/icons/tray_normal_light.ico"},
-		{"frontend/dist/icons/tray_normal_dark.ico", "data/.cache/icons/tray_normal_dark.ico"},
-		{"frontend/dist/icons/tray_proxy_light.ico", "data/.cache/icons/tray_proxy_light.ico"},
-		{"frontend/dist/icons/tray_proxy_dark.ico", "data/.cache/icons/tray_proxy_dark.ico"},
-		{"frontend/dist/icons/tray_tun_light.ico", "data/.cache/icons/tray_tun_light.ico"},
-		{"frontend/dist/icons/tray_tun_dark.ico", "data/.cache/icons/tray_tun_dark.ico"},
+	src := "frontend/dist/icons/"
+	dst := "data/.cache/icons/"
+
+	icons := []string{
+		"tray_normal_light.ico",
+		"tray_normal_dark.ico",
+		"tray_proxy_light.ico",
+		"tray_proxy_dark.ico",
+		"tray_tun_light.ico",
+		"tray_tun_dark.ico",
 	}
 
-	os.MkdirAll(GetPath("data/.cache/icons"), os.ModePerm)
+	os.MkdirAll(GetPath(dst), os.ModePerm)
 
-	for _, item := range icons {
-		path := GetPath(item[1])
+	for _, icon := range icons {
+		path := GetPath(dst + icon)
 		if _, err := os.Stat(path); os.IsNotExist(err) {
-			log.Printf("InitTray [Icon]: %s", item[1])
-			b, _ := fs.ReadFile(item[0])
+			log.Printf("InitTray [Icon]: %s", src+icon)
+			b, _ := fs.ReadFile(src + icon)
 			os.WriteFile(path, b, os.ModePerm)
 		}
 	}
@@ -43,17 +46,6 @@ func InitTray(a *App, icon []byte, fs embed.FS) {
 			systray.SetTooltip("GUI.for.Cores")
 			systray.SetOnClick(func(menu systray.IMenu) { runtime.WindowShow(a.Ctx) })
 			systray.SetOnRClick(func(menu systray.IMenu) { menu.ShowMenu() })
-
-			mRestart := systray.AddMenuItem("Restart", "Restart App")
-			mExit := systray.AddMenuItem("Exit", "Exit App")
-
-			mRestart.Click(func() {
-				a.RestartApp()
-			})
-
-			mExit.Click(func() {
-				runtime.EventsEmit(a.Ctx, "quitApp")
-			})
 		}, nil)
 	}()
 }
