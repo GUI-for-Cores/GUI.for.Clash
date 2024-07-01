@@ -46,6 +46,10 @@ export function GetInterfaces() {
   return window['go']['bridge']['App']['GetInterfaces']();
 }
 
+export function IsStartup() {
+  return window['go']['bridge']['App']['IsStartup']();
+}
+
 export function KillProcess(arg1) {
   return window['go']['bridge']['App']['KillProcess'](arg1);
 }

@@ -24,6 +24,8 @@ export function GetEnv():Promise<bridge.EnvResult>;
 
 export function GetInterfaces():Promise<bridge.FlagResult>;
 
+export function IsStartup():Promise<boolean>;
+
 export function KillProcess(arg1:number):Promise<bridge.FlagResult>;
 
 export function ListServer():Promise<bridge.FlagResult>;
