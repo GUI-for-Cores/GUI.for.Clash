@@ -71,21 +71,21 @@ const getTrayMenus = () => {
     if (!providers.default) return []
     return providers.default.proxies
       .concat([proxies.GLOBAL])
-      .filter((v) => v.all)
+      .filter((v) => v.all && !v.hidden)
       .map((group) => {
         const all = group.all
-          .filter((v) => {
+          .filter((proxy) => {
             return (
               appSettings.app.kernel.unAvailable ||
-              ['DIRECT', 'REJECT'].includes(v) ||
-              proxies[v].all ||
-              proxies[v].alive
+              ['DIRECT', 'REJECT'].includes(proxy) ||
+              proxies[proxy].all ||
+              proxies[proxy].alive
             )
           })
-          .map((v) => {
-            const history = proxies[v].history || []
+          .map((proxy) => {
+            const history = proxies[proxy].history || []
             const delay = history[history.length - 1]?.delay || 0
-            return { ...proxies[v], delay }
+            return { ...proxies[proxy], delay }
           })
           .sort((a, b) => {
             if (!appSettings.app.kernel.sortByDelay || a.delay === b.delay) return 0
