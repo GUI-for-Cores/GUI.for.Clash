@@ -106,6 +106,16 @@ export const PluginsTriggerOptions = [
   { label: 'plugin.on::ready', value: PluginTrigger.OnReady }
 ]
 
+export type MenuItem = {
+  type: 'item' | 'separator'
+  text?: string
+  tooltip?: string
+  event?: (() => void) | string
+  children?: MenuItem[]
+  hidden?: boolean
+  checked?: boolean
+}
+
 export type TrayContent = {
   icon?: string
   title?: string

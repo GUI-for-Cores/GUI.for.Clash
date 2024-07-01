@@ -47,6 +47,7 @@ type AppSettings = {
     sortByDelay: boolean
     testUrl: string
   }
+  addPluginToMenu: boolean
   pluginSettings: Record<string, Record<string, any>>
   githubApiToken: string
   multipleInstance: boolean
@@ -124,6 +125,7 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
       sortByDelay: false,
       testUrl: 'https://www.gstatic.com/generate_204'
     },
+    addPluginToMenu: false,
     pluginSettings: {},
     githubApiToken: '',
     multipleInstance: false
@@ -215,6 +217,7 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
       () => app.value.color,
       () => app.value.lang,
       () => app.value.kernel.running,
+      () => app.value.addPluginToMenu,
       () => app.value.kernel.unAvailable,
       () => app.value.kernel.sortByDelay
     ],

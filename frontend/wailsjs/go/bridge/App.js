@@ -122,6 +122,10 @@ export function UpdateTray(arg1) {
   return window['go']['bridge']['App']['UpdateTray'](arg1);
 }
 
+export function UpdateTrayMenus(arg1) {
+  return window['go']['bridge']['App']['UpdateTrayMenus'](arg1);
+}
+
 export function Upload(arg1, arg2, arg3, arg4, arg5) {
   return window['go']['bridge']['App']['Upload'](arg1, arg2, arg3, arg4, arg5);
 }
