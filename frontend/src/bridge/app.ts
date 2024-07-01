@@ -12,6 +12,8 @@ export const UpdateTray = async (tray: TrayContent) => {
   await App.UpdateTray({ icon, title, tooltip })
 }
 
+export const UpdateTrayMenus = App.UpdateTrayMenus
+
 export const Notify = async (title: string, message: string, icon = '') => {
   const icons: Record<string, string> = {
     success: 'data/.cache/imgs/notify_success.png',
