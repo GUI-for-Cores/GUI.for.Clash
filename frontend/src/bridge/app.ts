@@ -22,6 +22,8 @@ export const Notify = async (title: string, message: string, icon = '') => {
 
 export const GetEnv = App.GetEnv
 
+export const IsStartup = App.IsStartup
+
 export const GetInterfaces = async () => {
   const { flag, data } = await App.GetInterfaces()
   if (!flag) {

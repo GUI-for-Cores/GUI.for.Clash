@@ -2,8 +2,8 @@
 import { ref } from 'vue'
 
 import * as Stores from '@/stores'
-import { EventsOn, WindowHide } from '@/bridge'
 import { exitApp, sampleID, sleep } from '@/utils'
+import { EventsOn, WindowHide, IsStartup } from '@/bridge'
 import { useMessage, usePicker, useConfirm, usePrompt, useAlert } from '@/hooks'
 
 import AboutView from '@/views/AboutView.vue'
@@ -56,15 +56,6 @@ EventsOn('launchArgs', async (args: string[]) => {
   }
 })
 
-let startupResolve: (value: unknown) => void
-const startupPromise = new Promise((resolve) => (startupResolve = resolve))
-
-EventsOn('onStartup', async () => {
-  console.log('OnStartup')
-  await startupPromise
-  pluginsStore.onStartupTrigger().catch(message.error)
-})
-
 EventsOn('beforeClose', async () => {
   if (appSettings.app.exitOnClose) {
     exitApp()
@@ -85,7 +76,10 @@ appSettings.setupAppSettings().then(async () => {
     scheduledTasksStore.setupScheduledTasks()
   ])
 
-  startupResolve(0)
+  if (await IsStartup()) {
+    console.log('OnStartup')
+    pluginsStore.onStartupTrigger().catch(message.error)
+  }
 
   console.log('OnReady')
 
