@@ -51,6 +51,7 @@ type AppSettings = {
   pluginSettings: Record<string, Record<string, any>>
   githubApiToken: string
   multipleInstance: boolean
+  rollingRelease: boolean
 }
 
 export const useAppSettingsStore = defineStore('app-settings', () => {
@@ -128,7 +129,8 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
     addPluginToMenu: false,
     pluginSettings: {},
     githubApiToken: '',
-    multipleInstance: false
+    multipleInstance: false,
+    rollingRelease: false
   })
 
   const saveAppSettings = debounce((config: string) => {
