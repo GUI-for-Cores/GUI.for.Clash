@@ -32,6 +32,7 @@ jobs:
       - name: Create a compressed file
         run: |
           cd frontend
+          openssl dgst -sha256 dist/index.html | sed 's/([^)]*)//g' >> dist/version.txt
           mv dist rolling-release
           zip -r rolling-release.zip rolling-release
 
@@ -39,8 +40,8 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: frontend/rolling-release.zip
-          asset_name: rolling-release.zip
+          file: frontend/{rolling-release.zip,rolling-release/version.txt}
+          file_glob: true
           tag: rolling-release
           release_name: rolling-release
           overwrite: true
