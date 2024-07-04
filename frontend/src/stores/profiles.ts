@@ -4,7 +4,7 @@ import { parse, stringify } from 'yaml'
 
 import { Readfile, Writefile } from '@/bridge'
 import { debounce, ignoredError } from '@/utils'
-import { ProfilesFilePath, ProxyGroup } from '@/constant'
+import { TunConfigDefaults, ProfilesFilePath, ProxyGroup } from '@/constant'
 
 export type ProfileType = {
   id: string
@@ -60,6 +60,7 @@ export type ProfileType = {
     enable: boolean
     stack: string
     'auto-route': boolean
+    'route-address': string[]
     'auto-detect-interface': boolean
     'dns-hijack': string[]
     device: string
@@ -130,6 +131,8 @@ export const useProfilesStore = defineStore('profiles', () => {
     // compatibility code
     profiles.value.forEach((profile) => {
       profile.dnsConfig.hosts = profile.dnsConfig.hosts ?? {}
+      profile.tunConfig['route-address'] =
+        profile.tunConfig['route-address'] ?? TunConfigDefaults()['route-address']
     })
   }
 

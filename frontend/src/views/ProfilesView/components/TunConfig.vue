@@ -23,6 +23,14 @@ const { t } = useI18n()
       {{ t('kernel.tun.auto-route') }}
       <Switch v-model="fields['auto-route']" />
     </div>
+    <div
+      v-show="fields['auto-route']"
+      :class="{ 'flex-start': fields['route-address'].length !== 0 }"
+      class="form-item"
+    >
+      {{ t('kernel.tun.route-address') }}
+      <InputList v-model="fields['route-address']" placeholder="0.0.0.0/1 ::/1" />
+    </div>
     <div class="form-item">
       {{ t('kernel.tun.auto-detect-interface') }}
       <Switch v-model="fields['auto-detect-interface']" />

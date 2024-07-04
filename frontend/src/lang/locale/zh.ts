@@ -88,6 +88,7 @@ export default {
       stack: 'TUN模式堆栈',
       device: 'TUN网卡名称',
       'auto-route': '自动设置全局路由',
+      'route-address': '自定义路由',
       'auto-detect-interface': '自动选择流量出口接口',
       'dns-hijack': 'dns 劫持',
       'strict-route': '严格路由',

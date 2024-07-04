@@ -58,6 +58,7 @@ export const TunConfigDefaults = (): ProfileType['tunConfig'] => ({
   enable: false,
   stack: 'gVisor',
   'auto-route': true,
+  'route-address': ['0.0.0.0/1', '128.0.0.0/1', '::/1', '8000::/1'],
   'auto-detect-interface': true,
   'dns-hijack': ['any:53'],
   device: 'utun_clash',

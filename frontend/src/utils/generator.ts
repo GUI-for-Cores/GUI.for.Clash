@@ -254,6 +254,11 @@ export const generateConfig = async (originalProfile: ProfileType) => {
     hosts: {}
   }
 
+  if (config.tun.enable && config.tun['auto-route']) {
+    config['route-address'] = config.tun['route-address']
+  }
+  delete config.tun['route-address']
+
   if (!config.dns.listen) {
     delete config.dns.listen
   }

@@ -88,6 +88,7 @@ export default {
       stack: 'Stack',
       device: 'Device',
       'auto-route': 'Auto Route',
+      'route-address': 'Route Address',
       'auto-detect-interface': 'Auto Detect Interface',
       'dns-hijack': 'DNS Hijack',
       'strict-route': 'Strict Route',
