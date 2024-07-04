@@ -210,7 +210,7 @@ onActivated(() => {
     </div>
   </div>
   <div v-for="group in groups" :key="group.name" class="groups">
-    <div class="header">
+    <div class="header" @click="toggleExpanded(group.name)">
       <div class="group-info">
         <img v-if="group.icon" :src="group.icon" class="group-icon" draggable="false" />
         <span class="group-name">{{ group.name }}</span>
@@ -230,24 +230,26 @@ onActivated(() => {
         <span> :: </span>
         <template v-for="(chain, index) in group.chains" :key="chain">
           <span v-if="index !== 0" style="color: gray"> / </span>
-          <Button @click="locateGroup(group, chain)" type="text" size="small">{{ chain }}</Button>
+          <Button @click.stop="locateGroup(group, chain)" type="text" size="small">
+            {{ chain }}
+          </Button>
         </template>
       </div>
       <div class="action">
         <Button
-          @click="handleFilter(group.name)"
+          @click.stop="handleFilter(group.name)"
           type="text"
           icon="filter"
           :icon-color="isFiltered(group.name) ? 'var(--primary-color)' : ''"
         />
         <Button
-          @click="handleGroupDelay(group.name)"
+          @click.stop="handleGroupDelay(group.name)"
           v-tips="'home.overview.delayTest'"
           :loading="isLoading(group.name)"
           type="text"
           icon="speedTest"
         />
-        <Button @click="toggleExpanded(group.name)" type="text">
+        <Button @click.stop="toggleExpanded(group.name)" type="text">
           <Icon
             :class="{ 'rotate-z': isExpanded(group.name) }"
             icon="arrowDown"
