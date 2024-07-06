@@ -36,9 +36,9 @@ const handleShowSinglePicker = async () => {
     const res = await picker.single(
       'Single',
       [
-        { label: 'ONE', value: 'one' },
+        { label: 'ONE', value: 'one', description: 'The first option' },
         { label: 'TWO', value: 'two' },
-        { label: 'THREE', value: 'three' }
+        { label: 'THREE', value: 'three', description: 'The third option' }
       ],
       ['one']
     )
@@ -53,9 +53,9 @@ const handleShowMultiPicker = async () => {
     const res = await picker.multi(
       'Multi',
       [
-        { label: 'ONE', value: 'one' },
+        { label: 'ONE', value: 'one', description: 'The first option' },
         { label: 'TWO', value: 'two' },
-        { label: 'THREE', value: 'three' }
+        { label: 'THREE', value: 'three', description: 'The third option' }
       ],
       ['one', 'three']
     )
