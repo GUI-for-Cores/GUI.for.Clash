@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
+import { stringify } from 'yaml'
 import { ref, inject, type Ref } from 'vue'
 
-import { useMessage, useBool } from '@/hooks'
 import * as Defaults from '@/constant/profile'
-import { deepClone, sampleID } from '@/utils'
 import { WindowToggleMaximise } from '@/bridge'
+import { useMessage, useAlert, useBool } from '@/hooks'
+import { deepClone, generateConfig, sampleID } from '@/utils'
 import { type ProfileType, useProfilesStore } from '@/stores'
 
 import GeneralConfig from './GeneralConfig.vue'
@@ -55,6 +56,7 @@ const profile = ref<ProfileType>({
 })
 
 const { t } = useI18n()
+const { alert } = useAlert()
 const { message } = useMessage()
 const profilesStore = useProfilesStore()
 const [showAdvancedSetting, toggleAdvancedSetting] = useBool(false)
@@ -89,6 +91,11 @@ const handleAdd = () => {
   map[currentStep.value].value.handleAdd()
 }
 
+const handlePreview = async () => {
+  const config = await generateConfig(profile.value)
+  alert(profile.value.name, stringify(config))
+}
+
 if (props.isUpdate) {
   const p = profilesStore.getProfileById(props.id)
   if (p) {
@@ -100,12 +107,13 @@ if (props.isUpdate) {
 <template>
   <div @dblclick="WindowToggleMaximise" class="header" style="--wails-draggable: drag">
     <div class="header-title">{{ t(stepItems[currentStep].title) }}</div>
+    <Button @click="handlePreview" icon="file" type="text" class="ml-auto" />
     <Button
       v-show="[4, 5].includes(currentStep)"
       @click="handleAdd"
       icon="add"
       type="text"
-      class="ml-auto mr-8"
+      class="mr-8"
     />
   </div>
 
