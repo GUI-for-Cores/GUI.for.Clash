@@ -379,18 +379,29 @@ export default {
       tun: 'TUN 设置',
       dns: 'DNS 设置',
       groups: '策略组设置',
-      rules: '规则设置'
+      rules: '规则设置',
+      'mixin-script': '混入和脚本'
     },
     proxies: '引用节点',
     use: '引用订阅',
     noSubs: '没有可用的订阅',
     group: '策略组详情',
     rule: '规则详情',
-    auto: '此配置由订阅接管，更新订阅时会被覆盖！\n如果你想修改此配置，请使用插件系统。'
+    auto: '此配置由订阅接管，更新订阅时会被覆盖！\n如果你想修改此配置，请使用插件系统。',
+    mixinSettings: {
+      name: '混入配置',
+      priority: '优先级',
+      mixin: '混入优先',
+      gui: 'GUI优先'
+    },
+    scriptSettings: {
+      name: '脚本操作'
+    }
   },
   profiles: {
     shouldStop: '当前配置正在使用，无法删除',
     empty: '配置列表为空，请先{action}配置。',
+    'mixin-script': '混入和脚本',
     copytoClipboard: '生成配置到剪切板',
     generateAndView: '生成配置并查看',
     copy: '复制并粘贴',

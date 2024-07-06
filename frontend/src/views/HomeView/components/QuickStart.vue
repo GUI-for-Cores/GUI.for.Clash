@@ -40,7 +40,9 @@ const handleSubmit = async () => {
     tunConfig: Defaults.TunConfigDefaults(),
     dnsConfig: Defaults.DnsConfigDefaults(),
     proxyGroupsConfig: Defaults.ProxyGroupsConfigDefaults(ids),
-    rulesConfig: Defaults.RulesConfigDefaults(ids)
+    rulesConfig: Defaults.RulesConfigDefaults(ids),
+    mixinConfig: Defaults.MixinConfigDefaults(),
+    scriptConfig: Defaults.ScriptConfigDefaults()
   }
 
   profile.proxyGroupsConfig[0].use = [subscribeID]

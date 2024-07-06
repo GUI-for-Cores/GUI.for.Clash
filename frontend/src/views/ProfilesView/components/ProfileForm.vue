@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import { stringify } from 'yaml'
-import { ref, inject, type Ref } from 'vue'
+import { ref, inject, type Ref, computed } from 'vue'
 
 import * as Defaults from '@/constant/profile'
 import { WindowToggleMaximise } from '@/bridge'
@@ -15,6 +15,7 @@ import TunConfig from './TunConfig.vue'
 import DnsConfig from './DnsConfig.vue'
 import ProxyGroupsConfig from './ProxyGroupsConfig.vue'
 import RulesConfig from './RulesConfig.vue'
+import MixinAndScript from './MixinAndScriptConfig.vue'
 
 interface Props {
   id?: string
@@ -39,7 +40,8 @@ const stepItems = [
   { title: 'profile.step.tun' },
   { title: 'profile.step.dns' },
   { title: 'profile.step.groups' },
-  { title: 'profile.step.rules' }
+  { title: 'profile.step.rules' },
+  { title: 'profile.step.mixin-script' }
 ]
 
 const ids = [sampleID(), sampleID(), sampleID(), sampleID(), sampleID()]
@@ -52,7 +54,19 @@ const profile = ref<ProfileType>({
   tunConfig: Defaults.TunConfigDefaults(),
   dnsConfig: Defaults.DnsConfigDefaults(),
   proxyGroupsConfig: Defaults.ProxyGroupsConfigDefaults(ids),
-  rulesConfig: Defaults.RulesConfigDefaults(ids)
+  rulesConfig: Defaults.RulesConfigDefaults(ids),
+  mixinConfig: Defaults.MixinConfigDefaults(),
+  scriptConfig: Defaults.ScriptConfigDefaults()
+})
+
+const mixinAndScriptConfig = computed({
+  get() {
+    return { mixin: profile.value.mixinConfig, script: profile.value.scriptConfig }
+  },
+  set({ mixin, script }) {
+    profile.value.mixinConfig = mixin
+    profile.value.scriptConfig = script
+  }
 })
 
 const { t } = useI18n()
@@ -92,8 +106,12 @@ const handleAdd = () => {
 }
 
 const handlePreview = async () => {
-  const config = await generateConfig(profile.value)
-  alert(profile.value.name, stringify(config))
+  try {
+    const config = await generateConfig(profile.value)
+    alert(profile.value.name, stringify(config))
+  } catch (error: any) {
+    message.error(error.message || error)
+  }
 }
 
 if (props.isUpdate) {
@@ -157,6 +175,10 @@ if (props.isUpdate) {
         :profile="profile"
       />
     </div>
+
+    <div v-show="currentStep === 6">
+      <MixinAndScript v-model="mixinAndScriptConfig" />
+    </div>
   </div>
 
   <div class="form-action">
@@ -165,7 +187,7 @@ if (props.isUpdate) {
     </Button>
     <Button
       @click="handleNextStep"
-      :disabled="!profile.name || currentStep == 5"
+      :disabled="!profile.name || currentStep == stepItems.length - 1"
       type="text"
       class="mr-auto"
     >

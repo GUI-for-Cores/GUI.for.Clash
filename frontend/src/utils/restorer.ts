@@ -4,7 +4,9 @@ import {
   AdvancedConfigDefaults,
   DnsConfigDefaults,
   GeneralConfigDefaults,
-  TunConfigDefaults
+  TunConfigDefaults,
+  MixinConfigDefaults,
+  ScriptConfigDefaults
 } from '@/constant'
 
 export const restoreProfile = (
@@ -22,7 +24,9 @@ export const restoreProfile = (
     dnsConfig: DnsConfigDefaults(),
     tunConfig: TunConfigDefaults(),
     proxyGroupsConfig: [],
-    rulesConfig: []
+    rulesConfig: [],
+    mixinConfig: MixinConfigDefaults(),
+    scriptConfig: ScriptConfigDefaults()
   }
 
   const GroupNameIdMap: Record<string, string> = {}

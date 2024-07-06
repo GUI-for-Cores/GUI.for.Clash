@@ -260,3 +260,11 @@ export const RulesConfigDefaults = (ids: string[]): ProfileType['rulesConfig'] =
     'no-resolve': false
   }
 ]
+
+export const MixinConfigDefaults = (): ProfileType['mixinConfig'] => {
+  return { priority: 'mixin', config: '' }
+}
+
+export const ScriptConfigDefaults = (): ProfileType['scriptConfig'] => {
+  return { code: `const onGenerate = async (config) => {\n\treturn config\n}` }
+}

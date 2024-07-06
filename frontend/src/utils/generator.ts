@@ -1,7 +1,7 @@
 import { parse, stringify } from 'yaml'
 
 import { Readfile, Writefile } from '@/bridge'
-import { deepClone, APP_TITLE } from '@/utils'
+import { deepClone, APP_TITLE, deepAssign } from '@/utils'
 import { KernelConfigFilePath, ProxyGroup } from '@/constant/kernel'
 import { type ProfileType, useSubscribesStore, useRulesetsStore, usePluginsStore } from '@/stores'
 
@@ -243,6 +243,13 @@ const generateRuleProviders = async (
   return providers
 }
 
+/**
+  Processing steps
+  1. Generate the config from the profile.
+  2. Merge the config using mixins.
+  3. Process the config using scripts.
+  4. Handle the config using plugins.
+ */
 export const generateConfig = async (originalProfile: ProfileType) => {
   const profile = deepClone(originalProfile)
 
@@ -254,6 +261,7 @@ export const generateConfig = async (originalProfile: ProfileType) => {
     hosts: {}
   }
 
+  // step 1
   if (config.tun.enable && config.tun['auto-route']) {
     config['route-address'] = config.tun['route-address']
   }
@@ -305,9 +313,34 @@ export const generateConfig = async (originalProfile: ProfileType) => {
     .filter(({ type }) => profile.advancedConfig['geodata-mode'] || !type.startsWith('GEO'))
     .map((rule) => generateRule(rule, profile.proxyGroupsConfig))
 
-  const pluginsStore = usePluginsStore()
+  // step 2
+  const { priority, config: mixin } = originalProfile.mixinConfig
+  if (priority === 'mixin') {
+    deepAssign(config, parse(mixin))
+  } else if (priority === 'gui') {
+    deepAssign(config, deepAssign(parse(mixin), config))
+  }
 
-  return await pluginsStore.onGenerateTrigger(config, originalProfile)
+  // step 3
+  const fn = new AsyncFunction(
+    `${profile.scriptConfig.code};return await onGenerate(${JSON.stringify(config)})`
+  )
+  let _config
+  try {
+    _config = await fn()
+  } catch (error: any) {
+    throw error.message || error
+  }
+
+  if (typeof _config !== 'object') {
+    throw 'Wrong result'
+  }
+
+  // step 4
+  const pluginsStore = usePluginsStore()
+  const result = await pluginsStore.onGenerateTrigger(_config, originalProfile)
+
+  return result
 }
 
 export const generateConfigFile = async (profile: ProfileType) => {

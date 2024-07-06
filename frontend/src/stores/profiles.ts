@@ -4,7 +4,13 @@ import { parse, stringify } from 'yaml'
 
 import { Readfile, Writefile } from '@/bridge'
 import { debounce, ignoredError } from '@/utils'
-import { TunConfigDefaults, ProfilesFilePath, ProxyGroup } from '@/constant'
+import {
+  TunConfigDefaults,
+  ProfilesFilePath,
+  ProxyGroup,
+  MixinConfigDefaults,
+  ScriptConfigDefaults
+} from '@/constant'
 
 export type ProfileType = {
   id: string
@@ -120,6 +126,13 @@ export type ProfileType = {
     proxy: string
     'no-resolve': boolean
   }[]
+  mixinConfig: {
+    priority: 'mixin' | 'gui'
+    config: string
+  }
+  scriptConfig: {
+    code: string
+  }
 }
 
 export const useProfilesStore = defineStore('profiles', () => {
@@ -133,6 +146,8 @@ export const useProfilesStore = defineStore('profiles', () => {
       profile.dnsConfig.hosts = profile.dnsConfig.hosts ?? {}
       profile.tunConfig['route-address'] =
         profile.tunConfig['route-address'] ?? TunConfigDefaults()['route-address']
+      profile.mixinConfig = profile.mixinConfig ?? MixinConfigDefaults()
+      profile.scriptConfig = profile.scriptConfig ?? ScriptConfigDefaults()
     })
   }
 
