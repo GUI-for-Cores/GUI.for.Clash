@@ -248,7 +248,7 @@ const generateRuleProviders = async (
   1. Generate the config from the profile.
   2. Merge the config using mixins.
   3. Process the config using scripts.
-  4. Handle the config using plugins.
+  4. Process the config using plugins.
  */
 export const generateConfig = async (originalProfile: ProfileType) => {
   const profile = deepClone(originalProfile)

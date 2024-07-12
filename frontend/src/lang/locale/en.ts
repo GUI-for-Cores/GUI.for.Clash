@@ -388,7 +388,7 @@ export default {
     noSubs: 'There are no available subscriptions.',
     group: 'Group Details',
     rule: 'Rule Details',
-    auto: 'This configuration is managed by subscription and will be overwritten when the subscription is updated!\nIf you want to modify this profile, please use the plugin system.',
+    auto: 'This profile is controlled by subscription and will be overwritten after updates.\nTo modify it, use mixins and scripts.',
     mixinSettings: {
       name: 'Mixin',
       priority: 'Priority',
