@@ -14,7 +14,7 @@ import PlaygroundView from '@/views/PlaygroundView/index.vue'
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    name: 'Home',
+    name: 'Overview',
     component: HomeView,
     meta: {
       name: 'router.overview',
@@ -50,7 +50,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/plugins',
-    name: 'PluginsView',
+    name: 'Plugins',
     component: PluginsView,
     meta: {
       name: 'router.plugins',
@@ -59,7 +59,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/scheduledtasks',
-    name: 'ScheduledTasksView',
+    name: 'ScheduledTasks',
     component: ScheduledTasksView,
     meta: {
       name: 'router.scheduledtasks',
@@ -72,7 +72,8 @@ const routes: RouteRecordRaw[] = [
     component: SettingsView,
     meta: {
       name: 'router.settings',
-      icon: 'settings2'
+      icon: 'settings2',
+      hidden: false
     }
   },
   {

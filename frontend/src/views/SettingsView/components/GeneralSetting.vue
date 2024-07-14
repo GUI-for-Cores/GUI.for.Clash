@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { useMessage } from '@/hooks'
+import routes from '@/router/routes'
 import { useAppSettingsStore, useEnvStore } from '@/stores'
 import { APP_TITLE, APP_VERSION, getTaskSchXmlString } from '@/utils'
 import { BrowserOpenURL, GetEnv, Writefile, Removefile, AbsolutePath } from '@/bridge'
@@ -76,11 +77,17 @@ const langs = [
   }
 ]
 
+const pages = routes.flatMap((route) => {
+  if (route.meta?.hidden !== undefined) return []
+  return {
+    label: route.meta!.name,
+    value: route.name as string
+  }
+})
+
 const windowStates = [
   { label: 'settings.windowState.normal', value: WindowStartState.Normal },
-  // { label: 'settings.windowState.maximised', value: WindowStartState.Maximised },
   { label: 'settings.windowState.minimised', value: WindowStartState.Minimised }
-  // { label: 'settings.windowState.fullscreen', value: WindowStartState.Fullscreen }
 ]
 
 const resetFontFamily = () => {
@@ -185,6 +192,10 @@ if (envStore.env.os === 'windows') {
         <Button @click="resetFontFamily" icon="reset" v-tips="'settings.resetFont'" type="text" />
         <Input v-model="appSettings.app['font-family']" editable style="margin-left: 8px" />
       </div>
+    </div>
+    <div class="settings-item">
+      <div class="title">{{ t('settings.pages.name') }}</div>
+      <CheckBox v-model="appSettings.app.pages" :options="pages" />
     </div>
     <div class="settings-item">
       <div class="title">{{ t('settings.appFolder.name') }}</div>

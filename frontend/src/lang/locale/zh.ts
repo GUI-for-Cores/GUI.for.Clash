@@ -530,6 +530,9 @@ export default {
       zh: '简体中文',
       en: 'English'
     },
+    pages: {
+      name: '页面可见性'
+    },
     windowState: {
       normal: '以普通窗口启动',
       maximised: '最大化',

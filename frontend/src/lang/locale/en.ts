@@ -529,6 +529,9 @@ export default {
       zh: '简体中文',
       en: 'English'
     },
+    pages: {
+      name: 'Page visibility'
+    },
     windowState: {
       normal: 'Normal window',
       maximised: 'Maximised',
