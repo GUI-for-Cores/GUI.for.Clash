@@ -12,7 +12,7 @@ const routes = rawRoutes.filter((r) => !r.meta?.hidden)
   <div class="nav">
     <div v-for="r in routes" :key="r.path">
       <RouterLink :to="r.path" custom #default="{ navigate, isActive }">
-        <Button @click="navigate" :type="isActive ? 'link' : 'text'">
+        <Button @click="navigate" :type="isActive ? 'link' : 'text'" :icon="r.meta && r.meta.icon">
           {{ (r.meta && t(r.meta.name)) || r.name }}
         </Button>
       </RouterLink>

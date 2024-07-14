@@ -17,7 +17,8 @@ const routes: RouteRecordRaw[] = [
     name: 'Home',
     component: HomeView,
     meta: {
-      name: 'router.overview'
+      name: 'router.overview',
+      icon: 'overview'
     }
   },
   {
@@ -25,7 +26,8 @@ const routes: RouteRecordRaw[] = [
     name: 'Profiles',
     component: ProfilesView,
     meta: {
-      name: 'router.profiles'
+      name: 'router.profiles',
+      icon: 'profiles'
     }
   },
   {
@@ -33,7 +35,8 @@ const routes: RouteRecordRaw[] = [
     name: 'Subscriptions',
     component: SubscribesView,
     meta: {
-      name: 'router.subscriptions'
+      name: 'router.subscriptions',
+      icon: 'subscriptions'
     }
   },
   {
@@ -41,7 +44,8 @@ const routes: RouteRecordRaw[] = [
     name: 'Rulesets',
     component: RulesetsView,
     meta: {
-      name: 'router.rulesets'
+      name: 'router.rulesets',
+      icon: 'rulesets'
     }
   },
   {
@@ -49,7 +53,8 @@ const routes: RouteRecordRaw[] = [
     name: 'PluginsView',
     component: PluginsView,
     meta: {
-      name: 'router.plugins'
+      name: 'router.plugins',
+      icon: 'plugins'
     }
   },
   {
@@ -57,7 +62,8 @@ const routes: RouteRecordRaw[] = [
     name: 'ScheduledTasksView',
     component: ScheduledTasksView,
     meta: {
-      name: 'router.scheduledtasks'
+      name: 'router.scheduledtasks',
+      icon: 'scheduledTasks'
     }
   },
   {
@@ -65,7 +71,8 @@ const routes: RouteRecordRaw[] = [
     name: 'Settings',
     component: SettingsView,
     meta: {
-      name: 'router.settings'
+      name: 'router.settings',
+      icon: 'settings2'
     }
   },
   {
@@ -73,7 +80,8 @@ const routes: RouteRecordRaw[] = [
     name: 'Playground',
     component: PlaygroundView,
     meta: {
-      name: 'Playground',
+      name: 'Develop',
+      icon: 'code',
       hidden: !isDev
     }
   }

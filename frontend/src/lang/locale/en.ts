@@ -257,7 +257,7 @@ export default {
     about: 'About',
     profiles: 'Profiles',
     kernel: 'Kernel',
-    scheduledtasks: 'ScheduledTasks'
+    scheduledtasks: 'Tasks'
   },
   home: {
     mode: 'Proxy Mode',
