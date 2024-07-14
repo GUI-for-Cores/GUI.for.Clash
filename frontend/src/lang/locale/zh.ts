@@ -224,7 +224,6 @@ export default {
         'SRC-IP-CIDR': '源IP段地址 (SRC-IP-CIDR)'
       }
     },
-    name: 'mihomo',
     standard: '标准',
     memconservative: '适用小内存设备',
     chrome: 'Chrome',
@@ -463,7 +462,7 @@ export default {
   },
   plugins: {
     updating: '更新中',
-    empty: '插件列表为空，请先{action}或{import}插件。',
+    empty: '插件列表为空，请先{action}或从{import}导入。',
     source: '源码',
     reload: '重载插件',
     configuration: '配置插件',
@@ -552,9 +551,10 @@ export default {
       delay: '延迟(秒)'
     },
     kernel: {
-      branch: '分支',
-      main: '主分支',
-      alpha: 'Alpha分支'
+      desc: '',
+      version: '切换版本',
+      stable: '稳定版',
+      alpha: '内测版'
     },
     userAgent: {
       name: '用户代理(User-Agent)',

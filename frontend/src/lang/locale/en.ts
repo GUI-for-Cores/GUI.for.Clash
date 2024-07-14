@@ -224,7 +224,6 @@ export default {
         'SRC-IP-CIDR': 'SRC-IP-CIDR'
       }
     },
-    name: 'mihomo',
     standard: 'Standard',
     memconservative: 'Memconservative',
     chrome: 'Chrome',
@@ -462,7 +461,7 @@ export default {
   },
   plugins: {
     updating: 'Updating',
-    empty: 'The plugin list is empty. Please {action} or {import} a plugin first.',
+    empty: 'The plugin list is empty. Please {action} or import from the {import} first.',
     source: 'Source',
     reload: 'Reload',
     configuration: 'Configure',
@@ -551,9 +550,10 @@ export default {
       delay: 'Delay(s)'
     },
     kernel: {
-      branch: 'Branch',
-      main: 'Main branch',
-      alpha: 'Alpha branch'
+      name: 'mihomo',
+      version: 'Switch version',
+      stable: 'Stable version',
+      alpha: 'Alpha version'
     },
     userAgent: {
       name: 'User-Agent',
