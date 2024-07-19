@@ -4,9 +4,15 @@ import { ref, computed, onUnmounted } from 'vue'
 
 import type { Menu } from '@/stores'
 import { LogLevelOptions } from '@/constant'
-import { useBool, useMessage } from '@/hooks'
+import { useBool, useMessage, usePicker, type PickerItem } from '@/hooks'
 import { getKernelLogsWS, updateProvidersRules } from '@/api/kernel'
-import { isValidIPV4, addToRuleSet, ignoredError, setIntervalImmediately } from '@/utils'
+import {
+  isValidIPv4,
+  isValidIPv6,
+  addToRuleSet,
+  ignoredError,
+  setIntervalImmediately
+} from '@/utils'
 
 const logType = ref('info')
 const keywords = ref('')
@@ -37,9 +43,45 @@ const menus: Menu[] = [
   return {
     label,
     handler: async ({ type, payload }: any) => {
+      if (type !== 'info') {
+        message.error('Not Support')
+        return
+      }
+      const regex = /([a-zA-Z0-9.-]+(?=:))/g
+      const matches = payload.match(regex)
+      if (!matches || matches.length < 2) {
+        message.error('Not Matched')
+        return
+      }
+
+      const options: PickerItem[] = []
+
+      if (isValidIPv4(matches[1])) {
+        options.push({
+          label: t('kernel.rules.type.IP-CIDR'),
+          value: 'IP-CIDR,' + matches[1] + '/32,no-resolve',
+          description: matches[1]
+        })
+      } else if (isValidIPv6(matches[1])) {
+        options.push({
+          label: t('kernel.rules.type.IP-CIDR6'),
+          value: 'IP-CIDR6,' + matches[1] + '/32,no-resolve',
+          description: matches[1]
+        })
+      } else {
+        options.push({
+          label: t('kernel.rules.type.DOMAIN'),
+          value: 'DOMAIN,' + matches[1],
+          description: matches[1]
+        })
+      }
+
+      const payloads = await picker.multi<string[]>('rulesets.selectRuleType', options, [
+        options?.[0].value
+      ])
+
       try {
-        if (type !== 'info') throw 'Not Support'
-        await addToRuleSet(ruleset as any, getPayload(payload))
+        await addToRuleSet(ruleset as any, payloads)
         await ignoredError(updateProvidersRules, ruleset)
         message.success('common.success')
       } catch (error: any) {
@@ -52,23 +94,10 @@ const menus: Menu[] = [
 
 const { t } = useI18n()
 const { message } = useMessage()
+const { picker } = usePicker()
 const [pause, togglePause] = useBool(false)
 
 const handleClear = () => logs.value.splice(0)
-
-const getPayload = (str = '') => {
-  const regex = /([a-zA-Z0-9.-]+(?=:))/g
-  const matches = str.match(regex)
-  if (matches && matches.length >= 2) {
-    if (isValidIPV4(matches[1])) {
-      return 'IP-CIDR,' + matches[1] + '/32,no-resolve'
-    }
-
-    return 'DOMAIN,' + matches[1]
-  }
-
-  throw 'GetPayload Error'
-}
 
 const onLogs = (data: any) => {
   pause.value || logs.value.unshift(data)

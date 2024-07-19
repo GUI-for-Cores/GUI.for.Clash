@@ -2,8 +2,8 @@
 import { useI18n } from 'vue-i18n'
 import { ref, computed, onUnmounted } from 'vue'
 
-import { useBool, useMessage } from '@/hooks'
 import { DraggableOptions } from '@/constant'
+import { useBool, useMessage, usePicker, type PickerItem } from '@/hooks'
 import { useAppSettingsStore, type Menu } from '@/stores'
 import type { KernelConnectionsWS } from '@/api/kernel.schema'
 import { getKernelConnectionsWS, deleteConnection, updateProvidersRules } from '@/api/kernel'
@@ -195,10 +195,43 @@ const menu: Menu[] = [
     return {
       label,
       handler: async (record: Record<string, any>) => {
+        const options: PickerItem[] = []
+        if (record.metadata.host) {
+          options.push({
+            label: t('kernel.rules.type.DOMAIN'),
+            value: 'DOMAIN,' + record.metadata.host,
+            description: record.metadata.host
+          })
+        }
+        if (record.metadata.destinationIP) {
+          options.push({
+            label: t('kernel.rules.type.IP-CIDR'),
+            value: 'IP-CIDR,' + record.metadata.destinationIP + '/32,no-resolve',
+            description: record.metadata.destinationIP
+          })
+          options.push({
+            label: t('kernel.rules.type.IP-CIDR6'),
+            value: 'IP-CIDR6,' + record.metadata.destinationIP + '/32,no-resolve',
+            description: record.metadata.destinationIP
+          })
+        }
+        if (record.metadata.process) {
+          options.push({
+            label: t('kernel.rules.type.PROCESS-NAME'),
+            value: 'PROCESS-NAME,' + record.metadata.process,
+            description: record.metadata.process
+          })
+        }
+        if (record.metadata.processPath) {
+          options.push({
+            label: t('kernel.rules.type.PROCESS-PATH'),
+            value: 'PROCESS-PATH,' + record.metadata.processPath,
+            description: record.metadata.processPath
+          })
+        }
+        const payloads = await picker.multi<string[]>('rulesets.selectRuleType', options)
         try {
-          const behavior = record.metadata.host ? 'DOMAIN' : 'IP-CIDR'
-          const payload = record.metadata.host || record.metadata.destinationIP + '/32,no-resolve'
-          await addToRuleSet(ruleset as any, behavior + ',' + payload)
+          await addToRuleSet(ruleset as any, payloads)
           await ignoredError(updateProvidersRules, ruleset)
           message.success('common.success')
         } catch (error: any) {
@@ -219,6 +252,7 @@ const [showDetails, toggleDetails] = useBool(false)
 const [showSettings, toggleSettings] = useBool(false)
 const [isPause, togglePause] = useBool(false)
 const { message } = useMessage()
+const { picker } = usePicker()
 const { t } = useI18n()
 
 const onConnections = (data: KernelConnectionsWS) => {

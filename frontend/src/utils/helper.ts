@@ -371,12 +371,12 @@ export const handleChangeMode = async (mode: 'direct' | 'global' | 'rule') => {
   await Promise.all(promises)
 }
 
-export const addToRuleSet = async (ruleset: 'direct' | 'reject' | 'proxy', payload: string) => {
+export const addToRuleSet = async (ruleset: 'direct' | 'reject' | 'proxy', payloads: string[]) => {
   const path = `data/rulesets/${ruleset}.yaml`
   const content = (await ignoredError(Readfile, path)) || '{}'
-  const { payload: p = [] } = parse(content)
-  p.unshift(payload)
-  await Writefile(path, stringify({ payload: [...new Set(p)] }))
+  const { payload = [] } = parse(content)
+  payload.unshift(...payloads)
+  await Writefile(path, stringify({ payload: [...new Set(payload)] }))
 }
 
 export const exitApp = async () => {
