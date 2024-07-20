@@ -554,7 +554,7 @@ export default {
       delay: 'Delay(s)'
     },
     kernel: {
-      name: 'mihomo',
+      name: 'Mihomo',
       version: 'Switch version',
       stable: 'Stable version',
       alpha: 'Alpha version'

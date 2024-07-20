@@ -16,7 +16,8 @@ import {
   GetEnv,
   Makedir,
   UnzipGZFile,
-  AbsolutePath
+  AbsolutePath,
+  BrowserOpenURL
 } from '@/bridge'
 
 const alphaUrl = 'https://api.github.com/repos/MetaCubeX/mihomo/releases/tags/Prerelease-Alpha'
@@ -191,7 +192,15 @@ initVersion()
 </script>
 
 <template>
-  <h3>Alpha</h3>
+  <h3>
+    Alpha
+    <Button
+      @click="BrowserOpenURL('https://github.com/MetaCubeX/mihomo/releases/tag/Prerelease-Alpha')"
+      icon="link"
+      type="text"
+      size="small"
+    />
+  </h3>
   <div class="tags">
     <Tag @click="updateLocalVersion(true)" style="cursor: pointer">
       {{ t('kernel.local') }}

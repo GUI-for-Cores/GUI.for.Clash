@@ -16,7 +16,8 @@ import {
   GetEnv,
   Makedir,
   UnzipGZFile,
-  AbsolutePath
+  AbsolutePath,
+  BrowserOpenURL
 } from '@/bridge'
 
 const releaseUrl = 'https://api.github.com/repos/MetaCubeX/mihomo/releases/latest'
@@ -185,7 +186,15 @@ initVersion()
 </script>
 
 <template>
-  <h3>{{ t('settings.kernel.name') }}</h3>
+  <h3>
+    {{ t('settings.kernel.name') }}
+    <Button
+      @click="BrowserOpenURL('https://github.com/MetaCubeX/mihomo/releases/latest')"
+      icon="link"
+      type="text"
+      size="small"
+    />
+  </h3>
   <div class="tags">
     <Tag @click="updateLocalVersion(true)" style="cursor: pointer">
       {{ t('kernel.local') }}
