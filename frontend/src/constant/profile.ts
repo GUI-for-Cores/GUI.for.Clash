@@ -38,7 +38,7 @@ export const AdvancedConfigDefaults = (): ProfileType['advancedConfig'] => ({
   'geo-auto-update': false,
   'geo-update-interval': 24,
   'geodata-loader': 'standard',
-  'geosite-matcher': 'succinct',
+  'geosite-matcher': 'mph',
   'geox-url': {
     geoip: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.dat',
     geosite: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geosite.dat',
@@ -56,7 +56,7 @@ export const AdvancedConfigDefaults = (): ProfileType['advancedConfig'] => ({
 
 export const TunConfigDefaults = (): ProfileType['tunConfig'] => ({
   enable: false,
-  stack: 'gVisor',
+  stack: 'Mixed',
   'auto-route': true,
   'route-address': ['0.0.0.0/1', '128.0.0.0/1', '::/1', '8000::/1'],
   'auto-detect-interface': true,
@@ -71,7 +71,7 @@ export const DnsConfigDefaults = (): ProfileType['dnsConfig'] => ({
   enable: false,
   listen: '',
   ipv6: false,
-  'use-hosts': true,
+  'use-hosts': false,
   'use-system-hosts': true,
   'default-nameserver': [],
   nameserver: ['https://223.5.5.5/dns-query'],
@@ -266,5 +266,5 @@ export const MixinConfigDefaults = (): ProfileType['mixinConfig'] => {
 }
 
 export const ScriptConfigDefaults = (): ProfileType['scriptConfig'] => {
-  return { code: `const onGenerate = async (config) => {\n\treturn config\n}` }
+  return { code: `const onGenerate = async (config) => {\n  return config\n}` }
 }
