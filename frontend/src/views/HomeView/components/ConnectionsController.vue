@@ -354,13 +354,10 @@ onUnmounted(() => {
         @click="handleClearClosedConns"
         v-tips="'common.clear'"
         size="small"
+        icon="clear"
         type="text"
-      >
-        <Icon icon="clear" fill="var(--color)" />
-      </Button>
-      <Button @click="toggleSettings" size="small" type="text">
-        <Icon icon="settings" />
-      </Button>
+      />
+      <Button @click="toggleSettings" icon="settings" size="small" type="text" />
     </div>
     <Table
       :columns="columns"
@@ -376,8 +373,8 @@ onUnmounted(() => {
     :submit="false"
     cancel-text="common.close"
     title="home.connections.details"
-    max-height="90"
-    max-width="90"
+    max-height="80"
+    max-width="80"
     mask-closable
   >
     <CodeViewer v-model="details" />

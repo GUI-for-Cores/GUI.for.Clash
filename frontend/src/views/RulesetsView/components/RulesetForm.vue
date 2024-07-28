@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { ref, inject } from 'vue'
+import { ref, inject, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { useBool } from '@/hooks'
 import { useMessage } from '@/hooks'
 import { deepClone, sampleID } from '@/utils'
 import { type RuleSetType, useRulesetsStore } from '@/stores'
@@ -28,7 +27,6 @@ const ruleset = ref<RuleSetType>({
   type: 'Http',
   format: 'yaml',
   url: '',
-  interval: 86400,
   count: 0,
   path: `data/rulesets/${sampleID()}.yaml`,
   disabled: false
@@ -36,7 +34,6 @@ const ruleset = ref<RuleSetType>({
 
 const { t } = useI18n()
 const { message } = useMessage()
-const [showMore, toggleShowMore] = useBool(false)
 const rulesetsStore = useRulesetsStore()
 
 const handleCancel = inject('cancel') as any
@@ -69,6 +66,33 @@ const handleSubmit = async () => {
   loading.value = true
 }
 
+watch(
+  () => ruleset.value.format,
+  (v) => {
+    const isYaml = v === 'yaml'
+    if (!isYaml && ruleset.value.behavior === RulesetBehavior.Classical) {
+      ruleset.value.behavior = RulesetBehavior.Domain
+    }
+    ruleset.value.path = ruleset.value.path.replace(
+      isYaml ? '.mrs' : '.yaml',
+      isYaml ? '.yaml' : '.mrs'
+    )
+  }
+)
+
+watch(
+  () => ruleset.value.behavior,
+  (v, old) => {
+    const isMrs = ruleset.value.format === 'mrs'
+    if (isMrs) {
+      if (v === RulesetBehavior.Classical) {
+        ruleset.value.behavior = old
+        message.error('Not support')
+      }
+    }
+  }
+)
+
 if (props.isUpdate) {
   const r = rulesetsStore.getRulesetById(props.id)
   if (r) {
@@ -92,6 +116,10 @@ if (props.isUpdate) {
       />
     </div>
     <div class="form-item">
+      <div class="name">{{ t('ruleset.format') }}</div>
+      <Radio v-model="ruleset.format" :options="RulesetFormatOptions" />
+    </div>
+    <div class="form-item">
       <div class="name">
         {{ t('ruleset.behavior.name') }}
       </div>
@@ -101,11 +129,15 @@ if (props.isUpdate) {
       <div class="name">{{ t('ruleset.name') }} *</div>
       <Input v-model="ruleset.name" auto-size autofocus class="input" />
     </div>
-    <div v-show="ruleset.type === 'Http'" class="form-item">
+    <div class="form-item">
       <div class="name">{{ t('ruleset.url') }} *</div>
       <Input
         v-model="ruleset.url"
-        :placeholder="ruleset.type === 'Http' ? 'http(s)://' : 'data/local/{filename}.txt'"
+        :placeholder="
+          ruleset.type === 'Http'
+            ? 'http(s)://'
+            : 'data/local/{filename}.' + (ruleset.format === 'yaml' ? 'yaml' : 'mrs')
+        "
         auto-size
         class="input"
       />
@@ -114,30 +146,10 @@ if (props.isUpdate) {
       <div class="name">{{ t('ruleset.path') }} *</div>
       <Input
         v-model="ruleset.path"
-        placeholder="data/rulesets/{filename}.yaml"
+        :placeholder="`data/rulesets/{filename}.${ruleset.format === 'yaml' ? 'yaml' : 'mrs'}`"
         auto-size
         class="input"
       />
-    </div>
-    <Divider>
-      <Button @click="toggleShowMore" type="text" size="small">
-        {{ t('common.more') }}
-      </Button>
-    </Divider>
-    <div v-show="showMore">
-      <div class="form-item">
-        <div class="name">{{ t('ruleset.interval') }}</div>
-        <Input
-          v-model="ruleset.interval"
-          placeholder="data/rulesets/{filename}.yaml"
-          auto-size
-          type="number"
-        />
-      </div>
-      <div class="form-item">
-        <div class="name">{{ t('ruleset.format') }}</div>
-        <Radio v-model="ruleset.format" :options="RulesetFormatOptions" />
-      </div>
     </div>
   </div>
   <div class="form-action">

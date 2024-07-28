@@ -297,5 +297,9 @@ export const RulesetFormatOptions = [
   {
     label: 'yaml',
     value: 'yaml'
+  },
+  {
+    label: 'mrs',
+    value: 'mrs'
   }
 ]

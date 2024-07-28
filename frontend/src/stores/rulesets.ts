@@ -2,9 +2,10 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { stringify, parse } from 'yaml'
 
-import { Readfile, Writefile, HttpGet } from '@/bridge'
+import { Readfile, Writefile, HttpGet, Download } from '@/bridge'
 import { RulesetsFilePath, RulesetBehavior } from '@/constant'
 import { debounce, isValidPaylodYAML, ignoredError, omitArray } from '@/utils'
+import { Copyfile } from '@wails/go/bridge/App'
 
 export type RuleSetType = {
   id: string
@@ -13,10 +14,9 @@ export type RuleSetType = {
   disabled: boolean
   type: 'Http' | 'File'
   behavior: RulesetBehavior
-  format: 'yaml'
+  format: 'yaml' | 'mrs'
   path: string
   url: string
-  interval: number
   count: number
   // Not Config
   updating?: boolean
@@ -70,30 +70,40 @@ export const useRulesetsStore = defineStore('rulesets', () => {
   }
 
   const _doUpdateRuleset = async (r: RuleSetType) => {
-    let body = ''
-    let ruleset: any
+    if (r.format === 'yaml') {
+      let body = ''
+      let ruleset: any
 
-    if (r.type === 'File') {
-      body = await Readfile(r.path)
+      if (r.type === 'File') {
+        body = await Readfile(r.url)
+      }
+
+      if (r.type === 'Http') {
+        const { body: b } = await HttpGet(r.url)
+        body = b
+      }
+
+      if (isValidPaylodYAML(body)) {
+        const { payload } = parse(body)
+        ruleset = { payload: [...new Set(payload)] }
+      } else {
+        throw 'Not a valid ruleset data'
+      }
+
+      if (r.type !== 'File') {
+        await Writefile(r.path, stringify(ruleset))
+      }
+
+      r.count = ruleset.payload.length
     }
 
-    if (r.type === 'Http') {
-      const { body: b } = await HttpGet(r.url)
-      body = b
+    if (r.format === 'mrs') {
+      await {
+        File: Copyfile,
+        Http: Download
+      }[r.type](r.url, r.path)
     }
 
-    if (isValidPaylodYAML(body)) {
-      const { payload } = parse(body)
-      ruleset = { payload: [...new Set(payload)] }
-    } else {
-      throw 'Not a valid ruleset data'
-    }
-
-    if (r.type !== 'File') {
-      await Writefile(r.path, stringify(ruleset))
-    }
-
-    r.count = ruleset.payload.length
     r.updateTime = Date.now()
   }
 

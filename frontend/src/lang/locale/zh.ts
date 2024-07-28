@@ -420,7 +420,6 @@ export default {
     name: '名称',
     url: '远程链接',
     path: '保存路径',
-    interval: '更新间隔',
     updating: '更新中'
   },
   rulesets: {

@@ -27,7 +27,7 @@ const rulesetFormID = ref()
 const rulesetFormIsUpdate = ref(false)
 const subFormTitle = computed(() => (rulesetFormIsUpdate.value ? 'common.edit' : 'common.add'))
 
-const menuList: Menu[] = [
+const yamlMenuList: Menu[] = [
   {
     label: 'rulesets.editRuleset',
     handler: (id: string) => handleEditRulesetList(id)
@@ -42,6 +42,15 @@ const menuList: Menu[] = [
   {
     label: 'common.clear',
     handler: (id: string) => handleClearRuleset(id)
+  }
+]
+
+const mrsMenuList: Menu[] = [
+  {
+    label: 'common.none',
+    handler: (id: string) => {
+      message.info('common.none')
+    }
   }
 ]
 
@@ -150,6 +159,13 @@ const _updateAllProvidersRules = async () => {
   }
 }
 
+const generateMenus = (r: RuleSetType) => {
+  return {
+    yaml: yamlMenuList,
+    mrs: mrsMenuList
+  }[r.format].map((v) => ({ ...v, handler: () => v.handler?.(r.id) }))
+}
+
 const noUpdateNeeded = computed(() => rulesetsStore.rulesets.every((v) => v.disabled))
 
 const onSortUpdate = debounce(rulesetsStore.saveRulesets, 1000)
@@ -198,7 +214,7 @@ const onSortUpdate = debounce(rulesetsStore.saveRulesets, 1000)
       :key="r.id"
       :title="r.name"
       :disabled="r.disabled"
-      v-menu="menuList.map((v) => ({ ...v, handler: () => v.handler?.(r.id) }))"
+      v-menu="generateMenus(r)"
       class="item"
     >
       <template #title-prefix>
@@ -261,9 +277,16 @@ const onSortUpdate = debounce(rulesetsStore.saveRulesets, 1000)
       </div>
 
       <template v-if="appSettingsStore.app.rulesetsView === View.Grid">
-        {{ t('rulesets.rulesetCount') }}
-        :
-        {{ r.count }}
+        <div v-if="r.format === 'yaml'">
+          {{ t('rulesets.rulesetCount') }}
+          :
+          {{ r.count }}
+        </div>
+        <div v-else>
+          {{ t('ruleset.format') }}
+          :
+          {{ r.format }}
+        </div>
         <div>
           {{ t('common.updateTime') }}
           :
@@ -271,9 +294,16 @@ const onSortUpdate = debounce(rulesetsStore.saveRulesets, 1000)
         </div>
       </template>
       <template v-else>
-        {{ t('rulesets.rulesetCount') }}
-        :
-        {{ r.count }}
+        <div v-if="r.format === 'yaml'">
+          {{ t('rulesets.rulesetCount') }}
+          :
+          {{ r.count }}
+        </div>
+        <div v-else>
+          {{ t('ruleset.format') }}
+          :
+          {{ r.format }}
+        </div>
         <div>
           {{ t('common.updateTime') }}
           :

@@ -215,7 +215,6 @@ const generateRuleProviders = async (
           type: 'file',
           behavior: ruleset.behavior,
           path: ruleset.path.replace('data/', '../'),
-          interval: ruleset.interval,
           format: ruleset.format
         }
       }
@@ -233,7 +232,6 @@ const generateRuleProviders = async (
               type: 'file',
               behavior: ruleset.behavior,
               path: ruleset.path.replace('data/', '../'),
-              interval: ruleset.interval,
               format: ruleset.format
             }
           }

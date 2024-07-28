@@ -420,7 +420,6 @@ export default {
     name: 'Name',
     url: 'Remote Url',
     path: 'Save Path',
-    interval: 'Interval',
     updating: 'Updating'
   },
   rulesets: {
