@@ -181,6 +181,7 @@ defineExpose({
   .code {
     width: 100%;
     max-height: 300px;
+    overflow-y: auto;
   }
 }
 
