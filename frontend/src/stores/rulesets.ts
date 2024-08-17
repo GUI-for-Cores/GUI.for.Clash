@@ -2,10 +2,9 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { stringify, parse } from 'yaml'
 
-import { Readfile, Writefile, HttpGet, Download } from '@/bridge'
 import { RulesetsFilePath, RulesetBehavior } from '@/constant'
+import { Copyfile, Readfile, Writefile, HttpGet, Download } from '@/bridge'
 import { debounce, isValidPaylodYAML, ignoredError, omitArray } from '@/utils'
-import { Copyfile } from '@wails/go/bridge/App'
 
 export type RuleSetType = {
   id: string
@@ -76,9 +75,7 @@ export const useRulesetsStore = defineStore('rulesets', () => {
 
       if (r.type === 'File') {
         body = await Readfile(r.url)
-      }
-
-      if (r.type === 'Http') {
+      } else if (r.type === 'Http') {
         const { body: b } = await HttpGet(r.url)
         body = b
       }
@@ -90,7 +87,7 @@ export const useRulesetsStore = defineStore('rulesets', () => {
         throw 'Not a valid ruleset data'
       }
 
-      if (r.type !== 'File') {
+      if (r.url !== r.path) {
         await Writefile(r.path, stringify(ruleset))
       }
 
@@ -98,10 +95,11 @@ export const useRulesetsStore = defineStore('rulesets', () => {
     }
 
     if (r.format === 'mrs') {
-      await {
-        File: Copyfile,
-        Http: Download
-      }[r.type](r.url, r.path)
+      if (r.type === 'File' && r.url !== r.path) {
+        await Copyfile(r.url, r.path)
+      } else if (r.type === 'Http') {
+        await Download(r.url, r.path)
+      }
     }
 
     r.updateTime = Date.now()
