@@ -409,6 +409,7 @@ export default {
     rules: 'Rules'
   },
   ruleset: {
+    manual: 'Manual',
     behavior: {
       name: 'Behavior',
       classical: 'classical',
@@ -416,7 +417,11 @@ export default {
       ipcidr: 'ipcidr'
     },
     rulesetType: 'Ruleset Type',
-    format: 'format',
+    format: {
+      name: 'Format',
+      yaml: 'Yaml',
+      mrs: 'Mrs'
+    },
     name: 'Name',
     url: 'Remote Url',
     path: 'Save Path',

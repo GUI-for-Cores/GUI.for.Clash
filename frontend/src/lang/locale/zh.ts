@@ -409,6 +409,7 @@ export default {
     rules: '规则'
   },
   ruleset: {
+    manual: '手动管理',
     behavior: {
       name: '匹配行为',
       classical: '经典',
@@ -416,7 +417,11 @@ export default {
       ipcidr: 'IP地址段'
     },
     rulesetType: '规则集类型',
-    format: '格式',
+    format: {
+      name: '文件格式',
+      yaml: 'Yaml',
+      mrs: 'Mrs'
+    },
     name: '名称',
     url: '远程链接',
     path: '保存路径',

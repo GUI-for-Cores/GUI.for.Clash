@@ -5,7 +5,7 @@ import { useI18n, I18nT } from 'vue-i18n'
 
 import { View } from '@/constant'
 import { useMessage } from '@/hooks'
-import { DraggableOptions } from '@/constant'
+import { DraggableOptions, RulesetFormat } from '@/constant'
 import { Removefile, Writefile, BrowserOpenURL } from '@/bridge'
 import { getProvidersRules, updateProvidersRules } from '@/api/kernel'
 import { debounce, formatRelativeTime, ignoredError, formatDate } from '@/utils'
@@ -161,8 +161,8 @@ const _updateAllProvidersRules = async () => {
 
 const generateMenus = (r: RuleSetType) => {
   return {
-    yaml: yamlMenuList,
-    mrs: mrsMenuList
+    [RulesetFormat.Yaml]: yamlMenuList,
+    [RulesetFormat.Mrs]: mrsMenuList
   }[r.format].map((v) => ({ ...v, handler: () => v.handler?.(r.id) }))
 }
 
@@ -277,13 +277,13 @@ const onSortUpdate = debounce(rulesetsStore.saveRulesets, 1000)
       </div>
 
       <template v-if="appSettingsStore.app.rulesetsView === View.Grid">
-        <div v-if="r.format === 'yaml'">
+        <div v-if="r.format === RulesetFormat.Yaml">
           {{ t('rulesets.rulesetCount') }}
           :
           {{ r.count }}
         </div>
         <div v-else>
-          {{ t('ruleset.format') }}
+          {{ t('ruleset.format.name') }}
           :
           {{ r.format }}
         </div>
@@ -294,13 +294,13 @@ const onSortUpdate = debounce(rulesetsStore.saveRulesets, 1000)
         </div>
       </template>
       <template v-else>
-        <div v-if="r.format === 'yaml'">
+        <div v-if="r.format === RulesetFormat.Yaml">
           {{ t('rulesets.rulesetCount') }}
           :
           {{ r.count }}
         </div>
         <div v-else>
-          {{ t('ruleset.format') }}
+          {{ t('ruleset.format.name') }}
           :
           {{ r.format }}
         </div>

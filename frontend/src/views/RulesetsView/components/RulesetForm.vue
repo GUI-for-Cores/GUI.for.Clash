@@ -1,11 +1,16 @@
 <script setup lang="ts">
-import { ref, inject, watch } from 'vue'
+import { ref, inject, watch, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { useMessage } from '@/hooks'
 import { deepClone, sampleID } from '@/utils'
 import { type RuleSetType, useRulesetsStore } from '@/stores'
-import { RulesetBehavior, RulesetFormatOptions, RulesetBehaviorOptions } from '@/constant'
+import {
+  RulesetBehavior,
+  RulesetFormat,
+  RulesetFormatOptions,
+  RulesetBehaviorOptions
+} from '@/constant'
 
 interface Props {
   id?: string
@@ -25,7 +30,7 @@ const ruleset = ref<RuleSetType>({
   updateTime: 0,
   behavior: RulesetBehavior.Classical,
   type: 'Http',
-  format: 'yaml',
+  format: RulesetFormat.Yaml,
   url: '',
   count: 0,
   path: `data/rulesets/${sampleID()}.yaml`,
@@ -66,10 +71,26 @@ const handleSubmit = async () => {
   loading.value = true
 }
 
+const disabled = computed(
+  () =>
+    !ruleset.value.name ||
+    (ruleset.value.type === 'Manual' && !ruleset.value.path) ||
+    (['Http', 'File'].includes(ruleset.value.type) && (!ruleset.value.url || !ruleset.value.path))
+)
+
+watch(
+  () => ruleset.value.type,
+  (v) => {
+    if (v === 'Manual') {
+      ruleset.value.format = RulesetFormat.Yaml
+    }
+  }
+)
+
 watch(
   () => ruleset.value.format,
   (v) => {
-    const isYaml = v === 'yaml'
+    const isYaml = v === RulesetFormat.Yaml
     if (!isYaml && ruleset.value.behavior === RulesetBehavior.Classical) {
       ruleset.value.behavior = RulesetBehavior.Domain
     }
@@ -83,9 +104,9 @@ watch(
 watch(
   () => ruleset.value.behavior,
   (v, old) => {
-    const isMrs = ruleset.value.format === 'mrs'
+    const isMrs = ruleset.value.format === RulesetFormat.Mrs
     if (isMrs) {
-      if (v === RulesetBehavior.Classical) {
+      if (v === RulesetBehavior.Classical && ruleset.value.type !== 'Manual') {
         ruleset.value.behavior = old
         message.error('Not support')
       }
@@ -111,13 +132,10 @@ if (props.isUpdate) {
         v-model="ruleset.type"
         :options="[
           { label: 'common.http', value: 'Http' },
-          { label: 'common.file', value: 'File' }
+          { label: 'common.file', value: 'File' },
+          { label: 'ruleset.manual', value: 'Manual' }
         ]"
       />
-    </div>
-    <div class="form-item">
-      <div class="name">{{ t('ruleset.format') }}</div>
-      <Radio v-model="ruleset.format" :options="RulesetFormatOptions" />
     </div>
     <div class="form-item">
       <div class="name">
@@ -125,18 +143,22 @@ if (props.isUpdate) {
       </div>
       <Radio v-model="ruleset.behavior" :options="RulesetBehaviorOptions" />
     </div>
+    <div v-show="ruleset.type !== 'Manual'" class="form-item">
+      <div class="name">{{ t('ruleset.format.name') }}</div>
+      <Radio v-model="ruleset.format" :options="RulesetFormatOptions" />
+    </div>
     <div class="form-item">
       <div class="name">{{ t('ruleset.name') }} *</div>
       <Input v-model="ruleset.name" auto-size autofocus class="input" />
     </div>
-    <div class="form-item">
+    <div v-show="ruleset.type !== 'Manual'" class="form-item">
       <div class="name">{{ t('ruleset.url') }} *</div>
       <Input
         v-model="ruleset.url"
         :placeholder="
           ruleset.type === 'Http'
             ? 'http(s)://'
-            : 'data/local/{filename}.' + (ruleset.format === 'yaml' ? 'yaml' : 'mrs')
+            : 'data/local/{filename}.' + (ruleset.format === RulesetFormat.Mrs ? 'mrs' : 'yaml')
         "
         auto-size
         class="input"
@@ -146,7 +168,7 @@ if (props.isUpdate) {
       <div class="name">{{ t('ruleset.path') }} *</div>
       <Input
         v-model="ruleset.path"
-        :placeholder="`data/rulesets/{filename}.${ruleset.format === 'yaml' ? 'yaml' : 'mrs'}`"
+        :placeholder="`data/rulesets/{filename}.${ruleset.format === RulesetFormat.Mrs ? 'mrs' : 'yaml'}`"
         auto-size
         class="input"
       />
@@ -154,12 +176,7 @@ if (props.isUpdate) {
   </div>
   <div class="form-action">
     <Button @click="handleCancel">{{ t('common.cancel') }}</Button>
-    <Button
-      @click="handleSubmit"
-      :loading="loading"
-      :disabled="!ruleset.name || !ruleset.path || (ruleset.type === 'Http' && !ruleset.url)"
-      type="primary"
-    >
+    <Button @click="handleSubmit" :loading="loading" :disabled="disabled" type="primary">
       {{ t('common.save') }}
     </Button>
   </div>
