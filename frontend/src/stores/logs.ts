@@ -21,7 +21,13 @@ export const useLogsStore = defineStore('logs', () => {
   const regExp = /time="([^"]*)" level=([^ ]*) msg="([^"]*)"/
   const recordKernelLog = (msg: string) => {
     const match = msg.match(regExp)
-    if (msg.includes('level=error') || msg.includes('Parse config error')) {
+    if (
+      (msg.includes('level=error') || msg.includes('Parse config error')) &&
+      /**
+       * Remove it if the kernel has already fixed this bug
+       */
+      !msg.includes('PrepareUIPath error')
+    ) {
       message.error(msg)
     }
     if (match) {
