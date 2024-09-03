@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { parse, stringify } from 'yaml'
+import { parse } from 'yaml'
+import { stringifyNoFolding } from '@/utils'
 import { ref, computed, inject } from 'vue'
 
 import { useMessage } from '@/hooks'
@@ -71,7 +72,7 @@ const handleSave = async () => {
   if (!ruleset.value) return
   loading.value = true
   try {
-    await Writefile(ruleset.value.path, stringify({ payload: rulesetList.value }))
+    await Writefile(ruleset.value.path, stringifyNoFolding({ payload: rulesetList.value }))
     handleSubmit()
   } catch (error: any) {
     message.error(error)

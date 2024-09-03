@@ -1,5 +1,6 @@
 import { useAppSettingsStore } from '@/stores'
 import { APP_TITLE, APP_VERSION } from '@/utils'
+import { stringify } from 'yaml'
 
 export const deepClone = <T>(json: T): T => JSON.parse(JSON.stringify(json))
 
@@ -120,4 +121,9 @@ export const base64Decode = (str: string) => {
       .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
       .join('')
   )
+}
+
+export const stringifyNoFolding = (content: any) => {
+  // Disable string folding
+  return stringify(content, {lineWidth: 0, minContentWidth: 0})
 }

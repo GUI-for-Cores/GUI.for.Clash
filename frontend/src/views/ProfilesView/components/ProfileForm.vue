@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { stringify } from 'yaml'
+import { stringifyNoFolding } from '@/utils'
 import { ref, inject, type Ref, computed } from 'vue'
 
 import * as Defaults from '@/constant/profile'
@@ -108,7 +108,7 @@ const handleAdd = () => {
 const handlePreview = async () => {
   try {
     const config = await generateConfig(profile.value)
-    alert(profile.value.name, stringify(config))
+    alert(profile.value.name, stringifyNoFolding(config))
   } catch (error: any) {
     message.error(error.message || error)
   }

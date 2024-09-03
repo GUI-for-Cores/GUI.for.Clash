@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
-import { stringify, parse } from 'yaml'
+import { parse } from 'yaml'
+import { stringifyNoFolding } from '@/utils'
 import { computed, ref, watch } from 'vue'
 
 import { Notify } from '@/bridge'
@@ -122,7 +123,7 @@ export const useScheduledTasksStore = defineStore('scheduledtasks', () => {
   }
 
   const saveScheduledTasks = debounce(async () => {
-    await Writefile(ScheduledTasksFilePath, stringify(scheduledtasks.value))
+    await Writefile(ScheduledTasksFilePath, stringifyNoFolding(scheduledtasks.value))
   }, 500)
 
   const addScheduledTask = async (s: ScheduledTaskType) => {

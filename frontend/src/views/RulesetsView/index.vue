@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { stringify } from 'yaml'
+import { stringifyNoFolding } from '@/utils'
 import { computed, ref } from 'vue'
 import { useI18n, I18nT } from 'vue-i18n'
 
@@ -121,7 +121,7 @@ const handleClearRuleset = async (id: string) => {
   if (!r) return
 
   try {
-    await Writefile(r.path, stringify({ payload: [] }))
+    await Writefile(r.path, stringifyNoFolding({ payload: [] }))
     await _updateProvidersRules(r.name)
     r.count = 0
     rulesetsStore.editRuleset(r.id, r)

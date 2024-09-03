@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
-import { parse, stringify } from 'yaml'
+import { parse } from 'yaml'
+import { stringifyNoFolding } from '@/utils'
 import { computed, ref, watch } from 'vue'
 
 import { HttpGet, Readfile, Writefile } from '@/bridge'
@@ -148,7 +149,7 @@ export const usePluginsStore = defineStore('plugins', () => {
 
   const savePlugins = debounce(async () => {
     const p = omitArray(plugins.value, ['key', 'updating', 'loading', 'running'])
-    await Writefile(PluginsFilePath, stringify(p))
+    await Writefile(PluginsFilePath, stringifyNoFolding(p))
   }, 100)
 
   const addPlugin = async (p: PluginType) => {

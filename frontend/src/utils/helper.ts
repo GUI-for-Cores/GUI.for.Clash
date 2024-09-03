@@ -1,4 +1,5 @@
-import { parse, stringify } from 'yaml'
+import { parse } from 'yaml'
+import { stringifyNoFolding } from '@/utils'
 
 import { ProxyGroupType } from '@/constant'
 import { useConfirm, useMessage } from '@/hooks'
@@ -376,7 +377,7 @@ export const addToRuleSet = async (ruleset: 'direct' | 'reject' | 'proxy', paylo
   const content = (await ignoredError(Readfile, path)) || '{}'
   const { payload = [] } = parse(content)
   payload.unshift(...payloads)
-  await Writefile(path, stringify({ payload: [...new Set(payload)] }))
+  await Writefile(path, stringifyNoFolding({ payload: [...new Set(payload)] }))
 }
 
 export const exitApp = async () => {

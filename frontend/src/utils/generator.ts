@@ -1,4 +1,5 @@
-import { parse, stringify } from 'yaml'
+import { parse } from 'yaml'
+import { stringifyNoFolding } from '@/utils'
 
 import { Readfile, Writefile } from '@/bridge'
 import { deepClone, APP_TITLE, deepAssign } from '@/utils'
@@ -341,5 +342,5 @@ export const generateConfigFile = async (profile: ProfileType) => {
 
   const config = await generateConfig(profile)
 
-  await Writefile(KernelConfigFilePath, header + stringify(config))
+  await Writefile(KernelConfigFilePath, header + stringifyNoFolding(config))
 }
