@@ -1,10 +1,9 @@
 import { defineStore } from 'pinia'
 import { parse } from 'yaml'
-import { stringifyNoFolding } from '@/utils'
 import { computed, ref, watch } from 'vue'
 
 import { Notify } from '@/bridge'
-import { debounce, ignoredError } from '@/utils'
+import { debounce, ignoredError, stringifyNoFolding } from '@/utils'
 import { PluginTriggerEvent, ScheduledTasksFilePath, ScheduledTasksType } from '@/constant'
 import { useSubscribesStore, useRulesetsStore, usePluginsStore, useLogsStore } from '@/stores'
 import {

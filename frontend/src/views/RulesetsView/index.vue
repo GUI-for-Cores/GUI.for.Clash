@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { stringifyNoFolding } from '@/utils'
 import { computed, ref } from 'vue'
 import { useI18n, I18nT } from 'vue-i18n'
 
@@ -8,7 +7,7 @@ import { useMessage } from '@/hooks'
 import { DraggableOptions, RulesetFormat } from '@/constant'
 import { Removefile, Writefile, BrowserOpenURL } from '@/bridge'
 import { getProvidersRules, updateProvidersRules } from '@/api/kernel'
-import { debounce, formatRelativeTime, ignoredError, formatDate } from '@/utils'
+import { debounce, formatRelativeTime, ignoredError, formatDate, stringifyNoFolding } from '@/utils'
 import {
   type RuleSetType,
   type Menu,

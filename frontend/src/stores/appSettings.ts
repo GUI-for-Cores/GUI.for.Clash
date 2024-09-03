@@ -1,10 +1,16 @@
 import { ref, watch } from 'vue'
 import { defineStore } from 'pinia'
 import { parse } from 'yaml'
-import { stringifyNoFolding } from '@/utils'
 
 import i18n from '@/lang'
-import { debounce, updateTrayMenus, APP_TITLE, APP_VERSION, ignoredError } from '@/utils'
+import {
+  debounce,
+  updateTrayMenus,
+  APP_TITLE,
+  APP_VERSION,
+  ignoredError,
+  stringifyNoFolding
+} from '@/utils'
 import {
   Readfile,
   Writefile,

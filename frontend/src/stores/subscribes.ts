@@ -1,7 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { parse } from 'yaml'
-import { stringifyNoFolding } from '@/utils'
 
 import { SubscribesFilePath } from '@/constant'
 import { Readfile, Writefile, HttpGet } from '@/bridge'
@@ -15,7 +14,8 @@ import {
   ignoredError,
   omitArray,
   isValidBase64,
-  formatDate
+  formatDate,
+  stringifyNoFolding
 } from '@/utils'
 
 export type SubscribeType = {

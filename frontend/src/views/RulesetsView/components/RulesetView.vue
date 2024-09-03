@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import { parse } from 'yaml'
-import { stringifyNoFolding } from '@/utils'
 import { ref, computed, inject } from 'vue'
 
 import { useMessage } from '@/hooks'
 import { Readfile, Writefile } from '@/bridge'
 import { DraggableOptions, RulesetBehavior } from '@/constant'
-import { deepClone, ignoredError, isValidIPCIDR } from '@/utils'
+import { deepClone, ignoredError, isValidIPCIDR, stringifyNoFolding } from '@/utils'
 import { type RuleSetType, type Menu, useRulesetsStore } from '@/stores'
 
 interface Props {

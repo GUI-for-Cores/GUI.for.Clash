@@ -2,11 +2,10 @@
 import { ref, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { parse } from 'yaml'
-import { stringifyNoFolding } from '@/utils'
 
 import { useMessage } from '@/hooks'
 import { Readfile, Writefile } from '@/bridge'
-import { deepClone, ignoredError, omitArray, sampleID } from '@/utils'
+import { deepClone, ignoredError, omitArray, sampleID, stringifyNoFolding } from '@/utils'
 import { type SubscribeType, useSubscribesStore } from '@/stores'
 
 interface Props {

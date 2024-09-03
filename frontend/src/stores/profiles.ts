@@ -1,10 +1,9 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { parse } from 'yaml'
-import { stringifyNoFolding } from '@/utils'
 
 import { Readfile, Writefile } from '@/bridge'
-import { debounce, ignoredError } from '@/utils'
+import { debounce, ignoredError, stringifyNoFolding } from '@/utils'
 import {
   TunConfigDefaults,
   ProfilesFilePath,

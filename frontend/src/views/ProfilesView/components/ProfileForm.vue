@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { stringifyNoFolding } from '@/utils'
 import { ref, inject, type Ref, computed } from 'vue'
 
 import * as Defaults from '@/constant/profile'
 import { WindowToggleMaximise } from '@/bridge'
 import { useMessage, useAlert, useBool } from '@/hooks'
-import { deepClone, generateConfig, sampleID } from '@/utils'
+import { deepClone, generateConfig, sampleID, stringifyNoFolding } from '@/utils'
 import { type ProfileType, useProfilesStore } from '@/stores'
 
 import GeneralConfig from './GeneralConfig.vue'

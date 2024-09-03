@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { stringifyNoFolding } from '@/utils'
 import { useI18n, I18nT } from 'vue-i18n'
 
 import { ClipboardSetText } from '@/bridge'
 import { useMessage, useAlert } from '@/hooks'
 import { DraggableOptions, View } from '@/constant'
-import { debounce, deepClone, generateConfig, sampleID } from '@/utils'
+import { debounce, deepClone, generateConfig, sampleID, stringifyNoFolding } from '@/utils'
 import {
   type ProfileType,
   type Menu,

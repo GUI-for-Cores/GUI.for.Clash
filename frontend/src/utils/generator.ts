@@ -1,8 +1,7 @@
 import { parse } from 'yaml'
-import { stringifyNoFolding } from '@/utils'
 
 import { Readfile, Writefile } from '@/bridge'
-import { deepClone, APP_TITLE, deepAssign } from '@/utils'
+import { deepClone, APP_TITLE, deepAssign, stringifyNoFolding } from '@/utils'
 import { KernelConfigFilePath, ProxyGroup } from '@/constant/kernel'
 import { type ProfileType, useSubscribesStore, useRulesetsStore, usePluginsStore } from '@/stores'
 

@@ -1,11 +1,10 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { parse } from 'yaml'
-import { stringifyNoFolding } from '@/utils'
 
 import { RulesetsFilePath, RulesetBehavior, RulesetFormat, EmptyRuleSet } from '@/constant'
 import { Copyfile, Readfile, Writefile, HttpGet, Download, FileExists } from '@/bridge'
-import { debounce, isValidPaylodYAML, ignoredError, omitArray } from '@/utils'
+import { debounce, isValidPaylodYAML, ignoredError, omitArray, stringifyNoFolding } from '@/utils'
 
 export type RuleSetType = {
   id: string
