@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia'
-import { parse, stringify } from 'yaml'
+import { parse } from 'yaml'
 import { computed, ref, watch } from 'vue'
 
 import { HttpGet, Readfile, Writefile } from '@/bridge'
 import { PluginsFilePath, PluginTrigger, PluginTriggerEvent } from '@/constant'
 import { useAppSettingsStore, type ProfileType, type SubscribeType } from '@/stores'
-import { debounce, omitArray, ignoredError, isNumber, updateTrayMenus } from '@/utils'
+import { debounce, omitArray, ignoredError, isNumber, updateTrayMenus, stringifyNoFolding } from '@/utils'
 
 export type PluginConfiguration = {
   id: string
@@ -148,7 +148,7 @@ export const usePluginsStore = defineStore('plugins', () => {
 
   const savePlugins = debounce(async () => {
     const p = omitArray(plugins.value, ['key', 'updating', 'loading', 'running'])
-    await Writefile(PluginsFilePath, stringify(p))
+    await Writefile(PluginsFilePath, stringifyNoFolding(p))
   }, 100)
 
   const addPlugin = async (p: PluginType) => {

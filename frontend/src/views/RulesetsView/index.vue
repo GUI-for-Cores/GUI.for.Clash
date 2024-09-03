@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { stringify } from 'yaml'
 import { computed, ref } from 'vue'
 import { useI18n, I18nT } from 'vue-i18n'
 
@@ -8,7 +7,7 @@ import { useMessage } from '@/hooks'
 import { DraggableOptions, RulesetFormat } from '@/constant'
 import { Removefile, Writefile, BrowserOpenURL } from '@/bridge'
 import { getProvidersRules, updateProvidersRules } from '@/api/kernel'
-import { debounce, formatRelativeTime, ignoredError, formatDate } from '@/utils'
+import { debounce, formatRelativeTime, ignoredError, formatDate, stringifyNoFolding } from '@/utils'
 import {
   type RuleSetType,
   type Menu,
@@ -121,7 +120,7 @@ const handleClearRuleset = async (id: string) => {
   if (!r) return
 
   try {
-    await Writefile(r.path, stringify({ payload: [] }))
+    await Writefile(r.path, stringifyNoFolding({ payload: [] }))
     await _updateProvidersRules(r.name)
     r.count = 0
     rulesetsStore.editRuleset(r.id, r)

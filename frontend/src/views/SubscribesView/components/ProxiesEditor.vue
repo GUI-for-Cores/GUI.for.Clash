@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ref, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { parse, stringify } from 'yaml'
+import { parse } from 'yaml'
 
 import { useMessage } from '@/hooks'
 import { Readfile, Writefile } from '@/bridge'
-import { deepClone, ignoredError, omitArray, sampleID } from '@/utils'
+import { deepClone, ignoredError, omitArray, sampleID, stringifyNoFolding } from '@/utils'
 import { type SubscribeType, useSubscribesStore } from '@/stores'
 
 interface Props {
@@ -35,7 +35,7 @@ const handleSave = async () => {
       name: v.name,
       type: v.type
     }))
-    await Writefile(path, stringify({ proxies: omitArray(proxiesWithId, ['__id_in_gui']) }))
+    await Writefile(path, stringifyNoFolding({ proxies: omitArray(proxiesWithId, ['__id_in_gui']) }))
     await subscribeStore.editSubscribe(id, sub.value)
     handleSubmit()
   } catch (error: any) {
@@ -55,7 +55,7 @@ const initProxiesText = async () => {
       ...proxy
     }
   })
-  proxiesText.value = stringify(proxiesWithId)
+  proxiesText.value = stringifyNoFolding(proxiesWithId)
 }
 
 initProxiesText()

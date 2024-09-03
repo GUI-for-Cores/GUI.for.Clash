@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { parse, stringify } from 'yaml'
+import { parse } from 'yaml'
 import { ref, computed, inject } from 'vue'
 
 import { useBool, useMessage } from '@/hooks'
-import { deepClone, ignoredError, sampleID } from '@/utils'
+import { deepClone, ignoredError, sampleID, stringifyNoFolding } from '@/utils'
 import { ProxyTypeOptions, DraggableOptions } from '@/constant'
 import { ClipboardSetText, Readfile, Writefile } from '@/bridge'
 import { type Menu, type SubscribeType, useSubscribesStore } from '@/stores'
@@ -61,7 +61,7 @@ const menus: Menu[] = [
     handler: async (record: SubscribeType['proxies'][0]) => {
       try {
         const proxy = await getProxyByName(record.name)
-        details.value = stringify(proxy)
+        details.value = stringifyNoFolding(proxy)
         isEdit.value = false
         toggleDetails()
       } catch (error: any) {
@@ -74,7 +74,7 @@ const menus: Menu[] = [
     handler: async (record: SubscribeType['proxies'][0]) => {
       try {
         const proxy = await getProxyByName(record.name)
-        await ClipboardSetText(stringify(proxy))
+        await ClipboardSetText(stringifyNoFolding(proxy))
         message.success('common.copied')
       } catch (error: any) {
         message.error(error)
@@ -86,7 +86,7 @@ const menus: Menu[] = [
     handler: async (record: SubscribeType['proxies'][0]) => {
       try {
         const proxy = await getProxyByName(record.name)
-        details.value = stringify(proxy)
+        details.value = stringifyNoFolding(proxy)
         isEdit.value = true
         editId = record.name
         toggleDetails()
@@ -122,7 +122,7 @@ const handleSave = async () => {
       proxies.some((vv) => vv.name === v.name)
     )
     const sortedArray = proxies.map((v) => filteredProxies.find((vv) => vv.name === v.name))
-    await Writefile(path, stringify({ proxies: sortedArray }))
+    await Writefile(path, stringifyNoFolding({ proxies: sortedArray }))
     await subscribeStore.editSubscribe(id, sub.value)
     handleSubmit()
   } catch (error: any) {

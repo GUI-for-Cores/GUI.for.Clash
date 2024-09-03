@@ -1,9 +1,16 @@
 import { ref, watch } from 'vue'
 import { defineStore } from 'pinia'
-import { parse, stringify } from 'yaml'
+import { parse } from 'yaml'
 
 import i18n from '@/lang'
-import { debounce, updateTrayMenus, APP_TITLE, APP_VERSION, ignoredError } from '@/utils'
+import {
+  debounce,
+  updateTrayMenus,
+  APP_TITLE,
+  APP_VERSION,
+  ignoredError,
+  stringifyNoFolding
+} from '@/utils'
 import {
   Readfile,
   Writefile,
@@ -191,7 +198,7 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
       updateAppSettings(settings)
 
       if (!firstOpen) {
-        const lastModifiedConfig = stringify(settings)
+        const lastModifiedConfig = stringifyNoFolding(settings)
         if (latestUserConfig !== lastModifiedConfig) {
           saveAppSettings(lastModifiedConfig).then(() => {
             latestUserConfig = lastModifiedConfig

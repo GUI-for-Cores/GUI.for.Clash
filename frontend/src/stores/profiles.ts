@@ -1,9 +1,9 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import { parse, stringify } from 'yaml'
+import { parse } from 'yaml'
 
 import { Readfile, Writefile } from '@/bridge'
-import { debounce, ignoredError } from '@/utils'
+import { debounce, ignoredError, stringifyNoFolding } from '@/utils'
 import {
   TunConfigDefaults,
   ProfilesFilePath,
@@ -152,7 +152,7 @@ export const useProfilesStore = defineStore('profiles', () => {
   }
 
   const saveProfiles = debounce(async () => {
-    await Writefile(ProfilesFilePath, stringify(profiles.value))
+    await Writefile(ProfilesFilePath, stringifyNoFolding(profiles.value))
   }, 100)
 
   const addProfile = async (p: ProfileType) => {

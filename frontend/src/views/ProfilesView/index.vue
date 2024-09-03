@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { stringify } from 'yaml'
 import { useI18n, I18nT } from 'vue-i18n'
 
 import { ClipboardSetText } from '@/bridge'
 import { useMessage, useAlert } from '@/hooks'
 import { DraggableOptions, View } from '@/constant'
-import { debounce, deepClone, generateConfig, sampleID } from '@/utils'
+import { debounce, deepClone, generateConfig, sampleID, stringifyNoFolding } from '@/utils'
 import {
   type ProfileType,
   type Menu,
@@ -60,7 +59,7 @@ const secondaryMenus: Menu[] = [
       const p = profilesStore.getProfileById(id)!
       try {
         const config = await generateConfig(p)
-        const str = stringify(config)
+        const str = stringifyNoFolding(config)
         const ok = await ClipboardSetText(str)
         if (!ok) throw 'ClipboardSetText Error'
         message.success('common.success')
@@ -75,7 +74,7 @@ const secondaryMenus: Menu[] = [
       const p = profilesStore.getProfileById(id)!
       try {
         const config = await generateConfig(p)
-        alert(p.name, stringify(config))
+        alert(p.name, stringifyNoFolding(config))
       } catch (error: any) {
         message.error(error.message || error)
       }

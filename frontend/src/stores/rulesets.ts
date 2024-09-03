@@ -1,10 +1,10 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import { stringify, parse } from 'yaml'
+import { parse } from 'yaml'
 
 import { RulesetsFilePath, RulesetBehavior, RulesetFormat, EmptyRuleSet } from '@/constant'
 import { Copyfile, Readfile, Writefile, HttpGet, Download, FileExists } from '@/bridge'
-import { debounce, isValidPaylodYAML, ignoredError, omitArray } from '@/utils'
+import { debounce, isValidPaylodYAML, ignoredError, omitArray, stringifyNoFolding } from '@/utils'
 
 export type RuleSetType = {
   id: string
@@ -31,7 +31,7 @@ export const useRulesetsStore = defineStore('rulesets', () => {
 
   const saveRulesets = debounce(async () => {
     const r = omitArray(rulesets.value, ['updating'])
-    await Writefile(RulesetsFilePath, stringify(r))
+    await Writefile(RulesetsFilePath, stringifyNoFolding(r))
   }, 500)
 
   const addRuleset = async (r: RuleSetType) => {
@@ -84,7 +84,7 @@ export const useRulesetsStore = defineStore('rulesets', () => {
         if (isExist) {
           body = await Readfile(r.path)
         } else {
-          body = stringify(EmptyRuleSet)
+          body = stringifyNoFolding(EmptyRuleSet)
         }
       }
 
@@ -99,7 +99,7 @@ export const useRulesetsStore = defineStore('rulesets', () => {
         (['Http', 'File'].includes(r.type) && r.url !== r.path) ||
         (r.type === 'Manual' && !isExist)
       ) {
-        await Writefile(r.path, stringify(ruleset))
+        await Writefile(r.path, stringifyNoFolding(ruleset))
       }
 
       r.count = ruleset.payload.length

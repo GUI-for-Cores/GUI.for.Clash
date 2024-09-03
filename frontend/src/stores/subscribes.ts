@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import { stringify, parse } from 'yaml'
+import { parse } from 'yaml'
 
 import { SubscribesFilePath } from '@/constant'
 import { Readfile, Writefile, HttpGet } from '@/bridge'
@@ -14,7 +14,8 @@ import {
   ignoredError,
   omitArray,
   isValidBase64,
-  formatDate
+  formatDate,
+  stringifyNoFolding
 } from '@/utils'
 
 export type SubscribeType = {
@@ -58,7 +59,7 @@ export const useSubscribesStore = defineStore('subscribes', () => {
 
   const saveSubscribes = debounce(async () => {
     const s = omitArray(subscribes.value, ['updating'])
-    await Writefile(SubscribesFilePath, stringify(s))
+    await Writefile(SubscribesFilePath, stringifyNoFolding(s))
   }, 500)
 
   const addSubscribe = async (s: SubscribeType) => {
@@ -229,7 +230,7 @@ export const useSubscribesStore = defineStore('subscribes', () => {
 
     if (s.type === 'Http' || s.url !== s.path) {
       proxies = omitArray(proxies, ['__id__', '__tmp__id__'])
-      await Writefile(s.path, stringify({ proxies }))
+      await Writefile(s.path, stringifyNoFolding({ proxies }))
     }
   }
 

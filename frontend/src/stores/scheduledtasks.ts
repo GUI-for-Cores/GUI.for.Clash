@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
-import { stringify, parse } from 'yaml'
+import { parse } from 'yaml'
 import { computed, ref, watch } from 'vue'
 
 import { Notify } from '@/bridge'
-import { debounce, ignoredError } from '@/utils'
+import { debounce, ignoredError, stringifyNoFolding } from '@/utils'
 import { PluginTriggerEvent, ScheduledTasksFilePath, ScheduledTasksType } from '@/constant'
 import { useSubscribesStore, useRulesetsStore, usePluginsStore, useLogsStore } from '@/stores'
 import {
@@ -122,7 +122,7 @@ export const useScheduledTasksStore = defineStore('scheduledtasks', () => {
   }
 
   const saveScheduledTasks = debounce(async () => {
-    await Writefile(ScheduledTasksFilePath, stringify(scheduledtasks.value))
+    await Writefile(ScheduledTasksFilePath, stringifyNoFolding(scheduledtasks.value))
   }, 500)
 
   const addScheduledTask = async (s: ScheduledTaskType) => {
