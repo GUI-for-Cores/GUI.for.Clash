@@ -41,6 +41,7 @@ const needUpdate = computed(() => remoteVersion.value && localVersion.value !== 
 
 const { t } = useI18n()
 const { message } = useMessage()
+const envStore = useEnvStore()
 const appSettings = useAppSettingsStore()
 const kernelApiStore = useKernelApiStore()
 
@@ -63,7 +64,6 @@ const downloadCore = async () => {
     const { assets, message: msg } = body
     if (msg) throw msg
 
-    const envStore = useEnvStore()
     const amd64Compatible = arch === 'amd64' && envStore.env.x64Level < 3 ? '-compatible' : ''
     const suffix = { windows: '.zip', linux: '.gz', darwin: '.gz' }[os]
     const assetName = `mihomo-${os}-${arch}${amd64Compatible}-${remoteVersion.value}${suffix}`
@@ -202,12 +202,19 @@ initVersion()
   <h3>
     Alpha
     <Button
+      @click="handleGrantPermission"
+      v-if="localVersion && envStore.env.os !== 'windows'"
+      v-tips="'settings.kernel.grant'"
+      type="text"
+      size="small"
+      icon="grant"
+    />
+    <Button
       @click="BrowserOpenURL('https://github.com/MetaCubeX/mihomo/releases/tag/Prerelease-Alpha')"
       icon="link"
       type="text"
       size="small"
     />
-    <Button @click="handleGrantPermission" type="text" size="small" icon="arrowDown" />
   </h3>
   <div class="tags">
     <Tag @click="updateLocalVersion(true)" style="cursor: pointer">
