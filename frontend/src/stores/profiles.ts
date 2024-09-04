@@ -84,6 +84,7 @@ export type ProfileType = {
     nameserver: string[]
     'enhanced-mode': string
     'fake-ip-range': string
+    'fake-ip-filter-mode': string
     'fake-ip-filter': string[]
     'prefer-h3': boolean
     fallback: string[]

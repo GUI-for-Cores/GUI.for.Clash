@@ -79,6 +79,7 @@ export const DnsConfigDefaults = (): ProfileType['dnsConfig'] => ({
   'nameserver-policy': {},
   'enhanced-mode': 'fake-ip',
   'fake-ip-range': '198.18.0.1/16',
+  'fake-ip-filter-mode': 'blacklist',
   'fake-ip-filter': [
     '*.lan',
     '*.localdomain',

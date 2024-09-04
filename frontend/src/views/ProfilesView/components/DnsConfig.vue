@@ -3,7 +3,7 @@ import { useI18n } from 'vue-i18n'
 
 import { useBool } from '@/hooks'
 import { type ProfileType } from '@/stores'
-import { EnhancedModeOptions, DnsConfigDefaults } from '@/constant'
+import { EnhancedModeOptions, FakeipFilterMode, DnsConfigDefaults } from '@/constant'
 
 const fields = defineModel<ProfileType['dnsConfig']>({ default: DnsConfigDefaults() })
 
@@ -75,6 +75,10 @@ const [showMore, toggleMore] = useBool(false)
         <div class="form-item">
           {{ t('kernel.dns.fake-ip-range') }}
           <Input v-model="fields['fake-ip-range']" editable />
+        </div>
+        <div class="form-item">
+          {{ t('kernel.dns.fake-ip-filter-mode.name') }}
+          <Radio v-model="fields['fake-ip-filter-mode']" :options="FakeipFilterMode" />
         </div>
         <div class="form-item" :class="{ 'flex-start': fields['fake-ip-filter'].length !== 0 }">
           {{ t('kernel.dns.fake-ip-filter') }}

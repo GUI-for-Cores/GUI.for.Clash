@@ -230,6 +230,17 @@ export const EnhancedModeOptions = [
   }
 ]
 
+export const FakeipFilterMode = [
+  {
+    label: 'kernel.dns.fake-ip-filter-mode.blacklist',
+    value: 'blacklist'
+  },
+  {
+    label: 'kernel.dns.fake-ip-filter-mode.whitelist',
+    value: 'whitelist'
+  }
+]
+
 export const ProxyTypeOptions = [
   {
     label: 'direct',
