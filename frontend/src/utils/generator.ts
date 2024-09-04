@@ -206,36 +206,27 @@ const generateRuleProviders = async (
 ) => {
   const rulesetsStore = useRulesetsStore()
   const providers: Record<string, any> = {}
-  rules
-    .filter((rule) => rule.type === 'RULE-SET')
-    .forEach((rule) => {
-      const ruleset = rulesetsStore.getRulesetById(rule.payload)
-      if (ruleset) {
-        providers[ruleset.name] = {
-          type: 'file',
-          behavior: ruleset.behavior,
-          path: ruleset.path.replace('data/', '../'),
-          format: ruleset.format
-        }
-      }
-    })
+  const rulesetList: string[] = []
 
-  Object.keys(dns['nameserver-policy']).forEach((key) => {
-    if (key.startsWith('rule-set:')) {
-      key
-        .substring(9)
-        .split(',')
-        .forEach((rule) => {
-          const ruleset = rulesetsStore.getRulesetByName(rule)
-          if (ruleset) {
-            providers[ruleset.name] = {
-              type: 'file',
-              behavior: ruleset.behavior,
-              path: ruleset.path.replace('data/', '../'),
-              format: ruleset.format
-            }
-          }
-        })
+  rulesetList.push(...rules.flatMap((rule) => (rule.type === 'RULE-SET' ? rule.payload : [])))
+  rulesetList.push(
+    ...dns['fake-ip-filter'].filter((v) => v.startsWith('rule-set:')).map((v) => v.substring(9))
+  )
+  rulesetList.push(
+    ...Object.keys(dns['nameserver-policy']).flatMap((key) =>
+      key.startsWith('rule-set:') ? key.substring(9).split(',') : []
+    )
+  )
+
+  rulesetList.forEach((rule) => {
+    const ruleset = rulesetsStore.getRulesetById(rule) || rulesetsStore.getRulesetByName(rule)
+    if (ruleset) {
+      providers[ruleset.name] = {
+        type: 'file',
+        behavior: ruleset.behavior,
+        path: ruleset.path.replace('data/', '../'),
+        format: ruleset.format
+      }
     }
   })
   return providers
