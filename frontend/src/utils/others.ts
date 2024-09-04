@@ -126,5 +126,5 @@ export const base64Decode = (str: string) => {
 
 export const stringifyNoFolding = (content: any) => {
   // Disable string folding
-  return stringify(content, {lineWidth: 0, minContentWidth: 0})
+  return stringify(content, { lineWidth: 0, minContentWidth: 0 })
 }

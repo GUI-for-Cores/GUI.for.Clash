@@ -5,7 +5,14 @@ import { computed, ref, watch } from 'vue'
 import { HttpGet, Readfile, Writefile } from '@/bridge'
 import { PluginsFilePath, PluginTrigger, PluginTriggerEvent } from '@/constant'
 import { useAppSettingsStore, type ProfileType, type SubscribeType } from '@/stores'
-import { debounce, omitArray, ignoredError, isNumber, updateTrayMenus, stringifyNoFolding } from '@/utils'
+import {
+  debounce,
+  omitArray,
+  ignoredError,
+  isNumber,
+  updateTrayMenus,
+  stringifyNoFolding
+} from '@/utils'
 
 export type PluginConfiguration = {
   id: string

@@ -35,7 +35,10 @@ const handleSave = async () => {
       name: v.name,
       type: v.type
     }))
-    await Writefile(path, stringifyNoFolding({ proxies: omitArray(proxiesWithId, ['__id_in_gui']) }))
+    await Writefile(
+      path,
+      stringifyNoFolding({ proxies: omitArray(proxiesWithId, ['__id_in_gui']) })
+    )
     await subscribeStore.editSubscribe(id, sub.value)
     handleSubmit()
   } catch (error: any) {
