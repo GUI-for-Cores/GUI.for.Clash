@@ -3,7 +3,7 @@ import { useI18n } from 'vue-i18n'
 import { computed, ref } from 'vue'
 
 import { useMessage } from '@/hooks'
-import { getGitHubApiAuthorization, ignoredError } from '@/utils'
+import { GrantTUNPermission, getGitHubApiAuthorization, ignoredError } from '@/utils'
 import { KernelWorkDirectory, getKernelFileName } from '@/constant'
 import { useAppSettingsStore, useEnvStore, useKernelApiStore } from '@/stores'
 import {
@@ -170,6 +170,13 @@ const handleRestartKernel = async () => {
   }
 }
 
+const handleGrantPermission = async () => {
+  const fileName = await getKernelFileName(true)
+  const kernelFilePath = KernelWorkDirectory + '/' + fileName
+  await GrantTUNPermission(kernelFilePath)
+  message.success('common.success')
+}
+
 const initVersion = async () => {
   getLocalVersion()
     .then((v) => {
@@ -200,6 +207,7 @@ initVersion()
       type="text"
       size="small"
     />
+    <Button @click="handleGrantPermission" type="text" size="small" icon="arrowDown" />
   </h3>
   <div class="tags">
     <Tag @click="updateLocalVersion(true)" style="cursor: pointer">

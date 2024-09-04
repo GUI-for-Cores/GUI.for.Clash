@@ -32,6 +32,22 @@ export const SwitchPermissions = async (enable: boolean) => {
   await Exec('reg', args, { convert: true })
 }
 
+export const GrantTUNPermission = async (path: string) => {
+  const { os } = useEnvStore().env
+  const absPath = await AbsolutePath(path)
+  if (os === 'darwin') {
+    const osaScript = `chown root:admin ${absPath}\nchmod +sx ${absPath}`
+    const bashScript = `osascript -e 'do shell script "${osaScript}" with administrator privileges'`
+    await Exec('bash', ['-c', bashScript])
+  } else if (os === 'linux') {
+    await Exec('pkexec', [
+      'setcap',
+      'cap_net_bind_service,cap_net_admin,cap_dac_override=+ep',
+      absPath
+    ])
+  }
+}
+
 export const CheckPermissions = async () => {
   const { basePath, appName } = useEnvStore().env
   try {
