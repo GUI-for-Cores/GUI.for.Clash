@@ -611,6 +611,7 @@ export default {
     later: 'Later'
   },
   tray: {
+    showMainWindow: 'Show Main Window',
     restart: 'Restart',
     restartTip: 'Restart App',
     exit: 'Exit',
