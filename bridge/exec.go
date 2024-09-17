@@ -2,11 +2,13 @@ package bridge
 
 import (
 	"bufio"
+	"errors"
 	"log"
 	"os"
 	"os/exec"
 	"strconv"
 	"sync"
+	"time"
 
 	"github.com/shirou/gopsutil/process"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -138,5 +140,30 @@ func (a *App) KillProcess(pid int) FlagResult {
 		return FlagResult{false, err.Error()}
 	}
 
+	err = waitForProcessExitWithTimeout(process, 15)
+	if err != nil {
+		return FlagResult{false, err.Error()}
+	}
+
 	return FlagResult{true, "Success"}
+}
+
+func waitForProcessExitWithTimeout(process *os.Process, timeoutSeconds int64) error {
+	done := make(chan error, 1)
+	go func() {
+		_, err := process.Wait()
+		done <- err
+	}()
+
+	select {
+	case err := <-done:
+		if err != nil {
+			return err
+		}
+	case <-time.After(time.Duration(timeoutSeconds) * time.Second):
+		process.Kill()
+		return errors.New("timeout waiting for process to exit")
+	}
+
+	return nil
 }
