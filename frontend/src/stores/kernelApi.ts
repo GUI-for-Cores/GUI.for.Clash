@@ -101,7 +101,7 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
 
     const onOut = async (out: string, pid: number) => {
       logsStore.recordKernelLog(out)
-      if (out.toLowerCase().includes('start initial compatible provider default')) {
+      if (out.toLowerCase().includes('initial configuration complete')) {
         loading.value = false
         appSettingsStore.app.kernel.pid = pid
         appSettingsStore.app.kernel.running = true
