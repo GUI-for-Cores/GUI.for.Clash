@@ -6,12 +6,11 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	sysruntime "runtime"
+	"runtime"
 	"strings"
 
 	"github.com/klauspost/cpuid/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
-	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"gopkg.in/yaml.v3"
 )
 
@@ -25,8 +24,8 @@ var isStartup = true
 var Env = &EnvResult{
 	BasePath:    "",
 	AppName:     "",
-	OS:          sysruntime.GOOS,
-	ARCH:        sysruntime.GOARCH,
+	OS:          runtime.GOOS,
+	ARCH:        runtime.GOARCH,
 	X64Level:    cpuid.CPU.X64Level(),
 	FromTaskSch: false,
 }
@@ -124,8 +123,4 @@ func (a *App) GetInterfaces() FlagResult {
 	}
 
 	return FlagResult{true, strings.Join(interfaceNames, "|")}
-}
-
-func (a *App) ShowMainWindow() {
-	runtime.WindowShow(a.Ctx)
 }
