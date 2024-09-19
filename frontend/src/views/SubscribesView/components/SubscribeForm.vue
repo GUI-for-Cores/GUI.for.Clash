@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, inject } from 'vue'
+import { ref, inject, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { ProxyTypeOptions } from '@/constant'
@@ -48,6 +48,8 @@ const sub = ref<SubscribeType>({
   proxies: []
 })
 
+const isManual = computed(() => sub.value.type === 'Manual')
+
 const { t } = useI18n()
 const { message } = useMessage()
 const [showMore, toggleShowMore] = useBool(false)
@@ -93,11 +95,12 @@ if (props.isUpdate) {
         v-model="sub.type"
         :options="[
           { label: 'common.http', value: 'Http' },
-          { label: 'common.file', value: 'File' }
+          { label: 'common.file', value: 'File' },
+          { label: 'common.manual', value: 'Manual' }
         ]"
       />
     </div>
-    <div class="form-item">
+    <div v-if="!isManual" class="form-item">
       <div class="name">{{ t('subscribe.useInternal') }}</div>
       <Switch v-model="sub.useInternal" />
     </div>
@@ -105,7 +108,7 @@ if (props.isUpdate) {
       <div class="name">{{ t('subscribe.name') }} *</div>
       <Input v-model="sub.name" auto-size autofocus class="input" />
     </div>
-    <div class="form-item">
+    <div v-show="!isManual" class="form-item">
       <div class="name">
         {{ t(sub.type === 'Http' ? 'subscribe.url' : 'subscribe.localPath') }} *
       </div>
@@ -131,59 +134,61 @@ if (props.isUpdate) {
       </Button>
     </Divider>
     <div v-show="showMore">
-      <div class="form-item">
-        <div class="name">{{ t('subscribe.include') }}</div>
-        <Input v-model="sub.include" placeholder="keyword1|keyword2" auto-size class="input" />
-      </div>
-      <div class="form-item">
-        <div class="name">{{ t('subscribe.exclude') }}</div>
-        <Input v-model="sub.exclude" placeholder="keyword1|keyword2" auto-size class="input" />
-      </div>
-      <div class="form-item">
-        <div class="name">{{ t('subscribe.includeProtocol') }}</div>
-        <Input
-          v-model="sub.includeProtocol"
-          :placeholder="ProxyTypeOptions.map((v) => v.label).join('|')"
-          auto-size
-          class="input"
-        />
-      </div>
-      <div class="form-item">
-        <div class="name">{{ t('subscribe.excludeProtocol') }}</div>
-        <Input
-          v-model="sub.excludeProtocol"
-          :placeholder="ProxyTypeOptions.map((v) => v.label).join('|')"
-          auto-size
-          class="input"
-        />
-      </div>
-      <div class="form-item">
-        <div class="name">{{ t('subscribe.proxyPrefix') }}</div>
-        <Input v-model="sub.proxyPrefix" auto-size class="input" />
-      </div>
-      <div v-if="sub.type === 'Http'" class="form-item">
-        <div class="name">
-          {{ t('subscribe.website') }}
+      <template v-if="!isManual">
+        <div class="form-item">
+          <div class="name">{{ t('subscribe.include') }}</div>
+          <Input v-model="sub.include" placeholder="keyword1|keyword2" auto-size class="input" />
         </div>
-        <Input v-model="sub.website" placeholder="http(s)://" auto-size class="input" />
-      </div>
-      <div class="form-item">
-        <div class="name">{{ t('subscribe.useragent') }}</div>
-        <Input v-model="sub.userAgent" :placeholder="getUserAgent()" auto-size>
-          <template #extra>
-            <Button
-              @click="resetUserAgent"
-              type="text"
-              icon="reset"
-              v-tips="t('subscribe.resetUserAgent')"
-            />
-          </template>
-        </Input>
-      </div>
-      <div class="form-item">
-        <div class="name">{{ t('subscribe.inSecure') }}</div>
-        <Switch v-model="sub.inSecure" />
-      </div>
+        <div class="form-item">
+          <div class="name">{{ t('subscribe.exclude') }}</div>
+          <Input v-model="sub.exclude" placeholder="keyword1|keyword2" auto-size class="input" />
+        </div>
+        <div class="form-item">
+          <div class="name">{{ t('subscribe.includeProtocol') }}</div>
+          <Input
+            v-model="sub.includeProtocol"
+            :placeholder="ProxyTypeOptions.map((v) => v.label).join('|')"
+            auto-size
+            class="input"
+          />
+        </div>
+        <div class="form-item">
+          <div class="name">{{ t('subscribe.excludeProtocol') }}</div>
+          <Input
+            v-model="sub.excludeProtocol"
+            :placeholder="ProxyTypeOptions.map((v) => v.label).join('|')"
+            auto-size
+            class="input"
+          />
+        </div>
+        <div class="form-item">
+          <div class="name">{{ t('subscribe.proxyPrefix') }}</div>
+          <Input v-model="sub.proxyPrefix" auto-size class="input" />
+        </div>
+        <div v-if="sub.type === 'Http'" class="form-item">
+          <div class="name">
+            {{ t('subscribe.website') }}
+          </div>
+          <Input v-model="sub.website" placeholder="http(s)://" auto-size class="input" />
+        </div>
+        <div class="form-item">
+          <div class="name">{{ t('subscribe.useragent') }}</div>
+          <Input v-model="sub.userAgent" :placeholder="getUserAgent()" auto-size>
+            <template #extra>
+              <Button
+                @click="resetUserAgent"
+                type="text"
+                icon="reset"
+                v-tips="t('subscribe.resetUserAgent')"
+              />
+            </template>
+          </Input>
+        </div>
+        <div class="form-item">
+          <div class="name">{{ t('subscribe.inSecure') }}</div>
+          <Switch v-model="sub.inSecure" />
+        </div>
+      </template>
       <div class="form-item">
         <div class="name">{{ t('subscribe.healthCheck.name') }}</div>
         <Switch v-model="sub.healthCheck.enable" />
@@ -205,7 +210,7 @@ if (props.isUpdate) {
     <Button
       @click="handleSubmit"
       :loading="loading"
-      :disabled="!sub.name || !sub.url || !sub.path"
+      :disabled="!sub.name || !sub.path || (!sub.url && sub.type !== 'Manual')"
       type="primary"
     >
       {{ t('common.save') }}

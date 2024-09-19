@@ -14,7 +14,6 @@ import {
   ignoredError,
   omitArray,
   isValidBase64,
-  formatDate,
   stringifyNoFolding
 } from '@/utils'
 
@@ -27,7 +26,7 @@ export type SubscribeType = {
   total: number
   expire: number
   updateTime: number
-  type: 'Http' | 'File'
+  type: 'Http' | 'File' | 'Manual'
   url: string
   website: string
   path: string
@@ -135,6 +134,10 @@ export const useSubscribesStore = defineStore('subscribes', () => {
     let body = ''
     let proxies: Record<string, any>[] = []
 
+    if (s.type === 'Manual') {
+      body = await Readfile(s.path)
+    }
+
     if (s.type === 'File') {
       body = await Readfile(s.url)
     }
@@ -180,18 +183,20 @@ export const useSubscribesStore = defineStore('subscribes', () => {
       throw 'You need to install the [节点转换] plugin first'
     }
 
-    proxies = proxies.filter((v) => {
-      const flag1 = s.include ? new RegExp(s.include, 'i').test(v.name) : true
-      const flag2 = s.exclude ? !new RegExp(s.exclude, 'i').test(v.name) : true
-      const flag3 = s.includeProtocol ? new RegExp(s.includeProtocol, 'i').test(v.type) : true
-      const flag4 = s.excludeProtocol ? !new RegExp(s.excludeProtocol, 'i').test(v.type) : true
-      return flag1 && flag2 && flag3 && flag4
-    })
-
-    if (s.proxyPrefix) {
-      proxies.forEach((v) => {
-        v.name = v.name.startsWith(s.proxyPrefix) ? v.name : s.proxyPrefix + v.name
+    if (s.type !== 'Manual') {
+      proxies = proxies.filter((v) => {
+        const flag1 = s.include ? new RegExp(s.include, 'i').test(v.name) : true
+        const flag2 = s.exclude ? !new RegExp(s.exclude, 'i').test(v.name) : true
+        const flag3 = s.includeProtocol ? new RegExp(s.includeProtocol, 'i').test(v.type) : true
+        const flag4 = s.excludeProtocol ? !new RegExp(s.excludeProtocol, 'i').test(v.type) : true
+        return flag1 && flag2 && flag3 && flag4
       })
+
+      if (s.proxyPrefix) {
+        proxies.forEach((v) => {
+          v.name = v.name.startsWith(s.proxyPrefix) ? v.name : s.proxyPrefix + v.name
+        })
+      }
     }
 
     proxies.forEach((proxy: any) => {
@@ -199,7 +204,7 @@ export const useSubscribesStore = defineStore('subscribes', () => {
       proxy.__id__ = s.proxies.find((v) => v.name === proxy.name)?.id || sampleID()
     })
 
-    if (s.useInternal && haveRules) {
+    if (s.useInternal && s.type !== 'Manual' && haveRules) {
       proxies.forEach((proxy: any) => {
         IdNameMap[proxy.__tmp__id__] = proxy.name
       })
@@ -228,7 +233,7 @@ export const useSubscribesStore = defineStore('subscribes', () => {
     s.updateTime = Date.now()
     s.proxies = proxies.map(({ name, type, __id__ }) => ({ id: __id__, name, type }))
 
-    if (s.type === 'Http' || s.url !== s.path) {
+    if (s.type === 'Http' || (s.type === 'File' && s.url !== s.path)) {
       proxies = omitArray(proxies, ['__id__', '__tmp__id__'])
       await Writefile(s.path, stringifyNoFolding({ proxies }))
     }

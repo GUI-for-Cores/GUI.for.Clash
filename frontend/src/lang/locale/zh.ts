@@ -42,6 +42,7 @@ export default {
     selectAll: '全选',
     http: '远程',
     file: '本地',
+    manual: '手动管理',
     openFile: '打开文件',
     develop: '开发'
   },
