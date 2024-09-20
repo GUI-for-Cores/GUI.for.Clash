@@ -584,6 +584,7 @@ export default {
     restart: 'Restart APP',
     noDownloadLink: 'No download link found',
     updateSuccessful: 'Update completed, please restart the App',
+    updateSuccessfulReplace: 'Download completed, please manually replace the App',
     newVersion: 'New version found',
     latestVersion: 'Already the latest version'
   },
