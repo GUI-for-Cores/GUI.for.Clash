@@ -36,9 +36,29 @@ const handleShowSinglePicker = async () => {
     const res = await picker.single(
       'Single',
       [
-        { label: 'ONE', value: 'one', description: 'The first option' },
-        { label: 'TWO', value: 'two' },
-        { label: 'THREE', value: 'three', description: 'The third option' }
+        {
+          label: 'ONE',
+          value: 'one',
+          description: 'The first option',
+          onSelect: ({ value, option, options, selected }) => {
+            console.log(value, option, options, selected)
+          }
+        },
+        {
+          label: 'TWO',
+          value: 'two',
+          onSelect: ({ value, option, options, selected }) => {
+            console.log(value, option, options, selected)
+          }
+        },
+        {
+          label: 'THREE',
+          value: 'three',
+          description: 'The third option',
+          onSelect: ({ value, option, options, selected }) => {
+            console.log(value, option, options, selected)
+          }
+        }
       ],
       ['one']
     )
@@ -53,9 +73,32 @@ const handleShowMultiPicker = async () => {
     const res = await picker.multi(
       'Multi',
       [
-        { label: 'ONE', value: 'one', description: 'The first option' },
-        { label: 'TWO', value: 'two' },
-        { label: 'THREE', value: 'three', description: 'The third option' }
+        {
+          label: 'ONE',
+          value: 'one',
+          description: 'The first option',
+          background: 'red',
+          onSelect: ({ value, option, options, selected }) => {
+            console.log(value, option, options, selected)
+          }
+        },
+        {
+          label: 'TWO',
+          value: 'two',
+          background: 'blue',
+          onSelect: ({ value, option, options, selected }) => {
+            console.log(value, option, options, selected)
+          }
+        },
+        {
+          label: 'THREE',
+          value: 'three',
+          description: 'The third option',
+          background: 'green',
+          onSelect: ({ value, option, options, selected }) => {
+            console.log(value, option, options, selected)
+          }
+        }
       ],
       ['one', 'three']
     )
