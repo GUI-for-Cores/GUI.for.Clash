@@ -1,6 +1,6 @@
 import i18n from '@/lang'
 import { sampleID } from '@/utils'
-import { ProxyGroup } from '@/constant'
+import { ProxyGroup, RulesetBehavior, RulesetFormat } from '@/constant'
 import type { ProfileType } from '@/stores'
 
 const { t } = i18n.global
@@ -34,7 +34,7 @@ export const AdvancedConfigDefaults = (): ProfileType['advancedConfig'] => ({
     'private-key': ''
   },
   'global-client-fingerprint': 'chrome',
-  'geodata-mode': true,
+  'geodata-mode': false,
   'geo-auto-update': false,
   'geo-update-interval': 24,
   'geodata-loader': 'standard',
@@ -209,56 +209,100 @@ export const RulesConfigDefaults = (ids: string[]): ProfileType['rulesConfig'] =
     type: 'LOGIC',
     payload: 'AND,((DST-PORT,443),(NETWORK,udp))',
     proxy: ids[3],
-    'no-resolve': false
+    'no-resolve': false,
+    'ruleset-name': '',
+    'ruleset-type': 'file',
+    'ruleset-behavior': RulesetBehavior.Domain,
+    'ruleset-format': RulesetFormat.Mrs,
+    'ruleset-proxy': ids[2]
   },
   {
     id: sampleID(),
-    type: 'GEOSITE',
-    payload: 'category-ads-all',
+    type: 'RULE-SET',
+    payload:
+      'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/category-ads-all.mrs',
     proxy: ids[3],
-    'no-resolve': false
+    'no-resolve': false,
+    'ruleset-name': 'category-ads-all',
+    'ruleset-type': 'http',
+    'ruleset-behavior': RulesetBehavior.Domain,
+    'ruleset-format': RulesetFormat.Mrs,
+    'ruleset-proxy': ids[2]
   },
   {
     id: sampleID(),
-    type: 'GEOIP',
-    payload: 'private',
+    type: 'RULE-SET',
+    payload:
+      'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geoip/private.mrs',
     proxy: ids[2],
-    'no-resolve': true
+    'no-resolve': true,
+    'ruleset-name': 'GEOIP-Private',
+    'ruleset-type': 'http',
+    'ruleset-behavior': RulesetBehavior.Ipcidr,
+    'ruleset-format': RulesetFormat.Mrs,
+    'ruleset-proxy': ids[2]
   },
   {
     id: sampleID(),
-    type: 'GEOIP',
-    payload: 'CN',
+    type: 'RULE-SET',
+    payload: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geoip/cn.mrs',
     proxy: ids[2],
-    'no-resolve': true
+    'no-resolve': true,
+    'ruleset-name': 'GEOIP-CN',
+    'ruleset-type': 'http',
+    'ruleset-behavior': RulesetBehavior.Ipcidr,
+    'ruleset-format': RulesetFormat.Mrs,
+    'ruleset-proxy': ids[2]
   },
   {
     id: sampleID(),
-    type: 'GEOSITE',
-    payload: 'private',
+    type: 'RULE-SET',
+    payload:
+      'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/private.mrs',
     proxy: ids[2],
-    'no-resolve': false
+    'no-resolve': false,
+    'ruleset-name': 'GEOSITE-Private',
+    'ruleset-type': 'http',
+    'ruleset-behavior': RulesetBehavior.Domain,
+    'ruleset-format': RulesetFormat.Mrs,
+    'ruleset-proxy': ids[2]
   },
   {
     id: sampleID(),
-    type: 'GEOSITE',
-    payload: 'CN',
+    type: 'RULE-SET',
+    payload: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/cn.mrs',
     proxy: ids[2],
-    'no-resolve': false
+    'no-resolve': false,
+    'ruleset-name': 'GEOSITE-CN',
+    'ruleset-type': 'http',
+    'ruleset-behavior': RulesetBehavior.Domain,
+    'ruleset-format': RulesetFormat.Mrs,
+    'ruleset-proxy': ids[2]
   },
   {
     id: sampleID(),
-    type: 'GEOSITE',
-    payload: 'geolocation-!cn',
+    type: 'RULE-SET',
+    payload:
+      'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/geolocation-!cn.mrs',
     proxy: ids[0],
-    'no-resolve': false
+    'no-resolve': false,
+    'ruleset-name': 'geolocation-!cn',
+    'ruleset-type': 'http',
+    'ruleset-behavior': RulesetBehavior.Domain,
+    'ruleset-format': RulesetFormat.Mrs,
+    'ruleset-proxy': ids[2]
   },
   {
     id: sampleID(),
     type: 'MATCH',
     payload: '',
     proxy: ids[4],
-    'no-resolve': false
+    'no-resolve': false,
+    'ruleset-name': '',
+    'ruleset-type': 'file',
+    'ruleset-behavior': RulesetBehavior.Domain,
+    'ruleset-format': RulesetFormat.Mrs,
+    'ruleset-proxy': ids[2]
   }
 ]
 

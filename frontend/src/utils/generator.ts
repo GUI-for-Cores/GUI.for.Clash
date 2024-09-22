@@ -9,15 +9,26 @@ export const generateRule = (
   rule: ProfileType['rulesConfig'][0],
   proxyGruoups?: ProfileType['proxyGroupsConfig']
 ) => {
-  const { type, payload, proxy, 'no-resolve': noResolve } = rule
+  const {
+    type,
+    payload,
+    proxy,
+    'no-resolve': noResolve,
+    'ruleset-type': rulesetType,
+    'ruleset-name': rulesetName
+  } = rule
   let ruleStr = type
   let proxyStr = proxy
   if (type !== 'MATCH') {
     if (type === 'RULE-SET') {
-      const rulesetsStore = useRulesetsStore()
-      const ruleset = rulesetsStore.getRulesetById(payload)
-      if (ruleset) {
-        ruleStr += ',' + ruleset.name
+      if (rulesetType === 'file') {
+        const rulesetsStore = useRulesetsStore()
+        const ruleset = rulesetsStore.getRulesetById(payload)
+        if (ruleset) {
+          ruleStr += ',' + ruleset.name
+        }
+      } else if (rulesetType === 'http') {
+        ruleStr += ',' + rulesetName
       }
     } else if (type === 'LOGIC') {
       ruleStr = payload
@@ -202,24 +213,14 @@ export const generateProxyProviders = async (groups: ProfileType['proxyGroupsCon
 
 const generateRuleProviders = async (
   dns: ProfileType['dnsConfig'],
-  rules: ProfileType['rulesConfig']
+  rules: ProfileType['rulesConfig'],
+  proxyGruoups: ProfileType['proxyGroupsConfig']
 ) => {
   const rulesetsStore = useRulesetsStore()
   const providers: Record<string, any> = {}
-  const rulesetList: string[] = []
 
-  rulesetList.push(...rules.flatMap((rule) => (rule.type === 'RULE-SET' ? rule.payload : [])))
-  rulesetList.push(
-    ...dns['fake-ip-filter'].filter((v) => v.startsWith('rule-set:')).map((v) => v.substring(9))
-  )
-  rulesetList.push(
-    ...Object.keys(dns['nameserver-policy']).flatMap((key) =>
-      key.startsWith('rule-set:') ? key.substring(9).split(',') : []
-    )
-  )
-
-  rulesetList.forEach((rule) => {
-    const ruleset = rulesetsStore.getRulesetById(rule) || rulesetsStore.getRulesetByName(rule)
+  function appendLocalProvider(name: string) {
+    const ruleset = rulesetsStore.getRulesetById(name) || rulesetsStore.getRulesetByName(name)
     if (ruleset) {
       providers[ruleset.name] = {
         type: 'file',
@@ -228,7 +229,32 @@ const generateRuleProviders = async (
         format: ruleset.format
       }
     }
-  })
+  }
+
+  rules
+    .filter((rule) => rule.type === 'RULE-SET')
+    .forEach((rule) => {
+      if (rule['ruleset-type'] === 'file') {
+        appendLocalProvider(rule.payload)
+      } else {
+        const group = proxyGruoups.find((v) => v.id === rule['ruleset-proxy'])
+        providers[rule['ruleset-name']] = {
+          type: 'http',
+          url: rule.payload,
+          behavior: rule['ruleset-behavior'],
+          format: rule['ruleset-format'],
+          proxy: group?.name || 'DIRECT'
+        }
+      }
+    })
+
+  const l1 = dns['fake-ip-filter'].flatMap((v) => (v.startsWith('rule-set:') ? v.substring(9) : []))
+  const l2 = Object.keys(dns['nameserver-policy']).flatMap((key) =>
+    key.startsWith('rule-set:') ? key.substring(9).split(',') : []
+  )
+
+  l1.concat(l2).forEach((name) => appendLocalProvider(name))
+
   return providers
 }
 
@@ -285,7 +311,11 @@ export const generateConfig = async (originalProfile: ProfileType) => {
 
   config['proxy-providers'] = await generateProxyProviders(profile.proxyGroupsConfig)
 
-  config['rule-providers'] = await generateRuleProviders(profile.dnsConfig, profile.rulesConfig)
+  config['rule-providers'] = await generateRuleProviders(
+    profile.dnsConfig,
+    profile.rulesConfig,
+    profile.proxyGroupsConfig
+  )
 
   config['proxies'] = await generateProxies(profile.proxyGroupsConfig)
 

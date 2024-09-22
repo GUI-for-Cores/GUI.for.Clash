@@ -6,7 +6,9 @@ import {
   GeneralConfigDefaults,
   TunConfigDefaults,
   MixinConfigDefaults,
-  ScriptConfigDefaults
+  ScriptConfigDefaults,
+  RulesetBehavior,
+  RulesetFormat
 } from '@/constant'
 
 export const restoreProfile = (
@@ -32,6 +34,9 @@ export const restoreProfile = (
   const GroupNameIdMap: Record<string, string> = {}
   const GroupIdNameMap: Record<string, string> = {}
 
+  config['proxy-groups'] = config['proxy-groups'] || []
+  config['rule-providers'] = config['rule-providers'] || {}
+
   config['proxy-groups'].forEach((group: any) => {
     const id = sampleID()
     GroupNameIdMap[group.name] = id
@@ -43,7 +48,7 @@ export const restoreProfile = (
   }
 
   config['proxy-groups'].forEach((group: any) => {
-    const _group = {
+    const _group: ProfileType['proxyGroupsConfig'][number] = {
       id: GroupNameIdMap[group.name],
       name: group.name,
       type: group.type,
@@ -109,12 +114,38 @@ export const restoreProfile = (
           return
         }
 
+        if (type === 'RULE-SET') {
+          const provider = config['rule-providers'][payload]
+          // Skip invalid rules：rule-provider missing
+          if (!provider) {
+            return
+          }
+          profile.rulesConfig.push({
+            id: index.toString(),
+            type: type,
+            payload: provider.url,
+            proxy: _proxy,
+            'no-resolve': !!noResolve,
+            'ruleset-behavior': provider.behavior,
+            'ruleset-format': provider.format || RulesetFormat.Yaml,
+            'ruleset-type': 'http',
+            'ruleset-name': payload,
+            'ruleset-proxy': 'DIRECT'
+          })
+          return
+        }
+
         profile.rulesConfig.push({
           id: index.toString(),
           type: type,
           payload: type === 'MATCH' ? '' : payload,
           proxy: _proxy,
-          'no-resolve': !!noResolve
+          'no-resolve': !!noResolve,
+          'ruleset-behavior': RulesetBehavior.Domain,
+          'ruleset-format': RulesetFormat.Mrs,
+          'ruleset-type': 'http',
+          'ruleset-name': '',
+          'ruleset-proxy': ''
         })
       })
     }

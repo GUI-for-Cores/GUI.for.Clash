@@ -5,7 +5,14 @@ import { computed, ref } from 'vue'
 import { useMessage } from '@/hooks'
 import { deepClone, sampleID, generateRule } from '@/utils'
 import { type ProfileType, useRulesetsStore, type RuleSetType } from '@/stores'
-import { RulesTypeOptions, RulesetBehavior, DraggableOptions } from '@/constant'
+import {
+  RulesTypeOptions,
+  RulesetBehavior,
+  DraggableOptions,
+  RulesetFormat,
+  RulesetFormatOptions,
+  RulesetBehaviorOptions
+} from '@/constant'
 
 interface Props {
   proxyGroups: ProfileType['proxyGroupsConfig']
@@ -24,7 +31,12 @@ const fields = ref<ProfileType['rulesConfig'][number]>({
   type: 'RULE-SET',
   payload: '',
   proxy: '',
-  'no-resolve': false
+  'no-resolve': false,
+  'ruleset-type': 'file',
+  'ruleset-name': '',
+  'ruleset-behavior': RulesetBehavior.Domain,
+  'ruleset-format': RulesetFormat.Mrs,
+  'ruleset-proxy': ''
 })
 
 const proxyOptions = computed(() => [
@@ -38,7 +50,11 @@ const supportNoResolve = computed(() =>
   ['GEOIP', 'IP-CIDR', 'IP-CIDR6', 'SCRIPT', 'RULE-SET', 'IP-ASN'].includes(fields.value.type)
 )
 
-const supportPayload = computed(() => !['MATCH', 'RULE-SET'].includes(fields.value.type))
+const supportPayload = computed(
+  () =>
+    !['MATCH', 'RULE-SET'].includes(fields.value.type) ||
+    (fields.value.type === 'RULE-SET' && fields.value['ruleset-type'] === 'http')
+)
 
 const filteredRulesTypeOptions = computed(() =>
   RulesTypeOptions.filter(
@@ -57,7 +73,12 @@ const handleAdd = () => {
     type: 'RULE-SET',
     payload: '',
     proxy: '',
-    'no-resolve': false
+    'no-resolve': false,
+    'ruleset-type': 'file',
+    'ruleset-name': '',
+    'ruleset-behavior': RulesetBehavior.Domain,
+    'ruleset-format': RulesetFormat.Mrs,
+    'ruleset-proxy': ''
   }
   showModal.value = true
 }
@@ -142,12 +163,22 @@ const showLost = () => message.warn('kernel.rules.notFound')
       {{ t('kernel.rules.proxy') }}
       <Select v-model="fields.proxy" :options="proxyOptions" />
     </div>
+    <div v-if="fields.type === 'RULE-SET'" class="form-item">
+      {{ t('kernel.rules.rule-set-type') }}
+      <Select
+        v-model="fields['ruleset-type']"
+        :options="[
+          { label: 'common.file', value: 'file' },
+          { label: 'common.http', value: 'http' }
+        ]"
+      />
+    </div>
     <div v-show="supportNoResolve" class="form-item">
       {{ t('kernel.rules.no-resolve') }}
       <Switch v-model="fields['no-resolve']" />
     </div>
 
-    <template v-if="fields.type === 'RULE-SET'">
+    <template v-if="fields.type === 'RULE-SET' && fields['ruleset-type'] === 'file'">
       <Divider>{{ t('kernel.rules.rulesets') }}</Divider>
       <div class="rulesets">
         <Empty v-if="rulesetsStore.rulesets.length === 0" :description="t('kernel.rules.empty')" />
@@ -164,6 +195,26 @@ const showLost = () => message.warn('kernel.rules.notFound')
             {{ ruleset.path }}
           </Card>
         </template>
+      </div>
+    </template>
+
+    <template v-if="fields.type === 'RULE-SET' && fields['ruleset-type'] === 'http'">
+      <Divider>{{ t('kernel.rules.ruleset') }}</Divider>
+      <div class="form-item">
+        {{ t('kernel.rules.ruleset-name') }}
+        <Input v-model="fields['ruleset-name']" />
+      </div>
+      <div class="form-item">
+        {{ t('ruleset.behavior.name') }}
+        <Select v-model="fields['ruleset-behavior']" :options="RulesetBehaviorOptions" />
+      </div>
+      <div class="form-item">
+        {{ t('ruleset.format.name') }}
+        <Select v-model="fields['ruleset-format']" :options="RulesetFormatOptions" />
+      </div>
+      <div class="form-item">
+        {{ t('kernel.rules.ruleset-proxy') }}
+        <Select v-model="fields['ruleset-proxy']" :options="proxyOptions" />
       </div>
     </template>
   </Modal>

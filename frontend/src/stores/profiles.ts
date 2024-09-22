@@ -9,7 +9,9 @@ import {
   ProfilesFilePath,
   ProxyGroup,
   MixinConfigDefaults,
-  ScriptConfigDefaults
+  ScriptConfigDefaults,
+  RulesetBehavior,
+  RulesetFormat
 } from '@/constant'
 
 export type ProfileType = {
@@ -126,6 +128,11 @@ export type ProfileType = {
     payload: string
     proxy: string
     'no-resolve': boolean
+    'ruleset-type': 'file' | 'http'
+    'ruleset-name': string
+    'ruleset-behavior': RulesetBehavior
+    'ruleset-format': RulesetFormat
+    'ruleset-proxy': string
   }[]
   mixinConfig: {
     priority: 'mixin' | 'gui'
@@ -144,11 +151,15 @@ export const useProfilesStore = defineStore('profiles', () => {
     data && (profiles.value = parse(data))
     // compatibility code
     profiles.value.forEach((profile) => {
-      profile.dnsConfig.hosts = profile.dnsConfig.hosts ?? {}
-      profile.tunConfig['route-address'] =
-        profile.tunConfig['route-address'] ?? TunConfigDefaults()['route-address']
-      profile.mixinConfig = profile.mixinConfig ?? MixinConfigDefaults()
-      profile.scriptConfig = profile.scriptConfig ?? ScriptConfigDefaults()
+      profile.rulesConfig.forEach((rule) => {
+        if (!rule['ruleset-type']) {
+          rule['ruleset-type'] = 'file'
+          rule['ruleset-name'] = ''
+          rule['ruleset-behavior'] = RulesetBehavior.Domain
+          rule['ruleset-format'] = RulesetFormat.Yaml
+          rule['ruleset-proxy'] = ''
+        }
+      })
     })
   }
 
