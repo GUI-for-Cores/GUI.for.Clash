@@ -362,5 +362,7 @@ export const generateConfigFile = async (profile: ProfileType) => {
 
   const config = await generateConfig(profile)
 
+  config['log-level'] = 'info'
+
   await Writefile(KernelConfigFilePath, header + stringifyNoFolding(config))
 }
