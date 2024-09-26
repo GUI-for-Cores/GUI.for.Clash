@@ -437,6 +437,7 @@ export default {
     updating: 'Updating'
   },
   rulesets: {
+    hub: 'Ruleset-Hub',
     empty: 'The ruleset list is empty. Please {action} a ruleset first.',
     rulesetCount: 'Ruleset Count',
     editRuleset: 'Edit Rules',

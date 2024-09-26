@@ -18,9 +18,11 @@ import {
 
 import RulesetForm from './components/RulesetForm.vue'
 import RulesetView from './components/RulesetView.vue'
+import RulesetHub from './components/RulesetHub.vue'
 
 const showRulesetForm = ref(false)
 const showRulesetList = ref(false)
+const showRulesetHub = ref(false)
 const rulesetTitle = ref('')
 const rulesetFormID = ref()
 const rulesetFormIsUpdate = ref(false)
@@ -58,6 +60,10 @@ const { message } = useMessage()
 const envStore = useEnvStore()
 const rulesetsStore = useRulesetsStore()
 const appSettingsStore = useAppSettingsStore()
+
+const handleImportRuleset = async () => {
+  showRulesetHub.value = true
+}
 
 const handleAddRuleset = async () => {
   rulesetFormIsUpdate.value = false
@@ -191,11 +197,13 @@ const onSortUpdate = debounce(rulesetsStore.saveRulesets, 1000)
         { label: 'common.list', value: View.List }
       ]"
     />
+    <Button @click="handleImportRuleset" type="link" class="ml-auto">
+      {{ t('rulesets.hub') }}
+    </Button>
     <Button
       @click="handleUpdateRulesets"
       :disabled="noUpdateNeeded"
       :type="noUpdateNeeded ? 'text' : 'link'"
-      class="ml-auto"
     >
       {{ t('common.updateAll') }}
     </Button>
@@ -320,6 +328,18 @@ const onSortUpdate = debounce(rulesetsStore.saveRulesets, 1000)
     :footer="false"
   >
     <RulesetForm :is-update="rulesetFormIsUpdate" :id="rulesetFormID" />
+  </Modal>
+
+  <Modal
+    v-model:open="showRulesetHub"
+    title="rulesets.hub"
+    :submit="false"
+    mask-closable
+    cancel-text="common.close"
+    height="90"
+    width="90"
+  >
+    <RulesetHub />
   </Modal>
 
   <Modal
