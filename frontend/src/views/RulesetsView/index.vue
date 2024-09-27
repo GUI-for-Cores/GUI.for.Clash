@@ -184,6 +184,9 @@ const onSortUpdate = debounce(rulesetsStore.saveRulesets, 1000)
           <template #action>
             <Button @click="handleAddRuleset" type="link">{{ t('common.add') }}</Button>
           </template>
+          <template #import>
+            <Button @click="handleImportRuleset" type="link">{{ t('rulesets.hub') }}</Button>
+          </template>
         </I18nT>
       </template>
     </Empty>
