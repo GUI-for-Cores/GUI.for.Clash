@@ -4,8 +4,9 @@ import { useI18n } from 'vue-i18n'
 
 import { useMessage } from '@/hooks'
 import { ignoredError } from '@/utils'
+import { useRulesetsStore } from '@/stores'
 import { HttpGet, Readfile, Writefile } from '@/bridge'
-import { usePluginsStore, type PluginType } from '@/stores'
+import { RulesetBehavior, RulesetFormat } from '@/constant'
 
 type RulesetHub = {
   geosite: string
@@ -20,7 +21,7 @@ const hubUrl = 'https://github.com/GUI-for-Cores/Ruleset-Hub/releases/download/l
 
 const { t } = useI18n()
 const { message } = useMessage()
-const pluginsStore = usePluginsStore()
+const rulesetsStore = useRulesetsStore()
 
 const keywords = ref('')
 
@@ -52,34 +53,43 @@ const getList = async () => {
   updateList()
 }
 
-const handleAddPlugin = async (ruleset: RulesetHub['list'][number]) => {
-  // try {
-  //   await pluginsStore.addPlugin(ruleset)
-  //   // Try to autoload the plugin
-  //   await ignoredError(pluginsStore.reloadPlugin, ruleset)
-  //   pluginsStore.updatePluginTrigger(ruleset)
-  //   const { id } = message.info('plugins.updating')
-  //   await pluginsStore.updatePlugin(ruleset.id)
-  //   message.update(id, 'common.success', 'success')
-  // } catch (error: any) {
-  //   console.error(error)
-  //   message.error(error.message || error)
-  // }
+const handleAddRuleset = async (ruleset: RulesetHub['list'][number], format: RulesetFormat) => {
+  const id = ruleset.type + '_' + ruleset.name + '.' + format
+  const basrUrl = { geosite: rulesetHub.value.geosite, geoip: rulesetHub.value.geoip }[ruleset.type]
+  const behavior = { geosite: RulesetBehavior.Domain, geoip: RulesetBehavior.Ipcidr }[ruleset.type]
+  try {
+    await rulesetsStore.addRuleset({
+      id,
+      name: ruleset.name,
+      updateTime: 0,
+      disabled: false,
+      type: 'Http',
+      behavior,
+      format,
+      path: 'data/rulesets/' + id,
+      url: basrUrl + ruleset.name + '.' + format,
+      count: ruleset.count
+    })
+    const { success } = message.info('rulesets.updating')
+    await rulesetsStore.updateRuleset(id)
+    success('common.success')
+  } catch (error: any) {
+    console.error(error)
+    message.error(error.message || error)
+  }
 }
 
-const isAlreadyAdded = (id: string) => pluginsStore.getPluginById(id)
+const isAlreadyAdded = (id: string) => rulesetsStore.getRulesetById(id)
 
 getList()
 </script>
 
 <template>
   <div class="ruleset-hub">
-    <div v-if="loading" class="loading">
-      <Button type="text" loading></Button>
-    </div>
+    <div v-if="loading" class="loading"><Button type="text" loading /></div>
     <template v-else>
       <div class="header">
-        <Button type="text">{{ t('plugins.total') }} : {{ rulesetHub.list.length }}</Button>
+        <Button type="text">{{ t('rulesets.total') }} : {{ rulesetHub.list.length }}</Button>
         <Input
           v-model="keywords"
           size="small"
@@ -100,14 +110,45 @@ getList()
           :title="ruleset.name"
           class="ruleset-item"
         >
-          <div>{{ ruleset.count }}</div>
+          <template #extra>
+            <Tag size="small" color="cyan">{{ ruleset.type }}</Tag>
+          </template>
+          <div class="description">
+            {{ ruleset.description || t('rulesets.noDesc') }}
+          </div>
           <div class="action">
-            <Button type="link" size="small">
-              {{ t('ruleset.format.mrs') }}
-            </Button>
-            <Button @click="handleAddPlugin(ruleset)" type="link" size="small">
-              {{ t('ruleset.format.yaml') }}
-            </Button>
+            <template
+              v-if="isAlreadyAdded(ruleset.type + '_' + ruleset.name + '.' + RulesetFormat.Yaml)"
+            >
+              <Button type="text" size="small">
+                {{ t('ruleset.format.yaml') }} {{ t('common.added') }}
+              </Button>
+            </template>
+            <template v-else>
+              <Button
+                @click="handleAddRuleset(ruleset, RulesetFormat.Yaml)"
+                type="link"
+                size="small"
+              >
+                {{ t('common.add') }} {{ t('ruleset.format.yaml') }}
+              </Button>
+            </template>
+            <template
+              v-if="isAlreadyAdded(ruleset.type + '_' + ruleset.name + '.' + RulesetFormat.Mrs)"
+            >
+              <Button type="text" size="small">
+                {{ t('ruleset.format.mrs') }} {{ t('common.added') }}
+              </Button>
+            </template>
+            <template v-else>
+              <Button
+                @click="handleAddRuleset(ruleset, RulesetFormat.Mrs)"
+                type="link"
+                size="small"
+              >
+                {{ t('common.add') }} {{ t('ruleset.format.mrs') }}
+              </Button>
+            </template>
           </div>
         </Card>
       </div>
@@ -128,6 +169,7 @@ getList()
     width: calc(33.333% - 8px);
 
     .description {
+      margin: 4px 0;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -150,6 +192,7 @@ getList()
 }
 
 .list {
+  padding-bottom: 16px;
   overflow: auto;
 }
 </style>

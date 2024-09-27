@@ -438,6 +438,9 @@ export default {
   },
   rulesets: {
     hub: 'Ruleset-Hub',
+    total: 'Number of rule-sets',
+    noDesc: 'No description',
+    updating: 'Updating',
     empty: 'The ruleset list is empty. Please {action} a ruleset first.',
     rulesetCount: 'Ruleset Count',
     editRuleset: 'Edit Rules',
