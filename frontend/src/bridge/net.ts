@@ -1,7 +1,7 @@
 import * as App from '@wails/go/bridge/App'
 import { GetSystemProxy } from '@/utils/helper'
 import { sampleID, getUserAgent } from '@/utils'
-import { EventsOn, EventsOff } from '@wails/runtime/runtime'
+import { EventsOn, EventsOff, EventsEmit } from '@wails/runtime/runtime'
 
 type RequestType = {
   method: 'GET' | 'POST' | 'DELETE' | 'PUT' | 'HEAD' | 'PATCH'
@@ -14,6 +14,8 @@ type RequestType = {
     Proxy?: string
     Insecure?: boolean
     Timeout?: number
+    CancelId?: string
+    FileField?: string
   }
 }
 
@@ -41,6 +43,7 @@ const transformRequest = async (
     Proxy: await GetSystemProxy(),
     Insecure: false,
     Timeout: 15,
+    CancelId: '',
     ...options
   }
   return [headers, body, options]
@@ -140,6 +143,8 @@ export const Requests = async (options: RequestType) => {
     Proxy: await GetSystemProxy(),
     Insecure: false,
     Timeout: 15,
+    CancelId: '',
+    FileField: 'file',
     ..._options
   }
 
@@ -172,3 +177,5 @@ export const HttpDelete = requestWithoutBody('DELETE')
 export const HttpPut = requestWithBody('PUT')
 export const HttpPost = requestWithBody('POST')
 export const HttpPatch = requestWithBody('PATCH')
+
+export const HttpCancel = (cancelId: string) => EventsEmit(cancelId)

@@ -3,7 +3,7 @@ import { ref } from 'vue'
 
 import icons from '@/components/Icon/icons'
 import { APP_TITLE, APP_VERSION, sleep } from '@/utils'
-import { HttpGet, HttpPost, Upload, Notify } from '@/bridge'
+import { HttpGet, HttpPost, Upload, Notify, Download, HttpCancel } from '@/bridge'
 import { useMessage, usePicker, useConfirm, usePrompt, useAlert } from '@/hooks'
 
 const code = ref(`
@@ -173,6 +173,30 @@ const handleUpload = async () => {
   alert('Result', JSON.stringify(res.headers, null, 2) + '\n' + JSON.stringify(res.body, null, 2))
 }
 
+const handleRequestWithCancel = async () => {
+  message.info('loading...', 3000, () => {
+    console.log('Cancel request')
+    HttpCancel('cancel-download')
+  })
+  // const { status, body, headers } = await HttpGet(
+  //   'https://php.com',
+  //   {},
+  //   {
+  //     CancelId: 'cancel-download'
+  //   }
+  // )
+  const { status, body, headers } = await Download(
+    'https://php.com',
+    'data/.cache/a.html',
+    {},
+    undefined,
+    {
+      CancelId: 'cancel-download'
+    }
+  )
+  console.log(status, body, headers)
+}
+
 const handleNotify = (type: string) => {
   Notify('Notification', 'test', type)
 }
@@ -222,6 +246,7 @@ const handleNotify = (type: string) => {
     <Button @click="handlePostJSON">HttpPost JSON</Button>
     <Button @click="handlePostFORM">HttpPost FORM</Button>
     <Button @click="handleUpload">Upload</Button>
+    <Button @click="handleRequestWithCancel">Cancel</Button>
   </div>
 
   <h2>Notify</h2>
