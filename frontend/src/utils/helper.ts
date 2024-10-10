@@ -5,7 +5,13 @@ import { useConfirm, useMessage } from '@/hooks'
 import { ignoredError, stringifyNoFolding } from '@/utils'
 import { deleteConnection, getConnections, useProxy } from '@/api/kernel'
 import { AbsolutePath, Exec, ExitApp, Readfile, Writefile } from '@/bridge'
-import { useAppSettingsStore, useEnvStore, useKernelApiStore, usePluginsStore } from '@/stores'
+import {
+  type ProxyType,
+  useAppSettingsStore,
+  useEnvStore,
+  useKernelApiStore,
+  usePluginsStore
+} from '@/stores'
 
 // Permissions Helper
 export const SwitchPermissions = async (enable: boolean) => {
@@ -66,7 +72,11 @@ export const GrantTUNPermission = async (path: string) => {
 }
 
 // SystemProxy Helper
-export const SetSystemProxy = async (enable: boolean, server: string, proxyType = 0) => {
+export const SetSystemProxy = async (
+  enable: boolean,
+  server: string,
+  proxyType: ProxyType = 'mixed'
+) => {
   const { os } = useEnvStore().env
 
   const handler = {
@@ -78,8 +88,8 @@ export const SetSystemProxy = async (enable: boolean, server: string, proxyType 
   await handler?.(server, enable, proxyType)
 }
 
-async function setWindowsSystemProxy(server: string, enabled: boolean, proxyType: number) {
-  if (proxyType === 2) throw 'home.overview.notSupportSocks'
+async function setWindowsSystemProxy(server: string, enabled: boolean, proxyType: ProxyType) {
+  if (proxyType === 'socks') throw 'home.overview.notSupportSocks'
 
   const p1 = ignoredError(Exec, 'reg', [
     'add',
@@ -106,12 +116,12 @@ async function setWindowsSystemProxy(server: string, enabled: boolean, proxyType
   await Promise.all([p1, p2])
 }
 
-async function setDarwinSystemProxy(server: string, enabled: boolean, proxyType: number) {
+async function setDarwinSystemProxy(server: string, enabled: boolean, proxyType: ProxyType) {
   async function _set(device: string) {
     const state = enabled ? 'on' : 'off'
 
-    const httpState = [0, 1].includes(proxyType) ? state : 'off'
-    const socksState = [0, 2].includes(proxyType) ? state : 'off'
+    const httpState = ['mixed', 'http'].includes(proxyType) ? state : 'off'
+    const socksState = ['mixed', 'socks'].includes(proxyType) ? state : 'off'
 
     const p1 = ignoredError(Exec, 'networksetup', ['-setwebproxystate', device, httpState])
     const p2 = ignoredError(Exec, 'networksetup', ['-setsecurewebproxystate', device, httpState])
@@ -156,10 +166,10 @@ async function setDarwinSystemProxy(server: string, enabled: boolean, proxyType:
   await Promise.all([p1, p2])
 }
 
-async function setLinuxSystemProxy(server: string, enabled: boolean, proxyType: number) {
+async function setLinuxSystemProxy(server: string, enabled: boolean, proxyType: ProxyType) {
   const [serverName, serverPort] = server.split(':')
-  const httpEnabled = enabled && [0, 1].includes(proxyType)
-  const socksEnabled = enabled && [0, 2].includes(proxyType)
+  const httpEnabled = enabled && ['mixed', 'http'].includes(proxyType)
+  const socksEnabled = enabled && ['mixed', 'socks'].includes(proxyType)
 
   const p1 = ignoredError(Exec, 'gsettings', [
     'set',
@@ -287,6 +297,25 @@ export const GetSystemProxy = async () => {
   } catch (error) {
     console.log('error', error)
   }
+  return ''
+}
+
+export const GetSystemOrKernelProxy = async () => {
+  const systemProxy = await GetSystemProxy()
+  if (systemProxy.length > 0) {
+    return systemProxy
+  }
+
+  if (useAppSettingsStore().app.kernel.running) {
+    const kernelProxy = useKernelApiStore().getProxyPort()
+    if (kernelProxy !== undefined) {
+      if (kernelProxy.proxyType === 'socks') {
+        return `socks5://127.0.0.1:${kernelProxy.port}`
+      }
+      return `http://127.0.0.1:${kernelProxy.port}`
+    }
+  }
+
   return ''
 }
 
