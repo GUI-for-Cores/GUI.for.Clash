@@ -44,7 +44,9 @@ export default {
     file: '本地',
     manual: '手动管理',
     openFile: '打开文件',
-    develop: '开发'
+    develop: '开发',
+    canceled: '已取消',
+    downloading: '下载中...'
   },
   kernel: {
     port: 'HTTP(s)代理端口',

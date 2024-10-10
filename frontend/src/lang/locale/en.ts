@@ -44,7 +44,9 @@ export default {
     file: 'Local',
     manual: 'Manual',
     openFile: 'Open File',
-    develop: 'Develop'
+    develop: 'Develop',
+    canceled: 'Canceled',
+    downloading: 'Downloading...'
   },
   kernel: {
     port: 'HTTP(s) Port',
