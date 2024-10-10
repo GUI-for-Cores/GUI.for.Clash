@@ -89,8 +89,6 @@ export const SetSystemProxy = async (
 }
 
 async function setWindowsSystemProxy(server: string, enabled: boolean, proxyType: ProxyType) {
-  if (proxyType === 'socks') throw 'home.overview.notSupportSocks'
-
   const p1 = ignoredError(Exec, 'reg', [
     'add',
     'HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings',
@@ -109,7 +107,7 @@ async function setWindowsSystemProxy(server: string, enabled: boolean, proxyType
     '/v',
     'ProxyServer',
     '/d',
-    enabled ? server : '',
+    enabled ? (proxyType === 'socks' ? 'socks=' + server : server) : '',
     '/f'
   ])
 
@@ -243,7 +241,7 @@ export const GetSystemProxy = async () => {
       const regex = /ProxyServer\s+REG_SZ\s+(\S+)/
       const match = out2.match(regex)
 
-      return match ? match[1] : ''
+      return match ? (match[1].startsWith('socks') ? match[1] : 'http://' + match[1]) : ''
     }
 
     if (os === 'darwin') {
@@ -260,11 +258,11 @@ export const GetSystemProxy = async () => {
       }
 
       if (map['HTTPEnable'] === '1') {
-        return map['HTTPProxy'] + ':' + map['HTTPPort']
+        return 'http://' + map['HTTPProxy'] + ':' + map['HTTPPort']
       }
 
       if (map['SOCKSEnable'] === '1') {
-        return map['SOCKSProxy'] + ':' + map['SOCKSPort']
+        return 'socks5://' + map['SOCKSProxy'] + ':' + map['SOCKSPort']
       }
 
       return ''
@@ -282,7 +280,7 @@ export const GetSystemProxy = async () => {
         const httpHost = out1.replace(/['"\n]/g, '')
         const httpPort = out2.replace(/['"\n]/g, '')
         if (httpHost && httpPort !== '0') {
-          return httpHost + ':' + httpPort
+          return 'http://' + httpHost + ':' + httpPort
         }
 
         const out3 = await Exec('gsettings', ['get', 'org.gnome.system.proxy.socks', 'host'])
@@ -290,7 +288,7 @@ export const GetSystemProxy = async () => {
         const socksHost = out3.replace(/['"\n]/g, '')
         const socksPort = out4.replace(/['"\n]/g, '')
         if (socksHost && socksPort !== '0') {
-          return socksHost + ':' + socksPort
+          return 'socks5://' + socksHost + ':' + socksPort
         }
       }
     }
@@ -301,11 +299,6 @@ export const GetSystemProxy = async () => {
 }
 
 export const GetSystemOrKernelProxy = async () => {
-  const systemProxy = await GetSystemProxy()
-  if (systemProxy.length > 0) {
-    return systemProxy
-  }
-
   if (useAppSettingsStore().app.kernel.running) {
     const kernelProxy = useKernelApiStore().getProxyPort()
     if (kernelProxy !== undefined) {
@@ -316,7 +309,8 @@ export const GetSystemOrKernelProxy = async () => {
     }
   }
 
-  return ''
+  const systemProxy = await GetSystemProxy()
+  return systemProxy
 }
 
 export const QuerySchTask = async (taskName: string) => {
