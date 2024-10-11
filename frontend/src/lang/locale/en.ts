@@ -565,6 +565,12 @@ export default {
     autoSetSystemProxy: 'Auto Set / Clear System Proxy',
     autoStartKernel: 'Auto Start Kernel',
     admin: 'Run As Admin',
+    webviewGpuPolicy: {
+      name: 'Webview Gpu Policy',
+      always: 'Always',
+      onDemand: 'OnDemand',
+      never: 'Never'
+    },
     addToMenu: 'Add Plugin To Menu',
     multipleInstance: 'Allow Multiple APP Instances',
     rollingRelease: 'Enable Rolling Release',

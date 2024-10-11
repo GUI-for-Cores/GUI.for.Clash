@@ -7,7 +7,14 @@ import routes from '@/router/routes'
 import { useAppSettingsStore, useEnvStore } from '@/stores'
 import { APP_TITLE, APP_VERSION, getTaskSchXmlString } from '@/utils'
 import { BrowserOpenURL, GetEnv, Writefile, Removefile, AbsolutePath } from '@/bridge'
-import { Theme, Lang, WindowStartState, Color, DefaultFontFamily } from '@/constant'
+import {
+  Theme,
+  Lang,
+  WindowStartState,
+  Color,
+  DefaultFontFamily,
+  WebviewGpuPolicy
+} from '@/constant'
 import {
   QuerySchTask,
   CreateSchTask,
@@ -88,6 +95,12 @@ const pages = routes.flatMap((route) => {
 const windowStates = [
   { label: 'settings.windowState.normal', value: WindowStartState.Normal },
   { label: 'settings.windowState.minimised', value: WindowStartState.Minimised }
+]
+
+const webviewGpuPolicy = [
+  { label: 'settings.webviewGpuPolicy.always', value: WebviewGpuPolicy.Always },
+  { label: 'settings.webviewGpuPolicy.onDemand', value: WebviewGpuPolicy.OnDemand },
+  { label: 'settings.webviewGpuPolicy.never', value: WebviewGpuPolicy.Never }
 ]
 
 const resetFontFamily = () => {
@@ -233,6 +246,13 @@ if (envStore.env.os === 'windows') {
         <span class="tips">({{ t('settings.needRestart') }})</span>
       </div>
       <Switch v-model="isAdmin" @change="onPermChange" />
+    </div>
+    <div v-if="envStore.env.os === 'linux'" class="settings-item">
+      <div class="title">
+        {{ t('settings.webviewGpuPolicy.name') }}
+        <span class="tips">({{ t('settings.needRestart') }})</span>
+      </div>
+      <Radio v-model="appSettings.app.webGpuPolicy" :options="webviewGpuPolicy" />
     </div>
     <div v-if="envStore.env.os === 'windows'" class="settings-item">
       <div class="title">

@@ -565,6 +565,12 @@ export default {
     autoSetSystemProxy: '自动配置/清除系统代理',
     autoStartKernel: '自动启动内核程序',
     admin: '以管理员身份运行',
+    webviewGpuPolicy: {
+      name: 'Webview GPU 策略',
+      always: '启用硬件加速',
+      onDemand: '根据Web内容自行决定',
+      never: '禁用硬件加速'
+    },
     addToMenu: '将插件添加到托盘菜单',
     multipleInstance: '允许多APP实例运行',
     rollingRelease: '启用滚动发行',
