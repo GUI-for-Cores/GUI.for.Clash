@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { ref, inject, type Ref, computed } from 'vue'
+import { ref, inject, type Ref, computed, useTemplateRef } from 'vue'
 
 import * as Defaults from '@/constant/profile'
 import { WindowToggleMaximise } from '@/bridge'
@@ -22,15 +22,25 @@ interface Props {
   isUpdate?: boolean
 }
 
+enum StepEnum {
+  NAME = 0,
+  GENERAL = 1,
+  TUN = 2,
+  DNS = 3,
+  GROUPS = 4,
+  RULES = 5,
+  MIXIN_SCRIPT = 6
+}
+
 const props = withDefaults(defineProps<Props>(), {
   id: '',
   isUpdate: false,
-  step: 0
+  step: StepEnum.NAME
 })
 
 const loading = ref(false)
-const groupsRef = ref()
-const rulesRef = ref()
+const groupsRef = useTemplateRef<typeof ProxyGroupsConfig>('groupsRef')
+const rulesRef = useTemplateRef<typeof RulesConfig>('rulesRef')
 const currentStep = ref(props.step)
 
 const stepItems = [
@@ -98,8 +108,8 @@ const handleSave = async () => {
 
 const handleAdd = () => {
   const map: Record<number, Ref> = {
-    '4': groupsRef,
-    '5': rulesRef
+    [StepEnum.GROUPS]: groupsRef,
+    [StepEnum.RULES]: rulesRef
   }
   map[currentStep.value].value.handleAdd()
 }
@@ -124,9 +134,15 @@ if (props.isUpdate) {
 <template>
   <div @dblclick="WindowToggleMaximise" class="header" style="--wails-draggable: drag">
     <div class="header-title">{{ t(stepItems[currentStep].title) }}</div>
-    <Button @click="handlePreview" icon="file" type="text" class="ml-auto" />
     <Button
-      v-show="[4, 5].includes(currentStep)"
+      v-show="currentStep !== StepEnum.NAME"
+      @click="handlePreview"
+      icon="file"
+      type="text"
+      class="ml-auto"
+    />
+    <Button
+      v-show="[StepEnum.GROUPS, StepEnum.RULES].includes(currentStep)"
       @click="handleAdd"
       icon="add"
       type="text"
@@ -135,14 +151,14 @@ if (props.isUpdate) {
   </div>
 
   <div class="form">
-    <div v-show="currentStep === 0">
+    <div v-show="currentStep === StepEnum.NAME">
       <div class="form-item">
         <div class="name">{{ t('profile.name') }} *</div>
         <Input v-model="profile.name" auto-size autofocus class="flex-1 ml-8" />
       </div>
     </div>
 
-    <div v-show="currentStep === 1">
+    <div v-show="currentStep === StepEnum.GENERAL">
       <GeneralConfig v-model="profile.generalConfig" />
       <Divider>
         <Button type="text" size="small" @click="toggleAdvancedSetting">
@@ -154,19 +170,19 @@ if (props.isUpdate) {
       </div>
     </div>
 
-    <div v-show="currentStep === 2">
+    <div v-show="currentStep === StepEnum.TUN">
       <TunConfig v-model="profile.tunConfig" />
     </div>
 
-    <div v-show="currentStep === 3">
+    <div v-show="currentStep === StepEnum.DNS">
       <DnsConfig v-model="profile.dnsConfig" />
     </div>
 
-    <div v-show="currentStep === 4">
+    <div v-show="currentStep === StepEnum.GROUPS">
       <ProxyGroupsConfig ref="groupsRef" v-model="profile.proxyGroupsConfig" />
     </div>
 
-    <div v-show="currentStep === 5">
+    <div v-show="currentStep === StepEnum.RULES">
       <RulesConfig
         ref="rulesRef"
         v-model="profile.rulesConfig"
@@ -175,13 +191,13 @@ if (props.isUpdate) {
       />
     </div>
 
-    <div v-show="currentStep === 6">
+    <div v-show="currentStep === StepEnum.MIXIN_SCRIPT">
       <MixinAndScript v-model="mixinAndScriptConfig" />
     </div>
   </div>
 
   <div class="form-action">
-    <Button @click="handlePrevStep" :disabled="currentStep == 0" type="text">
+    <Button @click="handlePrevStep" :disabled="currentStep == StepEnum.NAME" type="text">
       {{ t('common.prevStep') }}
     </Button>
     <Button
