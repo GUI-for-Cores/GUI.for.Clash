@@ -4,15 +4,7 @@ import { parse } from 'yaml'
 
 import { Readfile, Writefile } from '@/bridge'
 import { debounce, ignoredError, stringifyNoFolding } from '@/utils'
-import {
-  TunConfigDefaults,
-  ProfilesFilePath,
-  ProxyGroup,
-  MixinConfigDefaults,
-  ScriptConfigDefaults,
-  RulesetBehavior,
-  RulesetFormat
-} from '@/constant'
+import { ProfilesFilePath, ProxyGroup, RulesetBehavior, RulesetFormat } from '@/constant'
 
 export type ProfileType = {
   id: string
@@ -91,7 +83,7 @@ export type ProfileType = {
     'prefer-h3': boolean
     fallback: string[]
     'proxy-server-nameserver': string[]
-    'nameserver-policy': {}
+    'nameserver-policy': Record<string, any>
     'fallback-filter': {
       geoip: boolean
       'geoip-code': string

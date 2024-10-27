@@ -7,7 +7,7 @@ export const isValidBase64 = (str: string) => {
   }
   try {
     return btoa(atob(str)) == str
-  } catch (err) {
+  } catch {
     return false
   }
 }
@@ -17,7 +17,7 @@ export const isValidSubYAML = (str: string) => {
   try {
     const { proxies } = parse(str)
     return !!proxies
-  } catch (error) {
+  } catch {
     return false
   }
 }
@@ -26,7 +26,7 @@ export const isValidPaylodYAML = (str: string) => {
   try {
     const { payload } = parse(str)
     return !!payload
-  } catch (error) {
+  } catch {
     return false
   }
 }

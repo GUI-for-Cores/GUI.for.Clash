@@ -51,7 +51,7 @@ export const ignoredError = async <T>(fn: (...args: any) => Promise<T>, ...args:
   try {
     const res = await fn(...args)
     return res
-  } catch (error) {
+  } catch {
     // console.log(error)
   }
 }

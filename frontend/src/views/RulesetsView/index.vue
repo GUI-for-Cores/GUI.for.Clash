@@ -50,6 +50,7 @@ const mrsMenuList: Menu[] = [
   {
     label: 'common.none',
     handler: (id: string) => {
+      console.log(id)
       message.info('common.none')
     }
   }

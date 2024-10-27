@@ -50,7 +50,7 @@ export const CheckPermissions = async () => {
       'REG_SZ'
     ])
     return out.includes('RunAsAdmin')
-  } catch (error) {
+  } catch {
     return false
   }
 }

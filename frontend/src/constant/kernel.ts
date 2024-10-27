@@ -1,4 +1,3 @@
-import { GetEnv } from '@/bridge'
 import { useEnvStore } from '@/stores'
 
 export enum ProxyGroup {

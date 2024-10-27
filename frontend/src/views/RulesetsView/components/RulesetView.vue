@@ -25,7 +25,7 @@ const rulesetList = ref<string[]>([])
 const keywordsRegexp = computed(() => {
   try {
     return new RegExp(keywords.value, 'i')
-  } catch (error: any) {
+  } catch {
     return keywords.value
   }
 })

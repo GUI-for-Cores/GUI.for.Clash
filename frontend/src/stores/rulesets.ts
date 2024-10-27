@@ -71,7 +71,6 @@ export const useRulesetsStore = defineStore('rulesets', () => {
   const _doUpdateRuleset = async (r: RuleSetType) => {
     if (r.format === RulesetFormat.Yaml) {
       let body = ''
-      let ruleset: any
       let isExist = true
 
       if (r.type === 'File') {
@@ -93,7 +92,7 @@ export const useRulesetsStore = defineStore('rulesets', () => {
       }
 
       const { payload } = parse(body)
-      ruleset = { payload: [...new Set(payload)] }
+      const ruleset = { payload: [...new Set(payload)] }
 
       if (
         (['Http', 'File'].includes(r.type) && r.url !== r.path) ||

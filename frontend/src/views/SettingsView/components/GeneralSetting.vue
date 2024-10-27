@@ -130,7 +130,7 @@ const checkSchtask = async () => {
   try {
     await QuerySchTask(APP_TITLE)
     isTaskScheduled.value = true
-  } catch (error) {
+  } catch {
     isTaskScheduled.value = false
   }
 }

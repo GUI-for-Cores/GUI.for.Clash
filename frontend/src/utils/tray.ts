@@ -27,7 +27,7 @@ const getTrayIcons = () => {
 
   const themeMode = appSettings.themeMode
   const ext = envStore.env.os === 'linux' ? '.png' : '.ico'
-  const folder =  envStore.env.os === 'linux' ? 'imgs' : 'icons'
+  const folder = envStore.env.os === 'linux' ? 'imgs' : 'icons'
   let icon = `data/.cache/${folder}/tray_normal_${themeMode}${ext}`
 
   if (appSettings.app.kernel.running) {

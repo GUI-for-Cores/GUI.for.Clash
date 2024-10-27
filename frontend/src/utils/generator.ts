@@ -336,7 +336,7 @@ export const generateConfig = async (originalProfile: ProfileType) => {
   }
 
   // step 3
-  const fn = new AsyncFunction(
+  const fn = new window.AsyncFunction(
     `${profile.scriptConfig.code};return await onGenerate(${JSON.stringify(config)})`
   )
   let _config
