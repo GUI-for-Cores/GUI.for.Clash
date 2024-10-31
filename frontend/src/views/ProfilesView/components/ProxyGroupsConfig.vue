@@ -149,6 +149,10 @@ const handleAddEnd = () => {
   const idx = proxyGroup.value[0].proxies.findIndex((v) => v.id === id)
   if (idx !== -1) {
     proxyGroup.value[0].proxies.splice(idx, 1, { id, name, type })
+    groups.value.forEach((group) => {
+      const proxy = group.proxies.find((proxy) => proxy.id === id)
+      proxy && (proxy.name = name)
+    })
   }
 }
 
