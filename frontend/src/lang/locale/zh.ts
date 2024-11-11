@@ -536,7 +536,8 @@ export default {
       pink: '粉色',
       red: '红色',
       skyblue: '天蓝色',
-      green: '绿色'
+      green: '绿色',
+      purple: '紫色'
     },
     fontFamily: '字体',
     resetFont: '重置字体',
