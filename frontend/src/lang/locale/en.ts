@@ -46,7 +46,7 @@ export default {
     openFile: 'Open File',
     develop: 'Develop',
     canceled: 'Canceled',
-    downloading: 'Downloading...'
+    downloading: 'Downloading...',
   },
   kernel: {
     port: 'HTTP(s) Port',
@@ -101,7 +101,7 @@ export default {
       system: 'System',
       gvisor: 'gVisor',
       mixed: 'Mixed',
-      lwip: 'LWIP'
+      lwip: 'LWIP',
     },
     dns: {
       enable: 'Enable',
@@ -118,7 +118,7 @@ export default {
         'geoip-code': 'GeoIP Code',
         geosite: 'GeoSite',
         ipcidr: 'ipcidr',
-        domain: 'domain'
+        domain: 'domain',
       },
       'prefer-h3': 'Prefer h3',
       'enhanced-mode': 'Enhanced Mode',
@@ -126,18 +126,18 @@ export default {
       'fake-ip-filter-mode': {
         name: 'Fake-IP Filter Mode',
         blacklist: 'Blacklist',
-        whitelist: 'Whitelist'
+        whitelist: 'Whitelist',
       },
       'fake-ip-filter': 'Fake-IP Filter',
       'default-nameserver': 'Default Nameserver',
       nameserver: 'NameServer',
       'fake-ip': 'Fake-IP',
       'redir-host': 'Redir-Host',
-      hosts: 'Hosts'
+      hosts: 'Hosts',
     },
     tls: {
       certificate: 'certificate',
-      'private-key': 'private-key'
+      'private-key': 'private-key',
     },
     'global-client-fingerprint': 'global-client-fingerprint',
     'geodata-mode': 'geodata-mode',
@@ -145,13 +145,13 @@ export default {
     'geosite-matcher': {
       name: 'geosite-matcher',
       succinct: 'succinct',
-      mph: 'mph'
+      mph: 'mph',
     },
     'geox-url': {
       geoip: 'geoip',
       geosite: 'geosite',
       mmdb: 'mmdb',
-      asn: 'asn'
+      asn: 'asn',
     },
     'global-ua': 'global-ua',
     tracing: 'Tracing',
@@ -184,12 +184,12 @@ export default {
         UrlTest: 'UrlTest',
         Fallback: 'Fallback',
         Relay: 'Relay',
-        LoadBalance: 'LoadBalance'
+        LoadBalance: 'LoadBalance',
       },
       strategy: {
         name: 'Strategy',
         'consistent-hashing': 'consistent-hashing',
-        'round-robin': 'round-robin'
+        'round-robin': 'round-robin',
       },
       empty: 'The subscription group is empty.',
       noSubs: 'The subscription list is empty.',
@@ -198,8 +198,8 @@ export default {
         auto: '🎈 Auto',
         direct: '🎯 Direct',
         reject: '🛑 Reject',
-        fallback: '🐟 Fallback'
-      }
+        fallback: '🐟 Fallback',
+      },
     },
     rules: {
       payload: 'Payload',
@@ -232,8 +232,8 @@ export default {
         'PROCESS-PATH': 'PROCESS-PATH',
         'RULE-SET': 'RULE-SET',
         LOGIC: 'LOGIC',
-        'SRC-IP-CIDR': 'SRC-IP-CIDR'
-      }
+        'SRC-IP-CIDR': 'SRC-IP-CIDR',
+      },
     },
     standard: 'Standard',
     memconservative: 'Memconservative',
@@ -254,7 +254,7 @@ export default {
     local: 'Local',
     remote: 'Remote',
     update: 'Update',
-    restart: 'Restart Kernel'
+    restart: 'Restart Kernel',
   },
   router: {
     overview: 'OverView',
@@ -267,7 +267,7 @@ export default {
     about: 'About',
     profiles: 'Profiles',
     kernel: 'Kernel',
-    scheduledtasks: 'Tasks'
+    scheduledtasks: 'Tasks',
   },
   home: {
     mode: 'Proxy Mode',
@@ -299,7 +299,7 @@ export default {
       settings: 'Kernel Settings',
       settingsTips: 'Effective temporarily, for persistence, please modify the `profile` settings.',
       updateGEO: 'Update GEO',
-      needPort: 'Please set the proxy port first'
+      needPort: 'Please set the proxy port first',
     },
     controller: {
       name: 'Controller',
@@ -308,7 +308,7 @@ export default {
       cardMode: 'Card Mode',
       sortBy: 'Sort By Delay',
       delay: 'Delay test URL',
-      delayUrl: 'Please enter the delayed test URL'
+      delayUrl: 'Please enter the delayed test URL',
     },
     connections: {
       type: 'Type',
@@ -334,8 +334,8 @@ export default {
       closed: 'Closed',
       closeAll: 'Close all connections',
       sort: 'Sorting and Setting Visibility',
-      details: 'Connection Details'
-    }
+      details: 'Connection Details',
+    },
   },
   subscribe: {
     name: 'Name',
@@ -356,8 +356,8 @@ export default {
     healthCheck: {
       name: 'Health Check',
       interval: 'interval(s)',
-      url: 'url'
-    }
+      url: 'url',
+    },
   },
   subscribes: {
     download: 'Download',
@@ -375,8 +375,8 @@ export default {
     proxies: {
       type: 'Protocol',
       name: 'Name',
-      add: 'Add Proxy'
-    }
+      add: 'Add Proxy',
+    },
   },
   profile: {
     name: 'Name',
@@ -389,7 +389,7 @@ export default {
       dns: 'DNS',
       groups: 'Proxy Groups',
       rules: 'Rules',
-      'mixin-script': 'Mixin & Script'
+      'mixin-script': 'Mixin & Script',
     },
     proxies: 'Reference proxies',
     use: 'Reference subscriptions',
@@ -401,11 +401,11 @@ export default {
       name: 'Mixin',
       priority: 'Priority',
       mixin: 'Mixin',
-      gui: 'GUI'
+      gui: 'GUI',
     },
     scriptSettings: {
-      name: 'Script'
-    }
+      name: 'Script',
+    },
   },
   profiles: {
     shouldStop: 'Unable to delete, this profile is in use.',
@@ -415,7 +415,7 @@ export default {
     copy: 'Copy and Paste',
     start: 'Start/Restart with this Profile',
     proxyGroups: 'Proxy Groups',
-    rules: 'Rules'
+    rules: 'Rules',
   },
   ruleset: {
     manual: 'Manual',
@@ -423,18 +423,18 @@ export default {
       name: 'Behavior',
       classical: 'classical',
       domain: 'domain',
-      ipcidr: 'ipcidr'
+      ipcidr: 'ipcidr',
     },
     rulesetType: 'Ruleset Type',
     format: {
       name: 'Format',
       yaml: 'Yaml',
-      mrs: 'Mrs'
+      mrs: 'Mrs',
     },
     name: 'Name',
     url: 'Remote Url',
     path: 'Save Path',
-    updating: 'Updating'
+    updating: 'Updating',
   },
   rulesets: {
     hub: 'Ruleset-Hub',
@@ -445,7 +445,7 @@ export default {
     empty: 'The ruleset list is empty. Please{action}or import from the{import}first.',
     rulesetCount: 'Ruleset Count',
     editRuleset: 'Edit Rules',
-    selectRuleType: 'Select Rule Type'
+    selectRuleType: 'Select Rule Type',
   },
   plugin: {
     trigger: 'Trigger',
@@ -476,7 +476,7 @@ export default {
     confKey: 'Key',
     confDefault: 'Default',
     options: 'Options',
-    restore: 'Reset to default'
+    restore: 'Reset to default',
   },
   plugins: {
     updating: 'Updating',
@@ -489,7 +489,7 @@ export default {
     updateSuccess: 'updated successfully',
     total: 'Number of plug-ins',
     removeConfiguration: 'Do you want to remove the plugin configuration?',
-    testRun: 'TestRun'
+    testRun: 'TestRun',
   },
   scheduledtask: {
     name: 'Name',
@@ -506,7 +506,7 @@ export default {
     'update::ruleset': 'update::ruleset',
     'update::plugin': 'update::plugin',
     'run::plugin': 'run::plugin',
-    'run::script': 'run::script'
+    'run::script': 'run::script',
   },
   scheduledtasks: {
     logs: 'Logs',
@@ -518,7 +518,7 @@ export default {
     result: 'Result',
     empty: 'The scheduled task list is empty. Please{action}a scheduled task first.',
     run: 'Run now',
-    log: 'View log'
+    log: 'View log',
   },
   settings: {
     general: 'General',
@@ -526,7 +526,7 @@ export default {
       name: 'Theme',
       light: 'Light Mode',
       dark: 'Dark Mode',
-      auto: 'System'
+      auto: 'System',
     },
     color: {
       name: 'Color',
@@ -536,27 +536,27 @@ export default {
       red: 'Red',
       skyblue: 'Skyblue',
       green: 'Green',
-      purple: 'Purple'
+      purple: 'Purple',
     },
     fontFamily: 'Font-Family',
     resetFont: 'Reset Font-Family',
     appFolder: {
       name: 'App Folder',
-      open: 'Open application folder'
+      open: 'Open application folder',
     },
     lang: {
       name: 'Language',
       zh: '简体中文',
-      en: 'English'
+      en: 'English',
     },
     pages: {
-      name: 'Page visibility'
+      name: 'Page visibility',
     },
     windowState: {
       normal: 'Normal window',
       maximised: 'Maximised',
       minimised: 'Minimize window',
-      fullscreen: 'Fullscreen'
+      fullscreen: 'Fullscreen',
     },
     needRestart: 'Restart Required',
     needAdmin: 'Admin required',
@@ -569,30 +569,30 @@ export default {
       name: 'Webview Gpu Policy',
       always: 'Always',
       onDemand: 'OnDemand',
-      never: 'Never'
+      never: 'Never',
     },
     addToMenu: 'Add Plugin To Menu',
     multipleInstance: 'Allow Multiple APP Instances',
     rollingRelease: 'Enable Rolling Release',
     startup: {
       name: 'Startup on boot',
-      delay: 'Delay(s)'
+      delay: 'Delay(s)',
     },
     kernel: {
       name: 'Mihomo',
       version: 'Switch version',
       stable: 'Stable version',
       alpha: 'Alpha version',
-      grant: 'Grant Privileges'
+      grant: 'Grant Privileges',
     },
     userAgent: {
       name: 'User-Agent',
-      reset: 'Reset User-Agent'
+      reset: 'Reset User-Agent',
     },
     githubapi: {
       name: 'Authenticating to the REST API',
-      tips: 'have a higher rate limit'
-    }
+      tips: 'have a higher rate limit',
+    },
   },
   about: {
     new: 'New',
@@ -601,7 +601,7 @@ export default {
     updateSuccessful: 'Update completed, please restart the App',
     updateSuccessfulReplace: 'Download completed, please manually replace the App',
     newVersion: 'New version found',
-    latestVersion: 'Already the latest version'
+    latestVersion: 'Already the latest version',
   },
   titlebar: {
     resetSize: 'Reset Window',
@@ -609,7 +609,7 @@ export default {
     restart: 'Restart App',
     exitApp: 'Exit App',
     waiting: 'Waiting for the program to exit...',
-    timeout: 'Exit timed out. Force exit？\n\nReason: Plugin exit timed out.'
+    timeout: 'Exit timed out. Force exit？\n\nReason: Plugin exit timed out.',
   },
   format: {
     seconds: 'Seconds',
@@ -625,7 +625,7 @@ export default {
     month: 'Month',
     year: 'Year',
     ago: 'Ago',
-    later: 'Later'
+    later: 'Later',
   },
   tray: {
     showMainWindow: 'Show Main Window',
@@ -644,9 +644,9 @@ export default {
     startKernel: 'Start Kernel',
     stopKernel: 'Stop Kernel',
     restartKernel: 'Restart Kernel',
-    plugins: 'Plugins'
+    plugins: 'Plugins',
   },
   commands: {
-    noMatching: 'No matching commands'
-  }
+    noMatching: 'No matching commands',
+  },
 }

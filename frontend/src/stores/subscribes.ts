@@ -14,7 +14,7 @@ import {
   ignoredError,
   omitArray,
   isValidBase64,
-  stringifyNoFolding
+  stringifyNoFolding,
 } from '@/utils'
 
 export type SubscribeType = {
@@ -97,9 +97,9 @@ export const useSubscribesStore = defineStore('subscribes', () => {
       healthCheck: {
         enable: false,
         url: 'https://www.gstatic.com/generate_204',
-        interval: 300
+        interval: 300,
       },
-      proxies: []
+      proxies: [],
     })
   }
 
@@ -146,9 +146,9 @@ export const useSubscribesStore = defineStore('subscribes', () => {
       const { headers: h, body: b } = await HttpGet(
         s.url,
         {
-          'User-Agent': s.userAgent || getUserAgent()
+          'User-Agent': s.userAgent || getUserAgent(),
         },
-        { Insecure: s.inSecure }
+        { Insecure: s.inSecure },
       )
       h['Subscription-Userinfo'] && (userInfo = h['Subscription-Userinfo'])
       body = b
@@ -281,6 +281,6 @@ export const useSubscribesStore = defineStore('subscribes', () => {
     updateSubscribe,
     updateSubscribes,
     getSubscribeById,
-    importSubscribe
+    importSubscribe,
   }
 })

@@ -160,6 +160,6 @@ export const useRulesetsStore = defineStore('rulesets', () => {
     updateRuleset,
     updateRulesets,
     getRulesetById,
-    getRulesetByName
+    getRulesetByName,
   }
 })

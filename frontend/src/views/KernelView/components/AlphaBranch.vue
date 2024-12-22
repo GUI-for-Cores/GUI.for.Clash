@@ -8,7 +8,7 @@ import {
   GrantTUNPermission,
   getGitHubApiAuthorization,
   ignoredError,
-  getKernelFileName
+  getKernelFileName,
 } from '@/utils'
 import { CoreWorkingDirectory } from '@/constant'
 import {
@@ -23,7 +23,7 @@ import {
   Makedir,
   UnzipGZFile,
   AbsolutePath,
-  BrowserOpenURL
+  BrowserOpenURL,
 } from '@/bridge'
 
 const alphaUrl = 'https://api.github.com/repos/MetaCubeX/mihomo/releases/tags/Prerelease-Alpha'
@@ -63,7 +63,7 @@ const downloadCore = async () => {
   downloadLoading.value = true
   try {
     const { body } = await HttpGet<Record<string, any>>(alphaUrl, {
-      Authorization: getGitHubApiAuthorization()
+      Authorization: getGitHubApiAuthorization(),
     })
     const { os, arch } = await GetEnv()
 
@@ -93,7 +93,7 @@ const downloadCore = async () => {
       (progress, total) => {
         message.update(id, t('common.downloading') + ((progress / total) * 100).toFixed(2) + '%')
       },
-      { CancelId: 'download-alpha-core' }
+      { CancelId: 'download-alpha-core' },
     ).catch((err) => {
       message.destroy(id)
       throw err

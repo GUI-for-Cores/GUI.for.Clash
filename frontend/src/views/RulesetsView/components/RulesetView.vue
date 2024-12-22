@@ -45,7 +45,7 @@ const placeholder = computed(() => {
   return {
     [RulesetBehavior.Classical]: 'DOMAIN,domain.com|IP-CIDR,127.0.0.0/8',
     [RulesetBehavior.Domain]: '.blogger.com|*.*.microsoft.com|books.itunes.apple.com',
-    [RulesetBehavior.Ipcidr]: '192.168.1.0/24|10.0.0.1/32'
+    [RulesetBehavior.Ipcidr]: '192.168.1.0/24|10.0.0.1/32',
   }[ruleset.value.behavior]
 })
 
@@ -57,8 +57,8 @@ const menus: Menu[] = [
       if (idx !== -1) {
         rulesetList.value.splice(idx, 1)
       }
-    }
-  }
+    },
+  },
 ]
 
 const handleCancel = inject('cancel') as any
@@ -88,7 +88,7 @@ const handleAdd = () => {
     return
   }
   const rules = [
-    ...new Set(rule.split('|').filter((rule) => rule && !rulesetList.value.includes(rule)))
+    ...new Set(rule.split('|').filter((rule) => rule && !rulesetList.value.includes(rule))),
   ]
   if (ruleset.value?.behavior === RulesetBehavior.Ipcidr) {
     if (rules.some((rule) => !isValidIPCIDR(rule))) {

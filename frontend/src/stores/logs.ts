@@ -55,6 +55,6 @@ export const useLogsStore = defineStore('logs', () => {
     isEmpty,
     scheduledtasksLogs,
     isTasksLogEmpty,
-    recordScheduledTasksLog
+    recordScheduledTasksLog,
   }
 })

@@ -10,7 +10,7 @@ import {
   RulesTypeOptions,
   DraggableOptions,
   RulesetFormatOptions,
-  RulesetBehaviorOptions
+  RulesetBehaviorOptions,
 } from '@/constant'
 
 interface Props {
@@ -35,30 +35,30 @@ const fields = ref<ProfileType['rulesConfig'][number]>({
   'ruleset-name': '',
   'ruleset-behavior': RulesetBehavior.Domain,
   'ruleset-format': RulesetFormat.Mrs,
-  'ruleset-proxy': ''
+  'ruleset-proxy': '',
 })
 
 const proxyOptions = computed(() => [
   { label: 'DIRECT', value: 'DIRECT' },
   { label: 'REJECT', value: 'REJECT' },
   { label: 'PASS', value: 'PASS' },
-  ...props.proxyGroups.map(({ id, name }) => ({ label: name, value: id }))
+  ...props.proxyGroups.map(({ id, name }) => ({ label: name, value: id })),
 ])
 
 const supportNoResolve = computed(() =>
-  ['GEOIP', 'IP-CIDR', 'IP-CIDR6', 'SCRIPT', 'RULE-SET', 'IP-ASN'].includes(fields.value.type)
+  ['GEOIP', 'IP-CIDR', 'IP-CIDR6', 'SCRIPT', 'RULE-SET', 'IP-ASN'].includes(fields.value.type),
 )
 
 const supportPayload = computed(
   () =>
     !['MATCH', 'RULE-SET'].includes(fields.value.type) ||
-    (fields.value.type === 'RULE-SET' && fields.value['ruleset-type'] === 'http')
+    (fields.value.type === 'RULE-SET' && fields.value['ruleset-type'] === 'http'),
 )
 
 const filteredRulesTypeOptions = computed(() =>
   RulesTypeOptions.filter(
-    ({ value }) => props.profile.advancedConfig['geodata-mode'] || !value.startsWith('GEO')
-  )
+    ({ value }) => props.profile.advancedConfig['geodata-mode'] || !value.startsWith('GEO'),
+  ),
 )
 
 const { t } = useI18n()
@@ -77,7 +77,7 @@ const handleAdd = () => {
     'ruleset-name': '',
     'ruleset-behavior': RulesetBehavior.Domain,
     'ruleset-format': RulesetFormat.Mrs,
-    'ruleset-proxy': ''
+    'ruleset-proxy': '',
   }
   showModal.value = true
 }
@@ -168,7 +168,7 @@ const showLost = () => message.warn('kernel.rules.notFound')
         v-model="fields['ruleset-type']"
         :options="[
           { label: 'common.file', value: 'file' },
-          { label: 'common.http', value: 'http' }
+          { label: 'common.http', value: 'http' },
         ]"
       />
     </div>

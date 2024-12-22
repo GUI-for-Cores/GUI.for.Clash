@@ -8,7 +8,7 @@ import { type ProfileType, useSubscribesStore, useRulesetsStore, usePluginsStore
 
 export const generateRule = (
   rule: ProfileType['rulesConfig'][0],
-  proxyGruoups?: ProfileType['proxyGroupsConfig']
+  proxyGruoups?: ProfileType['proxyGroupsConfig'],
 ) => {
   const {
     type,
@@ -16,7 +16,7 @@ export const generateRule = (
     proxy,
     'no-resolve': noResolve,
     'ruleset-type': rulesetType,
-    'ruleset-name': rulesetName
+    'ruleset-name': rulesetName,
   } = rule
   let ruleStr = type
   let proxyStr = proxy
@@ -53,7 +53,7 @@ export const generateRule = (
     'IP-CIDR6',
     'SCRIPT',
     'RULE-SET',
-    'IP-ASN'
+    'IP-ASN',
   ].includes(type)
 
   if (noResolve && supportNoResolve) {
@@ -71,10 +71,10 @@ export const generateProxies = async (groups: ProfileType['proxyGroupsConfig']) 
     groups.reduce(
       (p, c) => [
         ...p,
-        ...c.proxies.filter(({ type }) => type !== 'Built-In').map(({ type }) => type)
+        ...c.proxies.filter(({ type }) => type !== 'Built-In').map(({ type }) => type),
       ],
-      [] as string[]
-    )
+      [] as string[],
+    ),
   )
 
   const proxyMap: Record<string, ProxiesType[]> = {}
@@ -113,7 +113,7 @@ export const generateProxies = async (groups: ProfileType['proxyGroupsConfig']) 
 
 export const generateProxyGroup = (
   proxyGruoup: ProfileType['proxyGroupsConfig'][0],
-  groups: ProfileType['proxyGroupsConfig']
+  groups: ProfileType['proxyGroupsConfig'],
 ) => {
   const {
     type,
@@ -129,7 +129,7 @@ export const generateProxyGroup = (
     filter,
     'exclude-filter': ExcludeFilter,
     hidden,
-    icon
+    icon,
   } = proxyGruoup
 
   const group: any = { name, type, filter, 'exclude-filter': ExcludeFilter, hidden, icon }
@@ -153,7 +153,7 @@ export const generateProxyGroup = (
 
   if (type === ProxyGroup.Select) {
     Object.assign(group, {
-      'disable-udp': disableUDP
+      'disable-udp': disableUDP,
     })
   } else if (type === ProxyGroup.UrlTest) {
     Object.assign(group, {
@@ -161,14 +161,14 @@ export const generateProxyGroup = (
       interval,
       tolerance,
       lazy,
-      'disable-udp': disableUDP
+      'disable-udp': disableUDP,
     })
   } else if (type === ProxyGroup.Fallback) {
     Object.assign(group, {
       url,
       interval,
       lazy,
-      'disable-udp': disableUDP
+      'disable-udp': disableUDP,
     })
   } else if (type === ProxyGroup.LoadBalance) {
     Object.assign(group, {
@@ -176,7 +176,7 @@ export const generateProxyGroup = (
       interval,
       lazy,
       'disable-udp': disableUDP,
-      strategy
+      strategy,
     })
   } else if (type === ProxyGroup.Relay) {
     Object.assign(group, {})
@@ -197,13 +197,13 @@ export const generateProxyProviders = async (groups: ProfileType['proxyGroupsCon
     if (sub) {
       providers[sub.id] = {
         type: 'file',
-        path: sub.path.replace('data/', '../')
+        path: sub.path.replace('data/', '../'),
       }
       if (sub.healthCheck.enable) {
         providers[sub.id]['health-check'] = {
           enable: true,
           url: sub.healthCheck.url || 'https://www.gstatic.com/generate_204',
-          interval: sub.healthCheck.interval || 300
+          interval: sub.healthCheck.interval || 300,
         }
       }
     }
@@ -215,7 +215,7 @@ export const generateProxyProviders = async (groups: ProfileType['proxyGroupsCon
 const generateRuleProviders = async (
   dns: ProfileType['dnsConfig'],
   rules: ProfileType['rulesConfig'],
-  proxyGruoups: ProfileType['proxyGroupsConfig']
+  proxyGruoups: ProfileType['proxyGroupsConfig'],
 ) => {
   const rulesetsStore = useRulesetsStore()
   const providers: Record<string, any> = {}
@@ -227,7 +227,7 @@ const generateRuleProviders = async (
         type: 'file',
         behavior: ruleset.behavior,
         path: ruleset.path.replace('data/', '../'),
-        format: ruleset.format
+        format: ruleset.format,
       }
     }
   }
@@ -244,14 +244,14 @@ const generateRuleProviders = async (
           url: rule.payload,
           behavior: rule['ruleset-behavior'],
           format: rule['ruleset-format'],
-          proxy: group?.name || 'DIRECT'
+          proxy: group?.name || 'DIRECT',
         }
       }
     })
 
   const l1 = dns['fake-ip-filter'].flatMap((v) => (v.startsWith('rule-set:') ? v.substring(9) : []))
   const l2 = Object.keys(dns['nameserver-policy']).flatMap((key) =>
-    key.startsWith('rule-set:') ? key.substring(9).split(',') : []
+    key.startsWith('rule-set:') ? key.substring(9).split(',') : [],
   )
 
   l1.concat(l2).forEach((name) => appendLocalProvider(name))
@@ -274,7 +274,7 @@ export const generateConfig = async (originalProfile: ProfileType) => {
     ...profile.advancedConfig,
     tun: profile.tunConfig,
     dns: profile.dnsConfig,
-    hosts: {}
+    hosts: {},
   }
 
   // step 1
@@ -315,13 +315,13 @@ export const generateConfig = async (originalProfile: ProfileType) => {
   config['rule-providers'] = await generateRuleProviders(
     profile.dnsConfig,
     profile.rulesConfig,
-    profile.proxyGroupsConfig
+    profile.proxyGroupsConfig,
   )
 
   config['proxies'] = await generateProxies(profile.proxyGroupsConfig)
 
   config['proxy-groups'] = profile.proxyGroupsConfig.map((proxyGruoup) =>
-    generateProxyGroup(proxyGruoup, profile.proxyGroupsConfig)
+    generateProxyGroup(proxyGruoup, profile.proxyGroupsConfig),
   )
 
   config['rules'] = profile.rulesConfig
@@ -338,7 +338,7 @@ export const generateConfig = async (originalProfile: ProfileType) => {
 
   // step 3
   const fn = new window.AsyncFunction(
-    `${profile.scriptConfig.code};return await onGenerate(${JSON.stringify(config)})`
+    `${profile.scriptConfig.code};return await onGenerate(${JSON.stringify(config)})`,
   )
   let _config
   try {

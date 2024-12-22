@@ -12,7 +12,7 @@ import {
   useProfilesStore,
   useAppSettingsStore,
   useKernelApiStore,
-  useSubscribesStore
+  useSubscribesStore,
 } from '@/stores'
 
 import ProfileForm from './components/ProfileForm.vue'
@@ -41,7 +41,7 @@ const secondaryMenus: Menu[] = [
         message.error(error)
         console.error(error)
       }
-    }
+    },
   },
   {
     label: 'profiles.copy',
@@ -51,7 +51,7 @@ const secondaryMenus: Menu[] = [
       p.name = p.name + '(Copy)'
       profilesStore.addProfile(p)
       message.success('common.success')
-    }
+    },
   },
   {
     label: 'profiles.copytoClipboard',
@@ -66,7 +66,7 @@ const secondaryMenus: Menu[] = [
       } catch (error: any) {
         message.error(error.message || error)
       }
-    }
+    },
   },
   {
     label: 'profiles.generateAndView',
@@ -78,8 +78,8 @@ const secondaryMenus: Menu[] = [
       } catch (error: any) {
         message.error(error.message || error)
       }
-    }
-  }
+    },
+  },
 ]
 
 const menus: Menu[] = [
@@ -90,24 +90,24 @@ const menus: Menu[] = [
     'profile.step.dns',
     'profile.step.groups',
     'profile.step.rules',
-    'profile.step.mixin-script'
+    'profile.step.mixin-script',
   ].map((v, i) => {
     return {
       label: v,
       handler: (id: string) => {
         const p = profilesStore.getProfileById(id)
         p && handleEditProfile(p, i)
-      }
+      },
     }
   }),
   {
     label: '',
-    separator: true
+    separator: true,
   },
   {
     label: 'common.more',
-    children: secondaryMenus
-  }
+    children: secondaryMenus,
+  },
 ]
 
 const handleAddProfile = async () => {
@@ -182,7 +182,7 @@ const onSortUpdate = debounce(profilesStore.saveProfiles, 1000)
       v-model="appSettingsStore.app.profilesView"
       :options="[
         { label: 'common.grid', value: View.Grid },
-        { label: 'common.list', value: View.List }
+        { label: 'common.list', value: View.List },
       ]"
       class="mr-auto"
     />
@@ -205,7 +205,7 @@ const onSortUpdate = debounce(profilesStore.saveProfiles, 1000)
         menus.map((v) => ({
           ...v,
           handler: () => v.handler?.(p.id),
-          children: v.children?.map((vv) => ({ ...vv, handler: () => vv.handler?.(p.id) }))
+          children: v.children?.map((vv) => ({ ...vv, handler: () => vv.handler?.(p.id) })),
         }))
       "
       class="item"

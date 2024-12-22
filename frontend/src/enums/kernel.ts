@@ -3,30 +3,30 @@ export enum LogLevel {
   Warning = 'warning',
   Error = 'error',
   Debug = 'debug',
-  Silent = 'silent'
+  Silent = 'silent',
 }
 
 export enum ClashMode {
   Global = 'global',
   Rule = 'rule',
-  Direct = 'direct'
+  Direct = 'direct',
 }
 
 export enum TunStack {
   System = 'System',
   GVisor = 'gVisor',
-  Mixed = 'Mixed'
+  Mixed = 'Mixed',
 }
 
 export enum RulesetFormat {
   Yaml = 'yaml',
-  Mrs = 'mrs'
+  Mrs = 'mrs',
 }
 
 export enum RulesetBehavior {
   Domain = 'domain',
   Ipcidr = 'ipcidr',
-  Classical = 'classical'
+  Classical = 'classical',
 }
 
 export enum ProxyGroup {
@@ -34,7 +34,7 @@ export enum ProxyGroup {
   UrlTest = 'url-test',
   Fallback = 'fallback',
   Relay = 'relay',
-  LoadBalance = 'load-balance'
+  LoadBalance = 'load-balance',
 }
 
 export enum ProxyGroupType {
@@ -42,7 +42,7 @@ export enum ProxyGroupType {
   UrlTest = 'URLTest',
   Fallback = 'Fallback',
   Relay = 'Relay',
-  LoadBalance = 'LoadBalance'
+  LoadBalance = 'LoadBalance',
 }
 
 export enum RuleType {
@@ -62,5 +62,5 @@ export enum RuleType {
   Logic = 'LOGIC',
   Geoip = 'GEOIP',
   Geosite = 'GEOSITE',
-  Match = 'MATCH'
+  Match = 'MATCH',
 }

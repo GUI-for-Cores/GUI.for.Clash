@@ -9,7 +9,7 @@ import {
   getGitHubApiAuthorization,
   ignoredError,
   GrantTUNPermission,
-  getKernelFileName
+  getKernelFileName,
 } from '@/utils'
 import {
   Download,
@@ -23,7 +23,7 @@ import {
   Makedir,
   UnzipGZFile,
   AbsolutePath,
-  BrowserOpenURL
+  BrowserOpenURL,
 } from '@/bridge'
 
 const releaseUrl = 'https://api.github.com/repos/MetaCubeX/mihomo/releases/latest'
@@ -61,7 +61,7 @@ const downloadCore = async () => {
   downloadLoading.value = true
   try {
     const { body } = await HttpGet<Record<string, any>>(releaseUrl, {
-      Authorization: getGitHubApiAuthorization()
+      Authorization: getGitHubApiAuthorization(),
     })
     const { os, arch } = await GetEnv()
 
@@ -91,7 +91,7 @@ const downloadCore = async () => {
       (progress, total) => {
         message.update(id, t('common.downloading') + ((progress / total) * 100).toFixed(2) + '%')
       },
-      { CancelId: 'download-stable-core' }
+      { CancelId: 'download-stable-core' },
     ).catch((err) => {
       message.destroy(id)
       throw err
@@ -152,7 +152,7 @@ const getRemoteVersion = async (showTips = false) => {
   remoteVersionLoading.value = true
   try {
     const { body } = await HttpGet<Record<string, any>>(releaseUrl, {
-      Authorization: getGitHubApiAuthorization()
+      Authorization: getGitHubApiAuthorization(),
     })
     const { tag_name } = body
     return tag_name as string

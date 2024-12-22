@@ -46,7 +46,7 @@ export default {
     openFile: '打开文件',
     develop: '开发',
     canceled: '已取消',
-    downloading: '下载中...'
+    downloading: '下载中...',
   },
   kernel: {
     port: 'HTTP(s)代理端口',
@@ -101,7 +101,7 @@ export default {
       system: 'System',
       gvisor: 'gVisor',
       mixed: 'Mixed',
-      lwip: 'LWIP'
+      lwip: 'LWIP',
     },
     dns: {
       enable: '启用DNS',
@@ -118,7 +118,7 @@ export default {
         'geoip-code': '国家IP代码缩写',
         geosite: '域名集合',
         ipcidr: 'IP地址段',
-        domain: '域名'
+        domain: '域名',
       },
       'prefer-h3': '是否开启 DOH 的 http/3',
       'enhanced-mode': '增强模式',
@@ -126,18 +126,18 @@ export default {
       'fake-ip-filter-mode': {
         name: 'Fake-IP 过滤模式',
         blacklist: '黑名单',
-        whitelist: '白名单'
+        whitelist: '白名单',
       },
       'fake-ip-filter': 'Fake-IP 过滤',
       'default-nameserver': '默认DNS',
       nameserver: '域名服务器',
       'fake-ip': 'Fake-IP',
       'redir-host': 'Redir-Host',
-      hosts: 'Hosts'
+      hosts: 'Hosts',
     },
     tls: {
       certificate: '证书(PEM格式/路径)',
-      'private-key': '私钥(PEM格式/路径)'
+      'private-key': '私钥(PEM格式/路径)',
     },
     'global-client-fingerprint': '全局客户端指纹',
     'geodata-mode': 'GEO数据模式',
@@ -145,13 +145,13 @@ export default {
     'geosite-matcher': {
       name: 'GeoSite匹配器',
       succinct: 'succinct',
-      mph: 'mph'
+      mph: 'mph',
     },
     'geox-url': {
       geoip: 'geoip下载地址',
       geosite: 'geosite下载地址',
       mmdb: 'mmdb下载地址',
-      asn: 'asn下载地址'
+      asn: 'asn下载地址',
     },
     'global-ua': '自定客户端UA',
     tracing: '性能分析引擎',
@@ -184,12 +184,12 @@ export default {
         UrlTest: '自动选择',
         Fallback: '自动回退',
         Relay: '链式代理',
-        LoadBalance: '负载均衡'
+        LoadBalance: '负载均衡',
       },
       strategy: {
         name: '负载均衡策略',
         'consistent-hashing': 'consistent-hashing',
-        'round-robin': 'round-robin'
+        'round-robin': 'round-robin',
       },
       empty: '该订阅分组内没有可用节点',
       noSubs: '订阅列表为空',
@@ -198,8 +198,8 @@ export default {
         auto: '🎈 自动选择',
         direct: '🎯 全球直连',
         reject: '🛑 全球拦截',
-        fallback: '🐟 漏网之鱼'
-      }
+        fallback: '🐟 漏网之鱼',
+      },
     },
     rules: {
       payload: '载荷',
@@ -232,8 +232,8 @@ export default {
         'PROCESS-PATH': '源进程路径 (PROCESS-PATH)',
         'RULE-SET': '规则集 (RULE-SET)',
         LOGIC: '逻辑规则 (LOGIC)',
-        'SRC-IP-CIDR': '源IP段地址 (SRC-IP-CIDR)'
-      }
+        'SRC-IP-CIDR': '源IP段地址 (SRC-IP-CIDR)',
+      },
     },
     standard: '标准',
     memconservative: '适用小内存设备',
@@ -254,7 +254,7 @@ export default {
     local: '本地',
     remote: '远程',
     update: '更新',
-    restart: '重启内核'
+    restart: '重启内核',
   },
   router: {
     overview: '概览',
@@ -267,7 +267,7 @@ export default {
     about: '关于',
     profiles: '配置',
     kernel: '内核',
-    scheduledtasks: '计划任务'
+    scheduledtasks: '计划任务',
   },
   home: {
     mode: '代理模式',
@@ -299,7 +299,7 @@ export default {
       settings: '内核设置',
       settingsTips: '暂时生效，持久化请修改配置文件',
       updateGEO: '更新 GEO',
-      needPort: '请先设置代理端口'
+      needPort: '请先设置代理端口',
     },
     controller: {
       name: '控制器',
@@ -308,7 +308,7 @@ export default {
       cardMode: '卡片模式',
       sortBy: '按延迟排序',
       delay: '延迟测试URL',
-      delayUrl: '请输入延迟测试URL'
+      delayUrl: '请输入延迟测试URL',
     },
     connections: {
       type: '类型',
@@ -334,8 +334,8 @@ export default {
       closed: '已关闭',
       closeAll: '关闭所有连接',
       sort: '排序和设置显示字段',
-      details: '连接详情'
-    }
+      details: '连接详情',
+    },
   },
   subscribe: {
     name: '名称',
@@ -356,8 +356,8 @@ export default {
     healthCheck: {
       name: '健康检查',
       interval: '时间间隔(秒)',
-      url: '测试链接'
-    }
+      url: '测试链接',
+    },
   },
   subscribes: {
     download: '下行流量',
@@ -375,8 +375,8 @@ export default {
     proxies: {
       type: '协议',
       name: '名称',
-      add: '添加代理'
-    }
+      add: '添加代理',
+    },
   },
   profile: {
     name: '名称',
@@ -389,7 +389,7 @@ export default {
       dns: 'DNS 设置',
       groups: '策略组设置',
       rules: '规则设置',
-      'mixin-script': '混入和脚本'
+      'mixin-script': '混入和脚本',
     },
     proxies: '引用节点',
     use: '引用订阅',
@@ -401,11 +401,11 @@ export default {
       name: '混入配置',
       priority: '优先级',
       mixin: '混入优先',
-      gui: 'GUI优先'
+      gui: 'GUI优先',
     },
     scriptSettings: {
-      name: '脚本操作'
-    }
+      name: '脚本操作',
+    },
   },
   profiles: {
     shouldStop: '当前配置正在使用，无法删除',
@@ -415,7 +415,7 @@ export default {
     copy: '复制并粘贴',
     start: '使用此配置启动/重启',
     proxyGroups: '策略组',
-    rules: '规则'
+    rules: '规则',
   },
   ruleset: {
     manual: '手动管理',
@@ -423,18 +423,18 @@ export default {
       name: '匹配行为',
       classical: '经典',
       domain: '域名',
-      ipcidr: 'IP地址段'
+      ipcidr: 'IP地址段',
     },
     rulesetType: '规则集类型',
     format: {
       name: '文件格式',
       yaml: 'Yaml',
-      mrs: 'Mrs'
+      mrs: 'Mrs',
     },
     name: '名称',
     url: '远程链接',
     path: '保存路径',
-    updating: '更新中'
+    updating: '更新中',
   },
   rulesets: {
     hub: '规则集中心',
@@ -445,7 +445,7 @@ export default {
     empty: '规则集列表为空，请先{action}或从{import}导入。',
     rulesetCount: '规则数量',
     editRuleset: '编辑规则',
-    selectRuleType: '选择规则类型'
+    selectRuleType: '选择规则类型',
   },
   plugin: {
     trigger: '触发器',
@@ -476,7 +476,7 @@ export default {
     confKey: '配置标志',
     confDefault: '默认值',
     options: '选项',
-    restore: '恢复为默认值'
+    restore: '恢复为默认值',
   },
   plugins: {
     updating: '更新中',
@@ -489,7 +489,7 @@ export default {
     updateSuccess: '列表更新成功',
     total: '插件数量为',
     removeConfiguration: '是否删除插件配置？',
-    testRun: '运行测试'
+    testRun: '运行测试',
   },
   scheduledtask: {
     name: '名称',
@@ -506,7 +506,7 @@ export default {
     'update::ruleset': '更新规则集',
     'update::plugin': '更新插件',
     'run::plugin': '运行插件',
-    'run::script': '运行脚本'
+    'run::script': '运行脚本',
   },
   scheduledtasks: {
     logs: '日志',
@@ -518,7 +518,7 @@ export default {
     result: '执行结果',
     empty: '计划任务列表为空，请先{action}计划任务。',
     run: '立即运行',
-    log: '查看日志'
+    log: '查看日志',
   },
   settings: {
     general: '通用',
@@ -526,7 +526,7 @@ export default {
       name: '主题',
       light: '浅色',
       dark: '深色',
-      auto: '跟随系统'
+      auto: '跟随系统',
     },
     color: {
       name: '颜色',
@@ -536,27 +536,27 @@ export default {
       red: '红色',
       skyblue: '天蓝色',
       green: '绿色',
-      purple: '紫色'
+      purple: '紫色',
     },
     fontFamily: '字体',
     resetFont: '重置字体',
     appFolder: {
       name: '应用程序文件夹',
-      open: '打开应用程序文件夹'
+      open: '打开应用程序文件夹',
     },
     lang: {
       name: '语言',
       zh: '简体中文',
-      en: 'English'
+      en: 'English',
     },
     pages: {
-      name: '页面可见性'
+      name: '页面可见性',
     },
     windowState: {
       normal: '以普通窗口启动',
       maximised: '最大化',
       minimised: '最小化窗口启动',
-      fullscreen: '全屏'
+      fullscreen: '全屏',
     },
     needRestart: '重启生效',
     needAdmin: '需要管理员权限',
@@ -569,30 +569,30 @@ export default {
       name: 'Webview GPU 策略',
       always: '启用硬件加速',
       onDemand: '根据Web内容自行决定',
-      never: '禁用硬件加速'
+      never: '禁用硬件加速',
     },
     addToMenu: '将插件添加到托盘菜单',
     multipleInstance: '允许多APP实例运行',
     rollingRelease: '启用滚动发行',
     startup: {
       name: '开机时启动',
-      delay: '延迟(秒)'
+      delay: '延迟(秒)',
     },
     kernel: {
       name: 'Mihomo',
       version: '切换版本',
       stable: '稳定版',
       alpha: '内测版',
-      grant: '授予特权'
+      grant: '授予特权',
     },
     userAgent: {
       name: '用户代理(User-Agent)',
-      reset: ' 重置用户代理'
+      reset: ' 重置用户代理',
     },
     githubapi: {
       name: '向 REST API 进行身份验证',
-      tips: '拥有更高的速率限制'
-    }
+      tips: '拥有更高的速率限制',
+    },
   },
   about: {
     new: '新版本',
@@ -601,7 +601,7 @@ export default {
     updateSuccessful: '更新完成，请重启软件',
     updateSuccessfulReplace: '下载完成，请手动替换软件',
     newVersion: '发现新版本',
-    latestVersion: '已经是最新版本了'
+    latestVersion: '已经是最新版本了',
   },
   titlebar: {
     resetSize: '重置窗口',
@@ -609,7 +609,7 @@ export default {
     restart: '重启程序',
     exitApp: '退出程序',
     waiting: '正在等待程序退出...',
-    timeout: '程序退出超时，是否强制退出？\n\n原因：插件退出超时。'
+    timeout: '程序退出超时，是否强制退出？\n\n原因：插件退出超时。',
   },
   format: {
     seconds: '秒',
@@ -625,7 +625,7 @@ export default {
     month: '月',
     year: '年',
     ago: '前',
-    later: '后'
+    later: '后',
   },
   tray: {
     showMainWindow: '显示主窗口',
@@ -644,9 +644,9 @@ export default {
     startKernel: '开启内核',
     stopKernel: '关闭内核',
     restartKernel: '重启内核',
-    plugins: '插件'
+    plugins: '插件',
   },
   commands: {
-    noMatching: '没有匹配到命令'
-  }
+    noMatching: '没有匹配到命令',
+  },
 }

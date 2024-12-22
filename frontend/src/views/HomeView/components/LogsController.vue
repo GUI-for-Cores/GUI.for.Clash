@@ -11,7 +11,7 @@ import {
   isValidIPv6,
   addToRuleSet,
   ignoredError,
-  setIntervalImmediately
+  setIntervalImmediately,
 } from '@/utils'
 
 const logType = ref('info')
@@ -24,7 +24,7 @@ const LogLevelMap: Record<string, string[]> = {
   error: ['error'],
   warning: ['error', 'warning'],
   info: ['error', 'warning', 'info'],
-  debug: ['error', 'warning', 'info', 'debug']
+  debug: ['error', 'warning', 'info', 'debug'],
 }
 
 const filteredLogs = computed(() => {
@@ -38,7 +38,7 @@ const filteredLogs = computed(() => {
 const menus: Menu[] = [
   ['home.connections.addToDirect', 'direct'],
   ['home.connections.addToProxy', 'proxy'],
-  ['home.connections.addToReject', 'reject']
+  ['home.connections.addToReject', 'reject'],
 ].map(([label, ruleset]) => {
   return {
     label,
@@ -60,24 +60,24 @@ const menus: Menu[] = [
         options.push({
           label: t('kernel.rules.type.IP-CIDR'),
           value: 'IP-CIDR,' + matches[1] + '/32,no-resolve',
-          description: matches[1]
+          description: matches[1],
         })
       } else if (isValidIPv6(matches[1])) {
         options.push({
           label: t('kernel.rules.type.IP-CIDR6'),
           value: 'IP-CIDR6,' + matches[1] + '/32,no-resolve',
-          description: matches[1]
+          description: matches[1],
         })
       } else {
         options.push({
           label: t('kernel.rules.type.DOMAIN'),
           value: 'DOMAIN,' + matches[1],
-          description: matches[1]
+          description: matches[1],
         })
       }
 
       const payloads = await picker.multi<string[]>('rulesets.selectRuleType', options, [
-        options?.[0].value
+        options?.[0].value,
       ])
 
       try {
@@ -88,7 +88,7 @@ const menus: Menu[] = [
         message.error(error)
         console.log(error)
       }
-    }
+    },
   }
 })
 

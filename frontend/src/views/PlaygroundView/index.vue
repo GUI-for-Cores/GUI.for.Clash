@@ -14,7 +14,7 @@ const appVersion = '${APP_VERSION}'
 const kv = ref({
   appTitle: APP_TITLE,
   appVersion: APP_VERSION,
-  count: '1'
+  count: '1',
 })
 
 const { message } = useMessage()
@@ -42,14 +42,14 @@ const handleShowSinglePicker = async () => {
           description: 'The first option',
           onSelect: ({ value, option, options, selected }) => {
             console.log(value, option, options, selected)
-          }
+          },
         },
         {
           label: 'TWO',
           value: 'two',
           onSelect: ({ value, option, options, selected }) => {
             console.log(value, option, options, selected)
-          }
+          },
         },
         {
           label: 'THREE',
@@ -57,10 +57,10 @@ const handleShowSinglePicker = async () => {
           description: 'The third option',
           onSelect: ({ value, option, options, selected }) => {
             console.log(value, option, options, selected)
-          }
-        }
+          },
+        },
       ],
-      ['one']
+      ['one'],
     )
     console.log(res)
   } catch (error: any) {
@@ -80,7 +80,7 @@ const handleShowMultiPicker = async () => {
           background: 'red',
           onSelect: ({ value, option, options, selected }) => {
             console.log(value, option, options, selected)
-          }
+          },
         },
         {
           label: 'TWO',
@@ -88,7 +88,7 @@ const handleShowMultiPicker = async () => {
           background: 'blue',
           onSelect: ({ value, option, options, selected }) => {
             console.log(value, option, options, selected)
-          }
+          },
         },
         {
           label: 'THREE',
@@ -97,10 +97,10 @@ const handleShowMultiPicker = async () => {
           background: 'green',
           onSelect: ({ value, option, options, selected }) => {
             console.log(value, option, options, selected)
-          }
-        }
+          },
+        },
       ],
-      ['one', 'three']
+      ['one', 'three'],
     )
     console.log(res)
   } catch (error: any) {
@@ -122,7 +122,7 @@ const handleShowPrompt = async () => {
     const res = await prompt('Title', 10 /* 'initialValue' */, {
       max: 100,
       min: 20,
-      placeholder: 'placeholder'
+      placeholder: 'placeholder',
     })
     console.log(res)
   } catch (error: any) {
@@ -149,7 +149,7 @@ const handlePostJSON = async () => {
   const res = await HttpPost(
     'http://127.0.0.1:8080/json',
     { Authorization: 'bearer', 'Content-Type': 'application/json' },
-    { username: 'admin' }
+    { username: 'admin' },
   )
   console.log(res)
   alert('Result', JSON.stringify(res.headers, null, 2) + '\n' + JSON.stringify(res.body, null, 2))
@@ -159,7 +159,7 @@ const handlePostFORM = async () => {
   const res = await HttpPost(
     'http://127.0.0.1:8080/form',
     { Authorization: 'bearer', 'Content-Type': 'application/x-www-form-urlencoded' },
-    { username: 'admin' }
+    { username: 'admin' },
   )
   console.log(res)
   alert('Result', JSON.stringify(res.headers, null, 2) + '\n' + JSON.stringify(res.body, null, 2))
@@ -167,7 +167,7 @@ const handlePostFORM = async () => {
 
 const handleUpload = async () => {
   const res = await Upload('http://127.0.0.1:8080/upload', 'data/user.yaml', {
-    Authorization: 'bearer token'
+    Authorization: 'bearer token',
   })
   console.log(res)
   alert('Result', JSON.stringify(res.headers, null, 2) + '\n' + JSON.stringify(res.body, null, 2))
@@ -191,8 +191,8 @@ const handleRequestWithCancel = async () => {
     {},
     undefined,
     {
-      CancelId: 'cancel-download'
-    }
+      CancelId: 'cancel-download',
+    },
   )
   console.log(status, body, headers)
 }

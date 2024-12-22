@@ -7,7 +7,7 @@ import {
   GeodataLoaderOptions,
   GeoSiteMatcherOptions,
   GlobalClientFingerprintOptions,
-  AdvancedConfigDefaults
+  AdvancedConfigDefaults,
 } from '@/constant'
 
 interface Props {

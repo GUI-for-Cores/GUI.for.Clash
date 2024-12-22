@@ -203,6 +203,6 @@ export const useProfilesStore = defineStore('profiles', () => {
     addProfile,
     editProfile,
     deleteProfile,
-    getProfileById
+    getProfileById,
   }
 })

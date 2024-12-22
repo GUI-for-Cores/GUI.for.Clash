@@ -14,7 +14,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   id: '',
-  isUpdate: false
+  isUpdate: false,
 })
 
 const loading = ref(false)
@@ -43,9 +43,9 @@ const sub = ref<SubscribeType>({
   healthCheck: {
     enable: false,
     url: 'https://www.gstatic.com/generate_204',
-    interval: 300
+    interval: 300,
   },
-  proxies: []
+  proxies: [],
 })
 
 const isManual = computed(() => sub.value.type === 'Manual')
@@ -96,7 +96,7 @@ if (props.isUpdate) {
         :options="[
           { label: 'common.http', value: 'Http' },
           { label: 'common.file', value: 'File' },
-          { label: 'common.manual', value: 'Manual' }
+          { label: 'common.manual', value: 'Manual' },
         ]"
       />
     </div>

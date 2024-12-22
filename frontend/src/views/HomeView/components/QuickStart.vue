@@ -10,7 +10,7 @@ import {
   useAppSettingsStore,
   useSubscribesStore,
   type SubscribeType,
-  type ProfileType
+  type ProfileType,
 } from '@/stores'
 
 const url = ref('')
@@ -53,9 +53,9 @@ const handleSubmit = async () => {
     healthCheck: {
       enable: false,
       url: 'https://www.gstatic.com/generate_204',
-      interval: 300
+      interval: 300,
     },
-    proxies: []
+    proxies: [],
   }
 
   loading.value = true
@@ -82,7 +82,7 @@ const handleSubmit = async () => {
     proxyGroupsConfig: Defaults.ProxyGroupsConfigDefaults(ids),
     rulesConfig: Defaults.RulesConfigDefaults(ids),
     mixinConfig: Defaults.MixinConfigDefaults(),
-    scriptConfig: Defaults.ScriptConfigDefaults()
+    scriptConfig: Defaults.ScriptConfigDefaults(),
   }
 
   profile.proxyGroupsConfig[0].use = [subscribeID]

@@ -10,7 +10,7 @@ import {
   useAppSettingsStore,
   useEnvStore,
   useKernelApiStore,
-  usePluginsStore
+  usePluginsStore,
 } from '@/stores'
 
 // Permissions Helper
@@ -26,14 +26,14 @@ export const SwitchPermissions = async (enable: boolean) => {
         'REG_SZ',
         '/d',
         'RunAsAdmin',
-        '/f'
+        '/f',
       ]
     : [
         'delete',
         'HKEY_CURRENT_USER\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers',
         '/v',
         basePath + '\\' + appName,
-        '/f'
+        '/f',
       ]
   await Exec('reg', args)
 }
@@ -47,7 +47,7 @@ export const CheckPermissions = async () => {
       '/v',
       basePath + '\\' + appName,
       '/t',
-      'REG_SZ'
+      'REG_SZ',
     ])
     return out.includes('RunAsAdmin')
   } catch {
@@ -66,7 +66,7 @@ export const GrantTUNPermission = async (path: string) => {
     await Exec('pkexec', [
       'setcap',
       'cap_net_bind_service,cap_net_admin,cap_dac_override=+ep',
-      absPath
+      absPath,
     ])
   }
 }
@@ -75,14 +75,14 @@ export const GrantTUNPermission = async (path: string) => {
 export const SetSystemProxy = async (
   enable: boolean,
   server: string,
-  proxyType: ProxyType = 'mixed'
+  proxyType: ProxyType = 'mixed',
 ) => {
   const { os } = useEnvStore().env
 
   const handler = {
     windows: setWindowsSystemProxy,
     darwin: setDarwinSystemProxy,
-    linux: setLinuxSystemProxy
+    linux: setLinuxSystemProxy,
   }[os]
 
   await handler?.(server, enable, proxyType)
@@ -98,7 +98,7 @@ async function setWindowsSystemProxy(server: string, enabled: boolean, proxyType
     'REG_DWORD',
     '/d',
     enabled ? '1' : '0',
-    '/f'
+    '/f',
   ])
 
   const p2 = ignoredError(Exec, 'reg', [
@@ -108,7 +108,7 @@ async function setWindowsSystemProxy(server: string, enabled: boolean, proxyType
     'ProxyServer',
     '/d',
     enabled ? (proxyType === 'socks' ? 'socks=' + server : server) : '',
-    '/f'
+    '/f',
   ])
 
   await Promise.all([p1, p2])
@@ -126,7 +126,7 @@ async function setDarwinSystemProxy(server: string, enabled: boolean, proxyType:
     const p3 = ignoredError(Exec, 'networksetup', [
       '-setsocksfirewallproxystate',
       device,
-      socksState
+      socksState,
     ])
 
     const [serverName, serverPort] = server.split(':')
@@ -137,13 +137,13 @@ async function setDarwinSystemProxy(server: string, enabled: boolean, proxyType:
         '-setwebproxy',
         device,
         serverName,
-        serverPort
+        serverPort,
       ])
       const p2 = ignoredError(Exec, 'networksetup', [
         '-setsecurewebproxy',
         device,
         serverName,
-        serverPort
+        serverPort,
       ])
       promises.push(p1, p2)
     }
@@ -152,7 +152,7 @@ async function setDarwinSystemProxy(server: string, enabled: boolean, proxyType:
         '-setsocksfirewallproxy',
         device,
         serverName,
-        serverPort
+        serverPort,
       ])
       promises.push(p1)
     }
@@ -173,43 +173,43 @@ async function setLinuxSystemProxy(server: string, enabled: boolean, proxyType: 
     'set',
     'org.gnome.system.proxy',
     'mode',
-    enabled ? 'manual' : 'none'
+    enabled ? 'manual' : 'none',
   ])
   const p2 = ignoredError(Exec, 'gsettings', [
     'set',
     'org.gnome.system.proxy.http',
     'host',
-    httpEnabled ? serverName : ''
+    httpEnabled ? serverName : '',
   ])
   const p3 = ignoredError(Exec, 'gsettings', [
     'set',
     'org.gnome.system.proxy.http',
     'port',
-    httpEnabled ? serverPort : '0'
+    httpEnabled ? serverPort : '0',
   ])
   const p4 = ignoredError(Exec, 'gsettings', [
     'set',
     'org.gnome.system.proxy.https',
     'host',
-    httpEnabled ? serverName : ''
+    httpEnabled ? serverName : '',
   ])
   const p5 = ignoredError(Exec, 'gsettings', [
     'set',
     'org.gnome.system.proxy.https',
     'port',
-    httpEnabled ? serverPort : '0'
+    httpEnabled ? serverPort : '0',
   ])
   const p6 = ignoredError(Exec, 'gsettings', [
     'set',
     'org.gnome.system.proxy.socks',
     'host',
-    socksEnabled ? serverName : ''
+    socksEnabled ? serverName : '',
   ])
   const p7 = ignoredError(Exec, 'gsettings', [
     'set',
     'org.gnome.system.proxy.socks',
     'port',
-    socksEnabled ? serverPort : '0'
+    socksEnabled ? serverPort : '0',
   ])
   await Promise.all([p1, p2, p3, p4, p5, p6, p7])
 }
@@ -224,7 +224,7 @@ export const GetSystemProxy = async () => {
         '/v',
         'ProxyEnable',
         '/t',
-        'REG_DWORD'
+        'REG_DWORD',
       ])
 
       if (/REG_DWORD\s+0x0/.test(out1)) return ''
@@ -235,7 +235,7 @@ export const GetSystemProxy = async () => {
         '/v',
         'ProxyServer',
         '/t',
-        'REG_SZ'
+        'REG_SZ',
       ])
 
       const regex = /ProxyServer\s+REG_SZ\s+(\S+)/
@@ -337,7 +337,7 @@ export const handleUseProxy = async (group: any, proxy: any) => {
     promises.push(
       ...(connections || [])
         .filter((v) => v.chains.includes(group.name))
-        .map((v) => deleteConnection(v.id))
+        .map((v) => deleteConnection(v.id)),
     )
   }
   await useProxy(group.name, proxy.name)

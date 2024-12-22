@@ -11,7 +11,7 @@ export const GeneralConfigDefaults = (): ProfileType['generalConfig'] => ({
   'mixed-port': 20112,
   'allow-lan': false,
   'log-level': 'silent',
-  'interface-name': ''
+  'interface-name': '',
 })
 
 export const AdvancedConfigDefaults = (): ProfileType['advancedConfig'] => ({
@@ -31,7 +31,7 @@ export const AdvancedConfigDefaults = (): ProfileType['advancedConfig'] => ({
   'skip-auth-prefixes': ['127.0.0.1/8', '::1/128'],
   tls: {
     certificate: '',
-    'private-key': ''
+    'private-key': '',
   },
   'global-client-fingerprint': 'chrome',
   'geodata-mode': false,
@@ -43,15 +43,15 @@ export const AdvancedConfigDefaults = (): ProfileType['advancedConfig'] => ({
     geoip: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.dat',
     geosite: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geosite.dat',
     mmdb: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/country.mmdb',
-    asn: 'https://github.com/xishang0128/geoip/releases/download/latest/GeoLite2-ASN.mmdb'
+    asn: 'https://github.com/xishang0128/geoip/releases/download/latest/GeoLite2-ASN.mmdb',
   },
   'global-ua': 'chrome',
   profile: {
     'store-selected': true,
-    'store-fake-ip': true
+    'store-fake-ip': true,
   },
   'lan-allowed-ips': ['0.0.0.0/0', '::/0'],
-  'lan-disallowed-ips': []
+  'lan-disallowed-ips': [],
 })
 
 export const TunConfigDefaults = (): ProfileType['tunConfig'] => ({
@@ -64,7 +64,7 @@ export const TunConfigDefaults = (): ProfileType['tunConfig'] => ({
   device: 'utun_clash',
   mtu: 9000,
   'strict-route': true,
-  'endpoint-independent-nat': false
+  'endpoint-independent-nat': false,
 })
 
 export const DnsConfigDefaults = (): ProfileType['dnsConfig'] => ({
@@ -90,7 +90,7 @@ export const DnsConfigDefaults = (): ProfileType['dnsConfig'] => ({
     '*.local',
     '*.home.arpa',
     '*.msftconnecttest.com',
-    '*.msftncsi.com'
+    '*.msftncsi.com',
   ],
   fallback: [],
   'fallback-filter': {
@@ -98,10 +98,10 @@ export const DnsConfigDefaults = (): ProfileType['dnsConfig'] => ({
     'geoip-code': 'CN',
     geosite: ['gfw'],
     ipcidr: ['240.0.0.0/4'],
-    domain: ['+.google.com', '+.facebook.com', '+.youtube.com']
+    domain: ['+.google.com', '+.facebook.com', '+.youtube.com'],
   },
   'prefer-h3': false,
-  hosts: {}
+  hosts: {},
 })
 
 export const ProxyGroupsConfigDefaults = (ids: string[]): ProfileType['proxyGroupsConfig'] => {
@@ -121,7 +121,7 @@ export const ProxyGroupsConfigDefaults = (ids: string[]): ProfileType['proxyGrou
       filter: '',
       'exclude-filter': '',
       hidden: false,
-      icon: ''
+      icon: '',
     },
     {
       id: ids[1],
@@ -138,7 +138,7 @@ export const ProxyGroupsConfigDefaults = (ids: string[]): ProfileType['proxyGrou
       filter: '',
       'exclude-filter': '',
       hidden: false,
-      icon: ''
+      icon: '',
     },
     {
       id: ids[2],
@@ -146,7 +146,7 @@ export const ProxyGroupsConfigDefaults = (ids: string[]): ProfileType['proxyGrou
       type: ProxyGroup.Select,
       proxies: [
         { id: 'DIRECT', type: 'Built-In', name: 'DIRECT' },
-        { id: 'REJECT', type: 'Built-In', name: 'REJECT' }
+        { id: 'REJECT', type: 'Built-In', name: 'REJECT' },
       ],
       url: 'https://www.gstatic.com/generate_204',
       interval: 300,
@@ -158,7 +158,7 @@ export const ProxyGroupsConfigDefaults = (ids: string[]): ProfileType['proxyGrou
       filter: '',
       'exclude-filter': '',
       hidden: false,
-      icon: ''
+      icon: '',
     },
     {
       id: ids[3],
@@ -166,7 +166,7 @@ export const ProxyGroupsConfigDefaults = (ids: string[]): ProfileType['proxyGrou
       type: ProxyGroup.Select,
       proxies: [
         { id: 'REJECT', type: 'Built-In', name: 'REJECT' },
-        { id: 'DIRECT', type: 'Built-In', name: 'DIRECT' }
+        { id: 'DIRECT', type: 'Built-In', name: 'DIRECT' },
       ],
       url: 'https://www.gstatic.com/generate_204',
       interval: 300,
@@ -178,7 +178,7 @@ export const ProxyGroupsConfigDefaults = (ids: string[]): ProfileType['proxyGrou
       filter: '',
       'exclude-filter': '',
       hidden: false,
-      icon: ''
+      icon: '',
     },
     {
       id: ids[4],
@@ -186,7 +186,7 @@ export const ProxyGroupsConfigDefaults = (ids: string[]): ProfileType['proxyGrou
       type: ProxyGroup.Select,
       proxies: [
         { id: ids[0], type: 'Built-In', name: t('kernel.proxyGroups.built-in.select') },
-        { id: ids[2], type: 'Built-In', name: t('kernel.proxyGroups.built-in.direct') }
+        { id: ids[2], type: 'Built-In', name: t('kernel.proxyGroups.built-in.direct') },
       ],
       url: 'https://www.gstatic.com/generate_204',
       interval: 300,
@@ -198,8 +198,8 @@ export const ProxyGroupsConfigDefaults = (ids: string[]): ProfileType['proxyGrou
       filter: '',
       'exclude-filter': '',
       hidden: false,
-      icon: ''
-    }
+      icon: '',
+    },
   ]
 }
 
@@ -214,7 +214,7 @@ export const RulesConfigDefaults = (ids: string[]): ProfileType['rulesConfig'] =
     'ruleset-type': 'file',
     'ruleset-behavior': RulesetBehavior.Domain,
     'ruleset-format': RulesetFormat.Mrs,
-    'ruleset-proxy': ids[2]
+    'ruleset-proxy': ids[2],
   },
   {
     id: sampleID(),
@@ -227,7 +227,7 @@ export const RulesConfigDefaults = (ids: string[]): ProfileType['rulesConfig'] =
     'ruleset-type': 'http',
     'ruleset-behavior': RulesetBehavior.Domain,
     'ruleset-format': RulesetFormat.Mrs,
-    'ruleset-proxy': ids[2]
+    'ruleset-proxy': ids[2],
   },
   {
     id: sampleID(),
@@ -240,7 +240,7 @@ export const RulesConfigDefaults = (ids: string[]): ProfileType['rulesConfig'] =
     'ruleset-type': 'http',
     'ruleset-behavior': RulesetBehavior.Ipcidr,
     'ruleset-format': RulesetFormat.Mrs,
-    'ruleset-proxy': ids[2]
+    'ruleset-proxy': ids[2],
   },
   {
     id: sampleID(),
@@ -252,7 +252,7 @@ export const RulesConfigDefaults = (ids: string[]): ProfileType['rulesConfig'] =
     'ruleset-type': 'http',
     'ruleset-behavior': RulesetBehavior.Ipcidr,
     'ruleset-format': RulesetFormat.Mrs,
-    'ruleset-proxy': ids[2]
+    'ruleset-proxy': ids[2],
   },
   {
     id: sampleID(),
@@ -265,7 +265,7 @@ export const RulesConfigDefaults = (ids: string[]): ProfileType['rulesConfig'] =
     'ruleset-type': 'http',
     'ruleset-behavior': RulesetBehavior.Domain,
     'ruleset-format': RulesetFormat.Mrs,
-    'ruleset-proxy': ids[2]
+    'ruleset-proxy': ids[2],
   },
   {
     id: sampleID(),
@@ -277,7 +277,7 @@ export const RulesConfigDefaults = (ids: string[]): ProfileType['rulesConfig'] =
     'ruleset-type': 'http',
     'ruleset-behavior': RulesetBehavior.Domain,
     'ruleset-format': RulesetFormat.Mrs,
-    'ruleset-proxy': ids[2]
+    'ruleset-proxy': ids[2],
   },
   {
     id: sampleID(),
@@ -290,7 +290,7 @@ export const RulesConfigDefaults = (ids: string[]): ProfileType['rulesConfig'] =
     'ruleset-type': 'http',
     'ruleset-behavior': RulesetBehavior.Domain,
     'ruleset-format': RulesetFormat.Mrs,
-    'ruleset-proxy': ids[2]
+    'ruleset-proxy': ids[2],
   },
   {
     id: sampleID(),
@@ -302,8 +302,8 @@ export const RulesConfigDefaults = (ids: string[]): ProfileType['rulesConfig'] =
     'ruleset-type': 'file',
     'ruleset-behavior': RulesetBehavior.Domain,
     'ruleset-format': RulesetFormat.Mrs,
-    'ruleset-proxy': ids[2]
-  }
+    'ruleset-proxy': ids[2],
+  },
 ]
 
 export const MixinConfigDefaults = (): ProfileType['mixinConfig'] => {

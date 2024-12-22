@@ -29,13 +29,13 @@ enum StepEnum {
   DNS = 3,
   GROUPS = 4,
   RULES = 5,
-  MIXIN_SCRIPT = 6
+  MIXIN_SCRIPT = 6,
 }
 
 const props = withDefaults(defineProps<Props>(), {
   id: '',
   isUpdate: false,
-  step: StepEnum.NAME
+  step: StepEnum.NAME,
 })
 
 const loading = ref(false)
@@ -50,7 +50,7 @@ const stepItems = [
   { title: 'profile.step.dns' },
   { title: 'profile.step.groups' },
   { title: 'profile.step.rules' },
-  { title: 'profile.step.mixin-script' }
+  { title: 'profile.step.mixin-script' },
 ]
 
 const ids = [sampleID(), sampleID(), sampleID(), sampleID(), sampleID()]
@@ -65,7 +65,7 @@ const profile = ref<ProfileType>({
   proxyGroupsConfig: Defaults.ProxyGroupsConfigDefaults(ids),
   rulesConfig: Defaults.RulesConfigDefaults(ids),
   mixinConfig: Defaults.MixinConfigDefaults(),
-  scriptConfig: Defaults.ScriptConfigDefaults()
+  scriptConfig: Defaults.ScriptConfigDefaults(),
 })
 
 const mixinAndScriptConfig = computed({
@@ -75,7 +75,7 @@ const mixinAndScriptConfig = computed({
   set({ mixin, script }) {
     profile.value.mixinConfig = mixin
     profile.value.scriptConfig = script
-  }
+  },
 })
 
 const { t } = useI18n()
@@ -109,7 +109,7 @@ const handleSave = async () => {
 const handleAdd = () => {
   const map: Record<number, Ref> = {
     [StepEnum.GROUPS]: groupsRef,
-    [StepEnum.RULES]: rulesRef
+    [StepEnum.RULES]: rulesRef,
   }
   map[currentStep.value].value.handleAdd()
 }

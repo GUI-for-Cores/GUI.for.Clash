@@ -18,8 +18,8 @@ const routes: RouteRecordRaw[] = [
     component: HomeView,
     meta: {
       name: 'router.overview',
-      icon: 'overview'
-    }
+      icon: 'overview',
+    },
   },
   {
     path: '/profiles',
@@ -27,8 +27,8 @@ const routes: RouteRecordRaw[] = [
     component: ProfilesView,
     meta: {
       name: 'router.profiles',
-      icon: 'profiles'
-    }
+      icon: 'profiles',
+    },
   },
   {
     path: '/subscriptions',
@@ -36,8 +36,8 @@ const routes: RouteRecordRaw[] = [
     component: SubscribesView,
     meta: {
       name: 'router.subscriptions',
-      icon: 'subscriptions'
-    }
+      icon: 'subscriptions',
+    },
   },
   {
     path: '/rulesets',
@@ -45,8 +45,8 @@ const routes: RouteRecordRaw[] = [
     component: RulesetsView,
     meta: {
       name: 'router.rulesets',
-      icon: 'rulesets'
-    }
+      icon: 'rulesets',
+    },
   },
   {
     path: '/plugins',
@@ -54,8 +54,8 @@ const routes: RouteRecordRaw[] = [
     component: PluginsView,
     meta: {
       name: 'router.plugins',
-      icon: 'plugins'
-    }
+      icon: 'plugins',
+    },
   },
   {
     path: '/scheduledtasks',
@@ -63,8 +63,8 @@ const routes: RouteRecordRaw[] = [
     component: ScheduledTasksView,
     meta: {
       name: 'router.scheduledtasks',
-      icon: 'scheduledTasks'
-    }
+      icon: 'scheduledTasks',
+    },
   },
   {
     path: '/settings',
@@ -73,8 +73,8 @@ const routes: RouteRecordRaw[] = [
     meta: {
       name: 'router.settings',
       icon: 'settings2',
-      hidden: false
-    }
+      hidden: false,
+    },
   },
   {
     path: '/playground',
@@ -83,9 +83,9 @@ const routes: RouteRecordRaw[] = [
     meta: {
       name: 'Develop',
       icon: 'code',
-      hidden: !isDev
-    }
-  }
+      hidden: !isDev,
+    },
+  },
 ]
 
 export default routes

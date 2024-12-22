@@ -26,8 +26,8 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
     tun: {
       enable: false,
       stack: 'gVisor',
-      device: ''
-    }
+      device: '',
+    },
   })
 
   const proxies = ref<Record<string, IKernelProxy>>({})
@@ -64,7 +64,7 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
   const updateKernelState = async () => {
     appSettingsStore.app.kernel.running = !!(await ignoredError(
       isKernelRunning,
-      appSettingsStore.app.kernel.pid
+      appSettingsStore.app.kernel.pid,
     ))
 
     if (!appSettingsStore.app.kernel.running) {
@@ -128,7 +128,7 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
         // stdout
         (out: string) => onOut(out, pid),
         // end
-        onEnd
+        onEnd,
       )
     } catch (error) {
       loading.value = false
@@ -167,19 +167,19 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
     if (mixedPort) {
       return {
         port: mixedPort,
-        proxyType: 'mixed'
+        proxyType: 'mixed',
       }
     }
     if (port) {
       return {
         port,
-        proxyType: 'http'
+        proxyType: 'http',
       }
     }
     if (socksPort) {
       return {
         port: socksPort,
-        proxyType: 'socks'
+        proxyType: 'socks',
       }
     }
     return undefined
@@ -187,7 +187,7 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
 
   watch(
     [() => config.value.mode, () => config.value.tun.enable, () => proxies.value],
-    updateTrayMenus
+    updateTrayMenus,
   )
 
   return {
@@ -203,6 +203,6 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
     refreshConfig,
     updateConfig,
     refreshProviderProxies,
-    getProxyPort
+    getProxyPort,
   }
 })

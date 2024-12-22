@@ -26,14 +26,14 @@ const proxyGroup = ref([
       { id: 'DIRECT', name: 'DIRECT', type: 'Built-In' },
       { id: 'REJECT', name: 'REJECT', type: 'Built-In' },
       { id: 'PASS', name: 'PASS', type: 'Built-In' },
-      ...groups.value.map(({ id, name, type }) => ({ id, name, type }))
-    ]
+      ...groups.value.map(({ id, name, type }) => ({ id, name, type })),
+    ],
   },
   {
     id: 'Subscribes',
     name: 'kernel.proxyGroups.subscriptions',
-    proxies: []
-  }
+    proxies: [],
+  },
 ])
 
 const fields = ref<GroupsType[number]>({
@@ -51,7 +51,7 @@ const fields = ref<GroupsType[number]>({
   filter: '',
   'exclude-filter': '',
   hidden: false,
-  icon: ''
+  icon: '',
 })
 
 const { t } = useI18n()
@@ -75,7 +75,7 @@ const handleAdd = () => {
     filter: '',
     'exclude-filter': '',
     hidden: false,
-    icon: ''
+    icon: '',
   }
   showModal.value = true
 }
@@ -87,7 +87,7 @@ const handleDeleteGroup = (index: number) => {
   groups.value.splice(index, 1)
   proxyGroup.value = proxyGroup.value.map((v) => ({
     ...v,
-    proxies: v.proxies.filter((v) => v.name !== name)
+    proxies: v.proxies.filter((v) => v.name !== name),
   }))
 }
 
@@ -165,7 +165,7 @@ const isInuse = (groupID: string, proxyID: string) => {
 }
 
 const isSupportInverval = computed(() =>
-  [ProxyGroup.UrlTest, ProxyGroup.Fallback, ProxyGroup.LoadBalance].includes(fields.value.type)
+  [ProxyGroup.UrlTest, ProxyGroup.Fallback, ProxyGroup.LoadBalance].includes(fields.value.type),
 )
 
 const hasLost = (g: GroupsType[0]) => {

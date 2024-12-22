@@ -15,7 +15,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   id: '',
-  isUpdate: false
+  isUpdate: false,
 })
 
 const loading = ref(false)
@@ -30,7 +30,7 @@ const ruleset = ref<RuleSetType>({
   url: '',
   count: 0,
   path: `data/rulesets/${sampleID()}.yaml`,
-  disabled: false
+  disabled: false,
 })
 
 const { t } = useI18n()
@@ -71,7 +71,7 @@ const disabled = computed(
   () =>
     !ruleset.value.name ||
     (ruleset.value.type === 'Manual' && !ruleset.value.path) ||
-    (['Http', 'File'].includes(ruleset.value.type) && (!ruleset.value.url || !ruleset.value.path))
+    (['Http', 'File'].includes(ruleset.value.type) && (!ruleset.value.url || !ruleset.value.path)),
 )
 
 watch(
@@ -80,7 +80,7 @@ watch(
     if (v === 'Manual') {
       ruleset.value.format = RulesetFormat.Yaml
     }
-  }
+  },
 )
 
 watch(
@@ -92,9 +92,9 @@ watch(
     }
     ruleset.value.path = ruleset.value.path.replace(
       isYaml ? '.mrs' : '.yaml',
-      isYaml ? '.yaml' : '.mrs'
+      isYaml ? '.yaml' : '.mrs',
     )
-  }
+  },
 )
 
 watch(
@@ -107,7 +107,7 @@ watch(
         message.error('Not support')
       }
     }
-  }
+  },
 )
 
 if (props.isUpdate) {
@@ -129,7 +129,7 @@ if (props.isUpdate) {
         :options="[
           { label: 'common.http', value: 'Http' },
           { label: 'common.file', value: 'File' },
-          { label: 'ruleset.manual', value: 'Manual' }
+          { label: 'ruleset.manual', value: 'Manual' },
         ]"
       />
     </div>

@@ -9,7 +9,7 @@ import {
   APP_TITLE,
   ignoredError,
   APP_VERSION,
-  stringifyNoFolding
+  stringifyNoFolding,
 } from '@/utils'
 import { Theme, WindowStartState, Lang, View, Color, WebviewGpuPolicy } from '@/enums/app'
 import {
@@ -17,7 +17,7 @@ import {
   Writefile,
   WindowSetSystemDefaultTheme,
   WindowIsMaximised,
-  WindowIsMinimised
+  WindowIsMinimised,
 } from '@/bridge'
 import { Colors, DefaultFontFamily } from '@/constant/app'
 
@@ -106,7 +106,7 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
         down: true,
         upload: true,
         download: true,
-        start: true
+        start: true,
       },
       order: [
         'metadata.inboundName',
@@ -123,8 +123,8 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
         'down',
         'upload',
         'download',
-        'start'
-      ]
+        'start',
+      ],
     },
     kernel: {
       branch: 'main',
@@ -135,14 +135,14 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
       unAvailable: true,
       cardMode: true,
       sortByDelay: false,
-      testUrl: 'https://www.gstatic.com/generate_204'
+      testUrl: 'https://www.gstatic.com/generate_204',
     },
     addPluginToMenu: false,
     pluginSettings: {},
     githubApiToken: '',
     multipleInstance: false,
     rollingRelease: true,
-    pages: ['Overview', 'Profiles', 'Subscriptions', 'Plugins']
+    pages: ['Overview', 'Profiles', 'Subscriptions', 'Plugins'],
   })
 
   const saveAppSettings = debounce((config: string) => {
@@ -209,7 +209,7 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
 
       firstOpen = false
     },
-    { deep: true }
+    { deep: true },
   )
 
   window.addEventListener(
@@ -221,7 +221,7 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
         app.value.width = document.documentElement.clientWidth
         app.value.height = document.documentElement.clientHeight
       }
-    }, 1000)
+    }, 1000),
   )
 
   watch(
@@ -232,9 +232,9 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
       () => app.value.kernel.running,
       () => app.value.addPluginToMenu,
       () => app.value.kernel.unAvailable,
-      () => app.value.kernel.sortByDelay
+      () => app.value.kernel.sortByDelay,
     ],
-    updateTrayMenus
+    updateTrayMenus,
   )
 
   watch(themeMode, setAppTheme, { immediate: true })
