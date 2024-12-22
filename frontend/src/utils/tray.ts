@@ -1,5 +1,5 @@
 import i18n from '@/lang'
-import { Theme, type MenuItem, Color, Lang } from '@/constant'
+import { Theme, Color, Lang } from '@/enums/app'
 import { useAppSettingsStore, useKernelApiStore, useEnvStore, usePluginsStore } from '@/stores'
 import {
   Notify,
@@ -19,6 +19,7 @@ import {
   APP_TITLE,
   APP_VERSION
 } from '@/utils'
+import { ClashMode } from '@/enums/kernel'
 
 const getTrayIcons = () => {
   const envStore = useEnvStore()
@@ -171,20 +172,20 @@ const getTrayMenus = () => {
         {
           type: 'item',
           text: 'kernel.global',
-          checked: kernelApiStore.config.mode === 'global',
-          event: () => handleChangeMode('global')
+          checked: kernelApiStore.config.mode === ClashMode.Global,
+          event: () => handleChangeMode(ClashMode.Global)
         },
         {
           type: 'item',
           text: 'kernel.rule',
-          checked: kernelApiStore.config.mode === 'rule',
-          event: () => handleChangeMode('rule')
+          checked: kernelApiStore.config.mode === ClashMode.Rule,
+          event: () => handleChangeMode(ClashMode.Rule)
         },
         {
           type: 'item',
           text: 'kernel.direct',
-          checked: kernelApiStore.config.mode === 'direct',
-          event: () => handleChangeMode('direct')
+          checked: kernelApiStore.config.mode === ClashMode.Direct,
+          event: () => handleChangeMode(ClashMode.Direct)
         }
       ]
     },
@@ -231,10 +232,7 @@ const getTrayMenus = () => {
           type: 'item',
           text: 'tray.setSystemProxy',
           hidden: envStore.systemProxy,
-          event: async () => {
-            await kernelApiStore.updateConfig({ tun: { enable: false } })
-            await envStore.setSystemProxy()
-          }
+          event: envStore.setSystemProxy
         },
         {
           type: 'item',
@@ -253,10 +251,7 @@ const getTrayMenus = () => {
           type: 'item',
           text: 'tray.enableTunMode',
           hidden: kernelApiStore.config.tun.enable,
-          event: async () => {
-            await envStore.clearSystemProxy()
-            await kernelApiStore.updateConfig({ tun: { enable: true } })
-          }
+          event: envStore.clearSystemProxy
         },
         {
           type: 'item',

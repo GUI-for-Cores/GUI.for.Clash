@@ -1,8 +1,9 @@
 import { parse } from 'yaml'
 
+import { ProxyGroup } from '@/enums/kernel'
 import { Readfile, Writefile } from '@/bridge'
 import { deepClone, APP_TITLE, deepAssign, stringifyNoFolding } from '@/utils'
-import { KernelConfigFilePath, ProxyGroup } from '@/constant/kernel'
+import { CoreConfigFilePath } from '@/constant/kernel'
 import { type ProfileType, useSubscribesStore, useRulesetsStore, usePluginsStore } from '@/stores'
 
 export const generateRule = (
@@ -364,5 +365,5 @@ export const generateConfigFile = async (profile: ProfileType) => {
 
   config['log-level'] = 'info'
 
-  await Writefile(KernelConfigFilePath, header + stringifyNoFolding(config))
+  await Writefile(CoreConfigFilePath, header + stringifyNoFolding(config))
 }

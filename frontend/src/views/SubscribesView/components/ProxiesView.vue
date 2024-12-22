@@ -7,7 +7,7 @@ import { useBool, useMessage } from '@/hooks'
 import { deepClone, ignoredError, sampleID, stringifyNoFolding } from '@/utils'
 import { ProxyTypeOptions, DraggableOptions } from '@/constant'
 import { ClipboardSetText, Readfile, Writefile } from '@/bridge'
-import { type Menu, type SubscribeType, useSubscribesStore } from '@/stores'
+import { type SubscribeType, useSubscribesStore } from '@/stores'
 
 interface Props {
   sub: SubscribeType

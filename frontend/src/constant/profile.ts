@@ -1,6 +1,6 @@
 import i18n from '@/lang'
 import { sampleID } from '@/utils'
-import { ProxyGroup, RulesetBehavior, RulesetFormat } from '@/constant'
+import { ProxyGroup, RulesetBehavior, RulesetFormat } from '@/enums/kernel'
 import type { ProfileType } from '@/stores'
 
 const { t } = i18n.global

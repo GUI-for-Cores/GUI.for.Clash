@@ -2,7 +2,6 @@
 import { useI18n } from 'vue-i18n'
 import { ref, computed, onUnmounted } from 'vue'
 
-import type { Menu } from '@/stores'
 import { LogLevelOptions } from '@/constant'
 import { useBool, useMessage, usePicker } from '@/hooks'
 import { type PickerItem } from '@/components/Picker/index.vue'

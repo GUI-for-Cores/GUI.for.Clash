@@ -2,8 +2,9 @@ import { defineStore } from 'pinia'
 import { parse } from 'yaml'
 import { computed, ref, watch } from 'vue'
 
+import { PluginsFilePath } from '@/constant/app'
 import { HttpGet, Readfile, Writefile } from '@/bridge'
-import { PluginsFilePath, PluginTrigger, PluginTriggerEvent } from '@/constant'
+import { PluginTrigger, PluginTriggerEvent } from '@/enums/app'
 import { useAppSettingsStore, type ProfileType, type SubscribeType } from '@/stores'
 import {
   debounce,

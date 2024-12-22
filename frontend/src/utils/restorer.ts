@@ -1,14 +1,13 @@
 import type { ProfileType } from '@/stores'
 import { deepAssign, sampleID } from '@/utils'
+import { RulesetBehavior, RulesetFormat } from '@/enums/kernel'
 import {
   AdvancedConfigDefaults,
   DnsConfigDefaults,
   GeneralConfigDefaults,
   TunConfigDefaults,
   MixinConfigDefaults,
-  ScriptConfigDefaults,
-  RulesetBehavior,
-  RulesetFormat
+  ScriptConfigDefaults
 } from '@/constant'
 
 export const restoreProfile = (

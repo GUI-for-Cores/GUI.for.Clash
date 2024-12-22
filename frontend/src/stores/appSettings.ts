@@ -7,10 +7,11 @@ import {
   debounce,
   updateTrayMenus,
   APP_TITLE,
-  APP_VERSION,
   ignoredError,
+  APP_VERSION,
   stringifyNoFolding
 } from '@/utils'
+import { Theme, WindowStartState, Lang, View, Color, WebviewGpuPolicy } from '@/enums/app'
 import {
   Readfile,
   Writefile,
@@ -18,16 +19,7 @@ import {
   WindowIsMaximised,
   WindowIsMinimised
 } from '@/bridge'
-import {
-  Theme,
-  WindowStartState,
-  Lang,
-  View,
-  Color,
-  Colors,
-  DefaultFontFamily,
-  WebviewGpuPolicy
-} from '@/constant'
+import { Colors, DefaultFontFamily } from '@/constant/app'
 
 type AppSettings = {
   lang: Lang
@@ -154,7 +146,6 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
   })
 
   const saveAppSettings = debounce((config: string) => {
-    console.log('save app settings')
     Writefile('data/user.yaml', config)
   }, 1500)
 

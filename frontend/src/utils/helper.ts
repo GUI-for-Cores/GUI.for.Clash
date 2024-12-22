@@ -1,6 +1,6 @@
 import { parse } from 'yaml'
 
-import { ProxyGroupType } from '@/constant'
+import { ProxyGroupType } from '@/enums/kernel'
 import { useConfirm, useMessage } from '@/hooks'
 import { ignoredError, stringifyNoFolding } from '@/utils'
 import { deleteConnection, getConnections, useProxy } from '@/api/kernel'
@@ -397,4 +397,13 @@ export const exitApp = async () => {
   } catch (err: any) {
     error(err)
   }
+}
+
+export const getKernelFileName = async (isAlpha = false) => {
+  const envStore = useEnvStore()
+  const { os, arch, x64Level } = envStore.env
+  const fileSuffix = { windows: '.exe', linux: '', darwin: '' }[os]
+  const alpha = isAlpha ? '-alpha' : ''
+  const amd64Compatible = arch === 'amd64' && x64Level < 3 ? '-compatible' : ''
+  return `mihomo-${os}-${arch}${amd64Compatible}${alpha}${fileSuffix}`
 }

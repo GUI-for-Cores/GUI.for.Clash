@@ -3,9 +3,14 @@ import { useI18n } from 'vue-i18n'
 import { computed, ref } from 'vue'
 
 import { useMessage } from '@/hooks'
-import { getGitHubApiAuthorization, ignoredError, GrantTUNPermission } from '@/utils'
-import { KernelWorkDirectory, getKernelFileName } from '@/constant'
+import { CoreWorkingDirectory } from '@/constant'
 import { useAppSettingsStore, useEnvStore, useKernelApiStore } from '@/stores'
+import {
+  getGitHubApiAuthorization,
+  ignoredError,
+  GrantTUNPermission,
+  getKernelFileName
+} from '@/utils'
 import {
   Download,
   HttpCancel,
@@ -96,12 +101,12 @@ const downloadCore = async () => {
 
     const fileName = await getKernelFileName()
 
-    const kernelFilePath = KernelWorkDirectory + '/' + fileName
+    const kernelFilePath = CoreWorkingDirectory + '/' + fileName
 
     await ignoredError(Movefile, kernelFilePath, kernelFilePath + '.bak')
 
     if (suffix === '.zip') {
-      await UnzipZIPFile(tmp, KernelWorkDirectory)
+      await UnzipZIPFile(tmp, CoreWorkingDirectory)
     } else {
       await UnzipGZFile(tmp, kernelFilePath)
     }
@@ -130,7 +135,7 @@ const getLocalVersion = async (showTips = false) => {
   localVersionLoading.value = true
   try {
     const fileName = await getKernelFileName()
-    const kernelFilePath = KernelWorkDirectory + '/' + fileName
+    const kernelFilePath = CoreWorkingDirectory + '/' + fileName
     const res = await Exec(kernelFilePath, ['-v'])
     versionDetail.value = res.trim()
     return res.trim().match(/v\S+/)?.[0].trim() || ''
@@ -176,7 +181,7 @@ const handleRestartKernel = async () => {
 
 const handleGrantPermission = async () => {
   const fileName = await getKernelFileName()
-  const kernelFilePath = KernelWorkDirectory + '/' + fileName
+  const kernelFilePath = CoreWorkingDirectory + '/' + fileName
   await GrantTUNPermission(kernelFilePath)
   message.success('common.success')
 }

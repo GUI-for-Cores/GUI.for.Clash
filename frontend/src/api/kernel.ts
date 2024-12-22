@@ -1,14 +1,6 @@
 import { Request } from '@/utils/request'
 import { WebSockets } from '@/utils/websockets'
 import { useAppSettingsStore, useProfilesStore } from '@/stores'
-import type {
-  KernelApiConfig,
-  KernelApiProviders,
-  KernelApiProxies,
-  KernelApiConnections,
-  KernelConnectionsWS,
-  KernelApiProvidersRules
-} from './kernel.schema'
 
 enum Api {
   Configs = '/configs',
@@ -69,15 +61,15 @@ const request = new Request({ beforeRequest: setupKernelApi, timeout: 60 * 1000 
 
 const websockets = new WebSockets({ beforeConnect: setupKernelWSApi })
 
-export const getConfigs = () => request.get<KernelApiConfig>(Api.Configs)
+export const getConfigs = () => request.get<IKernelApiConfig>(Api.Configs)
 
 export const setConfigs = (body = {}) => request.patch<null>(Api.Configs, body)
 
-export const getProxies = () => request.get<KernelApiProxies>(Api.Proxies)
+export const getProxies = () => request.get<IKernelApiProxies>(Api.Proxies)
 
-export const getProviders = () => request.get<KernelApiProviders>(Api.Providers)
+export const getProviders = () => request.get<IKernelApiProviders>(Api.Providers)
 
-export const getConnections = () => request.get<KernelApiConnections>(Api.Connections)
+export const getConnections = () => request.get<IKernelApiConnections>(Api.Connections)
 
 export const deleteConnection = (id: string) => request.delete<null>(Api.Connections + '/' + id)
 
@@ -101,7 +93,7 @@ export const getProxyDelay = (proxy: string, url: string) => {
 
 export const updateGEO = () => request.post<{ message: string } | null>(Api.GEO)
 
-export const getProvidersRules = () => request.get<KernelApiProvidersRules>(Api.ProvidersRules)
+export const getProvidersRules = () => request.get<IKernelApiProvidersRules>(Api.ProvidersRules)
 
 export const updateProvidersRules = (ruleset: string) => {
   return request.put<null>(Api.ProvidersRules + '/' + ruleset)
@@ -131,6 +123,6 @@ export const getKernelLogsWS = (onLogs: (data: any) => void) => {
   ])
 }
 
-export const getKernelConnectionsWS = (onConnections: (data: KernelConnectionsWS) => void) => {
+export const getKernelConnectionsWS = (onConnections: (data: IKernelConnectionsWS) => void) => {
   return websockets.createWS([{ name: 'Connections', url: Api.Connections, cb: onConnections }])
 }

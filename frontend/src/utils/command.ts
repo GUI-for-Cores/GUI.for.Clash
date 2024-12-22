@@ -1,7 +1,7 @@
 import useI18n from '@/lang'
 import { useMessage } from '@/hooks'
 import { handleChangeMode } from '@/utils'
-import { Color, Lang, PluginTrigger, PluginTriggerEvent, Theme } from '@/constant'
+import { Color, Lang, PluginTrigger, PluginTriggerEvent, Theme } from '@/enums/app'
 import { ExitApp, RestartApp, WindowReloadApp } from '@/bridge'
 import {
   useAppSettingsStore,
@@ -12,6 +12,7 @@ import {
   useRulesetsStore,
   useSubscribesStore
 } from '@/stores'
+import { ClashMode } from '@/enums/kernel'
 
 type Command = {
   label: string
@@ -73,10 +74,7 @@ export const getCommands = () => {
         {
           label: 'tray.enableTunMode',
           cmd: 'Enable Tun',
-          handler: async () => {
-            await envStore.clearSystemProxy()
-            await kernelStore.updateConfig({ tun: { enable: true } })
-          }
+          handler: () => kernelStore.updateConfig({ tun: { enable: true } })
         },
         {
           label: 'tray.disableTunMode',
@@ -100,17 +98,17 @@ export const getCommands = () => {
             {
               label: 'kernel.global',
               cmd: 'Global',
-              handler: () => handleChangeMode('global')
+              handler: () => handleChangeMode(ClashMode.Global)
             },
             {
               label: 'kernel.rule',
               cmd: 'Rule',
-              handler: () => handleChangeMode('rule')
+              handler: () => handleChangeMode(ClashMode.Rule)
             },
             {
               label: 'kernel.direct',
               cmd: 'Direct',
-              handler: () => handleChangeMode('direct')
+              handler: () => handleChangeMode(ClashMode.Direct)
             }
           ]
         }
@@ -123,10 +121,7 @@ export const getCommands = () => {
         {
           label: 'tray.setSystemProxy',
           cmd: 'Set System Proxy',
-          handler: async () => {
-            await kernelStore.updateConfig({ tun: { enable: false } })
-            await envStore.setSystemProxy()
-          }
+          handler: envStore.setSystemProxy
         },
         {
           label: 'tray.clearSystemProxy',

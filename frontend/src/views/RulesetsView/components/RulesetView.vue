@@ -5,9 +5,10 @@ import { ref, computed, inject } from 'vue'
 
 import { useMessage } from '@/hooks'
 import { Readfile, Writefile } from '@/bridge'
-import { DraggableOptions, RulesetBehavior } from '@/constant'
+import { RulesetBehavior } from '@/enums/kernel'
+import { DraggableOptions } from '@/constant'
 import { deepClone, ignoredError, isValidIPCIDR, stringifyNoFolding } from '@/utils'
-import { type RuleSetType, type Menu, useRulesetsStore } from '@/stores'
+import { type RuleSetType, useRulesetsStore } from '@/stores'
 
 interface Props {
   id: string

@@ -6,7 +6,7 @@ import { useMessage, useAlert } from '@/hooks'
 import { ignoredError } from '@/utils'
 import { useRulesetsStore } from '@/stores'
 import { HttpGet, Readfile, Writefile } from '@/bridge'
-import { RulesetBehavior, RulesetFormat } from '@/constant'
+import { RulesetBehavior, RulesetFormat } from '@/enums/kernel'
 
 type RulesetHub = {
   geosite: string

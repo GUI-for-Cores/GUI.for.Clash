@@ -4,11 +4,11 @@ import { useI18n, I18nT } from 'vue-i18n'
 
 import { ClipboardSetText } from '@/bridge'
 import { useMessage, useAlert } from '@/hooks'
-import { DraggableOptions, View } from '@/constant'
+import { DraggableOptions } from '@/constant'
+import { View } from '@/enums/app'
 import { debounce, deepClone, generateConfig, sampleID, stringifyNoFolding } from '@/utils'
 import {
   type ProfileType,
-  type Menu,
   useProfilesStore,
   useAppSettingsStore,
   useKernelApiStore,

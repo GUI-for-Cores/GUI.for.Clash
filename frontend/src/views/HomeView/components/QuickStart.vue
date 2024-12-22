@@ -27,26 +27,7 @@ const handleCancel = inject('cancel') as any
 const canSubmit = computed(() => url.value && url.value.toLocaleLowerCase().startsWith('http'))
 
 const handleSubmit = async () => {
-  const profileID = sampleID()
   const subscribeID = sampleID()
-
-  const ids = [sampleID(), sampleID(), sampleID(), sampleID(), sampleID()]
-
-  const profile: ProfileType = {
-    id: profileID,
-    name: profileID,
-    generalConfig: Defaults.GeneralConfigDefaults(),
-    advancedConfig: Defaults.AdvancedConfigDefaults(),
-    tunConfig: Defaults.TunConfigDefaults(),
-    dnsConfig: Defaults.DnsConfigDefaults(),
-    proxyGroupsConfig: Defaults.ProxyGroupsConfigDefaults(ids),
-    rulesConfig: Defaults.RulesConfigDefaults(ids),
-    mixinConfig: Defaults.MixinConfigDefaults(),
-    scriptConfig: Defaults.ScriptConfigDefaults()
-  }
-
-  profile.proxyGroupsConfig[0].use = [subscribeID]
-  profile.proxyGroupsConfig[1].use = [subscribeID]
 
   const subscribe: SubscribeType = {
     id: subscribeID,
@@ -81,25 +62,37 @@ const handleSubmit = async () => {
 
   try {
     await subscribeStore.addSubscribe(subscribe)
-
-    await profilesStore.addProfile(profile)
-
-    appSettingsStore.app.kernel.profile = profile.name
+    await subscribeStore.updateSubscribe(subscribe.id)
   } catch (error: any) {
+    loading.value = false
     console.log(error)
     message.error(error)
+    subscribeStore.deleteSubscribe(subscribeID)
     return
   }
 
-  message.success('home.initSuccessful')
-
-  try {
-    await subscribeStore.updateSubscribe(subscribe.id)
-  } catch (error: any) {
-    console.log(error)
-    message.warn(error, 10_000)
-    message.warn('home.initFailed', 10_000)
+  const ids = [sampleID(), sampleID(), sampleID(), sampleID(), sampleID()]
+  const profile: ProfileType = {
+    id: sampleID(),
+    name: sampleID(),
+    generalConfig: Defaults.GeneralConfigDefaults(),
+    advancedConfig: Defaults.AdvancedConfigDefaults(),
+    tunConfig: Defaults.TunConfigDefaults(),
+    dnsConfig: Defaults.DnsConfigDefaults(),
+    proxyGroupsConfig: Defaults.ProxyGroupsConfigDefaults(ids),
+    rulesConfig: Defaults.RulesConfigDefaults(ids),
+    mixinConfig: Defaults.MixinConfigDefaults(),
+    scriptConfig: Defaults.ScriptConfigDefaults()
   }
+
+  profile.proxyGroupsConfig[0].use = [subscribeID]
+  profile.proxyGroupsConfig[1].use = [subscribeID]
+
+  await profilesStore.addProfile(profile)
+
+  appSettingsStore.app.kernel.profile = profile.id
+
+  message.success('home.initSuccessful')
 
   loading.value = false
 
@@ -120,5 +113,3 @@ const handleSubmit = async () => {
     </Button>
   </div>
 </template>
-
-<style lang="less" scoped></style>

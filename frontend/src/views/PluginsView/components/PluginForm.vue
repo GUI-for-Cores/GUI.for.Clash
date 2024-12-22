@@ -5,7 +5,8 @@ import { useI18n } from 'vue-i18n'
 import { useBool, useMessage } from '@/hooks'
 import { deepClone, ignoredError, sampleID } from '@/utils'
 import { usePluginsStore, type PluginType } from '@/stores'
-import { PluginsTriggerOptions, DraggableOptions, PluginTrigger } from '@/constant'
+import { PluginTrigger } from '@/enums/app'
+import { PluginsTriggerOptions, DraggableOptions } from '@/constant'
 
 interface Props {
   id?: string

@@ -5,12 +5,8 @@ import { useI18n } from 'vue-i18n'
 import { useMessage } from '@/hooks'
 import { deepClone, sampleID } from '@/utils'
 import { type RuleSetType, useRulesetsStore } from '@/stores'
-import {
-  RulesetBehavior,
-  RulesetFormat,
-  RulesetFormatOptions,
-  RulesetBehaviorOptions
-} from '@/constant'
+import { RulesetBehavior, RulesetFormat } from '@/enums/kernel'
+import { RulesetFormatOptions, RulesetBehaviorOptions } from '@/constant'
 
 interface Props {
   id?: string

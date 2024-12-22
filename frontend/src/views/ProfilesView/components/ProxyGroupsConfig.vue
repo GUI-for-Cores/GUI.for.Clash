@@ -3,9 +3,10 @@ import { useI18n } from 'vue-i18n'
 import { ref, computed } from 'vue'
 
 import { useMessage } from '@/hooks'
+import { ProxyGroup } from '@/enums/kernel'
 import { deepClone, sampleID } from '@/utils'
 import { type ProfileType, useSubscribesStore } from '@/stores'
-import { GroupsTypeOptions, StrategyOptions, ProxyGroup, DraggableOptions } from '@/constant'
+import { GroupsTypeOptions, StrategyOptions, DraggableOptions } from '@/constant'
 
 type GroupsType = ProfileType['proxyGroupsConfig']
 

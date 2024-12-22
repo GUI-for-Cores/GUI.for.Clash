@@ -2,19 +2,14 @@
 import { computed, ref } from 'vue'
 import { useI18n, I18nT } from 'vue-i18n'
 
-import { View } from '@/constant'
+import { View } from '@/enums/app'
 import { useMessage } from '@/hooks'
-import { DraggableOptions, RulesetFormat } from '@/constant'
+import { RulesetFormat } from '@/enums/kernel'
+import { DraggableOptions } from '@/constant'
 import { Removefile, Writefile, BrowserOpenURL } from '@/bridge'
 import { getProvidersRules, updateProvidersRules } from '@/api/kernel'
 import { debounce, formatRelativeTime, ignoredError, formatDate, stringifyNoFolding } from '@/utils'
-import {
-  type RuleSetType,
-  type Menu,
-  useRulesetsStore,
-  useAppSettingsStore,
-  useEnvStore
-} from '@/stores'
+import { type RuleSetType, useRulesetsStore, useAppSettingsStore, useEnvStore } from '@/stores'
 
 import RulesetForm from './components/RulesetForm.vue'
 import RulesetView from './components/RulesetView.vue'

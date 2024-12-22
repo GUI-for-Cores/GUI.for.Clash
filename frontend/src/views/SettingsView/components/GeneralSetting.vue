@@ -4,17 +4,11 @@ import { useI18n } from 'vue-i18n'
 
 import { useMessage } from '@/hooks'
 import routes from '@/router/routes'
+import { DefaultFontFamily } from '@/constant'
 import { useAppSettingsStore, useEnvStore } from '@/stores'
 import { APP_TITLE, APP_VERSION, getTaskSchXmlString } from '@/utils'
 import { BrowserOpenURL, GetEnv, Writefile, Removefile, AbsolutePath } from '@/bridge'
-import {
-  Theme,
-  Lang,
-  WindowStartState,
-  Color,
-  DefaultFontFamily,
-  WebviewGpuPolicy
-} from '@/constant'
+import { Theme, Lang, WindowStartState, Color, WebviewGpuPolicy } from '@/enums/app'
 import {
   QuerySchTask,
   CreateSchTask,

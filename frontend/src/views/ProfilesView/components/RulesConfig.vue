@@ -4,12 +4,11 @@ import { computed, ref } from 'vue'
 
 import { useMessage } from '@/hooks'
 import { deepClone, sampleID, generateRule } from '@/utils'
+import { RulesetBehavior, RulesetFormat } from '@/enums/kernel'
 import { type ProfileType, useRulesetsStore, type RuleSetType } from '@/stores'
 import {
   RulesTypeOptions,
-  RulesetBehavior,
   DraggableOptions,
-  RulesetFormat,
   RulesetFormatOptions,
   RulesetBehaviorOptions
 } from '@/constant'

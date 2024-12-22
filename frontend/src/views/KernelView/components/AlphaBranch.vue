@@ -3,9 +3,14 @@ import { useI18n } from 'vue-i18n'
 import { computed, ref } from 'vue'
 
 import { useMessage } from '@/hooks'
-import { GrantTUNPermission, getGitHubApiAuthorization, ignoredError } from '@/utils'
-import { KernelWorkDirectory, getKernelFileName } from '@/constant'
 import { useAppSettingsStore, useEnvStore, useKernelApiStore } from '@/stores'
+import {
+  GrantTUNPermission,
+  getGitHubApiAuthorization,
+  ignoredError,
+  getKernelFileName
+} from '@/utils'
+import { CoreWorkingDirectory } from '@/constant'
 import {
   Download,
   HttpCancel,
@@ -99,7 +104,7 @@ const downloadCore = async () => {
     const fileName = await getKernelFileName() // mihomo-window/≥s-amd64.exe
     const alphaFileName = await getKernelFileName(true) // mihomo-windows-amd64-alpha.exe
 
-    const alphaKernelFilePath = KernelWorkDirectory + '/' + alphaFileName
+    const alphaKernelFilePath = CoreWorkingDirectory + '/' + alphaFileName
 
     await ignoredError(Movefile, alphaKernelFilePath, alphaKernelFilePath + '.bak')
 
@@ -134,7 +139,7 @@ const getLocalVersion = async (showTips = false) => {
   localVersionLoading.value = true
   try {
     const fileName = await getKernelFileName(true)
-    const kernelFilePath = KernelWorkDirectory + '/' + fileName
+    const kernelFilePath = CoreWorkingDirectory + '/' + fileName
     const res = await Exec(kernelFilePath, ['-v'])
     versionDetail.value = res.trim()
     return (
@@ -182,7 +187,7 @@ const handleRestartKernel = async () => {
 
 const handleGrantPermission = async () => {
   const fileName = await getKernelFileName(true)
-  const kernelFilePath = KernelWorkDirectory + '/' + fileName
+  const kernelFilePath = CoreWorkingDirectory + '/' + fileName
   await GrantTUNPermission(kernelFilePath)
   message.success('common.success')
 }

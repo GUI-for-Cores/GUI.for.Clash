@@ -1,71 +1,54 @@
-import { useEnvStore } from '@/stores'
+import {
+  ClashMode,
+  LogLevel,
+  ProxyGroup,
+  RulesetBehavior,
+  RulesetFormat,
+  RuleType,
+  TunStack
+} from '@/enums/kernel'
 
-export enum ProxyGroup {
-  Select = 'select',
-  UrlTest = 'url-test',
-  Fallback = 'fallback',
-  Relay = 'relay',
-  LoadBalance = 'load-balance'
-}
-
-export enum ProxyGroupType {
-  Selector = 'Selector',
-  UrlTest = 'URLTest',
-  Fallback = 'Fallback',
-  Relay = 'Relay',
-  LoadBalance = 'LoadBalance'
-}
-
-export const KernelWorkDirectory = 'data/mihomo'
-export const KernelConfigFilePath = KernelWorkDirectory + '/config.yaml'
-
-export const getKernelFileName = async (isAlpha = false) => {
-  const envStore = useEnvStore()
-  const { os, arch, x64Level } = envStore.env
-  const fileSuffix = { windows: '.exe', linux: '', darwin: '' }[os]
-  const alpha = isAlpha ? '-alpha' : ''
-  const amd64Compatible = arch === 'amd64' && x64Level < 3 ? '-compatible' : ''
-  return `mihomo-${os}-${arch}${amd64Compatible}${alpha}${fileSuffix}`
-}
+export const CoreWorkingDirectory = 'data/mihomo'
+export const CoreConfigFilePath = CoreWorkingDirectory + '/config.yaml'
 
 export const ModeOptions = [
   {
     label: 'kernel.global',
-    value: 'global',
-    desp: 'kernel.globalDesp'
+    value: ClashMode.Global,
+    desp: 'kernel.globalDesc'
   },
   {
     label: 'kernel.rule',
-    value: 'rule',
-    desp: 'kernel.ruleDesp'
+    value: ClashMode.Rule,
+    desp: 'kernel.ruleDesc'
   },
   {
     label: 'kernel.direct',
-    value: 'direct',
-    desp: 'kernel.directDesp'
+    value: ClashMode.Direct,
+    desp: 'kernel.directDesc'
   }
 ]
 
 export const LogLevelOptions = [
   {
     label: 'kernel.info',
-    value: 'info'
+    value: LogLevel.Info
   },
   {
     label: 'kernel.warning',
-    value: 'warning'
+    value: LogLevel.Warning
   },
   {
     label: 'kernel.error',
-    value: 'error'
+    value: LogLevel.Error
   },
   {
     label: 'kernel.debug',
-    value: 'debug'
+    value: LogLevel.Debug
   },
   {
     label: 'kernel.silent',
-    value: 'silent'
+    value: LogLevel.Silent
   }
 ]
 
@@ -143,79 +126,78 @@ export const StrategyOptions = [
 export const RulesTypeOptions = [
   {
     label: 'kernel.rules.type.DOMAIN',
-    value: 'DOMAIN'
+    value: RuleType.Domain
   },
   {
     label: 'kernel.rules.type.DOMAIN-SUFFIX',
-    value: 'DOMAIN-SUFFIX'
+    value: RuleType.DomainSuffix
   },
   {
     label: 'kernel.rules.type.DOMAIN-KEYWORD',
-    value: 'DOMAIN-KEYWORD'
+    value: RuleType.DomainKeyword
   },
   {
     label: 'kernel.rules.type.DOMAIN-REGEX',
-    value: 'DOMAIN-REGEX'
+    value: RuleType.DomainRegex
   },
   {
     label: 'kernel.rules.type.IP-CIDR',
-    value: 'IP-CIDR'
+    value: RuleType.IpCidr
   },
   {
     label: 'kernel.rules.type.IP-CIDR6',
-    value: 'IP-CIDR6'
+    value: RuleType.IpCidr6
   },
   {
     label: 'kernel.rules.type.IP-ASN',
-    value: 'IP-ASN'
+    value: RuleType.IpAsn
   },
   {
     label: 'kernel.rules.type.SRC-IP-CIDR',
-    value: 'SRC-IP-CIDR'
+    value: RuleType.SrcIpCidr
   },
   {
     label: 'kernel.rules.type.SRC-PORT',
-    value: 'SRC-PORT'
+    value: RuleType.SrcPort
   },
   {
     label: 'kernel.rules.type.DST-PORT',
-    value: 'DST-PORT'
+    value: RuleType.DstPort
   },
   {
     label: 'kernel.rules.type.PROCESS-NAME',
-    value: 'PROCESS-NAME'
+    value: RuleType.ProcessName
   },
   {
     label: 'kernel.rules.type.PROCESS-PATH',
-    value: 'PROCESS-PATH'
+    value: RuleType.ProcessPath
   },
   {
     label: 'kernel.rules.type.RULE-SET',
-    value: 'RULE-SET'
+    value: RuleType.RuleSet
   },
   {
     label: 'kernel.rules.type.LOGIC',
-    value: 'LOGIC'
+    value: RuleType.Logic
   },
   {
     label: 'kernel.rules.type.GEOIP',
-    value: 'GEOIP'
+    value: RuleType.Geoip
   },
   {
     label: 'kernel.rules.type.GEOSITE',
-    value: 'GEOSITE'
+    value: RuleType.Geosite
   },
   {
     label: 'kernel.rules.type.MATCH',
-    value: 'MATCH'
+    value: RuleType.Match
   }
 ]
 
 export const StackOptions = [
-  { label: 'kernel.tun.system', value: 'System' },
-  { label: 'kernel.tun.gvisor', value: 'gVisor' },
-  { label: 'kernel.tun.mixed', value: 'Mixed' }
-  // { label: 'kernel.tun.lwip', value: 'LWIP' }
+  { label: 'kernel.tun.system', value: TunStack.System },
+  { label: 'kernel.tun.gvisor', value: TunStack.GVisor },
+  { label: 'kernel.tun.mixed', value: TunStack.Mixed }
 ]
 
 export const EnhancedModeOptions = [
@@ -290,17 +272,6 @@ export const ProxyTypeOptions = [
     value: 'wireguard'
   }
 ]
-
-export enum RulesetBehavior {
-  Domain = 'domain',
-  Ipcidr = 'ipcidr',
-  Classical = 'classical'
-}
-
-export enum RulesetFormat {
-  Yaml = 'yaml',
-  Mrs = 'mrs'
-}
 
 export const RulesetFormatOptions = [
   { label: 'ruleset.format.yaml', value: RulesetFormat.Yaml },

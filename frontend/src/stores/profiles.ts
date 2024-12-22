@@ -4,7 +4,8 @@ import { parse } from 'yaml'
 
 import { Readfile, Writefile } from '@/bridge'
 import { debounce, ignoredError, stringifyNoFolding } from '@/utils'
-import { ProfilesFilePath, ProxyGroup, RulesetBehavior, RulesetFormat } from '@/constant'
+import { ProxyGroup, RulesetBehavior, RulesetFormat } from '@/enums/kernel'
+import { ProfilesFilePath } from '@/constant'
 
 export type ProfileType = {
   id: string

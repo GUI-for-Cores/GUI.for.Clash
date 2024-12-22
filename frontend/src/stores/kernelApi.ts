@@ -1,18 +1,22 @@
 import { ref, watch } from 'vue'
 import { defineStore } from 'pinia'
 
-import type { KernelApiConfig, Proxy } from '@/api/kernel.schema'
-import { KernelWorkDirectory, getKernelFileName } from '@/constant'
+import { CoreWorkingDirectory } from '@/constant'
 import { ProcessInfo, KillProcess, ExecBackground } from '@/bridge'
-import { generateConfigFile, ignoredError, updateTrayMenus } from '@/utils'
+import { generateConfigFile, ignoredError, updateTrayMenus, getKernelFileName } from '@/utils'
 import { getConfigs, setConfigs, getProxies, getProviders } from '@/api/kernel'
 import { useAppSettingsStore, useProfilesStore, useLogsStore, useEnvStore } from '@/stores'
 
 export type ProxyType = 'mixed' | 'http' | 'socks'
 
 export const useKernelApiStore = defineStore('kernelApi', () => {
+  const envStore = useEnvStore()
+  const logsStore = useLogsStore()
+  const profilesStore = useProfilesStore()
+  const appSettingsStore = useAppSettingsStore()
+
   /** RESTful API */
-  const config = ref<KernelApiConfig>({
+  const config = ref<IKernelApiConfig>({
     port: 0,
     'socks-port': 0,
     'mixed-port': 0,
@@ -26,11 +30,11 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
     }
   })
 
-  const proxies = ref<Record<string, Proxy>>({})
+  const proxies = ref<Record<string, IKernelProxy>>({})
   const providers = ref<{
     [key: string]: {
       name: string
-      proxies: Proxy[]
+      proxies: IKernelProxy[]
     }
   }>({})
 
@@ -58,9 +62,6 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
   }
 
   const updateKernelState = async () => {
-    const envStore = useEnvStore()
-    const appSettingsStore = useAppSettingsStore()
-
     appSettingsStore.app.kernel.running = !!(await ignoredError(
       isKernelRunning,
       appSettingsStore.app.kernel.pid
@@ -82,22 +83,15 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
   }
 
   const startKernel = async () => {
-    const envStore = useEnvStore()
-    const logsStore = useLogsStore()
-    const profilesStore = useProfilesStore()
-    const appSettingsStore = useAppSettingsStore()
-
     const { profile: profileID, branch } = appSettingsStore.app.kernel
-    if (!profileID) throw 'Choose a profile first'
-
     const profile = profilesStore.getProfileById(profileID)
-    if (!profile) throw 'Profile does not exist: ' + profileID
+    if (!profile) throw 'Choose a profile first'
 
     await stopKernel()
     await generateConfigFile(profile)
 
     const fileName = await getKernelFileName(branch === 'alpha')
-    const kernelFilePath = KernelWorkDirectory + '/' + fileName
+    const kernelFilePath = CoreWorkingDirectory + '/' + fileName
 
     loading.value = true
 
@@ -111,11 +105,7 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
 
         await Promise.all([refreshConfig(), refreshProviderProxies()])
 
-        if (config.value.tun.enable) {
-          if (envStore.systemProxy) {
-            updateConfig({ tun: { enable: false } })
-          }
-        } else if (appSettingsStore.app.autoSetSystemProxy) {
+        if (appSettingsStore.app.autoSetSystemProxy) {
           await envStore.setSystemProxy()
         }
       }
@@ -134,7 +124,7 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
     try {
       const pid = await ExecBackground(
         kernelFilePath,
-        ['-d', envStore.env.basePath + '/' + KernelWorkDirectory],
+        ['-d', envStore.env.basePath + '/' + CoreWorkingDirectory],
         // stdout
         (out: string) => onOut(out, pid),
         // end
@@ -147,12 +137,7 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
   }
 
   const stopKernel = async () => {
-    const envStore = useEnvStore()
-    const logsStore = useLogsStore()
-    const appSettingsStore = useAppSettingsStore()
-
     const { pid } = appSettingsStore.app.kernel
-
     const running = await ignoredError(isKernelRunning, pid)
     running && (await KillProcess(pid))
 
