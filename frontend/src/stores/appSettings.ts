@@ -94,7 +94,7 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
     height: 0,
     exitOnClose: true,
     closeKernelOnExit: true,
-    autoSetSystemProxy: false,
+    autoSetSystemProxy: true,
     autoStartKernel: false,
     userAgent: APP_TITLE + '/' + APP_VERSION,
     startupDelay: 30,
@@ -149,7 +149,7 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
     pluginSettings: {},
     githubApiToken: '',
     multipleInstance: false,
-    rollingRelease: false,
+    rollingRelease: true,
     pages: ['Overview', 'Profiles', 'Subscriptions', 'Plugins']
   })
 
@@ -161,9 +161,6 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
   const setupAppSettings = async () => {
     const data = await ignoredError(Readfile, 'data/user.yaml')
     data && (app.value = Object.assign(app.value, parse(data)))
-
-    // compatibility code
-    app.value.pages = app.value.pages ?? ['Overview', 'Profiles', 'Subscriptions', 'Plugins']
 
     firstOpen = !!data
 
