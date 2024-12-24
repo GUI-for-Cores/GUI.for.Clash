@@ -2,7 +2,6 @@
 import { ref, inject, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { ProxyTypeOptions } from '@/constant'
 import { useBool, useMessage } from '@/hooks'
 import { deepClone, sampleID, getUserAgent } from '@/utils'
 import { type SubscribeType, useSubscribesStore } from '@/stores'
@@ -147,7 +146,7 @@ if (props.isUpdate) {
           <div class="name">{{ t('subscribe.includeProtocol') }}</div>
           <Input
             v-model="sub.includeProtocol"
-            :placeholder="ProxyTypeOptions.map((v) => v.label).join('|')"
+            placeholder="direct|http|socks5|ss|ssr|vmess|trojan..."
             auto-size
             class="input"
           />
@@ -156,7 +155,7 @@ if (props.isUpdate) {
           <div class="name">{{ t('subscribe.excludeProtocol') }}</div>
           <Input
             v-model="sub.excludeProtocol"
-            :placeholder="ProxyTypeOptions.map((v) => v.label).join('|')"
+            placeholder="direct|http|socks5|ss|ssr|vmess|trojan..."
             auto-size
             class="input"
           />

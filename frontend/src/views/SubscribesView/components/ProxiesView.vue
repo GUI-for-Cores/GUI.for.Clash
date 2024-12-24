@@ -5,7 +5,7 @@ import { ref, computed, inject } from 'vue'
 
 import { useBool, useMessage } from '@/hooks'
 import { deepClone, ignoredError, sampleID, stringifyNoFolding } from '@/utils'
-import { ProxyTypeOptions, DraggableOptions } from '@/constant'
+import { DraggableOptions } from '@/constant'
 import { ClipboardSetText, Readfile, Writefile } from '@/bridge'
 import { type SubscribeType, useSubscribesStore } from '@/stores'
 
@@ -35,11 +35,17 @@ const keywordsRegexp = computed(() => {
 })
 
 const filteredProxyTypeOptions = computed(() => {
-  const protocolList = ProxyTypeOptions.map((v) => {
-    const count = sub.value.proxies.filter((vv) => vv.type === v.value).length
-    return { ...v, label: v.label + `(${count})`, count }
-  }).filter((v) => v.count)
-  return [{ label: 'All', value: '', count: 0 }].concat(protocolList)
+  const proxyProtocols = sub.value.proxies.reduce((p, c) => {
+    p[c.type] = (p[c.type] || 0) + 1
+    return p
+  }, {} as Recordable)
+  return [{ label: 'All', value: '', count: 0 }].concat(
+    Object.entries(proxyProtocols).map(([label, count]) => ({
+      label: `${label}(${count})`,
+      value: label,
+      count,
+    })),
+  )
 })
 
 const filteredProxies = computed(() => {
