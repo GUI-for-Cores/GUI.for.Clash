@@ -2,8 +2,9 @@ import { defineStore } from 'pinia'
 import { parse } from 'yaml'
 import { computed, ref, watch } from 'vue'
 
+import { useConfirm } from '@/hooks'
 import { PluginsFilePath } from '@/constant/app'
-import { HttpGet, Readfile, Writefile } from '@/bridge'
+import { HttpGet, Readfile, Removefile, Writefile } from '@/bridge'
 import { PluginTrigger, PluginTriggerEvent } from '@/enums/app'
 import { useAppSettingsStore, type ProfileType, type SubscribeType } from '@/stores'
 import {
@@ -55,13 +56,7 @@ export type PluginType = {
   running?: boolean
 }
 
-const PluginsCache: Record<
-  string,
-  {
-    plugin: PluginType
-    code: string
-  }
-> = {}
+const PluginsCache: Recordable<{ plugin: PluginType; code: string }> = {}
 
 const PluginsTriggerMap: {
   [key in PluginTrigger]: {
@@ -95,26 +90,10 @@ const PluginsTriggerMap: {
   },
 }
 
-const getPluginMetadata = (plugin: PluginType) => {
-  const appSettingsStore = useAppSettingsStore()
-  let configuration = appSettingsStore.app.pluginSettings[plugin.id]
-  if (!configuration) {
-    configuration = {}
-    plugin.configuration.forEach(({ key, value }) => (configuration[key] = value))
-  }
-  return { ...plugin, ...configuration }
-}
-
-const isPluginUnavailable = (cache: any) => {
-  return (
-    !cache ||
-    !cache.plugin ||
-    cache.plugin.disabled ||
-    (cache.plugin.install && !cache.plugin.installed)
-  )
-}
-
 export const usePluginsStore = defineStore('plugins', () => {
+  const { confirm } = useConfirm()
+  const appSettingsStore = useAppSettingsStore()
+
   const plugins = ref<PluginType[]>([])
 
   const setupPlugins = async () => {
@@ -133,25 +112,46 @@ export const usePluginsStore = defineStore('plugins', () => {
     }
   }
 
-  const reloadPlugin = async (plugin: PluginType, code = '') => {
+  const getPluginMetadata = (plugin: PluginType) => {
+    let configuration = appSettingsStore.app.pluginSettings[plugin.id]
+    if (!configuration) {
+      configuration = {}
+      plugin.configuration.forEach(({ key, value }) => (configuration[key] = value))
+    }
+    return { ...plugin, ...configuration }
+  }
+
+  const isPluginUnavailable = (cache: any) => {
+    return (
+      !cache ||
+      !cache.plugin ||
+      cache.plugin.disabled ||
+      (cache.plugin.install && !cache.plugin.installed)
+    )
+  }
+
+  const reloadPlugin = async (plugin: PluginType, code = '', reloadTrigger = false) => {
     const { path } = plugin
     if (!code) {
       code = await Readfile(path)
     }
     PluginsCache[plugin.id] = { plugin, code }
+    reloadTrigger && updatePluginTrigger(plugin)
   }
 
   // FIXME: Plug-in execution order is wrong
-  const updatePluginTrigger = (plugin: PluginType) => {
+  const updatePluginTrigger = (plugin: PluginType, isUpdate = true) => {
     const triggers = Object.keys(PluginsTriggerMap) as PluginTrigger[]
     triggers.forEach((trigger) => {
       PluginsTriggerMap[trigger].observers = PluginsTriggerMap[trigger].observers.filter(
         (v) => v !== plugin.id,
       )
     })
-    plugin.triggers.forEach((trigger) => {
-      PluginsTriggerMap[trigger].observers.push(plugin.id)
-    })
+    if (isUpdate) {
+      plugin.triggers.forEach((trigger) => {
+        PluginsTriggerMap[trigger].observers.push(plugin.id)
+      })
+    }
   }
 
   const savePlugins = debounce(async () => {
@@ -159,10 +159,12 @@ export const usePluginsStore = defineStore('plugins', () => {
     await Writefile(PluginsFilePath, stringifyNoFolding(p))
   }, 100)
 
-  const addPlugin = async (p: PluginType) => {
-    plugins.value.push(p)
+  const addPlugin = async (plugin: PluginType) => {
+    plugins.value.push(plugin)
     try {
+      await _doUpdatePlugin(plugin)
       await savePlugins()
+      updatePluginTrigger(plugin)
     } catch (error) {
       plugins.value.pop()
       throw error
@@ -172,26 +174,33 @@ export const usePluginsStore = defineStore('plugins', () => {
   const deletePlugin = async (id: string) => {
     const idx = plugins.value.findIndex((v) => v.id === id)
     if (idx === -1) return
-    const backup = plugins.value.splice(idx, 1)[0]
-    const backupCode = PluginsCache[id]
-    delete PluginsCache[id]
+    const plugin = plugins.value.splice(idx, 1)[0]
     try {
       await savePlugins()
+      delete PluginsCache[id]
+      updatePluginTrigger(plugin, false)
     } catch (error) {
-      plugins.value.splice(idx, 0, backup)
-      PluginsCache[id] = backupCode
+      plugins.value.splice(idx, 0, plugin)
       throw error
+    }
+    plugin.path.startsWith('data') && Removefile(plugin.path)
+    // Remove configuration
+    if (appSettingsStore.app.pluginSettings[plugin.id]) {
+      if (await confirm('Tips', 'plugins.removeConfiguration').catch(() => 0)) {
+        delete appSettingsStore.app.pluginSettings[plugin.id]
+      }
     }
   }
 
-  const editPlugin = async (id: string, p: PluginType) => {
+  const editPlugin = async (id: string, newPlugin: PluginType) => {
     const idx = plugins.value.findIndex((v) => v.id === id)
     if (idx === -1) return
-    const backup = plugins.value.splice(idx, 1, p)[0]
+    const plugin = plugins.value.splice(idx, 1, newPlugin)[0]
     try {
       await savePlugins()
+      updatePluginTrigger(newPlugin)
     } catch (error) {
-      plugins.value.splice(idx, 1, backup)
+      plugins.value.splice(idx, 1, plugin)
       throw error
     }
   }
@@ -200,7 +209,7 @@ export const usePluginsStore = defineStore('plugins', () => {
     let code = ''
 
     if (plugin.type === 'File') {
-      code = await Readfile(plugin.path)
+      code = await Readfile(plugin.path).catch(() => '')
     }
 
     if (plugin.type === 'Http') {
@@ -216,16 +225,15 @@ export const usePluginsStore = defineStore('plugins', () => {
   }
 
   const updatePlugin = async (id: string) => {
-    const p = plugins.value.find((v) => v.id === id)
-    if (!p) throw id + ' Not Found'
-    if (p.disabled) throw p.name + ' Disabled'
+    const plugin = plugins.value.find((v) => v.id === id)
+    if (!plugin) throw id + ' Not Found'
+    if (plugin.disabled) throw plugin.name + ' is Disabled'
     try {
-      p.updating = true
-      await _doUpdatePlugin(p)
-      await savePlugins()
-      return `Plugin [${p.name}] updated successfully.`
+      plugin.updating = true
+      await _doUpdatePlugin(plugin)
+      return `Plugin [${plugin.name}] updated successfully.`
     } finally {
-      p.updating = false
+      plugin.updating = false
     }
   }
 
@@ -339,7 +347,7 @@ export const usePluginsStore = defineStore('plugins', () => {
     if (!plugin) throw id + ' Not Found'
     const cache = PluginsCache[plugin.id]
     if (!cache) throw `${plugin.name} is Missing source code`
-    if (cache.plugin.disabled) throw `${plugin.name} Disabled`
+    if (cache.plugin.disabled) throw `${plugin.name} is Disabled`
     const metadata = getPluginMetadata(plugin)
     const _args = args.map((arg) => JSON.stringify(arg))
     try {
@@ -374,7 +382,9 @@ export const usePluginsStore = defineStore('plugins', () => {
   )
 
   watch([_watchMenus, _watchDisabled], () => {
-    updateTrayMenus()
+    if (appSettingsStore.app.addPluginToMenu) {
+      updateTrayMenus()
+    }
   })
 
   return {
