@@ -133,7 +133,9 @@ if (props.isUpdate) {
 
 <template>
   <div @dblclick="WindowToggleMaximise" class="header" style="--wails-draggable: drag">
-    <div class="header-title">{{ t(stepItems[currentStep].title) }}</div>
+    <div class="header-title">
+      {{ t(stepItems[currentStep].title) }} ({{ currentStep + 1 }} / {{ stepItems.length }})
+    </div>
     <Button
       v-show="currentStep !== StepEnum.NAME"
       @click="handlePreview"
