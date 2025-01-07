@@ -11,5 +11,3 @@ import SwitchBranch from './components/SwitchBranch.vue'
     <SwitchBranch />
   </div>
 </template>
-
-<style lang="less" scoped></style>

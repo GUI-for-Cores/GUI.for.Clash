@@ -249,7 +249,7 @@ export default {
     always: 'Always',
     strict: 'Strict',
     off: 'Off',
-    notFound: 'Kernel Not Found',
+    notFound: 'Core Not Found',
     requestFailed: 'Request Failed',
     local: 'Local',
     remote: 'Remote',
