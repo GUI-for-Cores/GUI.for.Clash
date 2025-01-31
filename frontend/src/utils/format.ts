@@ -1,4 +1,4 @@
-import useI18n from '@/lang'
+import i18n from '@/lang'
 
 export function formatBytes(bytes: number, decimals: number = 1): string {
   if (bytes === 0) return '0 B'
@@ -13,41 +13,38 @@ export function formatBytes(bytes: number, decimals: number = 1): string {
 }
 
 export function formatRelativeTime(d: string | number) {
-  const diffInMilliseconds = new Date().getTime() - new Date(d).getTime()
-  const seconds = Math.abs(Math.floor(diffInMilliseconds / 1000))
-  const minutes = Math.abs(Math.floor(seconds / 60))
-  const hours = Math.abs(Math.floor(minutes / 60))
-  const days = Math.abs(Math.floor(hours / 24))
-  const months = Math.abs(Math.floor(days / 30))
-  const years = Math.abs(Math.floor(months / 12))
+  const date = new Date(d)
+  const now = Date.now()
+  const diffMs = date.getTime() - now
 
-  const { t, locale } = useI18n.global
-
-  const prefix = locale.value === 'en' ? ' ' : ''
-
-  const suffix =
-    (locale.value === 'en' ? ' ' : '') +
-    (diffInMilliseconds >= 0 ? t('format.ago') : t('format.later'))
-
-  if (seconds < 60) {
-    const s = seconds > 1 ? t('format.seconds') : t('format.second')
-    return `${seconds}${prefix}${s}${suffix}`
-  } else if (minutes < 60) {
-    const m = minutes > 1 ? t('format.minutes') : t('format.minute')
-    return `${minutes}${prefix}${m}${suffix}`
-  } else if (hours < 24) {
-    const h = hours > 1 ? t('format.hours') : t('format.hour')
-    return `${hours}${prefix}${h}${suffix}`
-  } else if (days < 30) {
-    const d = days > 1 ? t('format.days') : t('format.day')
-    return `${days}${prefix}${d}${suffix}`
-  } else if (months < 12) {
-    const m = months > 1 ? t('format.months') : t('format.month')
-    return `${months}${prefix}${m}${suffix}`
-  } else {
-    const y = years > 1 ? t('format.years') : t('format.year')
-    return `${years}${prefix}${y}${suffix}`
+  // now
+  if (diffMs === 0) {
+    return new Intl.RelativeTimeFormat(i18n.global.locale.value, {
+      numeric: 'auto',
+    }).format(0, 'second')
   }
+
+  const units: { unit: Intl.RelativeTimeFormatUnit; threshold: number }[] = [
+    { unit: 'year', threshold: 365 * 24 * 60 * 60 * 1000 },
+    { unit: 'month', threshold: 30 * 24 * 60 * 60 * 1000 },
+    { unit: 'day', threshold: 24 * 60 * 60 * 1000 },
+    { unit: 'hour', threshold: 60 * 60 * 1000 },
+    { unit: 'minute', threshold: 60 * 1000 },
+    { unit: 'second', threshold: 1000 },
+  ]
+
+  for (const { unit, threshold } of units) {
+    const amount = Math.round(diffMs / threshold)
+    if (Math.abs(amount) > 0) {
+      return new Intl.RelativeTimeFormat(i18n.global.locale.value, {
+        numeric: 'auto',
+      }).format(amount, unit)
+    }
+  }
+
+  return new Intl.RelativeTimeFormat(i18n.global.locale.value, {
+    numeric: 'auto',
+  }).format(Math.round(diffMs / 1000), 'second')
 }
 
 export function formatDate(timestamp: number | string, format: string) {
