@@ -297,7 +297,8 @@ export default {
       transmit: 'Transmit',
       receive: 'Receive',
       settings: 'Kernel Settings',
-      settingsTips: 'Takes effect temporarily. For persistent changes, please modify the `profile` settings.',
+      settingsTips:
+        'Takes effect temporarily. For persistent changes, please modify the `profile` settings.',
       updateGEO: 'Update GEO',
       needPort: 'Please set the proxy port first',
     },
