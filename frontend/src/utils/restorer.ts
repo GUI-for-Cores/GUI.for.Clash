@@ -1,3 +1,5 @@
+import { stringify } from 'yaml'
+
 import type { ProfileType } from '@/stores'
 import { deepAssign, sampleID } from '@/utils'
 import { RulesetBehavior, RulesetFormat } from '@/enums/kernel'
@@ -122,12 +124,12 @@ export const restoreProfile = (
           profile.rulesConfig.push({
             id: index.toString(),
             type: type,
-            payload: provider.url,
+            payload: provider.type == 'inline' ? stringify(provider.payload) : provider.url,
             proxy: _proxy,
             'no-resolve': !!noResolve,
             'ruleset-behavior': provider.behavior,
             'ruleset-format': provider.format || RulesetFormat.Yaml,
-            'ruleset-type': 'http',
+            'ruleset-type': provider.type || 'http',
             'ruleset-name': payload,
             'ruleset-proxy': 'DIRECT',
           })

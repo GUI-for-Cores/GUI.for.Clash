@@ -42,6 +42,7 @@ export default {
     selectAll: 'Select All',
     http: 'Remote',
     file: 'Local',
+    inline: 'Inline',
     manual: 'Manual',
     openFile: 'Open File',
     develop: 'Develop',

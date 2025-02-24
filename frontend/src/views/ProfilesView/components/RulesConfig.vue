@@ -169,6 +169,7 @@ const showLost = () => message.warn('kernel.rules.notFound')
         :options="[
           { label: 'common.file', value: 'file' },
           { label: 'common.http', value: 'http' },
+          { label: 'common.inline', value: 'inline' },
         ]"
       />
     </div>
@@ -215,6 +216,19 @@ const showLost = () => message.warn('kernel.rules.notFound')
         {{ t('kernel.rules.ruleset-proxy') }}
         <Select v-model="fields['ruleset-proxy']" :options="proxyOptions" />
       </div>
+    </template>
+
+    <template v-if="fields.type === 'RULE-SET' && fields['ruleset-type'] === 'inline'">
+      <Divider>{{ t('kernel.rules.ruleset') }}</Divider>
+      <div class="form-item">
+        {{ t('kernel.rules.ruleset-name') }}
+        <Input v-model="fields['ruleset-name']" />
+      </div>
+      <div class="form-item">
+        {{ t('ruleset.behavior.name') }}
+        <Select v-model="fields['ruleset-behavior']" :options="RulesetBehaviorOptions" />
+      </div>
+      <CodeViewer v-model="fields['payload']" editable lang="yaml" />
     </template>
   </Modal>
 </template>

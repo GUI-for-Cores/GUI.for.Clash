@@ -30,6 +30,8 @@ export const generateRule = (
         }
       } else if (rulesetType === 'http') {
         ruleStr += ',' + rulesetName
+      } else if (rulesetType === 'inline') {
+        ruleStr += ',' + rulesetName
       }
     } else if (type === 'LOGIC') {
       ruleStr = payload
@@ -237,7 +239,7 @@ const generateRuleProviders = async (
     .forEach((rule) => {
       if (rule['ruleset-type'] === 'file') {
         appendLocalProvider(rule.payload)
-      } else {
+      } else if (rule['ruleset-type'] === 'http') {
         const group = proxyGruoups.find((v) => v.id === rule['ruleset-proxy'])
         providers[rule['ruleset-name']] = {
           type: 'http',
@@ -245,6 +247,12 @@ const generateRuleProviders = async (
           behavior: rule['ruleset-behavior'],
           format: rule['ruleset-format'],
           proxy: group?.name || 'DIRECT',
+        }
+      } else if (rule['ruleset-type'] === 'inline') {
+        providers[rule['ruleset-name']] = {
+          type: 'inline',
+          behavior: rule['ruleset-behavior'],
+          payload: parse(rule['payload']),
         }
       }
     })

@@ -121,7 +121,7 @@ export type ProfileType = {
     payload: string
     proxy: string
     'no-resolve': boolean
-    'ruleset-type': 'file' | 'http'
+    'ruleset-type': 'file' | 'http' | 'inline'
     'ruleset-name': string
     'ruleset-behavior': RulesetBehavior
     'ruleset-format': RulesetFormat
