@@ -585,6 +585,8 @@ export default {
       stable: '稳定版',
       alpha: '内测版',
       grant: '授予特权',
+      risk: '该版本非GitHub自动构建，有安全风险。',
+      stillDownload: '仍要下载',
     },
     userAgent: {
       name: '用户代理(User-Agent)',

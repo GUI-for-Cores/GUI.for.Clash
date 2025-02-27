@@ -586,6 +586,8 @@ export default {
       stable: 'Stable version',
       alpha: 'Alpha version',
       grant: 'Grant Privileges',
+      risk: 'This version is not auto-built by GitHub and may pose a security risk.',
+      stillDownload: 'Still download',
     },
     userAgent: {
       name: 'User-Agent',
