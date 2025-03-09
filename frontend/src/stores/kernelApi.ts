@@ -1,7 +1,7 @@
 import { ref, watch } from 'vue'
 import { defineStore } from 'pinia'
 
-import { CoreWorkingDirectory } from '@/constant'
+import { CoreStopOutputKeyword, CoreWorkingDirectory } from '@/constant'
 import { ProcessInfo, KillProcess, ExecBackground } from '@/bridge'
 import { generateConfigFile, ignoredError, updateTrayMenus, getKernelFileName } from '@/utils'
 import { getConfigs, setConfigs, getProxies, getProviders } from '@/api/kernel'
@@ -98,7 +98,7 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
     const onOut = async (out: string, pid: number) => {
       logsStore.recordKernelLog(out)
 
-      if (out.toLowerCase().includes('start initial compatible provider default')) {
+      if (out.toLowerCase().includes(CoreStopOutputKeyword)) {
         loading.value = false
         appSettingsStore.app.kernel.pid = pid
         appSettingsStore.app.kernel.running = true
@@ -129,6 +129,9 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
         (out: string) => onOut(out, pid),
         // end
         onEnd,
+        {
+          stopOutputKeyword: CoreStopOutputKeyword,
+        },
       )
     } catch (error) {
       loading.value = false
