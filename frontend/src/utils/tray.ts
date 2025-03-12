@@ -251,15 +251,13 @@ const getTrayMenus = () => {
           type: 'item',
           text: 'tray.enableTunMode',
           hidden: kernelApiStore.config.tun.enable,
-          event: envStore.clearSystemProxy,
+          event: () => kernelApiStore.updateConfig({ tun: { enable: true } }),
         },
         {
           type: 'item',
           text: 'tray.disableTunMode',
           hidden: !kernelApiStore.config.tun.enable,
-          event: async () => {
-            await kernelApiStore.updateConfig({ tun: { enable: false } })
-          },
+          event: () => kernelApiStore.updateConfig({ tun: { enable: false } }),
         },
       ],
     },
