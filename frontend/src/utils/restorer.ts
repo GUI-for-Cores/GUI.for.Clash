@@ -24,7 +24,10 @@ export const restoreProfile = (
     name: subID,
     generalConfig: GeneralConfigDefaults(),
     advancedConfig: AdvancedConfigDefaults(),
-    dnsConfig: DnsConfigDefaults(),
+    dnsConfig: Object.assign(DnsConfigDefaults(), {
+      'proxy-server-nameserver': [],
+      'nameserver-policy': {},
+    }),
     tunConfig: TunConfigDefaults(),
     proxyGroupsConfig: [],
     rulesConfig: [],
@@ -87,6 +90,8 @@ export const restoreProfile = (
       : GroupNameIdMap[type] || IdNameMap[NameIdMap[type]]
   }
 
+  let isGeoModeEnabled = false
+
   Object.entries(config).forEach(([field, value]) => {
     if (Object.hasOwnProperty.call(profile.generalConfig, field)) {
       ;(profile.generalConfig as any)[field] = value
@@ -136,6 +141,10 @@ export const restoreProfile = (
           return
         }
 
+        if (type === 'GEOIP' || type === 'GEOSITE') {
+          isGeoModeEnabled = true
+        }
+
         profile.rulesConfig.push({
           id: index.toString(),
           type: type,
@@ -151,6 +160,8 @@ export const restoreProfile = (
       })
     }
   })
+
+  profile.advancedConfig['geodata-mode'] = isGeoModeEnabled
 
   return profile
 }
