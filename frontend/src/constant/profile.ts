@@ -68,7 +68,7 @@ export const TunConfigDefaults = (): ProfileType['tunConfig'] => ({
 })
 
 export const DnsConfigDefaults = (): ProfileType['dnsConfig'] => ({
-  enable: false,
+  enable: true,
   listen: '',
   ipv6: false,
   'use-hosts': false,
