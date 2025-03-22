@@ -33,7 +33,7 @@ const handleStartKernel = async () => {
     await kernelApiStore.startKernel()
   } catch (error: any) {
     console.error(error)
-    message.error(error)
+    message.error(error.message || error)
   }
 }
 

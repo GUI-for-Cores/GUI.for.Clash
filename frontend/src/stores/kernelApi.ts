@@ -3,7 +3,13 @@ import { defineStore } from 'pinia'
 
 import { CoreStopOutputKeyword, CoreWorkingDirectory } from '@/constant'
 import { ProcessInfo, KillProcess, ExecBackground } from '@/bridge'
-import { generateConfigFile, ignoredError, updateTrayMenus, getKernelFileName } from '@/utils'
+import {
+  generateConfigFile,
+  ignoredError,
+  updateTrayMenus,
+  getKernelFileName,
+  sleep,
+} from '@/utils'
 import { getConfigs, setConfigs, getProxies, getProviders } from '@/api/kernel'
 import { useAppSettingsStore, useProfilesStore, useLogsStore, useEnvStore } from '@/stores'
 
@@ -88,7 +94,6 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
     if (!profile) throw 'Choose a profile first'
 
     await stopKernel()
-    await generateConfigFile(profile)
 
     const fileName = await getKernelFileName(branch === 'alpha')
     const kernelFilePath = CoreWorkingDirectory + '/' + fileName
@@ -99,6 +104,7 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
       logsStore.recordKernelLog(out)
 
       if (out.toLowerCase().includes(CoreStopOutputKeyword)) {
+        await sleep(100) // Waiting for the RESTful API
         loading.value = false
         appSettingsStore.app.kernel.pid = pid
         appSettingsStore.app.kernel.running = true
@@ -122,6 +128,7 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
     }
 
     try {
+      await generateConfigFile(profile)
       const pid = await ExecBackground(
         kernelFilePath,
         ['-d', envStore.env.basePath + '/' + CoreWorkingDirectory],
@@ -133,9 +140,8 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
           stopOutputKeyword: CoreStopOutputKeyword,
         },
       )
-    } catch (error) {
+    } finally {
       loading.value = false
-      throw error
     }
   }
 

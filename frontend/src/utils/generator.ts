@@ -1,6 +1,6 @@
 import { parse } from 'yaml'
 
-import { ProxyGroup } from '@/enums/kernel'
+import { LogLevel, ProxyGroup } from '@/enums/kernel'
 import { Readfile, Writefile } from '@/bridge'
 import { deepClone, APP_TITLE, deepAssign, stringifyNoFolding } from '@/utils'
 import { CoreConfigFilePath } from '@/constant/kernel'
@@ -371,7 +371,7 @@ export const generateConfigFile = async (profile: ProfileType) => {
 
   const config = await generateConfig(profile)
 
-  config['log-level'] = 'info'
+  config['log-level'] = LogLevel.Silent
 
   await Writefile(CoreConfigFilePath, header + stringifyNoFolding(config))
 }
