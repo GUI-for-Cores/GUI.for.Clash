@@ -140,8 +140,9 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
           stopOutputKeyword: CoreStopOutputKeyword,
         },
       )
-    } finally {
+    } catch (error) {
       loading.value = false
+      throw error
     }
   }
 
