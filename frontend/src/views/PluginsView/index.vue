@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { computed, h } from 'vue'
 import { useI18n, I18nT } from 'vue-i18n'
 
 import { useMessage } from '@/hooks'
@@ -9,19 +9,12 @@ import { DraggableOptions } from '@/constant/app'
 import { PluginTriggerEvent, PluginTrigger, View } from '@/enums/app'
 import { usePluginsStore, useAppSettingsStore, useEnvStore, type PluginType } from '@/stores'
 
+import { useModal } from '@/components/Modal'
 import PluginForm from './components/PluginForm.vue'
 import PluginView from './components/PluginView.vue'
 import PluginHub from './components/PluginHub.vue'
+import PluginChangelog from './components/PluginChangelog.vue'
 import PluginConfiguration from './components/PluginConfiguration.vue'
-
-const showPluginForm = ref(false)
-const showPluginView = ref(false)
-const showPluginHub = ref(false)
-const showPluginConfiguration = ref(false)
-const pluginTitle = ref('')
-const pluginFormID = ref()
-const pluginFormIsUpdate = ref(false)
-const pluginFormTitle = computed(() => (pluginFormIsUpdate.value ? 'common.edit' : 'common.add'))
 
 const menuList: Menu[] = [
   {
@@ -48,24 +41,35 @@ const menuList: Menu[] = [
 
 const { t } = useI18n()
 const { message } = useMessage()
+const [Modal, modalApi] = useModal({})
 
 const envStore = useEnvStore()
 const pluginsStore = usePluginsStore()
 const appSettingsStore = useAppSettingsStore()
 
-const handleImportPlugin = async () => {
-  showPluginHub.value = true
+const handleImportPlugin = () => {
+  modalApi
+    .setProps({
+      title: 'plugins.hub',
+      height: '90',
+      width: '90',
+      submit: false,
+      maskClosable: true,
+      cancelText: 'common.close',
+    })
+    .setComponent(h(PluginHub))
+    .open()
 }
 
-const handleAddPlugin = async () => {
-  pluginFormIsUpdate.value = false
-  showPluginForm.value = true
+const handleAddPlugin = () => {
+  modalApi.setProps({ title: 'common.add', footer: false }).setComponent(h(PluginForm)).open()
 }
 
-const handleEditPlugin = (p: PluginType) => {
-  pluginFormIsUpdate.value = true
-  pluginFormID.value = p.id
-  showPluginForm.value = true
+const handleEditPlugin = (id: string) => {
+  modalApi
+    .setProps({ title: 'common.edit', footer: false })
+    .setComponent(h(PluginForm, { id, isUpdate: true }))
+    .open()
 }
 
 const handleUpdatePluginHub = async () => {
@@ -117,10 +121,25 @@ const handleDisablePlugin = async (p: PluginType) => {
   }
 }
 
-const handleEditPluginCode = (p: PluginType) => {
-  pluginFormID.value = p.id
-  pluginTitle.value = p.name
-  showPluginView.value = true
+const handleEditPluginCode = (id: string, title: string) => {
+  modalApi
+    .setProps({ title, footer: false, width: '90' })
+    .setComponent(h(PluginView, { id }))
+    .open()
+}
+
+const handleViewChangelog = (id: string) => {
+  modalApi
+    .setProps({
+      title: 'Changelog',
+      cancelText: 'common.close',
+      width: '90',
+      height: '90',
+      submit: false,
+      maskClosable: true,
+    })
+    .setComponent(h(PluginChangelog, { id }))
+    .open()
 }
 
 const handleInstallation = async (p: PluginType) => {
@@ -156,8 +175,10 @@ const generateMenus = (p: PluginType) => {
     builtInMenus.push({
       label: 'plugins.configuration',
       handler: async () => {
-        pluginFormID.value = p.id
-        showPluginConfiguration.value = true
+        modalApi
+          .setProps({ title: 'plugins.configuration', footer: false })
+          .setComponent(h(PluginConfiguration, { id: p.id }))
+          .open()
       },
     })
   }
@@ -251,7 +272,13 @@ const onSortUpdate = debounce(pluginsStore.savePlugins, 1000)
     >
       <template #title-prefix>
         <Tag v-if="pluginsStore.isDeprecated(p)" color="red"> {{ t('plugins.deprecated') }} </Tag>
-        <Tag v-if="pluginsStore.hasNewPluginVersion(p)" size="small" color="cyan">
+        <Tag
+          v-if="pluginsStore.hasNewPluginVersion(p)"
+          @click="handleViewChangelog(p.id)"
+          size="small"
+          color="cyan"
+          class="cursor-pointer"
+        >
           {{ t('plugins.newVersion') }}
         </Tag>
         <div
@@ -285,7 +312,7 @@ const onSortUpdate = debounce(pluginsStore.savePlugins, 1000)
             <Button type="link" size="small" @click="handleDisablePlugin(p)">
               {{ p.disabled ? t('common.enable') : t('common.disable') }}
             </Button>
-            <Button type="link" size="small" @click="handleEditPlugin(p)">
+            <Button type="link" size="small" @click="handleEditPlugin(p.id)">
               {{ t('common.develop') }}
             </Button>
             <Button
@@ -312,7 +339,7 @@ const onSortUpdate = debounce(pluginsStore.savePlugins, 1000)
           <Button type="link" size="small" @click="handleDisablePlugin(p)">
             {{ p.disabled ? t('common.enable') : t('common.disable') }}
           </Button>
-          <Button type="link" size="small" @click="handleEditPlugin(p)">
+          <Button type="link" size="small" @click="handleEditPlugin(p.id)">
             {{ t('common.develop') }}
           </Button>
           <Button
@@ -358,7 +385,7 @@ const onSortUpdate = debounce(pluginsStore.savePlugins, 1000)
       </div>
 
       <div class="action">
-        <Button @click="handleEditPluginCode(p)" type="link" size="small" class="edit">
+        <Button @click="handleEditPluginCode(p.id, p.name)" type="link" size="small" class="edit">
           {{ t('plugins.source') }}
         </Button>
 
@@ -390,47 +417,7 @@ const onSortUpdate = debounce(pluginsStore.savePlugins, 1000)
     </Card>
   </div>
 
-  <Modal
-    v-model:open="showPluginForm"
-    :title="pluginFormTitle"
-    min-width="70"
-    max-height="90"
-    :footer="false"
-  >
-    <PluginForm :is-update="pluginFormIsUpdate" :id="pluginFormID" />
-  </Modal>
-
-  <Modal
-    v-model:open="showPluginView"
-    :title="pluginTitle"
-    :footer="false"
-    max-height="90"
-    width="90"
-  >
-    <PluginView :id="pluginFormID" />
-  </Modal>
-
-  <Modal
-    v-model:open="showPluginHub"
-    title="plugins.hub"
-    :submit="false"
-    mask-closable
-    cancel-text="common.close"
-    height="90"
-    width="90"
-  >
-    <PluginHub />
-  </Modal>
-
-  <Modal
-    v-model:open="showPluginConfiguration"
-    title="plugins.configuration"
-    :footer="false"
-    max-height="80"
-    max-width="80"
-  >
-    <PluginConfiguration :id="pluginFormID" />
-  </Modal>
+  <Modal />
 </template>
 
 <style lang="less" scoped>

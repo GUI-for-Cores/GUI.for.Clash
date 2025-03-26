@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ref, watch, useTemplateRef } from 'vue'
+import { ref, watch, useTemplateRef, h } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { APP_TITLE } from '@/utils'
-import { useMessage, useBool } from '@/hooks'
+import { useMessage } from '@/hooks'
 import { useAppSettingsStore, useProfilesStore, useKernelApiStore, useEnvStore } from '@/stores'
 
+import { useModal } from '@/components/Modal'
 import QuickStart from './components/QuickStart.vue'
 import OverView from './components/OverView.vue'
 import KernelLogs from './components/KernelLogs.vue'
@@ -18,10 +19,7 @@ const controllerRef = useTemplateRef('controllerRef')
 
 const { t } = useI18n()
 const { message } = useMessage()
-const [showApiLogs, toggleApiLogs] = useBool(false)
-const [showKernelLogs, toggleKernelLogs] = useBool(false)
-const [showSettings, toggleSettingsModal] = useBool(false)
-const [showQuickStart, toggleQuickStart] = useBool(false)
+const [Modal, modalApi] = useModal({})
 
 const appSettingsStore = useAppSettingsStore()
 const profilesStore = useProfilesStore()
@@ -53,6 +51,57 @@ const handleStopKernel = async () => {
     console.error(error)
     message.error(error)
   }
+}
+
+const handleShowApiLogs = () => {
+  modalApi
+    .setProps({
+      title: 'Logs',
+      cancelText: 'common.close',
+      width: '90',
+      height: '90',
+      submit: false,
+      maskClosable: true,
+    })
+    .setComponent(h(LogsController))
+    .open()
+}
+
+const handleShowQuickStart = () => {
+  modalApi
+    .setProps({
+      title: 'subscribes.enterLink',
+      footer: false,
+      maskClosable: true,
+    })
+    .setComponent(h(QuickStart))
+    .open()
+}
+
+const handleShowSettings = () => {
+  modalApi
+    .setProps({
+      title: 'home.overview.settings',
+      cancelText: 'common.close',
+      width: '90',
+      submit: false,
+      maskClosable: true,
+    })
+    .setComponent(h(CommonController))
+    .open()
+}
+
+const handleShowKernelLogs = () => {
+  modalApi
+    .setProps({
+      title: 'home.overview.viewlog',
+      width: '90',
+      height: '90',
+      submit: false,
+      maskClosable: true,
+    })
+    .setComponent(h(KernelLogs))
+    .open()
 }
 
 const onMouseWheel = (e: WheelEvent) => {
@@ -97,7 +146,7 @@ watch(showController, (v) => {
 
       <template v-if="profilesStore.profiles.length === 0">
         <p>{{ t('home.noProfile', [APP_TITLE]) }}</p>
-        <Button @click="toggleQuickStart" type="primary">{{ t('home.quickStart') }}</Button>
+        <Button @click="handleShowQuickStart" type="primary">{{ t('home.quickStart') }}</Button>
       </template>
 
       <template v-else>
@@ -111,14 +160,14 @@ watch(showController, (v) => {
           >
             {{ p.name }}
           </Card>
-          <Card @click="toggleQuickStart" class="profiles-card">
+          <Card @click="handleShowQuickStart" class="profiles-card">
             {{ t('home.quickStart') }}
           </Card>
         </div>
         <Button @click="handleStartKernel" :loading="kernelApiStore.loading" type="primary">
           {{ t('home.overview.start') }}
         </Button>
-        <Button @click="toggleKernelLogs" type="link" size="small">
+        <Button @click="handleShowKernelLogs" type="link" size="small">
           {{ t('home.overview.viewlog') }}
         </Button>
       </template>
@@ -127,7 +176,7 @@ watch(showController, (v) => {
     <template v-else-if="!kernelApiStore.statusLoading">
       <div :class="{ blur: showController }">
         <div class="kernel-status">
-          <Button @click="toggleSettingsModal" type="text" size="small">
+          <Button @click="handleShowSettings" type="text" size="small">
             <Icon icon="settings" />
           </Button>
           <Switch
@@ -149,7 +198,7 @@ watch(showController, (v) => {
             {{ t('home.overview.tunMode') }}
           </Switch>
           <Button
-            @click="toggleApiLogs"
+            @click="handleShowApiLogs"
             v-tips="'home.overview.viewlog'"
             type="text"
             size="small"
@@ -194,44 +243,7 @@ watch(showController, (v) => {
     </template>
   </div>
 
-  <Modal
-    v-model:open="showApiLogs"
-    :submit="false"
-    mask-closable
-    title="Logs"
-    width="90"
-    height="90"
-    cancel-text="common.close"
-  >
-    <LogsController />
-  </Modal>
-
-  <Modal v-model:open="showQuickStart" :footer="false" mask-closable title="subscribes.enterLink">
-    <QuickStart />
-  </Modal>
-
-  <Modal
-    v-model:open="showSettings"
-    :submit="false"
-    mask-closable
-    cancel-text="common.close"
-    title="home.overview.settings"
-    width="90"
-  >
-    <CommonController />
-  </Modal>
-
-  <Modal
-    v-model:open="showKernelLogs"
-    :submit="false"
-    mask-closable
-    width="90"
-    height="90"
-    cancel-text="common.close"
-    title="home.overview.viewlog"
-  >
-    <KernelLogs />
-  </Modal>
+  <Modal />
 </template>
 
 <style lang="less" scoped>

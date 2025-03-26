@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, h } from 'vue'
 import { useI18n, I18nT } from 'vue-i18n'
 
 import { View } from '@/enums/app'
@@ -16,18 +16,10 @@ import {
   usePluginsStore,
 } from '@/stores'
 
+import { useModal } from '@/components/Modal'
 import ProxiesView from './components/ProxiesView.vue'
 import ProxiesEditor from './components/ProxiesEditor.vue'
 import SubscribeForm from './components/SubscribeForm.vue'
-
-const showSubForm = ref(false)
-const showProxies = ref(false)
-const showEditor = ref(false)
-const proxiesSub = ref()
-const proxiesTitle = ref('')
-const subFormSubID = ref()
-const subFormIsUpdate = ref(false)
-const subFormTitle = computed(() => (subFormIsUpdate.value ? 'common.edit' : 'common.add'))
 
 const menuList: Menu[] = [
   {
@@ -52,6 +44,7 @@ const menuList: Menu[] = [
 
 const { t } = useI18n()
 const { message } = useMessage()
+const [Modal, modalApi] = useModal({})
 const subscribeStore = useSubscribesStore()
 const appSettingsStore = useAppSettingsStore()
 const kernelApiStore = useKernelApiStore()
@@ -102,9 +95,15 @@ const generateMenus = (subscription: SubscribeType) => {
   return builtInMenus
 }
 
-const handleAddSub = async () => {
-  subFormIsUpdate.value = false
-  showSubForm.value = true
+const handleShowSubForm = (id?: string, isUpdate = false) => {
+  modalApi
+    .setProps({
+      title: isUpdate ? 'common.edit' : 'common.add',
+      minWidth: '70',
+      footer: false,
+    })
+    .setComponent(h(SubscribeForm, { id, isUpdate }))
+    .open()
 }
 
 const handleUpdateSubs = async () => {
@@ -123,22 +122,26 @@ const handleUpdateSubs = async () => {
   }
 }
 
-const handleEditSub = (s: SubscribeType) => {
-  subFormIsUpdate.value = true
-  subFormSubID.value = s.id
-  showSubForm.value = true
-}
-
 const handleEditProxies = (id: string, editor = false) => {
   const sub = subscribeStore.getSubscribeById(id)
   if (sub) {
-    proxiesTitle.value = sub.name
-    proxiesSub.value = sub
-    if (editor) {
-      showEditor.value = true
-    } else {
-      showProxies.value = true
-    }
+    modalApi
+      .setProps({
+        title: sub.name,
+        footer: false,
+        height: '90',
+        width: '90',
+        onOk: async () => {
+          try {
+            await _updateProviderProxies(sub.id)
+          } catch (error: any) {
+            console.error(error)
+            message.error(error)
+          }
+        },
+      })
+      .setComponent(h(editor ? ProxiesEditor : ProxiesView, { sub }))
+      .open()
   }
 }
 
@@ -170,15 +173,6 @@ const handleDeleteSub = async (s: SubscribeType) => {
 const handleDisableSub = async (s: SubscribeType) => {
   s.disabled = !s.disabled
   subscribeStore.editSubscribe(s.id, s)
-}
-
-const onEditProxiesEnd = async () => {
-  try {
-    await _updateProviderProxies(proxiesSub.value.id)
-  } catch (error: any) {
-    console.error(error)
-    message.error(error)
-  }
 }
 
 const _updateProviderProxies = async (provider: string) => {
@@ -221,7 +215,7 @@ const onSortUpdate = debounce(subscribeStore.saveSubscribes, 1000)
       <template #description>
         <I18nT keypath="subscribes.empty" tag="p" scope="global">
           <template #action>
-            <Button @click="handleAddSub" type="link">{{ t('common.add') }}</Button>
+            <Button @click="handleShowSubForm()" type="link">{{ t('common.add') }}</Button>
           </template>
         </I18nT>
       </template>
@@ -244,7 +238,7 @@ const onSortUpdate = debounce(subscribeStore.saveSubscribes, 1000)
     >
       {{ t('common.updateAll') }}
     </Button>
-    <Button @click="handleAddSub" type="primary">
+    <Button @click="handleShowSubForm()" type="primary">
       {{ t('common.add') }}
     </Button>
   </div>
@@ -294,7 +288,7 @@ const onSortUpdate = debounce(subscribeStore.saveSubscribes, 1000)
             <Button type="link" size="small" @click="handleDisableSub(s)">
               {{ s.disabled ? t('common.enable') : t('common.disable') }}
             </Button>
-            <Button type="link" size="small" @click="handleEditSub(s)">
+            <Button type="link" size="small" @click="handleShowSubForm(s.id, true)">
               {{ t('common.edit') }}
             </Button>
             <Button type="link" size="small" @click="handleDeleteSub(s)">
@@ -317,7 +311,7 @@ const onSortUpdate = debounce(subscribeStore.saveSubscribes, 1000)
         <Button type="link" size="small" @click="handleDisableSub(s)">
           {{ s.disabled ? t('common.enable') : t('common.disable') }}
         </Button>
-        <Button type="link" size="small" @click="handleEditSub(s)">
+        <Button type="link" size="small" @click="handleShowSubForm(s.id, true)">
           {{ t('common.edit') }}
         </Button>
         <Button type="link" size="small" @click="handleDeleteSub(s)">
@@ -384,37 +378,7 @@ const onSortUpdate = debounce(subscribeStore.saveSubscribes, 1000)
     </Card>
   </div>
 
-  <Modal
-    v-model:open="showSubForm"
-    :title="subFormTitle"
-    max-height="90"
-    min-width="70"
-    :footer="false"
-  >
-    <SubscribeForm :is-update="subFormIsUpdate" :id="subFormSubID" />
-  </Modal>
-
-  <Modal
-    v-model:open="showProxies"
-    @ok="onEditProxiesEnd"
-    :title="proxiesTitle"
-    :footer="false"
-    height="90"
-    width="90"
-  >
-    <ProxiesView :sub="proxiesSub" />
-  </Modal>
-
-  <Modal
-    v-model:open="showEditor"
-    @ok="onEditProxiesEnd"
-    :title="proxiesTitle"
-    :footer="false"
-    height="90"
-    width="90"
-  >
-    <ProxiesEditor :sub="proxiesSub" />
-  </Modal>
+  <Modal />
 </template>
 
 <style lang="less" scoped>

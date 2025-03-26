@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { h } from 'vue'
 import { useI18n, I18nT } from 'vue-i18n'
 
 import { ClipboardSetText } from '@/bridge'
@@ -16,15 +16,12 @@ import {
   usePluginsStore,
 } from '@/stores'
 
+import { useModal } from '@/components/Modal'
 import ProfileForm from './components/ProfileForm.vue'
-
-const profileID = ref()
-const profileStep = ref(0)
-const showForm = ref(false)
-const isUpdate = ref(false)
 
 const { t } = useI18n()
 const { message } = useMessage()
+const [Modal, modalApi] = useModal({})
 const { alert } = useAlert()
 const profilesStore = useProfilesStore()
 const subscribesStore = useSubscribesStore()
@@ -46,7 +43,7 @@ const menuList: Menu[] = [
       label: v,
       handler: (id: string) => {
         const p = profilesStore.getProfileById(id)
-        p && handleEditProfile(p, i)
+        p && handleShowProfileForm(p.id, true, i)
       },
     }
   }),
@@ -157,17 +154,20 @@ const generateMenus = (profile: ProfileType) => {
   return builtInMenus
 }
 
-const handleAddProfile = async () => {
-  isUpdate.value = false
-  profileStep.value = 0
-  showForm.value = true
-}
-
-const handleEditProfile = (p: ProfileType, step = 0) => {
-  isUpdate.value = true
-  profileID.value = p.id
-  profileStep.value = step
-  showForm.value = true
+const handleShowProfileForm = (id?: string, isUpdate = false, step = 0) => {
+  modalApi
+    .setProps({
+      footer: false,
+      minWidth: '70',
+      onOk: async () => {
+        const { running, profile } = appSettingsStore.app.kernel
+        if (running && profile === id) {
+          await kernelApiStore.restartKernel()
+        }
+      },
+    })
+    .setComponent(h(ProfileForm, { id, isUpdate, step }))
+    .open()
 }
 
 const handleDeleteProfile = async (p: ProfileType) => {
@@ -195,13 +195,6 @@ const handleUseProfile = async (p: ProfileType) => {
   }
 }
 
-const onEditProfileEnd = async () => {
-  const { running, profile } = appSettingsStore.app.kernel
-  if (running && profile === profileID.value) {
-    await kernelApiStore.restartKernel()
-  }
-}
-
 const isCreatedBySubscription = (id: string) => {
   return !!subscribesStore.getSubscribeById(id)
 }
@@ -217,7 +210,7 @@ const onSortUpdate = debounce(profilesStore.saveProfiles, 1000)
       <template #description>
         <I18nT keypath="profiles.empty" tag="p" scope="global">
           <template #action>
-            <Button @click="handleAddProfile" type="link">{{ t('common.add') }}</Button>
+            <Button @click="handleShowProfileForm()" type="link">{{ t('common.add') }}</Button>
           </template>
         </I18nT>
       </template>
@@ -233,7 +226,7 @@ const onSortUpdate = debounce(profilesStore.saveProfiles, 1000)
       ]"
       class="mr-auto"
     />
-    <Button @click="handleAddProfile" type="primary">
+    <Button @click="handleShowProfileForm()" type="primary">
       {{ t('common.add') }}
     </Button>
   </div>
@@ -269,7 +262,7 @@ const onSortUpdate = debounce(profilesStore.saveProfiles, 1000)
             <Button @click="handleUseProfile(p)" type="link" size="small">
               {{ t('common.use') }}
             </Button>
-            <Button @click="handleEditProfile(p)" type="link" size="small">
+            <Button @click="handleShowProfileForm(p.id, true)" type="link" size="small">
               {{ t('common.edit') }}
             </Button>
             <Button @click="handleDeleteProfile(p)" type="link" size="small">
@@ -283,7 +276,7 @@ const onSortUpdate = debounce(profilesStore.saveProfiles, 1000)
         <Button @click="handleUseProfile(p)" type="link" size="small">
           {{ t('common.use') }}
         </Button>
-        <Button @click="handleEditProfile(p)" type="link" size="small">
+        <Button @click="handleShowProfileForm(p.id, true)" type="link" size="small">
           {{ t('common.edit') }}
         </Button>
         <Button @click="handleDeleteProfile(p)" type="link" size="small">
@@ -316,16 +309,5 @@ const onSortUpdate = debounce(profilesStore.saveProfiles, 1000)
     </Card>
   </div>
 
-  <Modal
-    v-model:open="showForm"
-    :footer="false"
-    @ok="onEditProfileEnd"
-    min-width="70"
-    max-width="90"
-    max-height="90"
-  >
-    <ProfileForm :is-update="isUpdate" :id="profileID" :step="profileStep" />
-  </Modal>
+  <Modal />
 </template>
-
-<style lang="less" scoped></style>
