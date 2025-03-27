@@ -2,7 +2,6 @@ import { defineStore } from 'pinia'
 import { parse } from 'yaml'
 import { computed, ref, watch } from 'vue'
 
-import { useConfirm } from '@/hooks'
 import { PluginHubFilePath, PluginsFilePath } from '@/constant/app'
 import { HttpGet, Readfile, Removefile, Writefile } from '@/bridge'
 import { PluginTrigger, PluginTriggerEvent } from '@/enums/app'
@@ -15,6 +14,7 @@ import {
   updateTrayMenus,
   stringifyNoFolding,
   deepClone,
+  confirm,
 } from '@/utils'
 
 export type PluginConfiguration = {
@@ -99,7 +99,6 @@ const PluginsTriggerMap: {
 }
 
 export const usePluginsStore = defineStore('plugins', () => {
-  const { confirm } = useConfirm()
   const appSettingsStore = useAppSettingsStore()
 
   const plugins = ref<PluginType[]>([])

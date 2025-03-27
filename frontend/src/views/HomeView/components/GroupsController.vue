@@ -3,9 +3,8 @@ import { useI18n } from 'vue-i18n'
 import { ref, computed, onActivated } from 'vue'
 
 import { ProxyGroupType } from '@/enums/kernel'
-import { useMessage, usePrompt } from '@/hooks'
 import { getGroupDelay, getProxyDelay } from '@/api/kernel'
-import { ignoredError, sleep, handleUseProxy } from '@/utils'
+import { ignoredError, sleep, handleUseProxy, message, prompt } from '@/utils'
 import { useAppSettingsStore, useKernelApiStore } from '@/stores'
 
 const expandedSet = ref<Set<string>>(new Set())
@@ -15,8 +14,6 @@ const filterKeywordsMap = ref<Record<string, string>>({})
 const loading = ref(false)
 
 const { t } = useI18n()
-const { message } = useMessage()
-const { prompt } = usePrompt()
 const appSettings = useAppSettingsStore()
 const kernelApiStore = useKernelApiStore()
 

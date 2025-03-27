@@ -2,8 +2,7 @@
 import { useI18n } from 'vue-i18n'
 import { computed, inject, ref } from 'vue'
 
-import { sampleID } from '@/utils'
-import { useMessage } from '@/hooks'
+import { message, sampleID } from '@/utils'
 import * as Defaults from '@/constant'
 import {
   useProfilesStore,
@@ -17,7 +16,6 @@ const url = ref('')
 const loading = ref(false)
 
 const { t } = useI18n()
-const { message } = useMessage()
 const subscribeStore = useSubscribesStore()
 const profilesStore = useProfilesStore()
 const appSettingsStore = useAppSettingsStore()

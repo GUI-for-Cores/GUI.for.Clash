@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { useMessage } from '@/hooks'
+
+import { message } from '@/utils'
 import { useAppSettingsStore, useKernelApiStore } from '@/stores'
 
 const { t } = useI18n()
-const { message } = useMessage()
 const appSettings = useAppSettingsStore()
 const kernelApiStore = useKernelApiStore()
 

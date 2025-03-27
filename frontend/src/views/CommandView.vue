@@ -2,10 +2,9 @@
 import { useI18n } from 'vue-i18n'
 import { ref, computed, onMounted, onUnmounted, nextTick, watch, useTemplateRef } from 'vue'
 
-import { useMessage } from '@/hooks'
 import { getCommands } from '@/utils/command'
 import { useAppSettingsStore, usePluginsStore } from '@/stores'
-import { debounce } from '@/utils'
+import { debounce, message } from '@/utils'
 import Input from '@/components/Input/index.vue'
 
 const loading = ref(false)
@@ -27,7 +26,6 @@ const hitCommand = computed(() =>
 )
 
 const { t } = useI18n()
-const { message } = useMessage()
 const appSettings = useAppSettingsStore()
 const pluginsStore = usePluginsStore()
 

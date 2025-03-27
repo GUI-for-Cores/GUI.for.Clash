@@ -1,8 +1,7 @@
 import { parse } from 'yaml'
 
 import { ProxyGroupType } from '@/enums/kernel'
-import { useConfirm, useMessage } from '@/hooks'
-import { ignoredError, stringifyNoFolding } from '@/utils'
+import { ignoredError, stringifyNoFolding, message, confirm } from '@/utils'
 import { deleteConnection, getConnections, useProxy } from '@/api/kernel'
 import { AbsolutePath, Exec, ExitApp, Readfile, Writefile } from '@/bridge'
 import {
@@ -449,8 +448,6 @@ export const exitApp = async () => {
   const pluginsStore = usePluginsStore()
   const appSettings = useAppSettingsStore()
   const kernelApiStore = useKernelApiStore()
-  const { message } = useMessage()
-  const { confirm } = useConfirm()
 
   if (appSettings.app.kernel.running && appSettings.app.closeKernelOnExit) {
     await kernelApiStore.stopKernel()

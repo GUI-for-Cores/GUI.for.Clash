@@ -2,7 +2,6 @@
 import { useI18n } from 'vue-i18n'
 import { computed, ref } from 'vue'
 
-import { useConfirm, useMessage } from '@/hooks'
 import { CoreWorkingDirectory } from '@/constant'
 import { useAppSettingsStore, useEnvStore, useKernelApiStore } from '@/stores'
 import {
@@ -10,6 +9,8 @@ import {
   ignoredError,
   GrantTUNPermission,
   getKernelFileName,
+  message,
+  confirm,
 } from '@/utils'
 import {
   Download,
@@ -44,8 +45,6 @@ const needRestart = computed(() => {
 const needUpdate = computed(() => remoteVersion.value && localVersion.value !== remoteVersion.value)
 
 const { t } = useI18n()
-const { message } = useMessage()
-const { confirm } = useConfirm()
 const envStore = useEnvStore()
 const appSettings = useAppSettingsStore()
 const kernelApiStore = useKernelApiStore()

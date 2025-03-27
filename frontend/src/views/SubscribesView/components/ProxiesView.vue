@@ -3,8 +3,8 @@ import { useI18n } from 'vue-i18n'
 import { parse } from 'yaml'
 import { ref, computed, inject } from 'vue'
 
-import { useBool, useMessage } from '@/hooks'
-import { deepClone, ignoredError, sampleID, stringifyNoFolding } from '@/utils'
+import { useBool } from '@/hooks'
+import { deepClone, ignoredError, sampleID, stringifyNoFolding, message } from '@/utils'
 import { DraggableOptions } from '@/constant'
 import { ClipboardSetText, Readfile, Writefile } from '@/bridge'
 import { type SubscribeType, useSubscribesStore } from '@/stores'
@@ -113,7 +113,6 @@ const menus: Menu[] = [
 ]
 
 const { t } = useI18n()
-const { message } = useMessage()
 const subscribeStore = useSubscribesStore()
 
 const handleCancel = inject('cancel') as any

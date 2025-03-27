@@ -2,8 +2,7 @@
 import { useI18n } from 'vue-i18n'
 import { computed, ref } from 'vue'
 
-import { useMessage } from '@/hooks'
-import { deepClone, sampleID, generateRule } from '@/utils'
+import { deepClone, sampleID, generateRule, message } from '@/utils'
 import { RulesetBehavior, RulesetFormat } from '@/enums/kernel'
 import { type ProfileType, useRulesetsStore, type RuleSetType } from '@/stores'
 import {
@@ -62,7 +61,6 @@ const filteredRulesTypeOptions = computed(() =>
 )
 
 const { t } = useI18n()
-const { message } = useMessage()
 const rulesetsStore = useRulesetsStore()
 
 const handleAdd = () => {

@@ -2,8 +2,7 @@
 import { ref, inject, watch, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { useMessage } from '@/hooks'
-import { deepClone, sampleID } from '@/utils'
+import { deepClone, sampleID, message } from '@/utils'
 import { type RuleSetType, useRulesetsStore } from '@/stores'
 import { RulesetBehavior, RulesetFormat } from '@/enums/kernel'
 import { RulesetFormatOptions, RulesetBehaviorOptions } from '@/constant'
@@ -34,7 +33,6 @@ const ruleset = ref<RuleSetType>({
 })
 
 const { t } = useI18n()
-const { message } = useMessage()
 const rulesetsStore = useRulesetsStore()
 
 const handleCancel = inject('cancel') as any

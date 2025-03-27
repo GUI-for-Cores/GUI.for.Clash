@@ -1,6 +1,5 @@
 import useI18n from '@/lang'
-import { useMessage } from '@/hooks'
-import { handleChangeMode } from '@/utils'
+import { handleChangeMode, message } from '@/utils'
 import { Color, Lang, PluginTrigger, PluginTriggerEvent, Theme } from '@/enums/app'
 import { ExitApp, RestartApp, WindowReloadApp } from '@/bridge'
 import {
@@ -49,7 +48,6 @@ export const getCommands = () => {
   const subscriptionsStore = useSubscribesStore()
   const rulesetsStore = useRulesetsStore()
   const pluginsStore = usePluginsStore()
-  const { message } = useMessage()
 
   const rawCommands: Command[] = [
     {

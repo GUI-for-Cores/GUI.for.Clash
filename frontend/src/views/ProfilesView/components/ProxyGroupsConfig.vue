@@ -2,9 +2,8 @@
 import { useI18n } from 'vue-i18n'
 import { ref, computed } from 'vue'
 
-import { useMessage } from '@/hooks'
 import { ProxyGroup } from '@/enums/kernel'
-import { deepClone, sampleID } from '@/utils'
+import { deepClone, sampleID, message } from '@/utils'
 import { type ProfileType, useSubscribesStore } from '@/stores'
 import { GroupsTypeOptions, StrategyOptions, DraggableOptions } from '@/constant'
 
@@ -55,7 +54,6 @@ const fields = ref<GroupsType[number]>({
 })
 
 const { t } = useI18n()
-const { message } = useMessage()
 const subscribesStore = useSubscribesStore()
 
 const handleAdd = () => {

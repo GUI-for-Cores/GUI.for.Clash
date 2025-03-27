@@ -3,10 +3,17 @@ import { h } from 'vue'
 import { useI18n, I18nT } from 'vue-i18n'
 
 import { ClipboardSetText } from '@/bridge'
-import { useMessage, useAlert } from '@/hooks'
 import { DraggableOptions } from '@/constant'
 import { View } from '@/enums/app'
-import { debounce, deepClone, generateConfig, sampleID, stringifyNoFolding } from '@/utils'
+import {
+  debounce,
+  deepClone,
+  generateConfig,
+  sampleID,
+  stringifyNoFolding,
+  message,
+  alert,
+} from '@/utils'
 import {
   type ProfileType,
   useProfilesStore,
@@ -20,9 +27,7 @@ import { useModal } from '@/components/Modal'
 import ProfileForm from './components/ProfileForm.vue'
 
 const { t } = useI18n()
-const { message } = useMessage()
 const [Modal, modalApi] = useModal({})
-const { alert } = useAlert()
 const profilesStore = useProfilesStore()
 const subscribesStore = useSubscribesStore()
 const appSettingsStore = useAppSettingsStore()

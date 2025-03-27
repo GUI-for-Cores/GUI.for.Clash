@@ -4,8 +4,8 @@ import { ref, inject, type Ref, computed, useTemplateRef } from 'vue'
 
 import * as Defaults from '@/constant/profile'
 import { WindowToggleMaximise } from '@/bridge'
-import { useMessage, useAlert, useBool } from '@/hooks'
-import { deepClone, generateConfig, sampleID, stringifyNoFolding } from '@/utils'
+import { useBool } from '@/hooks'
+import { deepClone, generateConfig, sampleID, stringifyNoFolding, message, alert } from '@/utils'
 import { type ProfileType, useProfilesStore } from '@/stores'
 
 import GeneralConfig from './GeneralConfig.vue'
@@ -79,8 +79,6 @@ const mixinAndScriptConfig = computed({
 })
 
 const { t } = useI18n()
-const { alert } = useAlert()
-const { message } = useMessage()
 const profilesStore = useProfilesStore()
 const [showAdvancedSetting, toggleAdvancedSetting] = useBool(false)
 

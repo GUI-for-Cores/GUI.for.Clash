@@ -3,7 +3,7 @@ import { useI18n } from 'vue-i18n'
 import { ref, computed, onUnmounted } from 'vue'
 
 import { DraggableOptions } from '@/constant'
-import { useBool, useMessage, usePicker } from '@/hooks'
+import { useBool } from '@/hooks'
 import { type PickerItem } from '@/components/Picker/index.vue'
 import { useAppSettingsStore } from '@/stores'
 import { getKernelConnectionsWS, deleteConnection, updateProvidersRules } from '@/api/kernel'
@@ -13,6 +13,8 @@ import {
   addToRuleSet,
   ignoredError,
   setIntervalImmediately,
+  message,
+  picker,
 } from '@/utils'
 
 import type { Column } from '@/components/Table/index.vue'
@@ -251,8 +253,6 @@ const disconnectedData = ref<IKernelConnectionsWS['connections']>([])
 const [showDetails, toggleDetails] = useBool(false)
 const [showSettings, toggleSettings] = useBool(false)
 const [isPause, togglePause] = useBool(false)
-const { message } = useMessage()
-const { picker } = usePicker()
 const { t } = useI18n()
 
 const onConnections = (data: IKernelConnectionsWS) => {

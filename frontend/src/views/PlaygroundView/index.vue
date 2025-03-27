@@ -2,9 +2,8 @@
 import { ref } from 'vue'
 
 import icons from '@/components/Icon/icons'
-import { APP_TITLE, APP_VERSION, sleep } from '@/utils'
+import { APP_TITLE, APP_VERSION, sleep, message, confirm, prompt, picker, alert } from '@/utils'
 import { HttpGet, HttpPost, Upload, Notify, Download, HttpCancel } from '@/bridge'
-import { useMessage, usePicker, useConfirm, usePrompt, useAlert } from '@/hooks'
 
 const code = ref(`
 const appName = '${APP_TITLE}'
@@ -16,12 +15,6 @@ const kv = ref({
   appVersion: APP_VERSION,
   count: '1',
 })
-
-const { message } = useMessage()
-const { picker } = usePicker()
-const { confirm } = useConfirm()
-const { prompt } = usePrompt()
-const { alert } = useAlert()
 
 const handleUpdateMessage = async () => {
   const { id } = message.info('Loading', 5_000)
@@ -223,7 +216,7 @@ const handleNotify = (type: string) => {
     <KeyValueEditor v-model="kv" />
   </div>
 
-  <h2>useMessage & usePicker & useConfirm & usePrompt</h2>
+  <h2>message & picker & confirm & prompt</h2>
   <div>
     <Button @click="message.info('info', 1_000)" icon="messageInfo"> Info </Button>
     <Button @click="message.warn('warn', 1_000)" icon="messageWarn"> Warn </Button>

@@ -3,7 +3,7 @@ import { useI18n } from 'vue-i18n'
 import { ref, computed, onUnmounted } from 'vue'
 
 import { LogLevelOptions } from '@/constant'
-import { useBool, useMessage, usePicker } from '@/hooks'
+import { useBool } from '@/hooks'
 import { type PickerItem } from '@/components/Picker/index.vue'
 import { getKernelLogsWS, updateProvidersRules } from '@/api/kernel'
 import {
@@ -12,6 +12,8 @@ import {
   addToRuleSet,
   ignoredError,
   setIntervalImmediately,
+  message,
+  picker,
 } from '@/utils'
 
 const logType = ref('info')
@@ -93,8 +95,6 @@ const menus: Menu[] = [
 })
 
 const { t } = useI18n()
-const { message } = useMessage()
-const { picker } = usePicker()
 const [pause, togglePause] = useBool(false)
 
 const handleClear = () => logs.value.splice(0)

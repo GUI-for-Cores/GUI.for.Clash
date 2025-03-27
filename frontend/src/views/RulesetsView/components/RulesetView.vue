@@ -3,11 +3,10 @@ import { useI18n } from 'vue-i18n'
 import { parse } from 'yaml'
 import { ref, computed, inject } from 'vue'
 
-import { useMessage } from '@/hooks'
 import { Readfile, Writefile } from '@/bridge'
 import { RulesetBehavior } from '@/enums/kernel'
 import { DraggableOptions } from '@/constant'
-import { deepClone, ignoredError, isValidIPCIDR, stringifyNoFolding } from '@/utils'
+import { deepClone, ignoredError, isValidIPCIDR, stringifyNoFolding, message } from '@/utils'
 import { type RuleSetType, useRulesetsStore } from '@/stores'
 
 interface Props {
@@ -65,7 +64,6 @@ const handleCancel = inject('cancel') as any
 const handleSubmit = inject('submit') as any
 
 const { t } = useI18n()
-const { message } = useMessage()
 const rulesetsStore = useRulesetsStore()
 
 const handleSave = async () => {
