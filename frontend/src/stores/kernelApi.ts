@@ -3,13 +3,7 @@ import { defineStore } from 'pinia'
 
 import { CoreStopOutputKeyword, CoreWorkingDirectory } from '@/constant'
 import { ProcessInfo, KillProcess, ExecBackground } from '@/bridge'
-import {
-  generateConfigFile,
-  ignoredError,
-  updateTrayMenus,
-  getKernelFileName,
-  sleep,
-} from '@/utils'
+import { generateConfigFile, ignoredError, updateTrayMenus, getKernelFileName } from '@/utils'
 import { getConfigs, setConfigs, getProxies, getProviders } from '@/api/kernel'
 import { useAppSettingsStore, useProfilesStore, useLogsStore, useEnvStore } from '@/stores'
 
@@ -104,7 +98,6 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
       logsStore.recordKernelLog(out)
 
       if (out.toLowerCase().includes(CoreStopOutputKeyword)) {
-        await sleep(100) // Waiting for the RESTful API
         loading.value = false
         appSettingsStore.app.kernel.pid = pid
         appSettingsStore.app.kernel.running = true

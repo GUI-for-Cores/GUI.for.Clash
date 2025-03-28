@@ -371,7 +371,7 @@ export const generateConfigFile = async (profile: ProfileType) => {
 
   const config = await generateConfig(profile)
 
-  config['log-level'] = LogLevel.Silent
+  config['log-level'] = LogLevel.Info
 
   await Writefile(CoreConfigFilePath, header + stringifyNoFolding(config))
 }
