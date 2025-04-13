@@ -5,7 +5,14 @@ import { parse } from 'yaml'
 import { RulesetBehavior, RulesetFormat } from '@/enums/kernel'
 import { RulesetsFilePath, EmptyRuleSet } from '@/constant'
 import { Copyfile, Readfile, Writefile, HttpGet, Download, FileExists } from '@/bridge'
-import { debounce, isValidPaylodYAML, ignoredError, omitArray, stringifyNoFolding } from '@/utils'
+import {
+  debounce,
+  isValidPaylodYAML,
+  ignoredError,
+  omitArray,
+  stringifyNoFolding,
+  asyncPool,
+} from '@/utils'
 
 export type RuleSetType = {
   id: string
@@ -132,9 +139,8 @@ export const useRulesetsStore = defineStore('rulesets', () => {
 
   const updateRulesets = async () => {
     let needSave = false
-    for (let i = 0; i < rulesets.value.length; i++) {
-      const r = rulesets.value[i]
-      if (r.disabled) continue
+
+    const update = async (r: RuleSetType) => {
       try {
         r.updating = true
         await _doUpdateRuleset(r)
@@ -143,6 +149,13 @@ export const useRulesetsStore = defineStore('rulesets', () => {
         r.updating = false
       }
     }
+
+    await asyncPool(
+      5,
+      rulesets.value.filter((v) => !v.disabled),
+      update,
+    )
+
     if (needSave) saveRulesets()
   }
 

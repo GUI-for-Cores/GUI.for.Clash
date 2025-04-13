@@ -15,6 +15,7 @@ import {
   stringifyNoFolding,
   deepClone,
   confirm,
+  asyncPool,
 } from '@/utils'
 
 export type PluginConfiguration = {
@@ -292,8 +293,8 @@ export const usePluginsStore = defineStore('plugins', () => {
 
   const updatePlugins = async () => {
     let needSave = false
-    for (const plugin of plugins.value) {
-      if (plugin.disabled) continue
+
+    const update = async (plugin: PluginType) => {
       try {
         plugin.updating = true
         await _doUpdatePlugin(plugin)
@@ -302,6 +303,13 @@ export const usePluginsStore = defineStore('plugins', () => {
         plugin.updating = false
       }
     }
+
+    await asyncPool(
+      5,
+      plugins.value.filter((v) => !v.disabled),
+      update,
+    )
+
     if (needSave) savePlugins()
   }
 
