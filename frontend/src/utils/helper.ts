@@ -376,6 +376,11 @@ export const GetSystemProxy = async () => {
   return ''
 }
 
+const proxy_cache: { proxyPromise: Promise<string> | null; lastAccessTime: number } = {
+  proxyPromise: null,
+  lastAccessTime: 0,
+}
+
 export const GetSystemOrKernelProxy = async () => {
   if (useAppSettingsStore().app.kernel.running) {
     const kernelProxy = useKernelApiStore().getProxyPort()
@@ -387,8 +392,13 @@ export const GetSystemOrKernelProxy = async () => {
     }
   }
 
-  const systemProxy = await GetSystemProxy()
-  return systemProxy
+  if (proxy_cache.proxyPromise && Date.now() - proxy_cache.lastAccessTime < 1000) {
+    return proxy_cache.proxyPromise
+  }
+
+  proxy_cache.lastAccessTime = Date.now()
+  proxy_cache.proxyPromise = GetSystemProxy()
+  return proxy_cache.proxyPromise
 }
 
 export const QuerySchTask = async (taskName: string) => {
