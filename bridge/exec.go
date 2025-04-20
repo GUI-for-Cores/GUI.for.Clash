@@ -94,7 +94,7 @@ func (a *App) ExecBackground(path string, args []string, outEvent string, endEve
 				}
 				text := scanner.Text()
 				if options.StopOutputKeyword != "" {
-					if strings.Contains(strings.ToLower(text), options.StopOutputKeyword) {
+					if strings.Contains(text, options.StopOutputKeyword) {
 						atomic.StoreInt32(&keywordFound, 1)
 						runtime.EventsEmit(a.Ctx, outEvent, text)
 						continue
