@@ -267,13 +267,6 @@ const generateRuleProviders = async (
   return providers
 }
 
-/**
-  Processing steps
-  1. Generate the config from the profile.
-  2. Merge the config using mixins.
-  3. Process the config using scripts.
-  4. Process the config using plugins.
- */
 export const generateConfig = async (originalProfile: ProfileType) => {
   const profile = deepClone(originalProfile)
 
@@ -337,31 +330,31 @@ export const generateConfig = async (originalProfile: ProfileType) => {
     .map((rule) => generateRule(rule, profile.proxyGroupsConfig))
 
   // step 2
-  const { priority, config: mixin } = originalProfile.mixinConfig
-  if (priority === 'mixin') {
-    deepAssign(config, parse(mixin))
-  } else if (priority === 'gui') {
-    deepAssign(config, deepAssign(parse(mixin), config))
-  }
+  const pluginsStore = usePluginsStore()
+  const _config = await pluginsStore.onGenerateTrigger(config, originalProfile)
 
   // step 3
+  const { priority, config: mixin } = originalProfile.mixinConfig
+  if (priority === 'mixin') {
+    deepAssign(_config, parse(mixin))
+  } else if (priority === 'gui') {
+    deepAssign(_config, deepAssign(parse(mixin), _config))
+  }
+
+  // step 4
   const fn = new window.AsyncFunction(
-    `${profile.scriptConfig.code};return await onGenerate(${JSON.stringify(config)})`,
+    `${profile.scriptConfig.code};return await onGenerate(${JSON.stringify(_config)})`,
   )
-  let _config
+  let result
   try {
-    _config = await fn()
+    result = await fn()
   } catch (error: any) {
     throw error.message || error
   }
 
-  if (typeof _config !== 'object') {
+  if (typeof result !== 'object') {
     throw 'Wrong result'
   }
-
-  // step 4
-  const pluginsStore = usePluginsStore()
-  const result = await pluginsStore.onGenerateTrigger(_config, originalProfile)
 
   return result
 }

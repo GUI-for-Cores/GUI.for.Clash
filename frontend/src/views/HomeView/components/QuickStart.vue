@@ -3,6 +3,7 @@ import { useI18n } from 'vue-i18n'
 import { computed, inject, ref } from 'vue'
 
 import { message, sampleID } from '@/utils'
+import { DefaultSubscribeScript } from '@/constant/app'
 import * as Defaults from '@/constant'
 import {
   useProfilesStore,
@@ -48,6 +49,7 @@ const handleSubmit = async () => {
     disabled: false,
     inSecure: false,
     userAgent: '',
+    script: DefaultSubscribeScript,
     healthCheck: {
       enable: false,
       url: 'https://www.gstatic.com/generate_204',

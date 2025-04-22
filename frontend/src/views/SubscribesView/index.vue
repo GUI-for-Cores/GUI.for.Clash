@@ -26,6 +26,7 @@ import { useModal } from '@/components/Modal'
 import ProxiesView from './components/ProxiesView.vue'
 import ProxiesEditor from './components/ProxiesEditor.vue'
 import SubscribeForm from './components/SubscribeForm.vue'
+import SubscribeScript from './components/SubscribeScript.vue'
 
 const menuList: Menu[] = [
   {
@@ -44,6 +45,15 @@ const menuList: Menu[] = [
         await ClipboardSetText(sub.url)
         message.success('common.copied')
       }
+    },
+  },
+  {
+    label: 'subscribes.script',
+    handler: async (id: string) => {
+      modalApi
+        .setProps({ title: 'common.edit', footer: false, width: '90' })
+        .setComponent(h(SubscribeScript, { id }))
+        .open()
     },
   },
 ]

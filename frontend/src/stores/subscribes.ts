@@ -2,7 +2,7 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { parse } from 'yaml'
 
-import { SubscribesFilePath } from '@/constant'
+import { DefaultSubscribeScript, SubscribesFilePath } from '@/constant'
 import { Readfile, Writefile, HttpGet } from '@/bridge'
 import { usePluginsStore, useProfilesStore } from '@/stores'
 import {
@@ -17,6 +17,7 @@ import {
   stringifyNoFolding,
   asyncPool,
 } from '@/utils'
+import { PluginTriggerEvent } from '@/enums/app'
 
 export type SubscribeType = {
   id: string
@@ -40,6 +41,7 @@ export type SubscribeType = {
   inSecure: boolean
   proxies: { id: string; name: string; type: string }[]
   userAgent: string
+  script: string
   healthCheck: {
     enable: boolean
     url: string
@@ -55,6 +57,18 @@ export const useSubscribesStore = defineStore('subscribes', () => {
   const setupSubscribes = async () => {
     const data = await ignoredError(Readfile, SubscribesFilePath)
     data && (subscribes.value = parse(data))
+
+    let needSync = false
+    subscribes.value.forEach((sub) => {
+      if (!sub.script) {
+        sub.script = DefaultSubscribeScript
+        needSync = true
+      }
+    })
+
+    if (needSync) {
+      await saveSubscribes()
+    }
   }
 
   const saveSubscribes = debounce(async () => {
@@ -95,6 +109,7 @@ export const useSubscribesStore = defineStore('subscribes', () => {
       disabled: false,
       inSecure: false,
       userAgent: '',
+      script: DefaultSubscribeScript,
       healthCheck: {
         enable: false,
         url: 'https://www.gstatic.com/generate_204',
@@ -233,6 +248,15 @@ export const useSubscribesStore = defineStore('subscribes', () => {
     s.expire = Number(expire) * 1000
     s.updateTime = Date.now()
     s.proxies = proxies.map(({ name, type, __id__ }) => ({ id: __id__, name, type }))
+
+    const fn = new window.AsyncFunction(
+      `${s.script};return await ${PluginTriggerEvent.OnSubscribe}(${JSON.stringify(proxies)}, ${JSON.stringify(s)})`,
+    ) as () => Promise<{ proxies: Recordable<any>[]; subscription: SubscribeType }>
+
+    const { proxies: _proxies, subscription } = await fn()
+
+    Object.assign(s, subscription)
+    s.proxies = _proxies.map(({ name, type, __id__ }) => ({ id: __id__, name, type }))
 
     if (s.type === 'Http' || (s.type === 'File' && s.url !== s.path)) {
       proxies = omitArray(proxies, ['__id__', '__tmp__id__'])

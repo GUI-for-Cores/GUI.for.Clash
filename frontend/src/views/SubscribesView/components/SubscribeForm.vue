@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n'
 import { useBool } from '@/hooks'
 import { deepClone, sampleID, getUserAgent, message } from '@/utils'
 import { type SubscribeType, useSubscribesStore } from '@/stores'
+import { DefaultSubscribeScript } from '@/constant/app'
 
 interface Props {
   id?: string
@@ -39,6 +40,7 @@ const sub = ref<SubscribeType>({
   disabled: false,
   inSecure: false,
   userAgent: '',
+  script: DefaultSubscribeScript,
   healthCheck: {
     enable: false,
     url: 'https://www.gstatic.com/generate_204',
