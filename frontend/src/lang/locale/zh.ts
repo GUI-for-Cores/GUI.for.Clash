@@ -594,6 +594,8 @@ export default {
       grant: '授予特权',
       risk: '该版本非GitHub自动构建，有安全风险。',
       stillDownload: '仍要下载',
+      rollbackTip: '回滚到上一版本',
+      rollback: '确定回滚到上一版本吗？',
     },
     userAgent: {
       name: '用户代理(User-Agent)',
