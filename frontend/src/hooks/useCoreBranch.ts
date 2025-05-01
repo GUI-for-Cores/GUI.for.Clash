@@ -66,6 +66,9 @@ export const useCoreBranch = (isAlpha = false) => {
 
   const grantable = computed(() => localVersion.value && envStore.env.os !== 'windows')
 
+  const CoreFilePath = `${CoreWorkingDirectory}/${getKernelFileName(isAlpha)}`
+  const CoreBakFilePath = `${CoreFilePath}.bak`
+
   const downloadCore = async () => {
     downloading.value = true
     try {
@@ -103,37 +106,31 @@ export const useCoreBranch = (isAlpha = false) => {
           update(t('common.downloading') + ((progress / total) * 100).toFixed(2) + '%')
         },
         { CancelId: downloadCancelId },
-      ).catch((err) => {
-        destroy()
-        throw err
-      })
+      ).finally(destroy)
 
       const stableFileName = getKernelFileName()
-      const alphaFileName = getKernelFileName(true)
-      const kernelFilePath = CoreWorkingDirectory + '/' + (isAlpha ? alphaFileName : stableFileName)
 
-      await ignoredError(Movefile, kernelFilePath, kernelFilePath + '.bak')
+      await ignoredError(Movefile, CoreFilePath, CoreBakFilePath)
 
       if (assetName.endsWith('.zip')) {
         if (isAlpha) {
           const tmp = 'data/.cache/alpha'
           await UnzipZIPFile(downloadCacheFile, tmp)
-          await Movefile(tmp + '/' + stableFileName, kernelFilePath)
+          await Movefile(`${tmp}/${stableFileName}`, CoreFilePath)
           await Removefile(tmp)
         } else {
           await UnzipZIPFile(downloadCacheFile, CoreWorkingDirectory)
         }
       } else {
-        await UnzipGZFile(downloadCacheFile, kernelFilePath)
+        await UnzipGZFile(downloadCacheFile, CoreFilePath)
       }
 
       await Removefile(downloadCacheFile)
 
-      if (!kernelFilePath.endsWith('.exe')) {
-        await ignoredError(Exec, 'chmod', ['+x', await AbsolutePath(kernelFilePath)])
+      if (!CoreFilePath.endsWith('.exe')) {
+        await ignoredError(Exec, 'chmod', ['+x', await AbsolutePath(CoreFilePath)])
       }
 
-      destroy()
       refreshLocalVersion()
       downloadCompleted.value = true
       message.success('common.success')
@@ -148,9 +145,7 @@ export const useCoreBranch = (isAlpha = false) => {
   const getLocalVersion = async (showTips = false) => {
     localVersionLoading.value = true
     try {
-      const fileName = getKernelFileName(isAlpha)
-      const kernelFilePath = CoreWorkingDirectory + '/' + fileName
-      const res = await Exec(kernelFilePath, ['-v'])
+      const res = await Exec(CoreFilePath, ['-v'])
       versionDetail.value = res.trim()
       return res.match(isAlpha ? /alpha-\S+/ : /v\S+/)?.[0] || ''
     } catch (error: any) {
@@ -205,20 +200,14 @@ export const useCoreBranch = (isAlpha = false) => {
   }
 
   const grantCorePermission = async () => {
-    const fileName = getKernelFileName(isAlpha)
-    const kernelFilePath = CoreWorkingDirectory + '/' + fileName
-    await GrantTUNPermission(kernelFilePath)
+    await GrantTUNPermission(CoreFilePath)
     message.success('common.success')
   }
 
   const rollbackCore = async () => {
     await confirm('common.warning', 'settings.kernel.rollback')
 
-    const doRollback = async () => {
-      const file = getKernelFileName(isAlpha)
-      await Movefile(`${CoreWorkingDirectory}/${file}.bak`, `${CoreWorkingDirectory}/${file}`)
-      refreshLocalVersion()
-    }
+    const doRollback = () => Movefile(CoreBakFilePath, CoreFilePath)
 
     const { running, branch } = appSettings.app.kernel
     const isCurrentRunning = running && (branch === 'alpha') === isAlpha
@@ -227,6 +216,7 @@ export const useCoreBranch = (isAlpha = false) => {
     } else {
       await doRollback()
     }
+    refreshLocalVersion()
     message.success('common.success')
   }
 
@@ -242,8 +232,7 @@ export const useCoreBranch = (isAlpha = false) => {
   watch(
     [localVersion, downloadCompleted],
     debounce(async () => {
-      const bak = CoreWorkingDirectory + '/' + getKernelFileName(isAlpha) + '.bak'
-      rollbackable.value = await FileExists(bak)
+      rollbackable.value = await FileExists(CoreBakFilePath)
     }, 500),
   )
 
