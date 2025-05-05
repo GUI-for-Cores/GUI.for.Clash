@@ -130,7 +130,7 @@ const handleUpdateSubs = async () => {
     } else {
       await _updateAllProviderProxies()
     }
-    message.success('success')
+    message.success('common.success')
   } catch (error: any) {
     console.error('updateSubscribes: ', error)
     message.error(error)
