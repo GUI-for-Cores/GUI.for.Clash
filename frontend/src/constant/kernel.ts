@@ -16,17 +16,17 @@ export const ModeOptions = [
   {
     label: 'kernel.global',
     value: ClashMode.Global,
-    desp: 'kernel.globalDesc',
+    desc: 'kernel.globalDesc',
   },
   {
     label: 'kernel.rule',
     value: ClashMode.Rule,
-    desp: 'kernel.ruleDesc',
+    desc: 'kernel.ruleDesc',
   },
   {
     label: 'kernel.direct',
     value: ClashMode.Direct,
-    desp: 'kernel.directDesc',
+    desc: 'kernel.directDesc',
   },
 ]
 

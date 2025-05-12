@@ -198,7 +198,7 @@ onActivated(() => {
 </script>
 
 <template>
-  <div class="groups" style="margin-top: 0">
+  <div class="groups groups-fixed" style="margin-top: 0">
     <div class="header">
       <Switch v-model="appSettings.app.kernel.autoClose">
         {{ t('home.controller.autoClose') }}
@@ -236,17 +236,7 @@ onActivated(() => {
         <img v-if="group.icon" :src="group.icon" class="group-icon" draggable="false" />
         <span class="group-name">{{ group.name }}</span>
         <span class="group-type">
-          {{
-            t(
-              {
-                [ProxyGroupType.Selector]: 'kernel.proxyGroups.type.Selector',
-                [ProxyGroupType.UrlTest]: 'kernel.proxyGroups.type.UrlTest',
-                [ProxyGroupType.Fallback]: 'kernel.proxyGroups.type.Fallback',
-                [ProxyGroupType.Relay]: 'kernel.proxyGroups.type.Relay',
-                [ProxyGroupType.LoadBalance]: 'kernel.proxyGroups.type.LoadBalance',
-              }[group.type]!,
-            )
-          }}
+          {{ group.type }}
         </span>
         <span> :: </span>
         <template v-for="(chain, index) in group.chains" :key="chain">
@@ -335,13 +325,18 @@ onActivated(() => {
   transform: scaleY(0);
 }
 
+.groups-fixed {
+  z-index: 2;
+  position: sticky;
+  top: 0;
+}
 .groups {
   margin: 8px;
 
   .header {
     position: sticky;
     z-index: 1;
-    top: 0;
+    top: 56px;
     display: flex;
     align-items: center;
     padding: 8px;
