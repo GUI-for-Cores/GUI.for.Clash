@@ -5,7 +5,7 @@ import { ref, computed, onActivated } from 'vue'
 import { useBool } from '@/hooks'
 import { ControllerCloseModeOptions, DefaultTestURL } from '@/constant/app'
 import { ProxyGroupType } from '@/enums/kernel'
-import { getProxyDelay } from '@/api/kernel'
+import { getProxyDelay, deleteGroupFixed } from '@/api/kernel'
 import { ignoredError, sleep, handleUseProxy, message, prompt, asyncPool } from '@/utils'
 import { useAppSettingsStore, useKernelApiStore } from '@/stores'
 
@@ -171,6 +171,11 @@ const locateGroup = (group: any, chain: string) => {
   }
 }
 
+const handleClearGroupFixed = async (group: string) => {
+  await deleteGroupFixed(group)
+  await ignoredError(kernelApiStore.refreshProviderProxies)
+}
+
 const delayColor = (delay = 0) => {
   if (delay === 0) return 'var(--level-0-color)'
   if (delay < 200) return 'var(--level-1-color)'
@@ -230,6 +235,13 @@ onActivated(() => {
             {{ chain }}
           </Button>
         </template>
+        <Button
+          @click.stop="handleClearGroupFixed(group.name)"
+          v-if="group.fixed"
+          type="text"
+          size="small"
+          icon="clear"
+        />
       </div>
       <div class="action">
         <Button

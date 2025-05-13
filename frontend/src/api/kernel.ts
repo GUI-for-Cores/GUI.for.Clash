@@ -7,7 +7,6 @@ enum Api {
   Memory = '/memory',
   Proxies = '/proxies',
   Providers = '/providers/proxies',
-  GroupDelay = '/group/{0}/delay',
   ProxyDelay = '/proxies/{0}/delay',
   Connections = '/connections',
   Traffic = '/traffic',
@@ -72,6 +71,8 @@ export const getProviders = () => request.get<IKernelApiProviders>(Api.Providers
 export const getConnections = () => request.get<IKernelApiConnections>(Api.Connections)
 
 export const deleteConnection = (id: string) => request.delete<null>(Api.Connections + '/' + id)
+
+export const deleteGroupFixed = (group: string) => request.delete(Api.Proxies + '/' + group)
 
 export const useProxy = (group: string, proxy: string) => {
   return request.put<null>(Api.Proxies + '/' + group, { name: proxy })

@@ -21,6 +21,7 @@ interface IKernelProxy {
   now: string
   type: string
   udp: boolean
+  fixed: string
   history: {
     delay: number
   }[]

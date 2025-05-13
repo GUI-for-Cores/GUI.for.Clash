@@ -415,7 +415,12 @@ export const DeleteSchTask = async (taskName: string) => {
 
 // Others
 export const handleUseProxy = async (group: any, proxy: any) => {
-  if (![ProxyGroupType.Selector, ProxyGroupType.Fallback].includes(group.type)) return
+  if (
+    ![ProxyGroupType.Selector, ProxyGroupType.Fallback, ProxyGroupType.UrlTest].includes(group.type)
+  ) {
+    return
+  }
+
   if (group.now === proxy.name) return
   const promises: Promise<null>[] = []
   const appSettings = useAppSettingsStore()
