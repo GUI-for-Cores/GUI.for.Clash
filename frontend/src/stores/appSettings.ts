@@ -1,17 +1,19 @@
 import { ref, watch } from 'vue'
 import { defineStore } from 'pinia'
-import { parse } from 'yaml'
+import { parse, stringify } from 'yaml'
 
 import i18n from '@/lang'
+import { debounce, updateTrayMenus, APP_TITLE, ignoredError, APP_VERSION } from '@/utils'
+import { Colors, DefaultFontFamily, DefaultTestURL } from '@/constant/app'
 import {
-  debounce,
-  updateTrayMenus,
-  APP_TITLE,
-  ignoredError,
-  APP_VERSION,
-  stringifyNoFolding,
-} from '@/utils'
-import { Theme, WindowStartState, Lang, View, Color, WebviewGpuPolicy } from '@/enums/app'
+  Theme,
+  WindowStartState,
+  Lang,
+  View,
+  Color,
+  WebviewGpuPolicy,
+  ControllerCloseMode,
+} from '@/enums/app'
 import {
   Readfile,
   Writefile,
@@ -19,7 +21,6 @@ import {
   WindowIsMaximised,
   WindowIsMinimised,
 } from '@/bridge'
-import { Colors, DefaultFontFamily } from '@/constant/app'
 
 type AppSettings = {
   lang: Lang
@@ -55,6 +56,7 @@ type AppSettings = {
     cardMode: boolean
     sortByDelay: boolean
     testUrl: string
+    controllerCloseMode: ControllerCloseMode
   }
   addPluginToMenu: boolean
   pluginSettings: Record<string, Record<string, any>>
@@ -135,7 +137,8 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
       unAvailable: true,
       cardMode: true,
       sortByDelay: false,
-      testUrl: 'https://www.gstatic.com/generate_204',
+      testUrl: DefaultTestURL,
+      controllerCloseMode: ControllerCloseMode.All,
     },
     addPluginToMenu: false,
     pluginSettings: {},
@@ -152,6 +155,10 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
   const setupAppSettings = async () => {
     const data = await ignoredError(Readfile, 'data/user.yaml')
     data && (app.value = Object.assign(app.value, parse(data)))
+
+    if (app.value.kernel.controllerCloseMode === undefined) {
+      app.value.kernel.controllerCloseMode = ControllerCloseMode.All
+    }
 
     firstOpen = !!data
 
@@ -197,7 +204,7 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
       updateAppSettings(settings)
 
       if (!firstOpen) {
-        const lastModifiedConfig = stringifyNoFolding(settings)
+        const lastModifiedConfig = stringify(settings)
         if (latestUserConfig !== lastModifiedConfig) {
           saveAppSettings(lastModifiedConfig).then(() => {
             latestUserConfig = lastModifiedConfig
