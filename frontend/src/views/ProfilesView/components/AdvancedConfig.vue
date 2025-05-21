@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 
+import { generateSecureKey } from '@/utils'
 import { type ProfileType } from '@/stores'
 import {
   FindProcessModeOptions,
@@ -36,7 +37,15 @@ const { t } = useI18n()
   </div>
   <div class="form-item">
     {{ t('kernel.secret') }}
-    <Input v-model="fields.secret" editable />
+    <div class="flex items-center">
+      <Input v-model="fields.secret" editable />
+      <Button
+        @click="() => (fields.secret = generateSecureKey())"
+        type="text"
+        size="small"
+        icon="refresh"
+      />
+    </div>
   </div>
   <div class="form-item" :class="{ 'flex-start': fields.authentication.length !== 0 }">
     {{ t('kernel.authentication') }}

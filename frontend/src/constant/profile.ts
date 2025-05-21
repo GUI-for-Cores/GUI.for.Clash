@@ -1,5 +1,5 @@
 import i18n from '@/lang'
-import { sampleID } from '@/utils'
+import { generateSecureKey, sampleID } from '@/utils'
 import { ProxyGroup, RulesetBehavior, RulesetFormat } from '@/enums/kernel'
 import type { ProfileType } from '@/stores'
 
@@ -17,7 +17,7 @@ export const GeneralConfigDefaults = (): ProfileType['generalConfig'] => ({
 export const AdvancedConfigDefaults = (): ProfileType['advancedConfig'] => ({
   port: 0,
   'socks-port': 0,
-  secret: sampleID(),
+  secret: generateSecureKey(),
   'external-controller': '127.0.0.1:20113',
   'external-ui': '',
   'keep-alive-interval': 30,
