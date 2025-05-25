@@ -2,9 +2,11 @@
 import { ref, inject, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
+import type { Plugin } from '@/types/app'
+
 import { useBool } from '@/hooks'
 import { deepClone, sampleID, message } from '@/utils'
-import { usePluginsStore, type PluginType } from '@/stores'
+import { usePluginsStore } from '@/stores'
 import { PluginTrigger } from '@/enums/app'
 import { PluginsTriggerOptions, DraggableOptions } from '@/constant'
 
@@ -21,7 +23,7 @@ const props = withDefaults(defineProps<Props>(), {
 const official = computed(() => pluginsStore.findPluginInHubById(plugin.value.id))
 const loading = ref(false)
 const pluginID = sampleID()
-const plugin = ref<PluginType>({
+const plugin = ref<Plugin>({
   id: pluginID,
   version: 'v1.0.0',
   name: '',

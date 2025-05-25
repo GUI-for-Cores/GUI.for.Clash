@@ -1,3 +1,5 @@
+import type { MenuItem } from '@/types/app'
+
 import i18n from '@/lang'
 import { Theme, Color, Lang } from '@/enums/app'
 import { useAppSettingsStore, useKernelApiStore, useEnvStore, usePluginsStore } from '@/stores'

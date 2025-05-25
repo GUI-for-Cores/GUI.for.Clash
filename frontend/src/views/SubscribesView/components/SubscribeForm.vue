@@ -2,9 +2,11 @@
 import { ref, inject, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
+import type { Subscription } from '@/types/app'
+
 import { useBool } from '@/hooks'
 import { deepClone, sampleID, getUserAgent, message } from '@/utils'
-import { type SubscribeType, useSubscribesStore } from '@/stores'
+import { useSubscribesStore } from '@/stores'
 import { DefaultSubscribeScript } from '@/constant/app'
 
 interface Props {
@@ -19,7 +21,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const loading = ref(false)
 
-const sub = ref<SubscribeType>({
+const sub = ref<Subscription>({
   id: sampleID(),
   name: '',
   useInternal: false,

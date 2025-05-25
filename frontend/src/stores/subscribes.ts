@@ -18,41 +18,10 @@ import {
   asyncPool,
 } from '@/utils'
 import { PluginTriggerEvent } from '@/enums/app'
-
-export type SubscribeType = {
-  id: string
-  name: string
-  useInternal: boolean
-  upload: number
-  download: number
-  total: number
-  expire: number
-  updateTime: number
-  type: 'Http' | 'File' | 'Manual'
-  url: string
-  website: string
-  path: string
-  include: string
-  exclude: string
-  includeProtocol: string
-  excludeProtocol: string
-  proxyPrefix: string
-  disabled: boolean
-  inSecure: boolean
-  proxies: { id: string; name: string; type: string }[]
-  userAgent: string
-  script: string
-  healthCheck: {
-    enable: boolean
-    url: string
-    interval: number
-  }
-  // Not Config
-  updating?: boolean
-}
+import type { Subscription } from '@/types/app'
 
 export const useSubscribesStore = defineStore('subscribes', () => {
-  const subscribes = ref<SubscribeType[]>([])
+  const subscribes = ref<Subscription[]>([])
 
   const setupSubscribes = async () => {
     const data = await ignoredError(Readfile, SubscribesFilePath)
@@ -76,7 +45,7 @@ export const useSubscribesStore = defineStore('subscribes', () => {
     await Writefile(SubscribesFilePath, stringifyNoFolding(s))
   }, 500)
 
-  const addSubscribe = async (s: SubscribeType) => {
+  const addSubscribe = async (s: Subscription) => {
     subscribes.value.push(s)
     try {
       await saveSubscribes()
@@ -131,7 +100,7 @@ export const useSubscribesStore = defineStore('subscribes', () => {
     }
   }
 
-  const editSubscribe = async (id: string, s: SubscribeType) => {
+  const editSubscribe = async (id: string, s: Subscription) => {
     const idx = subscribes.value.findIndex((v) => v.id === id)
     if (idx === -1) return
     const backup = subscribes.value.splice(idx, 1, s)[0]
@@ -143,7 +112,7 @@ export const useSubscribesStore = defineStore('subscribes', () => {
     }
   }
 
-  const _doUpdateSub = async (s: SubscribeType) => {
+  const _doUpdateSub = async (s: Subscription) => {
     const pattern =
       /upload=(-?)([E+.\d]+);\s*download=(-?)([E+.\d]+);\s*total=([E+.\d]+);\s*expire=(\d*)/
     let userInfo = 'upload=0; download=0; total=0; expire=0'
@@ -251,7 +220,7 @@ export const useSubscribesStore = defineStore('subscribes', () => {
 
     const fn = new window.AsyncFunction(
       `${s.script};return await ${PluginTriggerEvent.OnSubscribe}(${JSON.stringify(proxies)}, ${JSON.stringify(s)})`,
-    ) as () => Promise<{ proxies: Recordable<any>[]; subscription: SubscribeType }>
+    ) as () => Promise<{ proxies: Recordable<any>[]; subscription: Subscription }>
 
     const { proxies: _proxies, subscription } = await fn()
 
@@ -281,7 +250,7 @@ export const useSubscribesStore = defineStore('subscribes', () => {
   const updateSubscribes = async () => {
     let needSave = false
 
-    const update = async (s: SubscribeType) => {
+    const update = async (s: Subscription) => {
       try {
         s.updating = true
         await _doUpdateSub(s)

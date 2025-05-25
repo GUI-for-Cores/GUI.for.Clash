@@ -3,6 +3,8 @@ import { useI18n } from 'vue-i18n'
 import { parse } from 'yaml'
 import { ref, computed, inject } from 'vue'
 
+import type { Menu } from '@/types/app'
+
 import { Readfile, Writefile } from '@/bridge'
 import { RulesetBehavior } from '@/enums/kernel'
 import { DraggableOptions } from '@/constant'

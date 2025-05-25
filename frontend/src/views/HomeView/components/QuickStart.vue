@@ -2,6 +2,8 @@
 import { useI18n } from 'vue-i18n'
 import { computed, inject, ref } from 'vue'
 
+import type { Subscription } from '@/types/app'
+
 import { message, sampleID } from '@/utils'
 import { DefaultSubscribeScript } from '@/constant/app'
 import * as Defaults from '@/constant'
@@ -9,7 +11,6 @@ import {
   useProfilesStore,
   useAppSettingsStore,
   useSubscribesStore,
-  type SubscribeType,
   type ProfileType,
 } from '@/stores'
 
@@ -28,7 +29,7 @@ const canSubmit = computed(() => url.value && url.value.toLocaleLowerCase().star
 const handleSubmit = async () => {
   const subscribeID = sampleID()
 
-  const subscribe: SubscribeType = {
+  const subscribe: Subscription = {
     id: subscribeID,
     name: subscribeID,
     useInternal: false,

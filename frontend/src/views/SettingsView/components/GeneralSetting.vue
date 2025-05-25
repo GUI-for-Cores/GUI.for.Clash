@@ -100,7 +100,7 @@ const webviewGpuPolicy = [
 ]
 
 const resetFontFamily = () => {
-  appSettings.app['font-family'] = DefaultFontFamily
+  appSettings.app.fontFamily = DefaultFontFamily
 }
 
 const resetUserAgent = () => {
@@ -199,7 +199,7 @@ if (envStore.env.os === 'windows') {
       <div class="title">{{ t('settings.fontFamily') }}</div>
       <div style="display: flex; align-items: center">
         <Button @click="resetFontFamily" icon="reset" v-tips="'settings.resetFont'" type="text" />
-        <Input v-model="appSettings.app['font-family']" editable style="margin-left: 8px" />
+        <Input v-model="appSettings.app.fontFamily" editable style="margin-left: 8px" />
       </div>
     </div>
     <div class="settings-item">

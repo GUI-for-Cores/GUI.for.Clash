@@ -2,6 +2,8 @@
 import { computed, h } from 'vue'
 import { useI18n, I18nT } from 'vue-i18n'
 
+import type { Menu, Subscription } from '@/types/app'
+
 import { View } from '@/enums/app'
 import { DraggableOptions } from '@/constant'
 import { updateProvidersProxies } from '@/api/kernel'
@@ -15,7 +17,6 @@ import {
   message,
 } from '@/utils'
 import {
-  type SubscribeType,
   useSubscribesStore,
   useAppSettingsStore,
   useKernelApiStore,
@@ -65,7 +66,7 @@ const appSettingsStore = useAppSettingsStore()
 const kernelApiStore = useKernelApiStore()
 const pluginsStore = usePluginsStore()
 
-const generateMenus = (subscription: SubscribeType) => {
+const generateMenus = (subscription: Subscription) => {
   const builtInMenus: Menu[] = menuList.map((v) => ({
     ...v,
     handler: () => v.handler?.(subscription.id),
@@ -160,7 +161,7 @@ const handleEditProxies = (id: string, editor = false) => {
   }
 }
 
-const handleUpdateSub = async (s: SubscribeType) => {
+const handleUpdateSub = async (s: Subscription) => {
   try {
     await subscribeStore.updateSubscribe(s.id)
     const { running, profile } = appSettingsStore.app.kernel
@@ -175,7 +176,7 @@ const handleUpdateSub = async (s: SubscribeType) => {
   }
 }
 
-const handleDeleteSub = async (s: SubscribeType) => {
+const handleDeleteSub = async (s: Subscription) => {
   try {
     await ignoredError(Removefile, s.path)
     await subscribeStore.deleteSubscribe(s.id)
@@ -185,7 +186,7 @@ const handleDeleteSub = async (s: SubscribeType) => {
   }
 }
 
-const handleDisableSub = async (s: SubscribeType) => {
+const handleDisableSub = async (s: Subscription) => {
   s.disabled = !s.disabled
   subscribeStore.editSubscribe(s.id, s)
 }

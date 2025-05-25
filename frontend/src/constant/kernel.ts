@@ -237,3 +237,42 @@ export const RulesetBehaviorOptions = [
 export const EmptyRuleSet = {
   payload: [],
 }
+
+export const DefaultConnections = () => {
+  return {
+    visibility: {
+      'metadata.inboundName': true,
+      'metadata.type': true,
+      'metadata.process': false,
+      'metadata.processPath': false,
+      'metadata.host': true,
+      'metadata.sniffHost': false,
+      'metadata.sourceIP': false,
+      'metadata.remoteDestination': false,
+      rule: true,
+      chains: true,
+      up: true,
+      down: true,
+      upload: true,
+      download: true,
+      start: true,
+    },
+    order: [
+      'metadata.inboundName',
+      'metadata.type',
+      'metadata.process',
+      'metadata.processPath',
+      'metadata.host',
+      'metadata.sniffHost',
+      'metadata.sourceIP',
+      'metadata.remoteDestination',
+      'rule',
+      'chains',
+      'up',
+      'down',
+      'upload',
+      'download',
+      'start',
+    ],
+  }
+}

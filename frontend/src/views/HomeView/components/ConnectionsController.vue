@@ -2,7 +2,9 @@
 import { useI18n } from 'vue-i18n'
 import { ref, computed, onUnmounted } from 'vue'
 
-import { DraggableOptions } from '@/constant'
+import type { Menu } from '@/types/app'
+
+import { DefaultConnections, DraggableOptions } from '@/constant'
 import { useBool } from '@/hooks'
 import { type PickerItem } from '@/components/Picker/index.vue'
 import { useAppSettingsStore } from '@/stores'
@@ -306,6 +308,10 @@ const handleClearClosedConns = () => {
   disconnectedData.value.splice(0)
 }
 
+const handleResetConnections = () => {
+  appSettingsStore.app.connections = DefaultConnections()
+}
+
 const { connect, disconnect } = getKernelConnectionsWS(onConnections)
 const timer = setIntervalImmediately(connect, 1000)
 
@@ -382,7 +388,7 @@ onUnmounted(() => {
 
   <Modal
     v-model:open="showSettings"
-    :submit="false"
+    :footer="false"
     mask-closable
     max-height="80"
     cancel-text="common.close"
@@ -397,6 +403,12 @@ onUnmounted(() => {
         <span class="font-bold">{{ t(columnTitleMap[column] || column) }}</span>
         <Switch v-model="appSettingsStore.app.connections.visibility[column]" class="ml-auto" />
       </Card>
+    </div>
+    <div class="form-action">
+      <Button @click="handleResetConnections" type="text" class="mr-auto">
+        {{ t('common.reset') }}
+      </Button>
+      <Button @click="showSettings = false" type="text">{{ t('common.close') }}</Button>
     </div>
   </Modal>
 </template>
