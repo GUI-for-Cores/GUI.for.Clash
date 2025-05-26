@@ -1,10 +1,10 @@
 import { parse } from 'yaml'
 
-import { LogLevel, ProxyGroup } from '@/enums/kernel'
 import { Readfile, Writefile } from '@/bridge'
-import { deepClone, APP_TITLE, deepAssign, stringifyNoFolding } from '@/utils'
 import { CoreConfigFilePath } from '@/constant/kernel'
+import { LogLevel, ProxyGroup } from '@/enums/kernel'
 import { type ProfileType, useSubscribesStore, useRulesetsStore, usePluginsStore } from '@/stores'
+import { deepClone, APP_TITLE, deepAssign, stringifyNoFolding } from '@/utils'
 
 export const generateRule = (
   rule: ProfileType['rulesConfig'][0],

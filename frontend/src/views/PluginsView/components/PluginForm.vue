@@ -2,13 +2,13 @@
 import { ref, inject, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import type { Plugin } from '@/types/app'
-
-import { useBool } from '@/hooks'
-import { deepClone, sampleID, message } from '@/utils'
-import { usePluginsStore } from '@/stores'
-import { PluginTrigger } from '@/enums/app'
 import { PluginsTriggerOptions, DraggableOptions } from '@/constant'
+import { PluginTrigger } from '@/enums/app'
+import { useBool } from '@/hooks'
+import { usePluginsStore } from '@/stores'
+import { deepClone, sampleID, message } from '@/utils'
+
+import type { Plugin } from '@/types/app'
 
 interface Props {
   id?: string

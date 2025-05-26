@@ -2,13 +2,11 @@
 import { computed, h } from 'vue'
 import { useI18n, I18nT } from 'vue-i18n'
 
-import type { Menu } from '@/types/app'
-
+import { getProvidersRules, updateProvidersRules } from '@/api/kernel'
+import { Removefile, Writefile, BrowserOpenURL } from '@/bridge'
+import { DraggableOptions } from '@/constant'
 import { View } from '@/enums/app'
 import { RulesetFormat } from '@/enums/kernel'
-import { DraggableOptions } from '@/constant'
-import { Removefile, Writefile, BrowserOpenURL } from '@/bridge'
-import { getProvidersRules, updateProvidersRules } from '@/api/kernel'
 import { type RuleSetType, useRulesetsStore, useAppSettingsStore, useEnvStore } from '@/stores'
 import {
   debounce,
@@ -20,9 +18,12 @@ import {
 } from '@/utils'
 
 import { useModal } from '@/components/Modal'
+
 import RulesetForm from './components/RulesetForm.vue'
-import RulesetView from './components/RulesetView.vue'
 import RulesetHub from './components/RulesetHub.vue'
+import RulesetView from './components/RulesetView.vue'
+
+import type { Menu } from '@/types/app'
 
 const yamlMenuList: Menu[] = [
   {

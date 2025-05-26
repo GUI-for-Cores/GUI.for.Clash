@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
 import { computed, inject, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
-import type { Subscription } from '@/types/app'
-
-import { message, sampleID } from '@/utils'
-import { DefaultSubscribeScript } from '@/constant/app'
 import * as Defaults from '@/constant'
+import { DefaultSubscribeScript } from '@/constant/app'
 import {
   useProfilesStore,
   useAppSettingsStore,
   useSubscribesStore,
   type ProfileType,
 } from '@/stores'
+import { message, sampleID } from '@/utils'
+
+import type { Subscription } from '@/types/app'
 
 const url = ref('')
 const loading = ref(false)

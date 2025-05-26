@@ -1,11 +1,9 @@
 import { defineStore } from 'pinia'
-import { parse } from 'yaml'
 import { computed, ref, watch } from 'vue'
+import { parse } from 'yaml'
 
-import type { Plugin, Subscription } from '@/types/app'
-
-import { PluginHubFilePath, PluginsFilePath } from '@/constant/app'
 import { HttpGet, Readfile, Removefile, Writefile } from '@/bridge'
+import { PluginHubFilePath, PluginsFilePath } from '@/constant/app'
 import { PluginTrigger, PluginTriggerEvent } from '@/enums/app'
 import { useAppSettingsStore, type ProfileType } from '@/stores'
 import {
@@ -19,6 +17,8 @@ import {
   confirm,
   asyncPool,
 } from '@/utils'
+
+import type { Plugin, Subscription } from '@/types/app'
 
 const PluginsCache: Recordable<{ plugin: Plugin; code: string }> = {}
 

@@ -1,15 +1,14 @@
 import { type RouteRecordRaw } from 'vue-router'
 
 import { isDev } from '@/utils'
-
 import HomeView from '@/views/HomeView/index.vue'
-import SubscribesView from '@/views/SubscribesView/index.vue'
-import SettingsView from '@/views/SettingsView/index.vue'
+import PlaygroundView from '@/views/PlaygroundView/index.vue'
+import PluginsView from '@/views/PluginsView/index.vue'
 import ProfilesView from '@/views/ProfilesView/index.vue'
 import RulesetsView from '@/views/RulesetsView/index.vue'
-import PluginsView from '@/views/PluginsView/index.vue'
 import ScheduledTasksView from '@/views/ScheduledTasksView/index.vue'
-import PlaygroundView from '@/views/PlaygroundView/index.vue'
+import SettingsView from '@/views/SettingsView/index.vue'
+import SubscribesView from '@/views/SubscribesView/index.vue'
 
 const routes: RouteRecordRaw[] = [
   {

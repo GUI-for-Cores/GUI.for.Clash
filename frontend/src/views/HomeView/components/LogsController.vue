@@ -1,13 +1,10 @@
 <script lang="ts" setup>
-import { useI18n } from 'vue-i18n'
 import { ref, computed, onUnmounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 
-import type { Menu } from '@/types/app'
-
+import { getKernelLogsWS, updateProvidersRules } from '@/api/kernel'
 import { LogLevelOptions } from '@/constant'
 import { useBool } from '@/hooks'
-import { type PickerItem } from '@/components/Picker/index.vue'
-import { getKernelLogsWS, updateProvidersRules } from '@/api/kernel'
 import {
   isValidIPv4,
   isValidIPv6,
@@ -17,6 +14,10 @@ import {
   message,
   picker,
 } from '@/utils'
+
+import { type PickerItem } from '@/components/Picker/index.vue'
+
+import type { Menu } from '@/types/app'
 
 const logType = ref('info')
 const keywords = ref('')

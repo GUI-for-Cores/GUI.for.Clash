@@ -1,11 +1,11 @@
-import { computed, ref, watch } from 'vue'
 import { defineStore } from 'pinia'
+import { computed, ref, watch } from 'vue'
 
-import { CoreStopOutputKeyword, CoreWorkingDirectory } from '@/constant'
-import { ProcessInfo, KillProcess, ExecBackground } from '@/bridge'
-import { generateConfigFile, ignoredError, updateTrayMenus, getKernelFileName } from '@/utils'
 import { getConfigs, setConfigs, getProxies, getProviders } from '@/api/kernel'
+import { ProcessInfo, KillProcess, ExecBackground } from '@/bridge'
+import { CoreStopOutputKeyword, CoreWorkingDirectory } from '@/constant'
 import { useAppSettingsStore, useProfilesStore, useLogsStore, useEnvStore } from '@/stores'
+import { generateConfigFile, ignoredError, updateTrayMenus, getKernelFileName } from '@/utils'
 
 export type ProxyType = 'mixed' | 'http' | 'socks'
 

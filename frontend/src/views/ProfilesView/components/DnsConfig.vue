@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 
+import { EnhancedModeOptions, FakeipFilterMode, DnsConfigDefaults } from '@/constant'
 import { useBool } from '@/hooks'
 import { type ProfileType } from '@/stores'
-import { EnhancedModeOptions, FakeipFilterMode, DnsConfigDefaults } from '@/constant'
 
 const fields = defineModel<ProfileType['dnsConfig']>({ default: DnsConfigDefaults() })
 

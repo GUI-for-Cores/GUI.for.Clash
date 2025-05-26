@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 
-import icons from '@/components/Icon/icons'
-import { APP_TITLE, APP_VERSION, sleep, message, confirm, prompt, picker, alert } from '@/utils'
 import { HttpGet, HttpPost, Upload, Notify, Download, HttpCancel } from '@/bridge'
+import { APP_TITLE, APP_VERSION, sleep, message, confirm, prompt, picker, alert } from '@/utils'
+
+import icons from '@/components/Icon/icons'
 
 const code = ref(`
 const appName = '${APP_TITLE}'

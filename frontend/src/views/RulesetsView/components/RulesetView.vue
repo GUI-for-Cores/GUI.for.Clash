@@ -1,15 +1,15 @@
 <script setup lang="ts">
+import { ref, computed, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { parse } from 'yaml'
-import { ref, computed, inject } from 'vue'
-
-import type { Menu } from '@/types/app'
 
 import { Readfile, Writefile } from '@/bridge'
-import { RulesetBehavior } from '@/enums/kernel'
 import { DraggableOptions } from '@/constant'
-import { deepClone, ignoredError, isValidIPCIDR, stringifyNoFolding, message } from '@/utils'
+import { RulesetBehavior } from '@/enums/kernel'
 import { type RuleSetType, useRulesetsStore } from '@/stores'
+import { deepClone, ignoredError, isValidIPCIDR, stringifyNoFolding, message } from '@/utils'
+
+import type { Menu } from '@/types/app'
 
 interface Props {
   id: string

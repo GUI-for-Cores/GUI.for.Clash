@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
 import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
-import { ProxyGroup } from '@/enums/kernel'
-import { deepClone, sampleID, message } from '@/utils'
-import { type ProfileType, useSubscribesStore } from '@/stores'
 import { GroupsTypeOptions, StrategyOptions, DraggableOptions } from '@/constant'
+import { ProxyGroup } from '@/enums/kernel'
+import { type ProfileType, useSubscribesStore } from '@/stores'
+import { deepClone, sampleID, message } from '@/utils'
 
 type GroupsType = ProfileType['proxyGroupsConfig']
 

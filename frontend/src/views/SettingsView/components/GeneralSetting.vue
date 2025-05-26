@@ -2,12 +2,12 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import routes from '@/router/routes'
+import { BrowserOpenURL, GetEnv, Writefile, Removefile, AbsolutePath } from '@/bridge'
 import { DefaultFontFamily } from '@/constant'
+import { Theme, Lang, WindowStartState, Color, WebviewGpuPolicy } from '@/enums/app'
+import routes from '@/router/routes'
 import { useAppSettingsStore, useEnvStore } from '@/stores'
 import { APP_TITLE, APP_VERSION, getTaskSchXmlString, message } from '@/utils'
-import { BrowserOpenURL, GetEnv, Writefile, Removefile, AbsolutePath } from '@/bridge'
-import { Theme, Lang, WindowStartState, Color, WebviewGpuPolicy } from '@/enums/app'
 import {
   QuerySchTask,
   CreateSchTask,

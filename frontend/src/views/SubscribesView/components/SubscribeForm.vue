@@ -2,12 +2,12 @@
 import { ref, inject, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import type { Subscription } from '@/types/app'
-
-import { useBool } from '@/hooks'
-import { deepClone, sampleID, getUserAgent, message } from '@/utils'
-import { useSubscribesStore } from '@/stores'
 import { DefaultSubscribeScript } from '@/constant/app'
+import { useBool } from '@/hooks'
+import { useSubscribesStore } from '@/stores'
+import { deepClone, sampleID, getUserAgent, message } from '@/utils'
+
+import type { Subscription } from '@/types/app'
 
 interface Props {
   id?: string

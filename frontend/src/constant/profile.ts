@@ -1,6 +1,7 @@
+import { ProxyGroup, RulesetBehavior, RulesetFormat } from '@/enums/kernel'
 import i18n from '@/lang'
 import { generateSecureKey, sampleID } from '@/utils'
-import { ProxyGroup, RulesetBehavior, RulesetFormat } from '@/enums/kernel'
+
 import type { ProfileType } from '@/stores'
 
 const { t } = i18n.global

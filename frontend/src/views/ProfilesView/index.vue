@@ -2,11 +2,17 @@
 import { h } from 'vue'
 import { useI18n, I18nT } from 'vue-i18n'
 
-import type { Menu } from '@/types/app'
-
 import { ClipboardSetText } from '@/bridge'
 import { DraggableOptions } from '@/constant'
 import { View } from '@/enums/app'
+import {
+  type ProfileType,
+  useProfilesStore,
+  useAppSettingsStore,
+  useKernelApiStore,
+  useSubscribesStore,
+  usePluginsStore,
+} from '@/stores'
 import {
   debounce,
   deepClone,
@@ -16,17 +22,12 @@ import {
   message,
   alert,
 } from '@/utils'
-import {
-  type ProfileType,
-  useProfilesStore,
-  useAppSettingsStore,
-  useKernelApiStore,
-  useSubscribesStore,
-  usePluginsStore,
-} from '@/stores'
 
 import { useModal } from '@/components/Modal'
+
 import ProfileForm from './components/ProfileForm.vue'
+
+import type { Menu } from '@/types/app'
 
 const { t } = useI18n()
 const [Modal, modalApi] = useModal({})

@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
 import { ref, computed, onActivated } from 'vue'
+import { useI18n } from 'vue-i18n'
 
-import { useBool } from '@/hooks'
+import { getProxyDelay, deleteGroupFixed } from '@/api/kernel'
 import { ControllerCloseModeOptions, DefaultTestURL } from '@/constant/app'
 import { ProxyGroupType } from '@/enums/kernel'
-import { getProxyDelay, deleteGroupFixed } from '@/api/kernel'
-import { ignoredError, sleep, handleUseProxy, message, prompt, asyncPool } from '@/utils'
+import { useBool } from '@/hooks'
 import { useAppSettingsStore, useKernelApiStore } from '@/stores'
+import { ignoredError, sleep, handleUseProxy, message, prompt, asyncPool } from '@/utils'
 
 const expandedSet = ref<Set<string>>(new Set())
 const loadingSet = ref<Set<string>>(new Set())

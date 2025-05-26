@@ -1,8 +1,5 @@
 import { stringify } from 'yaml'
 
-import type { ProfileType } from '@/stores'
-import { deepAssign, sampleID } from '@/utils'
-import { RulesetBehavior, RulesetFormat } from '@/enums/kernel'
 import {
   AdvancedConfigDefaults,
   DnsConfigDefaults,
@@ -11,6 +8,10 @@ import {
   MixinConfigDefaults,
   ScriptConfigDefaults,
 } from '@/constant'
+import { RulesetBehavior, RulesetFormat } from '@/enums/kernel'
+import { deepAssign, sampleID } from '@/utils'
+
+import type { ProfileType } from '@/stores'
 
 export const restoreProfile = (
   config: Record<string, any>,

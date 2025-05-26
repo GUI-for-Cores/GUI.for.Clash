@@ -2,12 +2,16 @@
 import { computed, h } from 'vue'
 import { useI18n, I18nT } from 'vue-i18n'
 
-import type { Menu, Subscription } from '@/types/app'
-
-import { View } from '@/enums/app'
-import { DraggableOptions } from '@/constant'
 import { updateProvidersProxies } from '@/api/kernel'
 import { BrowserOpenURL, ClipboardSetText, Removefile } from '@/bridge'
+import { DraggableOptions } from '@/constant'
+import { View } from '@/enums/app'
+import {
+  useSubscribesStore,
+  useAppSettingsStore,
+  useKernelApiStore,
+  usePluginsStore,
+} from '@/stores'
 import {
   formatBytes,
   formatRelativeTime,
@@ -16,18 +20,15 @@ import {
   formatDate,
   message,
 } from '@/utils'
-import {
-  useSubscribesStore,
-  useAppSettingsStore,
-  useKernelApiStore,
-  usePluginsStore,
-} from '@/stores'
 
 import { useModal } from '@/components/Modal'
-import ProxiesView from './components/ProxiesView.vue'
+
 import ProxiesEditor from './components/ProxiesEditor.vue'
+import ProxiesView from './components/ProxiesView.vue'
 import SubscribeForm from './components/SubscribeForm.vue'
 import SubscribeScript from './components/SubscribeScript.vue'
+
+import type { Menu, Subscription } from '@/types/app'
 
 const menuList: Menu[] = [
   {

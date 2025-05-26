@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 
-import { generateSecureKey } from '@/utils'
-import { type ProfileType } from '@/stores'
 import {
   FindProcessModeOptions,
   GeodataLoaderOptions,
@@ -10,6 +8,8 @@ import {
   GlobalClientFingerprintOptions,
   AdvancedConfigDefaults,
 } from '@/constant'
+import { type ProfileType } from '@/stores'
+import { generateSecureKey } from '@/utils'
 
 interface Props {
   profile: ProfileType

@@ -1,19 +1,5 @@
-import { useI18n } from 'vue-i18n'
 import { computed, ref, watch } from 'vue'
-
-import { Branch } from '@/enums/app'
-import { CoreWorkingDirectory } from '@/constant/kernel'
-import { useAppSettingsStore, useEnvStore, useKernelApiStore } from '@/stores'
-import {
-  getGitHubApiAuthorization,
-  GrantTUNPermission,
-  ignoredError,
-  confirm,
-  message,
-  debounce,
-  getKernelFileName,
-  getKernelAssetFileName,
-} from '@/utils'
+import { useI18n } from 'vue-i18n'
 
 import {
   Download,
@@ -29,6 +15,19 @@ import {
   UnzipGZFile,
   FileExists,
 } from '@/bridge'
+import { CoreWorkingDirectory } from '@/constant/kernel'
+import { Branch } from '@/enums/app'
+import { useAppSettingsStore, useEnvStore, useKernelApiStore } from '@/stores'
+import {
+  getGitHubApiAuthorization,
+  GrantTUNPermission,
+  ignoredError,
+  confirm,
+  message,
+  debounce,
+  getKernelFileName,
+  getKernelAssetFileName,
+} from '@/utils'
 
 const StableUrl = 'https://api.github.com/repos/MetaCubeX/mihomo/releases/latest'
 const AlphaUrl = 'https://api.github.com/repos/MetaCubeX/mihomo/releases/tags/Prerelease-Alpha'

@@ -1,9 +1,10 @@
-import { ref } from 'vue'
 import { defineStore } from 'pinia'
+import { ref } from 'vue'
 import { parse } from 'yaml'
 
-import { DefaultSubscribeScript, SubscribesFilePath } from '@/constant'
 import { Readfile, Writefile, HttpGet } from '@/bridge'
+import { DefaultSubscribeScript, SubscribesFilePath } from '@/constant'
+import { PluginTriggerEvent } from '@/enums/app'
 import { usePluginsStore, useProfilesStore } from '@/stores'
 import {
   debounce,
@@ -17,7 +18,7 @@ import {
   stringifyNoFolding,
   asyncPool,
 } from '@/utils'
-import { PluginTriggerEvent } from '@/enums/app'
+
 import type { Subscription } from '@/types/app'
 
 export const useSubscribesStore = defineStore('subscribes', () => {

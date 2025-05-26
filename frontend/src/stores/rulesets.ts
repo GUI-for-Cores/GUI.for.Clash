@@ -1,10 +1,10 @@
-import { ref } from 'vue'
 import { defineStore } from 'pinia'
+import { ref } from 'vue'
 import { parse } from 'yaml'
 
-import { RulesetBehavior, RulesetFormat } from '@/enums/kernel'
-import { RulesetsFilePath, EmptyRuleSet } from '@/constant'
 import { Copyfile, Readfile, Writefile, HttpGet, Download, FileExists } from '@/bridge'
+import { RulesetsFilePath, EmptyRuleSet } from '@/constant'
+import { RulesetBehavior, RulesetFormat } from '@/enums/kernel'
 import {
   debounce,
   isValidPaylodYAML,

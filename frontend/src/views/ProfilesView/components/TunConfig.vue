@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 
-import { type ProfileType } from '@/stores'
 import { StackOptions, TunConfigDefaults } from '@/constant'
+import { type ProfileType } from '@/stores'
 
 const fields = defineModel<ProfileType['tunConfig']>({ default: TunConfigDefaults() })
 

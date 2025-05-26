@@ -1,11 +1,11 @@
-import { ref } from 'vue'
 import { defineStore } from 'pinia'
+import { ref } from 'vue'
 import { parse } from 'yaml'
 
 import { Readfile, Writefile } from '@/bridge'
-import { debounce, ignoredError, stringifyNoFolding } from '@/utils'
-import { ProxyGroup, RulesetBehavior, RulesetFormat } from '@/enums/kernel'
 import { ProfilesFilePath } from '@/constant'
+import { ProxyGroup, RulesetBehavior, RulesetFormat } from '@/enums/kernel'
+import { debounce, ignoredError, stringifyNoFolding } from '@/utils'
 
 export type ProfileType = {
   id: string

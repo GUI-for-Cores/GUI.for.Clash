@@ -1,9 +1,8 @@
 import { parse } from 'yaml'
 
-import { ProxyGroupType } from '@/enums/kernel'
-import { ignoredError, stringifyNoFolding, message, confirm } from '@/utils'
 import { deleteConnection, getConnections, useProxy } from '@/api/kernel'
 import { AbsolutePath, Exec, ExitApp, Readfile, Writefile } from '@/bridge'
+import { ProxyGroupType } from '@/enums/kernel'
 import {
   type ProxyType,
   useAppSettingsStore,
@@ -11,6 +10,7 @@ import {
   useKernelApiStore,
   usePluginsStore,
 } from '@/stores'
+import { ignoredError, stringifyNoFolding, message, confirm } from '@/utils'
 
 // Permissions Helper
 export const SwitchPermissions = async (enable: boolean) => {

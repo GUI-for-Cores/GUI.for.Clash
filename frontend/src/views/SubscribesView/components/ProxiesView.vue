@@ -1,15 +1,15 @@
 <script setup lang="ts">
+import { ref, computed, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { parse } from 'yaml'
-import { ref, computed, inject } from 'vue'
+
+import { ClipboardSetText, Readfile, Writefile } from '@/bridge'
+import { DraggableOptions } from '@/constant'
+import { useBool } from '@/hooks'
+import { useSubscribesStore } from '@/stores'
+import { deepClone, ignoredError, sampleID, stringifyNoFolding, message } from '@/utils'
 
 import type { Menu, Subscription } from '@/types/app'
-
-import { useBool } from '@/hooks'
-import { deepClone, ignoredError, sampleID, stringifyNoFolding, message } from '@/utils'
-import { DraggableOptions } from '@/constant'
-import { ClipboardSetText, Readfile, Writefile } from '@/bridge'
-import { useSubscribesStore } from '@/stores'
 
 interface Props {
   sub: Subscription

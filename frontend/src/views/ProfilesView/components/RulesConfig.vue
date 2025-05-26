@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
 import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
-import { deepClone, sampleID, generateRule, message } from '@/utils'
-import { RulesetBehavior, RulesetFormat } from '@/enums/kernel'
-import { type ProfileType, useRulesetsStore, type RuleSetType } from '@/stores'
 import {
   RulesTypeOptions,
   DraggableOptions,
   RulesetFormatOptions,
   RulesetBehaviorOptions,
 } from '@/constant'
+import { RulesetBehavior, RulesetFormat } from '@/enums/kernel'
+import { type ProfileType, useRulesetsStore, type RuleSetType } from '@/stores'
+import { deepClone, sampleID, generateRule, message } from '@/utils'
 
 interface Props {
   proxyGroups: ProfileType['proxyGroupsConfig']
