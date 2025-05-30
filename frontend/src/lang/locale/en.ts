@@ -360,10 +360,9 @@ export default {
     resetUserAgent: 'Reset User-Agent',
     useInternal: 'Use internal proxy-groups and rules',
     inSecure: 'Skip TLS Verification',
-    healthCheck: {
-      name: 'Health Check',
-      interval: 'interval(s)',
-      url: 'url',
+    header: {
+      request: 'Request Header',
+      response: 'Response Header',
     },
   },
   subscribes: {

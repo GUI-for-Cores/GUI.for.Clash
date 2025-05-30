@@ -49,13 +49,11 @@ const handleSubmit = async () => {
     proxyPrefix: '',
     disabled: false,
     inSecure: false,
-    userAgent: '',
-    script: DefaultSubscribeScript,
-    healthCheck: {
-      enable: false,
-      url: 'https://www.gstatic.com/generate_204',
-      interval: 300,
+    header: {
+      request: {},
+      response: {},
     },
+    script: DefaultSubscribeScript,
     proxies: [],
   }
 

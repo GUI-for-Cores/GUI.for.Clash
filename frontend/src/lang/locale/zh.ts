@@ -359,10 +359,9 @@ export default {
     resetUserAgent: '重置用户代理',
     useInternal: '使用订阅内的策略组和分流规则',
     inSecure: '跳过证书验证',
-    healthCheck: {
-      name: '健康检查',
-      interval: '时间间隔(秒)',
-      url: '测试链接',
+    header: {
+      request: '请求头',
+      response: '响应头',
     },
   },
   subscribes: {

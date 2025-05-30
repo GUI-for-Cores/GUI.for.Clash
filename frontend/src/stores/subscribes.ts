@@ -10,7 +10,6 @@ import {
   debounce,
   sampleID,
   isValidSubYAML,
-  getUserAgent,
   restoreProfile,
   ignoredError,
   omitArray,
@@ -32,6 +31,26 @@ export const useSubscribesStore = defineStore('subscribes', () => {
     subscribes.value.forEach((sub) => {
       if (!sub.script) {
         sub.script = DefaultSubscribeScript
+        needSync = true
+      }
+      // @ts-expect-error(Deprecated `healthCheck`)
+      if (sub.healthCheck) {
+        // @ts-expect-error(Deprecated `healthCheck`)
+        delete sub.healthCheck
+        needSync = true
+      }
+      if (!sub.header) {
+        sub.header = {
+          request: {},
+          response: {},
+        }
+        // @ts-expect-error(Deprecated `userAgent`)
+        if (sub.userAgent) {
+          // @ts-expect-error(Deprecated `userAgent`)
+          sub.header.request['User-Agent'] = sub.userAgent
+          // @ts-expect-error(Deprecated `userAgent`)
+          delete sub.userAgent
+        }
         needSync = true
       }
     })
@@ -78,13 +97,11 @@ export const useSubscribesStore = defineStore('subscribes', () => {
       proxyPrefix: '',
       disabled: false,
       inSecure: false,
-      userAgent: '',
-      script: DefaultSubscribeScript,
-      healthCheck: {
-        enable: false,
-        url: 'https://www.gstatic.com/generate_204',
-        interval: 300,
+      header: {
+        request: {},
+        response: {},
       },
+      script: DefaultSubscribeScript,
       proxies: [],
     })
   }
@@ -129,13 +146,10 @@ export const useSubscribesStore = defineStore('subscribes', () => {
     }
 
     if (s.type === 'Http') {
-      const { headers: h, body: b } = await HttpGet(
-        s.url,
-        {
-          'User-Agent': s.userAgent || getUserAgent(),
-        },
-        { Insecure: s.inSecure },
-      )
+      const { headers: h, body: b } = await HttpGet(s.url, s.header.request, {
+        Insecure: s.inSecure,
+      })
+      Object.assign(h, s.header.response)
       h['Subscription-Userinfo'] && (userInfo = h['Subscription-Userinfo'])
       body = b
     }

@@ -1,3 +1,5 @@
+import { h, ref, type VNode } from 'vue'
+
 import type {
   Lang,
   Theme,
@@ -160,13 +162,11 @@ export interface Subscription {
   disabled: boolean
   inSecure: boolean
   proxies: { id: string; name: string; type: string }[]
-  userAgent: string
-  script: string
-  healthCheck: {
-    enable: boolean
-    url: string
-    interval: number
+  header: {
+    request: Recordable
+    response: Recordable
   }
+  script: string
   // Not Config
   updating?: boolean
 }
