@@ -4,7 +4,13 @@ import { computed, ref, watch } from 'vue'
 import { getConfigs, setConfigs, getProxies, getProviders, Api } from '@/api/kernel'
 import { ProcessInfo, KillProcess, ExecBackground } from '@/bridge'
 import { CoreStopOutputKeyword, CoreWorkingDirectory } from '@/constant'
-import { useAppSettingsStore, useProfilesStore, useLogsStore, useEnvStore } from '@/stores'
+import {
+  useAppSettingsStore,
+  useProfilesStore,
+  useLogsStore,
+  useEnvStore,
+  usePluginsStore,
+} from '@/stores'
 import {
   generateConfigFile,
   ignoredError,
@@ -12,6 +18,7 @@ import {
   getKernelFileName,
   WebSockets,
   setIntervalImmediately,
+  debounce,
 } from '@/utils'
 
 import type {
@@ -28,6 +35,7 @@ export type ProxyType = 'mixed' | 'http' | 'socks'
 export const useKernelApiStore = defineStore('kernelApi', () => {
   const envStore = useEnvStore()
   const logsStore = useLogsStore()
+  const pluginsStore = usePluginsStore()
   const profilesStore = useProfilesStore()
   const appSettingsStore = useAppSettingsStore()
 
@@ -224,6 +232,25 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
     doneFirstCoreUpdate(null)
   }
 
+  const onCoreStarted = async (pid: number) => {
+    appSettingsStore.app.kernel.pid = pid
+    appSettingsStore.app.kernel.running = true
+    await Promise.all([refreshConfig(), refreshProviderProxies()])
+    if (appSettingsStore.app.autoSetSystemProxy) {
+      await envStore.setSystemProxy()
+    }
+    pluginsStore.onCoreStartedTrigger()
+  }
+
+  const onCoreStopped = debounce(async () => {
+    appSettingsStore.app.kernel.pid = 0
+    appSettingsStore.app.kernel.running = false
+    if (appSettingsStore.app.autoSetSystemProxy) {
+      await envStore.clearSystemProxy()
+    }
+    pluginsStore.onCoreStoppedTrigger()
+  }, 100)
+
   const startKernel = async () => {
     const { profile: profileID, branch } = appSettingsStore.app.kernel
     const profile = profilesStore.getProfileById(profileID)
@@ -236,41 +263,22 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
 
     loading.value = true
 
-    const onOut = async (out: string, pid: number) => {
-      logsStore.recordKernelLog(out)
-
-      if (out.toLowerCase().includes(CoreStopOutputKeyword)) {
-        loading.value = false
-        appSettingsStore.app.kernel.pid = pid
-        appSettingsStore.app.kernel.running = true
-
-        await Promise.all([refreshConfig(), refreshProviderProxies()])
-
-        if (appSettingsStore.app.autoSetSystemProxy) {
-          await envStore.setSystemProxy()
-        }
-      }
-    }
-
-    const onEnd = async () => {
-      loading.value = false
-      appSettingsStore.app.kernel.pid = 0
-      appSettingsStore.app.kernel.running = false
-
-      if (appSettingsStore.app.autoSetSystemProxy) {
-        await envStore.clearSystemProxy()
-      }
-    }
-
     try {
       await generateConfigFile(profile)
       const pid = await ExecBackground(
         kernelFilePath,
         ['-d', envStore.env.basePath + '/' + CoreWorkingDirectory],
-        // stdout
-        (out: string) => onOut(out, pid),
-        // end
-        onEnd,
+        (out) => {
+          logsStore.recordKernelLog(out)
+          if (out.toLowerCase().includes(CoreStopOutputKeyword)) {
+            loading.value = false
+            onCoreStarted(pid)
+          }
+        },
+        () => {
+          loading.value = false
+          onCoreStopped()
+        },
         {
           stopOutputKeyword: CoreStopOutputKeyword,
         },
@@ -284,13 +292,9 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
   const stopKernel = async () => {
     const { pid } = appSettingsStore.app.kernel
     const running = await ignoredError(isKernelRunning, pid)
-    running && (await KillProcess(pid))
-
-    appSettingsStore.app.kernel.pid = 0
-    appSettingsStore.app.kernel.running = false
-
-    if (appSettingsStore.app.autoSetSystemProxy) {
-      await envStore.clearSystemProxy()
+    if (running) {
+      await KillProcess(pid)
+      await onCoreStopped()
     }
 
     logsStore.clearKernelLog()
