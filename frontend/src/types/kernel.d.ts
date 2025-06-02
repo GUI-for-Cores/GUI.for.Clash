@@ -1,4 +1,6 @@
-interface IKernelApiConfig {
+export {}
+
+export interface CoreApiConfig {
   port: number
   'socks-port': number
   'mixed-port': number
@@ -12,7 +14,7 @@ interface IKernelApiConfig {
   }
 }
 
-interface IKernelProxy {
+export interface CoreApiProxy {
   alive: boolean
   all: string[]
   hidden: boolean
@@ -27,11 +29,11 @@ interface IKernelProxy {
   }[]
 }
 
-interface IKernelApiProxies {
+export interface CoreApiProxies {
   proxies: Record<string, Proxy>
 }
 
-interface IKernelApiProviders {
+export interface CoreApiProviders {
   providers: Record<
     string,
     {
@@ -41,46 +43,29 @@ interface IKernelApiProviders {
   >
 }
 
-interface IKernelApiConnections {
+export interface CoreApiConnections {
   connections: {
     id: string
     chains: string[]
   }[]
 }
 
-interface IKernelConnectionsWS {
-  connections: {
-    id: string
-    metadata: {
-      network: string
-      type: string
-      sourceIP: string
-      destinationIP: string
-      sourcePort: string
-      destinationPort: string
-      inboundIP: string
-      inboundPort: string
-      inboundName: string
-      inboundUser: string
-      host: string
-      dnsMode: string
-      process: string
-      processPath: string
-      specialProxy: string
-      specialRules: string
-      remoteDestination: string
-      sniffHost: string
-    }
-    upload: number
-    download: number
-    start: string
-    chains: string[]
-    rule: string
-    rulePayload: string
-  }[]
+export interface CoreApiTrafficData {
+  down: number
+  up: number
 }
 
-interface IKernelApiProvidersRules {
+export interface CoreApiMemoryData {
+  inuse: number
+  oslimit: number
+}
+
+export interface CoreApiLogsData {
+  type: string
+  payload: string
+}
+
+export interface CoreApiProvidersRules {
   providers: Record<
     string,
     {
@@ -93,4 +78,45 @@ interface IKernelApiProvidersRules {
       vehicleType: string
     }
   >
+}
+
+export interface CoreApiConnectionsData {
+  memory: number
+  uploadTotal: number
+  downloadTotal: number
+  connections: {
+    id: string
+    metadata: {
+      network: string
+      type: string
+      sourceIP: string
+      destinationIP: string
+      sourceGeoIP: string
+      destinationGeoIP: string
+      sourceIPASN: string
+      destinationIPASN: string
+      sourcePort: string
+      destinationPort: string
+      inboundIP: string
+      inboundPort: string
+      inboundName: string
+      inboundUser: string
+      host: string
+      dnsMode: string
+      uid: number
+      process: string
+      processPath: string
+      specialProxy: string
+      specialRules: string
+      remoteDestination: string
+      dscp: number
+      sniffHost: string
+    }
+    upload: number
+    download: number
+    start: string
+    chains: string[]
+    rule: string
+    rulePayload: string
+  }[]
 }
