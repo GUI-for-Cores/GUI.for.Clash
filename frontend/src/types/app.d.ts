@@ -73,6 +73,7 @@ type AppSettings = {
     controllerCloseMode: ControllerCloseMode
   }
   addPluginToMenu: boolean
+  addGroupToMenu: boolean
   pluginSettings: Record<string, Record<string, any>>
   githubApiToken: string
   multipleInstance: boolean

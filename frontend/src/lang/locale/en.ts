@@ -588,7 +588,8 @@ export default {
       onDemand: 'OnDemand',
       never: 'Never',
     },
-    addToMenu: 'Add Plugin To Menu',
+    addPluginToMenu: 'Add Plugin To Tray Menu',
+    addGroupToMenu: 'Add Proxy Group To Tray Menu',
     multipleInstance: 'Allow Multiple APP Instances',
     rollingRelease: 'Enable Rolling Release',
     startup: {

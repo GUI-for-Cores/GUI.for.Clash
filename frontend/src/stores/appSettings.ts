@@ -66,6 +66,7 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
       controllerCloseMode: ControllerCloseMode.All,
     },
     addPluginToMenu: false,
+    addGroupToMenu: false,
     pluginSettings: {},
     githubApiToken: '',
     multipleInstance: false,
@@ -83,6 +84,9 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
 
     if (app.value.kernel.controllerCloseMode === undefined) {
       app.value.kernel.controllerCloseMode = ControllerCloseMode.All
+    }
+    if (app.value.addGroupToMenu === undefined) {
+      app.value.addGroupToMenu = false
     }
     // @ts-expect-error(Deprecated)
     if (app.value['font-family'] !== undefined) {
@@ -171,8 +175,6 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
       () => app.value.lang,
       () => app.value.kernel.running,
       () => app.value.addPluginToMenu,
-      () => app.value.kernel.unAvailable,
-      () => app.value.kernel.sortByDelay,
     ],
     updateTrayMenus,
   )

@@ -587,7 +587,8 @@ export default {
       onDemand: '根据Web内容自行决定',
       never: '禁用硬件加速',
     },
-    addToMenu: '将插件添加到托盘菜单',
+    addPluginToMenu: '将插件添加到托盘菜单',
+    addGroupToMenu: '将代理组添加到托盘菜单',
     multipleInstance: '允许多APP实例运行',
     rollingRelease: '启用滚动发行',
     startup: {

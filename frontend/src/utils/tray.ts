@@ -76,11 +76,17 @@ const getTrayMenus = () => {
   const kernelApiStore = useKernelApiStore()
   const pluginsStore = usePluginsStore()
 
+  let pluginMenus: MenuItem[] = []
+  let pluginMenusHidden = !appSettings.app.addPluginToMenu
+
+  let groupMenus: MenuItem[] = []
+  const groupMenusHidden = !appSettings.app.addGroupToMenu
+
   const { providers, proxies } = kernelApiStore
 
-  const groupsMenus: MenuItem[] = (() => {
+  if (!groupMenusHidden) {
     if (!providers.default) return []
-    return providers.default.proxies
+    groupMenus = providers.default.proxies
       .concat([proxies.GLOBAL])
       .filter((v) => v.all && !v.hidden)
       .map((group) => {
@@ -124,10 +130,7 @@ const getTrayMenus = () => {
           }),
         }
       })
-  })()
-
-  let pluginMenus: MenuItem[] = []
-  let pluginMenusHidden = !appSettings.app.addPluginToMenu
+  }
 
   if (!pluginMenusHidden) {
     const filtered = pluginsStore.plugins.filter(
@@ -192,8 +195,8 @@ const getTrayMenus = () => {
     {
       type: 'item',
       text: 'tray.proxyGroup',
-      hidden: !appSettings.app.kernel.running,
-      children: groupsMenus,
+      hidden: groupMenusHidden || !appSettings.app.kernel.running,
+      children: groupMenus,
     },
     {
       type: 'item',
