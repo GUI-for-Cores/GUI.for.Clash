@@ -203,6 +203,8 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
   const loading = ref(false)
   const statusLoading = ref(true)
   let isCoreStartedByThisInstance = false
+  let doneCoreStopped: (value: unknown) => void
+  let coreStoppedPromise: Promise<unknown>
   let doneFirstCoreUpdate: (value: unknown) => void
   const firstCoreUpdatePromise = new Promise((r) => (doneFirstCoreUpdate = r))
 
@@ -238,6 +240,7 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
     appSettingsStore.app.kernel.running = true
 
     isCoreStartedByThisInstance = true
+    coreStoppedPromise = new Promise((r) => (doneCoreStopped = r))
     await Promise.all([refreshConfig(), refreshProviderProxies()])
 
     if (appSettingsStore.app.autoSetSystemProxy) {
@@ -255,6 +258,8 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
       await envStore.clearSystemProxy()
     }
     await pluginsStore.onCoreStoppedTrigger()
+
+    isCoreStartedByThisInstance && doneCoreStopped(null)
   }
 
   const startKernel = async () => {
@@ -299,9 +304,7 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
     if (running) {
       await pluginsStore.onBeforeCoreStopTrigger()
       await KillProcess(pid)
-      if (!isCoreStartedByThisInstance) {
-        await onCoreStopped()
-      }
+      await (isCoreStartedByThisInstance ? coreStoppedPromise : onCoreStopped())
     }
 
     logsStore.clearKernelLog()
