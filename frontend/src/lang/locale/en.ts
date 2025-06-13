@@ -480,6 +480,7 @@ export default {
     path: 'Save Path',
     type: 'Type',
     menus: 'Menus',
+    hasUI: 'Has user interface',
     context: 'Context',
     configuration: ' Configuration',
     menuKey: 'Menu Title',
