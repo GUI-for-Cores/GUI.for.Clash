@@ -246,7 +246,7 @@ const getProxyByName = async (name: string) => {
     :cancel="isEdit"
     :mask-closable="!isEdit"
     :title="isEdit ? (details ? 'common.edit' : 'common.add') : 'common.details'"
-    @ok="onEditEnd"
+    :on-ok="onEditEnd"
     cancel-text="common.close"
     max-height="80"
     max-width="80"

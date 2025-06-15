@@ -136,7 +136,7 @@ const showLost = () => message.warn('kernel.rules.notFound')
 
   <Modal
     v-model:open="showModal"
-    @ok="handleAddEnd"
+    :on-ok="handleAddEnd"
     title="profile.rule"
     max-width="80"
     max-height="80"

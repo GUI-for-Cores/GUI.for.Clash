@@ -364,7 +364,7 @@ const onSortUpdate = debounce(rulesetsStore.saveRulesets, 1000)
     v-model:open="showRulesetList"
     :title="rulesetTitle"
     :footer="false"
-    @ok="onEditRuelsetListEnd"
+    :on-ok="onEditRuelsetListEnd"
     height="90"
     width="90"
   >

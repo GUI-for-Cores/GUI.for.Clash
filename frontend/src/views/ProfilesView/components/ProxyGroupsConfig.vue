@@ -250,7 +250,7 @@ subscribesStore.subscribes.forEach(async ({ id, name, proxies }) => {
 
   <Modal
     v-model:open="showSortModal"
-    @ok="handleSortGroupEnd"
+    :on-ok="handleSortGroupEnd"
     mask-closable
     title="kernel.proxyGroups.sort"
     max-width="80"
@@ -274,7 +274,13 @@ subscribesStore.subscribes.forEach(async ({ id, name, proxies }) => {
     </div>
   </Modal>
 
-  <Modal v-model:open="showModal" @ok="handleAddEnd" title="profile.group" width="80" height="80">
+  <Modal
+    v-model:open="showModal"
+    :on-ok="handleAddEnd"
+    title="profile.group"
+    width="80"
+    height="80"
+  >
     <div class="form-item">
       {{ t('kernel.proxyGroups.name') }}
       <Input v-model="fields.name" autofocus />
