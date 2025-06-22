@@ -11,6 +11,7 @@ import {
 export const CoreStopOutputKeyword = 'start initial compatible provider default'
 export const CoreWorkingDirectory = 'data/mihomo'
 export const CoreConfigFilePath = CoreWorkingDirectory + '/config.yaml'
+export const CoreCacheFilePath = CoreWorkingDirectory + '/cache.db'
 
 export const ModeOptions = [
   {

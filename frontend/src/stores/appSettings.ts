@@ -9,7 +9,13 @@ import {
   WindowIsMaximised,
   WindowIsMinimised,
 } from '@/bridge'
-import { Colors, DefaultFontFamily, DefaultTestURL, UserFilePath } from '@/constant/app'
+import {
+  Colors,
+  DefaultConcurrencyLimit,
+  DefaultFontFamily,
+  DefaultTestURL,
+  UserFilePath,
+} from '@/constant/app'
 import { DefaultConnections } from '@/constant/kernel'
 import {
   Theme,
@@ -63,6 +69,7 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
       cardMode: true,
       sortByDelay: false,
       testUrl: DefaultTestURL,
+      concurrencyLimit: DefaultConcurrencyLimit,
       controllerCloseMode: ControllerCloseMode.All,
     },
     addPluginToMenu: false,
@@ -71,6 +78,7 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
     githubApiToken: '',
     multipleInstance: false,
     rollingRelease: true,
+    debugOutline: false,
     pages: ['Overview', 'Profiles', 'Subscriptions', 'Plugins'],
   })
 
@@ -87,6 +95,9 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
     }
     if (app.value.addGroupToMenu === undefined) {
       app.value.addGroupToMenu = false
+    }
+    if (app.value.kernel.concurrencyLimit === undefined) {
+      app.value.kernel.concurrencyLimit = DefaultConcurrencyLimit
     }
     // @ts-expect-error(Deprecated)
     if (app.value['font-family'] !== undefined) {
@@ -131,6 +142,7 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
     document.documentElement.style.setProperty('--primary-color', primary)
     document.documentElement.style.setProperty('--secondary-color', secondary)
     document.body.style.fontFamily = settings.fontFamily
+    document.body.setAttribute('debug-outline', String(settings.debugOutline))
   }
 
   watch(

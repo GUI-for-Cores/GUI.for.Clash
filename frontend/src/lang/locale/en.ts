@@ -310,7 +310,7 @@ export default {
       cardMode: 'Card Mode',
       sortBy: 'Sort By Delay',
       delay: 'Delay test URL',
-      delayUrl: 'Please enter the delayed test URL',
+      concurrencyLimit: 'Latency test concurrency',
       closeMode: {
         name: 'Controller Close Mode',
         all: 'Scroll or Button',
@@ -360,6 +360,7 @@ export default {
     resetUserAgent: 'Reset User-Agent',
     useInternal: 'Use internal proxy-groups and rules',
     inSecure: 'Skip TLS Verification',
+    requestMethod: 'Request Method',
     header: {
       request: 'Request Header',
       response: 'Response Header',
@@ -593,6 +594,7 @@ export default {
     addGroupToMenu: 'Add Proxy Group To Tray Menu',
     multipleInstance: 'Allow Multiple APP Instances',
     rollingRelease: 'Enable Rolling Release',
+    debugOutline: 'Show interface outline',
     startup: {
       name: 'Startup on boot',
       delay: 'Delay(s)',
@@ -607,6 +609,7 @@ export default {
       stillDownload: 'Still download',
       rollbackTip: 'Rollback to the previous version',
       rollback: 'Are you sure you want to roll back to the previous version?',
+      clearCache: 'Clear Cache',
     },
     userAgent: {
       name: 'User-Agent',
@@ -633,7 +636,11 @@ export default {
     restart: 'Restart App',
     exitApp: 'Exit App',
     waiting: 'Waiting for the program to exit...',
-    timeout: 'Exit timed out. Force exit?\n\nReason: Plugin exit timed out.',
+    timeout:
+      'The program is taking too long to exit. Do you want to force quit?\n\nReason: {reason}',
+    pluginError:
+      'An error occurred while a plugin was exiting. Do you want to force quit?\n\nReason: {reason}',
+    pluginTimeout: 'The plugin is taking too long to exit.',
   },
   tray: {
     showMainWindow: 'Show Main Window',

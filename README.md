@@ -34,9 +34,7 @@ git clone https://github.com/GUI-for-Cores/GUI.for.Clash.git
 
 cd GUI.for.Clash/frontend
 
-pnpm install
-
-pnpm build
+pnpm install --frozen-lockfile && pnpm build
 
 cd ..
 

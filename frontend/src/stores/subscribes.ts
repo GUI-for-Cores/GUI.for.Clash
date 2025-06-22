@@ -2,9 +2,9 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { parse } from 'yaml'
 
-import { Readfile, Writefile, HttpGet } from '@/bridge'
+import { Readfile, Writefile, Requests } from '@/bridge'
 import { DefaultSubscribeScript, SubscribesFilePath } from '@/constant'
-import { PluginTriggerEvent } from '@/enums/app'
+import { PluginTriggerEvent, RequestMethod } from '@/enums/app'
 import { usePluginsStore, useProfilesStore } from '@/stores'
 import {
   debounce,
@@ -38,6 +38,9 @@ export const useSubscribesStore = defineStore('subscribes', () => {
         // @ts-expect-error(Deprecated `healthCheck`)
         delete sub.healthCheck
         needSync = true
+      }
+      if (!sub.requestMethod) {
+        sub.requestMethod = RequestMethod.Get
       }
       if (!sub.header) {
         sub.header = {
@@ -97,6 +100,7 @@ export const useSubscribesStore = defineStore('subscribes', () => {
       proxyPrefix: '',
       disabled: false,
       inSecure: false,
+      requestMethod: RequestMethod.Get,
       header: {
         request: {},
         response: {},
@@ -146,11 +150,17 @@ export const useSubscribesStore = defineStore('subscribes', () => {
     }
 
     if (s.type === 'Http') {
-      const { headers: h, body: b } = await HttpGet(s.url, s.header.request, {
-        Insecure: s.inSecure,
+      const { headers: h, body: b } = await Requests({
+        method: s.requestMethod,
+        url: s.url,
+        headers: s.header.request,
+        autoTransformBody: false,
+        options: {
+          Insecure: s.inSecure,
+        },
       })
       Object.assign(h, s.header.response)
-      h['Subscription-Userinfo'] && (userInfo = h['Subscription-Userinfo'])
+      h['Subscription-Userinfo'] && (userInfo = h['Subscription-Userinfo'] as string)
       body = b
     }
 

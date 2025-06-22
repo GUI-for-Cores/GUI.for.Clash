@@ -1,4 +1,11 @@
-import { Color, ControllerCloseMode, PluginTrigger, ScheduledTasksType, View } from '@/enums/app'
+import {
+  Color,
+  ControllerCloseMode,
+  PluginTrigger,
+  RequestMethod,
+  ScheduledTasksType,
+  View,
+} from '@/enums/app'
 
 export const UserFilePath = 'data/user.yaml'
 
@@ -58,6 +65,15 @@ export const ControllerCloseModeOptions = [
   { label: 'home.controller.closeMode.button', value: ControllerCloseMode.Button },
 ]
 
+export const RequestMethodOptions = [
+  { label: RequestMethod.Get, value: RequestMethod.Get },
+  { label: RequestMethod.Post, value: RequestMethod.Post },
+  { label: RequestMethod.Delete, value: RequestMethod.Delete },
+  { label: RequestMethod.Put, value: RequestMethod.Put },
+  { label: RequestMethod.Head, value: RequestMethod.Head },
+  { label: RequestMethod.Patch, value: RequestMethod.Patch },
+]
+
 // vue-draggable-plus config
 export const DraggableOptions = {
   animation: 150,
@@ -87,3 +103,5 @@ export const ScheduledTaskOptions = [
 export const DefaultSubscribeScript = `const onSubscribe = async (proxies, subscription) => {\n  return { proxies, subscription }\n}`
 
 export const DefaultTestURL = 'https://www.gstatic.com/generate_204'
+
+export const DefaultConcurrencyLimit = 20

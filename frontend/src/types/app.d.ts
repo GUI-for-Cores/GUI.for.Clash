@@ -11,6 +11,7 @@ import type {
   ControllerCloseMode,
   PluginTrigger,
   ScheduledTasksType,
+  RequestMethod,
 } from '@/enums/app'
 
 export interface TrayContent {
@@ -70,6 +71,7 @@ type AppSettings = {
     cardMode: boolean
     sortByDelay: boolean
     testUrl: string
+    concurrencyLimit: number
     controllerCloseMode: ControllerCloseMode
   }
   addPluginToMenu: boolean
@@ -78,6 +80,7 @@ type AppSettings = {
   githubApiToken: string
   multipleInstance: boolean
   rollingRelease: boolean
+  debugOutline: boolean
   pages: string[]
 }
 
@@ -164,6 +167,7 @@ export interface Subscription {
   disabled: boolean
   inSecure: boolean
   proxies: { id: string; name: string; type: string }[]
+  requestMethod: RequestMethod
   header: {
     request: Recordable
     response: Recordable

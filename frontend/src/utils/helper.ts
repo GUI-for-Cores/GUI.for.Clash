@@ -3,9 +3,11 @@ import { parse } from 'yaml'
 import { deleteConnection, getConnections, useProxy } from '@/api/kernel'
 import { AbsolutePath, Exec, ExitApp, Readfile, Writefile } from '@/bridge'
 import { ProxyGroupType } from '@/enums/kernel'
+import i18n from '@/lang'
 import {
   type ProxyType,
   useAppSettingsStore,
+  useAppStore,
   useEnvStore,
   useKernelApiStore,
   usePluginsStore,
@@ -459,6 +461,8 @@ export const addToRuleSet = async (ruleset: 'direct' | 'reject' | 'proxy', paylo
 }
 
 export const exitApp = async () => {
+  const { t } = i18n.global
+  const appStore = useAppStore()
   const envStore = useEnvStore()
   const pluginsStore = usePluginsStore()
   const appSettings = useAppSettingsStore()
@@ -467,27 +471,36 @@ export const exitApp = async () => {
   if (appSettings.app.kernel.running && appSettings.app.closeKernelOnExit) {
     await kernelApiStore.stopKernel()
     if (appSettings.app.autoSetSystemProxy) {
-      envStore.clearSystemProxy()
+      await envStore.clearSystemProxy()
     }
   }
 
-  let canceled = false
+  appStore.isAppExiting = true
   let timedout = false
+  const { destroy } = message.info('titlebar.waiting', 10 * 60 * 1000)
 
-  const { destroy, error } = message.info('titlebar.waiting', 10 * 60 * 1000)
-
-  setTimeout(async () => {
+  const timeoutId = setTimeout(async () => {
     timedout = true
-    canceled = !(await confirm('Tips', 'titlebar.timeout').catch(() => destroy()))
-    !canceled && ExitApp()
+    appStore.isAppExiting = false
+    destroy()
+    confirm('Warning', t('titlebar.timeout', { reason: t('titlebar.pluginTimeout') })).then(ExitApp)
   }, 10_000)
+
+  appStore.isAppExiting = true
 
   try {
     await pluginsStore.onShutdownTrigger()
-    !timedout && ExitApp()
+    if (!timedout) {
+      clearTimeout(timeoutId)
+      ExitApp()
+    }
   } catch (err: any) {
-    error(err)
+    clearTimeout(timeoutId)
+    confirm('Error', t('titlebar.pluginError', { reason: err })).then(ExitApp)
   }
+
+  appStore.isAppExiting = false
+  destroy()
 }
 
 export const getKernelFileName = (isAlpha = false) => {

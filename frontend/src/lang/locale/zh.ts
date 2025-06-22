@@ -309,7 +309,7 @@ export default {
       cardMode: '卡片模式',
       sortBy: '按延迟排序',
       delay: '延迟测试URL',
-      delayUrl: '请输入延迟测试URL',
+      concurrencyLimit: '延迟测试并发数量',
       closeMode: {
         name: '控制器关闭模式',
         all: '滚动和关闭按钮',
@@ -359,6 +359,7 @@ export default {
     resetUserAgent: '重置用户代理',
     useInternal: '使用订阅内的策略组和分流规则',
     inSecure: '跳过证书验证',
+    requestMethod: '请求方式',
     header: {
       request: '请求头',
       response: '响应头',
@@ -592,6 +593,7 @@ export default {
     addGroupToMenu: '将代理组添加到托盘菜单',
     multipleInstance: '允许多APP实例运行',
     rollingRelease: '启用滚动发行',
+    debugOutline: '显示界面轮廓',
     startup: {
       name: '开机时启动',
       delay: '延迟(秒)',
@@ -606,6 +608,7 @@ export default {
       stillDownload: '仍要下载',
       rollbackTip: '回滚到上一版本',
       rollback: '确定回滚到上一版本吗？',
+      clearCache: '清除缓存',
     },
     userAgent: {
       name: '用户代理(User-Agent)',
@@ -632,7 +635,9 @@ export default {
     restart: '重启程序',
     exitApp: '退出程序',
     waiting: '正在等待程序退出...',
-    timeout: '程序退出超时，是否强制退出？\n\n原因：插件退出超时。',
+    timeout: '程序退出超时，是否强制退出？\n\n原因：{reason}',
+    pluginError: '插件退出时发生错误，是否强制退出？\n\n原因：{reason}',
+    pluginTimeout: '插件退出超时。',
   },
   tray: {
     showMainWindow: '显示主窗口',
