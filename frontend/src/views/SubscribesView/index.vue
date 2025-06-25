@@ -219,9 +219,14 @@ const _updateAllProviderProxies = async () => {
 
 const noUpdateNeeded = computed(() => subscribeStore.subscribes.every((v) => v.disabled))
 
-const clacTrafficPercent = (s: any) => ((s.upload + s.download) / s.total) * 100
+const clacTrafficPercent = (s: Subscription) => ((s.upload + s.download) / s.total) * 100
 
-const clacTrafficStatus = (s: any) => (clacTrafficPercent(s) > 80 ? 'warning' : 'primary')
+const clacTrafficStatus = (s: Subscription) => {
+  const percent = clacTrafficPercent(s)
+  if (percent > 90) return 'danger'
+  if (percent > 80) return 'warning'
+  return 'primary'
+}
 
 const onSortUpdate = debounce(subscribeStore.saveSubscribes, 1000)
 </script>
