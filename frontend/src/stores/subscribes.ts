@@ -253,8 +253,8 @@ export const useSubscribesStore = defineStore('subscribes', () => {
     s.proxies = _proxies.map(({ name, type, __id__ }) => ({ id: __id__, name, type }))
 
     if (s.type === 'Http' || (s.type === 'File' && s.url !== s.path)) {
-      proxies = omitArray(proxies, ['__id__', '__tmp__id__'])
-      await Writefile(s.path, stringifyNoFolding({ proxies }))
+      _proxies = omitArray(_proxies, ['__id__', '__tmp__id__'])
+      await Writefile(s.path, stringifyNoFolding({ _proxies }))
     }
   }
 
