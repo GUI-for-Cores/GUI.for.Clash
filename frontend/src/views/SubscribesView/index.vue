@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, h } from 'vue'
+import { computed } from 'vue'
 import { useI18n, I18nT } from 'vue-i18n'
 
 import { updateProvidersProxies } from '@/api/kernel'
@@ -52,10 +52,8 @@ const menuList: Menu[] = [
   {
     label: 'subscribes.script',
     handler: async (id: string) => {
-      modalApi
-        .setProps({ title: 'common.edit', footer: false, width: '90' })
-        .setComponent(h(SubscribeScript, { id }))
-        .open()
+      modalApi.setProps({ title: 'common.edit', width: '90' })
+      modalApi.setContent(SubscribeScript, { id }).open()
     },
   },
 ]
@@ -112,15 +110,12 @@ const generateMenus = (subscription: Subscription) => {
   return builtInMenus
 }
 
-const handleShowSubForm = (id?: string, isUpdate = false) => {
-  modalApi
-    .setProps({
-      title: isUpdate ? 'common.edit' : 'common.add',
-      minWidth: '70',
-      footer: false,
-    })
-    .setComponent(h(SubscribeForm, { id, isUpdate }))
-    .open()
+const handleShowSubForm = (id?: string) => {
+  modalApi.setProps({
+    title: id ? 'common.edit' : 'common.add',
+    minWidth: '70',
+  })
+  modalApi.setContent(SubscribeForm, { id }).open()
 }
 
 const handleUpdateSubs = async () => {
@@ -142,23 +137,20 @@ const handleUpdateSubs = async () => {
 const handleEditProxies = (id: string, editor = false) => {
   const sub = subscribeStore.getSubscribeById(id)
   if (sub) {
-    modalApi
-      .setProps({
-        title: sub.name,
-        footer: false,
-        height: '90',
-        width: '90',
-        onOk: async () => {
-          try {
-            await _updateProviderProxies(sub.id)
-          } catch (error: any) {
-            console.error(error)
-            message.error(error)
-          }
-        },
-      })
-      .setComponent(h(editor ? ProxiesEditor : ProxiesView, { sub }))
-      .open()
+    modalApi.setProps({
+      title: sub.name,
+      height: '90',
+      width: '90',
+      onOk: async () => {
+        try {
+          await _updateProviderProxies(sub.id)
+        } catch (error: any) {
+          console.error(error)
+          message.error(error)
+        }
+      },
+    })
+    modalApi.setContent(editor ? ProxiesEditor : ProxiesView, { sub }).open()
   }
 }
 
@@ -235,7 +227,7 @@ const onSortUpdate = debounce(subscribeStore.saveSubscribes, 1000)
   <div v-if="subscribeStore.subscribes.length === 0" class="grid-list-empty">
     <Empty>
       <template #description>
-        <I18nT keypath="subscribes.empty" tag="p" scope="global">
+        <I18nT keypath="subscribes.empty" tag="div" scope="global" class="flex items-center mt-12">
           <template #action>
             <Button @click="handleShowSubForm()" type="link">{{ t('common.add') }}</Button>
           </template>
@@ -260,7 +252,7 @@ const onSortUpdate = debounce(subscribeStore.saveSubscribes, 1000)
     >
       {{ t('common.updateAll') }}
     </Button>
-    <Button @click="handleShowSubForm()" type="primary">
+    <Button @click="handleShowSubForm()" type="primary" icon="add" class="ml-16">
       {{ t('common.add') }}
     </Button>
   </div>
@@ -275,7 +267,7 @@ const onSortUpdate = debounce(subscribeStore.saveSubscribes, 1000)
       :title="s.name"
       :disabled="s.disabled"
       v-menu="generateMenus(s)"
-      class="item"
+      class="grid-list-item"
     >
       <template #title-prefix>
         <Tag v-if="s.updating" color="cyan">
@@ -298,24 +290,26 @@ const onSortUpdate = debounce(subscribeStore.saveSubscribes, 1000)
         <Dropdown :trigger="['hover', 'click']">
           <Button type="link" size="small" icon="more" />
           <template #overlay>
-            <Button
-              :disabled="s.disabled"
-              :loading="s.updating"
-              :type="s.disabled ? 'text' : 'link'"
-              size="small"
-              @click="handleUpdateSub(s)"
-            >
-              {{ t('common.update') }}
-            </Button>
-            <Button type="link" size="small" @click="handleDisableSub(s)">
-              {{ s.disabled ? t('common.enable') : t('common.disable') }}
-            </Button>
-            <Button type="link" size="small" @click="handleShowSubForm(s.id, true)">
-              {{ t('common.edit') }}
-            </Button>
-            <Button type="link" size="small" @click="handleDeleteSub(s)">
-              {{ t('common.delete') }}
-            </Button>
+            <div class="flex flex-col gap-4 min-w-64 p-4">
+              <Button
+                :disabled="s.disabled"
+                :loading="s.updating"
+                type="text"
+                size="small"
+                @click="handleUpdateSub(s)"
+              >
+                {{ t('common.update') }}
+              </Button>
+              <Button type="text" size="small" @click="handleDisableSub(s)">
+                {{ s.disabled ? t('common.enable') : t('common.disable') }}
+              </Button>
+              <Button type="text" size="small" @click="handleShowSubForm(s.id)">
+                {{ t('common.edit') }}
+              </Button>
+              <Button type="text" size="small" @click="handleDeleteSub(s)">
+                {{ t('common.delete') }}
+              </Button>
+            </div>
           </template>
         </Dropdown>
       </template>
@@ -324,19 +318,19 @@ const onSortUpdate = debounce(subscribeStore.saveSubscribes, 1000)
         <Button
           :disabled="s.disabled"
           :loading="s.updating"
-          :type="s.disabled ? 'text' : 'link'"
+          type="text"
           size="small"
           @click="handleUpdateSub(s)"
         >
           {{ t('common.update') }}
         </Button>
-        <Button type="link" size="small" @click="handleDisableSub(s)">
+        <Button type="text" size="small" @click="handleDisableSub(s)">
           {{ s.disabled ? t('common.enable') : t('common.disable') }}
         </Button>
-        <Button type="link" size="small" @click="handleShowSubForm(s.id, true)">
+        <Button type="text" size="small" @click="handleShowSubForm(s.id)">
           {{ t('common.edit') }}
         </Button>
-        <Button type="link" size="small" @click="handleDeleteSub(s)">
+        <Button type="text" size="small" @click="handleDeleteSub(s)">
           {{ t('common.delete') }}
         </Button>
       </template>

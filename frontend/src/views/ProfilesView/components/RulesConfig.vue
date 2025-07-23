@@ -121,15 +121,19 @@ const showLost = () => message.warn('kernel.rules.notFound')
 
 <template>
   <div v-draggable="[rules, DraggableOptions]">
-    <Card v-for="(r, index) in rules" :key="r.id" class="rules-item">
-      <div class="name">
-        <span v-if="hasLost(r)" @click="showLost" class="warn"> [ ! ] </span>
-        <span v-if="notSupport(r)" @click="showNotSupport" class="warn"> [ ! ] </span>
-        {{ generateRule(r, profile.proxyGroupsConfig) }}
-      </div>
-      <div class="action">
-        <Button @click="handleEditRule(index)" icon="edit" type="text" size="small" />
-        <Button @click="handleDeleteRule(index)" icon="delete" type="text" size="small" />
+    <Card v-for="(r, index) in rules" :key="r.id" class="mb-2">
+      <div class="flex items-center py-2">
+        <div class="font-bold">
+          <span v-if="hasLost(r)" @click="showLost" class="warn cursor-pointer"> [ ! ] </span>
+          <span v-if="notSupport(r)" @click="showNotSupport" class="warn cursor-pointer">
+            [ ! ]
+          </span>
+          {{ generateRule(r, profile.proxyGroupsConfig) }}
+        </div>
+        <div class="ml-auto">
+          <Button @click="handleEditRule(index)" icon="edit" type="text" size="small" />
+          <Button @click="handleDeleteRule(index)" icon="delete" type="text" size="small" />
+        </div>
       </div>
     </Card>
   </div>
@@ -178,21 +182,19 @@ const showLost = () => message.warn('kernel.rules.notFound')
 
     <template v-if="fields.type === 'RULE-SET' && fields['ruleset-type'] === 'file'">
       <Divider>{{ t('kernel.rules.rulesets') }}</Divider>
-      <div class="rulesets">
-        <Empty v-if="rulesetsStore.rulesets.length === 0" :description="t('kernel.rules.empty')" />
-        <template v-else>
-          <Card
-            v-for="ruleset in rulesetsStore.rulesets"
-            :key="ruleset.name"
-            @click="handleUseRuleset(ruleset)"
-            :selected="fields.payload === ruleset.id"
-            :title="ruleset.name"
-            v-tips="ruleset.path"
-            class="ruleset"
-          >
-            {{ ruleset.path }}
-          </Card>
-        </template>
+      <Empty v-if="rulesetsStore.rulesets.length === 0" :description="t('kernel.rules.empty')" />
+      <div class="grid grid-cols-3 gap-8">
+        <Card
+          v-for="ruleset in rulesetsStore.rulesets"
+          :key="ruleset.name"
+          @click="handleUseRuleset(ruleset)"
+          :selected="fields.payload === ruleset.id"
+          :title="ruleset.name"
+          v-tips="ruleset.path"
+          class="text-12 line-clamp-1"
+        >
+          {{ ruleset.path }}
+        </Card>
       </div>
     </template>
 
@@ -232,33 +234,7 @@ const showLost = () => message.warn('kernel.rules.notFound')
 </template>
 
 <style lang="less" scoped>
-.rules-item {
-  display: flex;
-  align-items: center;
-  padding: 0 8px;
-  margin-bottom: 2px;
-  .name {
-    font-weight: bold;
-    .warn {
-      color: rgb(200, 193, 11);
-      cursor: pointer;
-    }
-  }
-  .action {
-    margin-left: auto;
-  }
-}
-
-.rulesets {
-  display: flex;
-  flex-wrap: wrap;
-  .ruleset {
-    width: calc(33.3333% - 16px);
-    margin: 8px;
-    font-size: 10px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
+.warn {
+  color: rgb(200, 193, 11);
 }
 </style>

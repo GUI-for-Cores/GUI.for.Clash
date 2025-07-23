@@ -31,95 +31,79 @@ const handleUpdateGEO = async () => {
 </script>
 
 <template>
-  <div class="card-list">
-    <Divider class="w-full mb-8">
-      {{ t('home.overview.settingsTips') }}
-    </Divider>
-
-    <Card :title="t('kernel.mixed-port')" class="card-item">
-      <Input
-        v-model="kernelApiStore.config['mixed-port']"
-        :min="0"
-        :max="65535"
-        @submit="onMixedPortSubmit"
-        type="number"
-        :border="false"
-        editable
-        auto-size
-      />
-    </Card>
-    <Card :title="t('kernel.port')" class="card-item">
-      <Input
-        v-model="kernelApiStore.config.port"
-        :min="0"
-        :max="65535"
-        @submit="onPortSubmit"
-        type="number"
-        :border="false"
-        editable
-        auto-size
-      />
-    </Card>
-    <Card :title="t('kernel.socks-port')" class="card-item">
-      <Input
-        v-model="kernelApiStore.config['socks-port']"
-        :min="0"
-        :max="65535"
-        @submit="onSocksPortSubmit"
-        type="number"
-        :border="false"
-        editable
-        auto-size
-      />
-    </Card>
-    <Card :title="t('kernel.allow-lan')" class="card-item">
-      <Switch v-model="kernelApiStore.config['allow-lan']" @change="onAllowLanChange" />
-    </Card>
-
-    <div class="w-full mt-8"></div>
-
-    <Card :title="t('kernel.tun.stack')" class="card-item">
-      <Select
-        v-model="kernelApiStore.config.tun.stack"
-        :options="StackOptions"
-        :border="false"
-        auto-size
-        @change="conStackChange"
-      />
-    </Card>
-    <Card :title="t('kernel.tun.device')" class="card-item">
-      <Input
-        v-model="kernelApiStore.config.tun.device"
-        @submit="onTunDeviceSubmit"
-        editable
-        :border="false"
-        auto-size
-      />
-    </Card>
-    <Card :title="t('kernel.interface-name')" class="card-item">
-      <InterfaceSelect
-        v-model="kernelApiStore.config['interface-name']"
-        :border="false"
-        auto-size
-        @change="onInterfaceChange"
-      />
-    </Card>
-    <Card :title="t('common.update')" class="card-item">
-      <Button @click="handleUpdateGEO" size="small" type="text">
-        {{ t('home.overview.updateGEO') }}
-      </Button>
-    </Card>
+  <div>
+    <Divider class="w-full mb-8"> {{ t('home.overview.settingsTips') }} </Divider>
+    <div class="grid grid-cols-4 gap-8">
+      <Card :title="t('kernel.mixed-port')">
+        <Input
+          v-model="kernelApiStore.config['mixed-port']"
+          :min="0"
+          :max="65535"
+          @submit="onMixedPortSubmit"
+          type="number"
+          :border="false"
+          editable
+          auto-size
+        />
+      </Card>
+      <Card :title="t('kernel.port')">
+        <Input
+          v-model="kernelApiStore.config.port"
+          :min="0"
+          :max="65535"
+          @submit="onPortSubmit"
+          type="number"
+          :border="false"
+          editable
+          auto-size
+        />
+      </Card>
+      <Card :title="t('kernel.socks-port')">
+        <Input
+          v-model="kernelApiStore.config['socks-port']"
+          :min="0"
+          :max="65535"
+          @submit="onSocksPortSubmit"
+          type="number"
+          :border="false"
+          editable
+          auto-size
+        />
+      </Card>
+      <Card :title="t('kernel.allow-lan')">
+        <Switch v-model="kernelApiStore.config['allow-lan']" @change="onAllowLanChange" />
+      </Card>
+      <Card :title="t('kernel.tun.stack')">
+        <Select
+          v-model="kernelApiStore.config.tun.stack"
+          :options="StackOptions"
+          :border="false"
+          auto-size
+          @change="conStackChange"
+        />
+      </Card>
+      <Card :title="t('kernel.tun.device')">
+        <Input
+          v-model="kernelApiStore.config.tun.device"
+          @submit="onTunDeviceSubmit"
+          editable
+          :border="false"
+          auto-size
+        />
+      </Card>
+      <Card :title="t('kernel.interface-name')">
+        <InterfaceSelect
+          v-model="kernelApiStore.config['interface-name']"
+          :border="false"
+          auto-size
+          @change="onInterfaceChange"
+        />
+      </Card>
+      <Card :title="t('common.update')">
+        <Button @click="handleUpdateGEO" size="small" type="text">
+          {{ t('home.overview.updateGEO') }}
+        </Button>
+      </Card>
+    </div>
   </div>
 </template>
-
-<style lang="less" scoped>
-.card-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  padding-bottom: 16px;
-  .card-item {
-    width: 24%;
-  }
-}
-</style>

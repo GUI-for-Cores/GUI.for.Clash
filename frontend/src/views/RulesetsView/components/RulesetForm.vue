@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { ref, inject, watch, computed } from 'vue'
+import { ref, inject, watch, computed, h } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { RulesetFormatOptions, RulesetBehaviorOptions } from '@/constant'
 import { RulesetBehavior, RulesetFormat } from '@/enums/kernel'
 import { type RuleSetType, useRulesetsStore } from '@/stores'
 import { deepClone, sampleID, message } from '@/utils'
+
+import Button from '@/components/Button/index.vue'
 
 interface Props {
   id?: string
@@ -114,14 +116,37 @@ if (props.isUpdate) {
     ruleset.value = deepClone(r)
   }
 }
+
+const modalSlots = {
+  cancel: () =>
+    h(
+      Button,
+      {
+        disabled: loading.value,
+        onClick: handleCancel,
+      },
+      () => t('common.cancel'),
+    ),
+  submit: () =>
+    h(
+      Button,
+      {
+        type: 'primary',
+        disabled: disabled.value,
+        loading: loading.value,
+        onClick: handleSubmit,
+      },
+      () => t('common.save'),
+    ),
+}
+
+defineExpose({ modalSlots })
 </script>
 
 <template>
-  <div class="form">
+  <div>
     <div class="form-item">
-      <div class="name">
-        {{ t('ruleset.rulesetType') }}
-      </div>
+      {{ t('ruleset.rulesetType') }}
       <Radio
         v-model="ruleset.type"
         :options="[
@@ -132,21 +157,19 @@ if (props.isUpdate) {
       />
     </div>
     <div class="form-item">
-      <div class="name">
-        {{ t('ruleset.behavior.name') }}
-      </div>
+      {{ t('ruleset.behavior.name') }}
       <Radio v-model="ruleset.behavior" :options="RulesetBehaviorOptions" />
     </div>
     <div v-show="ruleset.type !== 'Manual'" class="form-item">
-      <div class="name">{{ t('ruleset.format.name') }}</div>
+      {{ t('ruleset.format.name') }}
       <Radio v-model="ruleset.format" :options="RulesetFormatOptions" />
     </div>
     <div class="form-item">
-      <div class="name">{{ t('ruleset.name') }} *</div>
+      {{ t('ruleset.name') }} *
       <Input v-model="ruleset.name" auto-size autofocus class="input" />
     </div>
     <div v-show="ruleset.type !== 'Manual'" class="form-item">
-      <div class="name">{{ t('ruleset.url') }} *</div>
+      {{ t('ruleset.url') }} *
       <Input
         v-model="ruleset.url"
         :placeholder="
@@ -155,39 +178,15 @@ if (props.isUpdate) {
             : 'data/local/{filename}.' + (ruleset.format === RulesetFormat.Mrs ? 'mrs' : 'yaml')
         "
         auto-size
-        class="input"
       />
     </div>
     <div class="form-item">
-      <div class="name">{{ t('ruleset.path') }} *</div>
+      {{ t('ruleset.path') }} *
       <Input
         v-model="ruleset.path"
         :placeholder="`data/rulesets/{filename}.${ruleset.format === RulesetFormat.Mrs ? 'mrs' : 'yaml'}`"
         auto-size
-        class="input"
       />
     </div>
   </div>
-  <div class="form-action">
-    <Button @click="handleCancel">{{ t('common.cancel') }}</Button>
-    <Button @click="handleSubmit" :loading="loading" :disabled="disabled" type="primary">
-      {{ t('common.save') }}
-    </Button>
-  </div>
 </template>
-
-<style lang="less" scoped>
-.form {
-  padding: 0 8px;
-  overflow-y: auto;
-  max-height: 70vh;
-  .name {
-    font-size: 14px;
-    padding: 8px 0;
-    white-space: nowrap;
-  }
-  .input {
-    width: 78%;
-  }
-}
-</style>

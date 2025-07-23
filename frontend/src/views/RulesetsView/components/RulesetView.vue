@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, inject } from 'vue'
+import { ref, computed, inject, h } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { parse } from 'yaml'
 
@@ -8,6 +8,8 @@ import { DraggableOptions } from '@/constant'
 import { RulesetBehavior } from '@/enums/kernel'
 import { type RuleSetType, useRulesetsStore } from '@/stores'
 import { deepClone, ignoredError, isValidIPCIDR, stringifyNoFolding, message } from '@/utils'
+
+import Button from '@/components/Button/index.vue'
 
 import type { Menu } from '@/types/app'
 
@@ -111,6 +113,30 @@ if (r) {
   ruleset.value = deepClone(r)
   initRulesetList(r)
 }
+
+const modalSlots = {
+  cancel: () =>
+    h(
+      Button,
+      {
+        disabled: loading.value,
+        onClick: handleCancel,
+      },
+      () => t('common.cancel'),
+    ),
+  submit: () =>
+    h(
+      Button,
+      {
+        type: 'primary',
+        loading: loading.value,
+        onClick: handleSave,
+      },
+      () => t('common.save'),
+    ),
+}
+
+defineExpose({ modalSlots })
 </script>
 
 <template>
@@ -141,14 +167,6 @@ if (r) {
       >
         {{ rule }}
       </div>
-    </div>
-    <div class="form-action">
-      <Button @click="handleCancel" :disabled="loading">
-        {{ t('common.cancel') }}
-      </Button>
-      <Button @click="handleSave" :loading="loading" type="primary">
-        {{ t('common.save') }}
-      </Button>
     </div>
   </div>
 </template>

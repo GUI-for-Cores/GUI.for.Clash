@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { ref, inject, type Ref, computed, useTemplateRef } from 'vue'
+import { ref, inject, type Ref, computed, useTemplateRef, h } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { WindowToggleMaximise } from '@/bridge'
 import * as Defaults from '@/constant/profile'
 import { useBool } from '@/hooks'
 import { type ProfileType, useProfilesStore } from '@/stores'
 import { deepClone, generateConfig, sampleID, stringifyNoFolding, message, alert } from '@/utils'
+
+import Button from '@/components/Button/index.vue'
+import Dropdown from '@/components/Dropdown/index.vue'
 
 import AdvancedConfig from './AdvancedConfig.vue'
 import DnsConfig from './DnsConfig.vue'
@@ -19,23 +21,22 @@ import TunConfig from './TunConfig.vue'
 interface Props {
   id?: string
   step?: number
-  isUpdate?: boolean
 }
 
-enum StepEnum {
-  NAME = 0,
-  GENERAL = 1,
-  TUN = 2,
-  DNS = 3,
-  GROUPS = 4,
-  RULES = 5,
-  MIXIN_SCRIPT = 6,
+enum Step {
+  Name = 0,
+  General = 1,
+  Tun = 2,
+  Dns = 3,
+  Group = 4,
+  Rules = 5,
+  MixinScript = 6,
 }
 
 const props = withDefaults(defineProps<Props>(), {
   id: '',
   isUpdate: false,
-  step: StepEnum.NAME,
+  step: Step.Name,
 })
 
 const loading = ref(false)
@@ -90,13 +91,12 @@ const handleNextStep = () => currentStep.value++
 const handleSave = async () => {
   loading.value = true
   try {
-    if (props.isUpdate) {
+    if (props.id) {
       await profilesStore.editProfile(props.id, profile.value)
-      handleSubmit()
     } else {
       await profilesStore.addProfile(profile.value)
-      handleCancel()
     }
+    await handleSubmit()
   } catch (error: any) {
     console.error('handleSave: ', error)
     message.error(error)
@@ -106,8 +106,8 @@ const handleSave = async () => {
 
 const handleAdd = () => {
   const map: Record<number, Ref> = {
-    [StepEnum.GROUPS]: groupsRef,
-    [StepEnum.RULES]: rulesRef,
+    [Step.Group]: groupsRef,
+    [Step.Rules]: rulesRef,
   }
   map[currentStep.value].value.handleAdd()
 }
@@ -121,44 +121,122 @@ const handlePreview = async () => {
   }
 }
 
-if (props.isUpdate) {
+if (props.id) {
   const p = profilesStore.getProfileById(props.id)
   if (p) {
     profile.value = deepClone(p)
   }
 }
+
+const modalSlots = {
+  title: () =>
+    h(
+      Dropdown,
+      {
+        trigger: ['hover'],
+      },
+      {
+        default: () =>
+          h(
+            'div',
+            {
+              class: 'font-bold',
+            },
+            `${t(stepItems[currentStep.value].title)} （${currentStep.value + 1} / ${stepItems.length}）`,
+          ),
+        overlay: () =>
+          h(
+            'div',
+            {
+              class: 'p-4 flex flex-col',
+            },
+            stepItems.map((step, index) =>
+              h(
+                Button,
+                {
+                  type: currentStep.value === index ? 'link' : 'text',
+                  disabled: !profile.value.name && currentStep.value !== index,
+                  onClick: () => (currentStep.value = index),
+                },
+                () => t(step.title),
+              ),
+            ),
+          ),
+      },
+    ),
+
+  toolbar: () => [
+    h(Button, {
+      type: 'text',
+      icon: 'file',
+      onClick: handlePreview,
+    }),
+    h(Button, {
+      type: 'text',
+      icon: 'add',
+      style: {
+        display: [Step.Group, Step.Rules].includes(currentStep.value) ? '' : 'none',
+      },
+      onClick: handleAdd,
+    }),
+  ],
+  action: () => [
+    h(
+      Button,
+      {
+        disabled: currentStep.value === Step.Name,
+        onClick: handlePrevStep,
+      },
+      () => t('common.prevStep'),
+    ),
+    h(
+      Button,
+      {
+        class: 'mr-auto',
+        disabled: !profile.value.name || currentStep.value === stepItems.length - 1,
+        onClick: handleNextStep,
+      },
+      () => t('common.nextStep'),
+    ),
+  ],
+  cancel: () =>
+    h(
+      Button,
+      {
+        disabled: loading.value,
+        onClick: handleCancel,
+      },
+      () => t('common.cancel'),
+    ),
+  submit: () =>
+    h(
+      Button,
+      {
+        type: 'primary',
+        loading: loading.value,
+        disabled: !profile.value.name,
+        onClick: handleSave,
+      },
+      () => t('common.save'),
+    ),
+}
+
+defineExpose({ modalSlots })
 </script>
 
 <template>
-  <div @dblclick="WindowToggleMaximise" class="header" style="--wails-draggable: drag">
-    <div class="header-title">
-      {{ t(stepItems[currentStep].title) }} ({{ currentStep + 1 }} / {{ stepItems.length }})
-    </div>
-    <Button
-      v-show="currentStep !== StepEnum.NAME"
-      @click="handlePreview"
-      icon="file"
-      type="text"
-      class="ml-auto"
-    />
-    <Button
-      v-show="[StepEnum.GROUPS, StepEnum.RULES].includes(currentStep)"
-      @click="handleAdd"
-      icon="add"
-      type="text"
-      class="mr-8"
-    />
-  </div>
-
-  <div class="form">
-    <div v-show="currentStep === StepEnum.NAME">
-      <div class="form-item">
-        <div class="name">{{ t('profile.name') }} *</div>
-        <Input v-model="profile.name" auto-size autofocus class="flex-1 ml-8" />
-      </div>
+  <div>
+    <div v-show="currentStep === Step.Name">
+      <Input
+        v-model="profile.name"
+        auto-size
+        autofocus
+        :border="false"
+        :placeholder="t('profile.name')"
+      />
     </div>
 
-    <div v-show="currentStep === StepEnum.GENERAL">
+    <div v-show="currentStep === Step.General">
       <GeneralConfig v-model="profile.generalConfig" />
       <Divider>
         <Button type="text" size="small" @click="toggleAdvancedSetting">
@@ -170,19 +248,19 @@ if (props.isUpdate) {
       </div>
     </div>
 
-    <div v-show="currentStep === StepEnum.TUN">
+    <div v-show="currentStep === Step.Tun">
       <TunConfig v-model="profile.tunConfig" />
     </div>
 
-    <div v-show="currentStep === StepEnum.DNS">
+    <div v-show="currentStep === Step.Dns">
       <DnsConfig v-model="profile.dnsConfig" />
     </div>
 
-    <div v-show="currentStep === StepEnum.GROUPS">
+    <div v-show="currentStep === Step.Group">
       <ProxyGroupsConfig ref="groupsRef" v-model="profile.proxyGroupsConfig" />
     </div>
 
-    <div v-show="currentStep === StepEnum.RULES">
+    <div v-show="currentStep === Step.Rules">
       <RulesConfig
         ref="rulesRef"
         v-model="profile.rulesConfig"
@@ -191,44 +269,8 @@ if (props.isUpdate) {
       />
     </div>
 
-    <div v-show="currentStep === StepEnum.MIXIN_SCRIPT">
+    <div v-show="currentStep === Step.MixinScript">
       <MixinAndScript v-model="mixinAndScriptConfig" />
     </div>
   </div>
-
-  <div class="form-action">
-    <Button @click="handlePrevStep" :disabled="currentStep == StepEnum.NAME" type="text">
-      {{ t('common.prevStep') }}
-    </Button>
-    <Button
-      @click="handleNextStep"
-      :disabled="!profile.name || currentStep == stepItems.length - 1"
-      type="text"
-      class="mr-auto"
-    >
-      {{ t('common.nextStep') }}
-    </Button>
-    <Button @click="handleCancel">{{ t('common.cancel') }}</Button>
-    <Button @click="handleSave" :loading="loading" :disabled="!profile.name" type="primary">
-      {{ t('common.save') }}
-    </Button>
-  </div>
 </template>
-
-<style lang="less" scoped>
-.header {
-  display: flex;
-  align-items: center;
-  margin-top: 8px;
-  &-title {
-    font-size: 20px;
-    font-weight: bold;
-    margin: 8px 0 16px 0;
-  }
-}
-.form {
-  padding-right: 8px;
-  overflow-y: auto;
-  max-height: calc(70vh - 8px);
-}
-</style>

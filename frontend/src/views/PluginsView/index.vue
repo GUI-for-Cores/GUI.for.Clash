@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, h } from 'vue'
+import { computed } from 'vue'
 import { useI18n, I18nT } from 'vue-i18n'
 
 import { BrowserOpenURL } from '@/bridge'
@@ -8,6 +8,7 @@ import { PluginTriggerEvent, PluginTrigger, View } from '@/enums/app'
 import { usePluginsStore, useAppSettingsStore, useEnvStore } from '@/stores'
 import { debounce, message } from '@/utils'
 
+import Button from '@/components/Button/index.vue'
 import { useModal } from '@/components/Modal'
 
 import PluginChangelog from './components/PluginChangelog.vue'
@@ -49,31 +50,28 @@ const pluginsStore = usePluginsStore()
 const appSettingsStore = useAppSettingsStore()
 
 const handleImportPlugin = () => {
-  modalApi
-    .setProps({
-      title: 'plugins.hub',
-      height: '90',
-      width: '90',
-      submit: false,
-      maskClosable: true,
-      cancelText: 'common.close',
-    })
-    .setComponent(h(PluginHub))
-    .open()
+  modalApi.setProps({
+    title: 'plugins.hub',
+    height: '90',
+    width: '90',
+    submit: false,
+    maskClosable: true,
+    cancelText: 'common.close',
+  })
+  modalApi.setContent(PluginHub).open()
+}
+
+const openPluginFormModal = (id?: string) => {
+  modalApi.setProps({ title: id ? 'common.edit' : 'common.add', minWidth: '80' })
+  modalApi.setContent(PluginForm, { id }).open()
 }
 
 const handleAddPlugin = () => {
-  modalApi
-    .setProps({ title: 'common.add', minWidth: '80', footer: false })
-    .setComponent(h(PluginForm))
-    .open()
+  openPluginFormModal()
 }
 
 const handleEditPlugin = (id: string) => {
-  modalApi
-    .setProps({ title: 'common.edit', minWidth: '80', footer: false })
-    .setComponent(h(PluginForm, { id, isUpdate: true }))
-    .open()
+  openPluginFormModal(id)
 }
 
 const handleUpdatePluginHub = async () => {
@@ -126,24 +124,20 @@ const handleDisablePlugin = async (p: Plugin) => {
 }
 
 const handleEditPluginCode = (id: string, title: string) => {
-  modalApi
-    .setProps({ title, footer: false, width: '90' })
-    .setComponent(h(PluginView, { id }))
-    .open()
+  modalApi.setProps({ title, width: '90' })
+  modalApi.setContent(PluginView, { id }).open()
 }
 
 const handleViewChangelog = (id: string) => {
-  modalApi
-    .setProps({
-      title: 'Changelog',
-      cancelText: 'common.close',
-      width: '90',
-      height: '90',
-      submit: false,
-      maskClosable: true,
-    })
-    .setComponent(h(PluginChangelog, { id }))
-    .open()
+  modalApi.setProps({
+    title: 'Changelog',
+    cancelText: 'common.close',
+    width: '90',
+    height: '90',
+    submit: false,
+    maskClosable: true,
+  })
+  modalApi.setContent(PluginChangelog, { id }).open()
 }
 
 const handleInstallation = async (p: Plugin) => {
@@ -179,10 +173,8 @@ const generateMenus = (p: Plugin) => {
     builtInMenus.push({
       label: 'plugins.configuration',
       handler: async () => {
-        modalApi
-          .setProps({ title: 'plugins.configuration', footer: false })
-          .setComponent(h(PluginConfiguration, { id: p.id }))
-          .open()
+        modalApi.setProps({ title: 'plugins.configuration' })
+        modalApi.setContent(PluginConfiguration, { id: p.id }).open()
       },
     })
   }
@@ -220,7 +212,7 @@ const onSortUpdate = debounce(pluginsStore.savePlugins, 1000)
   <div v-if="pluginsStore.plugins.length === 0" class="grid-list-empty">
     <Empty>
       <template #description>
-        <I18nT keypath="plugins.empty" tag="p" scope="global">
+        <I18nT keypath="plugins.empty" tag="div" scope="global" class="flex items-center mt-12">
           <template #action>
             <Button @click="handleAddPlugin" type="link">{{ t('common.add') }}</Button>
           </template>
@@ -248,16 +240,14 @@ const onSortUpdate = debounce(pluginsStore.savePlugins, 1000)
         {{ t('plugins.checkForUpdates') }}
       </Button>
       <template #overlay>
-        <Button
-          @click="handleUpdatePlugins"
-          :disabled="noUpdateNeeded"
-          :type="noUpdateNeeded ? 'text' : 'link'"
-        >
-          {{ t('common.updateAll') }}
-        </Button>
+        <div class="p-4">
+          <Button @click="handleUpdatePlugins" :disabled="noUpdateNeeded" type="text">
+            {{ t('common.updateAll') }}
+          </Button>
+        </div>
       </template>
     </Dropdown>
-    <Button @click="handleAddPlugin" type="primary">
+    <Button @click="handleAddPlugin" type="primary" icon="add" class="ml-16">
       {{ t('common.add') }}
     </Button>
   </div>
@@ -272,7 +262,7 @@ const onSortUpdate = debounce(pluginsStore.savePlugins, 1000)
       :title="p.name"
       :disabled="p.disabled"
       v-menu="generateMenus(p)"
-      class="item"
+      class="grid-list-item"
     >
       <template #title-prefix>
         <Tag v-if="pluginsStore.isDeprecated(p)" color="red"> {{ t('plugins.deprecated') }} </Tag>
@@ -304,29 +294,31 @@ const onSortUpdate = debounce(pluginsStore.savePlugins, 1000)
         >
           <Button type="link" size="small" icon="more" />
           <template #overlay>
-            <Button
-              v-if="!p.disabled"
-              :loading="p.updating"
-              type="link"
-              size="small"
-              @click="handleUpdatePlugin(p)"
-            >
-              {{ t('common.update') }}
-            </Button>
-            <Button type="link" size="small" @click="handleDisablePlugin(p)">
-              {{ p.disabled ? t('common.enable') : t('common.disable') }}
-            </Button>
-            <Button type="link" size="small" @click="handleEditPlugin(p.id)">
-              {{ t('common.develop') }}
-            </Button>
-            <Button
-              v-if="!p.install || !p.installed"
-              type="link"
-              size="small"
-              @click="handleDeletePlugin(p)"
-            >
-              {{ t('common.delete') }}
-            </Button>
+            <div class="flex flex-col gap-4 min-w-64 p-4">
+              <Button
+                v-if="!p.disabled"
+                :loading="p.updating"
+                type="text"
+                size="small"
+                @click="handleUpdatePlugin(p)"
+              >
+                {{ t('common.update') }}
+              </Button>
+              <Button type="text" size="small" @click="handleDisablePlugin(p)">
+                {{ p.disabled ? t('common.enable') : t('common.disable') }}
+              </Button>
+              <Button type="text" size="small" @click="handleEditPlugin(p.id)">
+                {{ t('common.develop') }}
+              </Button>
+              <Button
+                v-if="!p.install || !p.installed"
+                type="text"
+                size="small"
+                @click="handleDeletePlugin(p)"
+              >
+                {{ t('common.delete') }}
+              </Button>
+            </div>
           </template>
         </Dropdown>
 
@@ -334,21 +326,21 @@ const onSortUpdate = debounce(pluginsStore.savePlugins, 1000)
           <Button
             :disabled="p.disabled"
             :loading="p.updating"
-            type="link"
+            type="text"
             size="small"
             @click="handleUpdatePlugin(p)"
           >
             {{ t('common.update') }}
           </Button>
-          <Button type="link" size="small" @click="handleDisablePlugin(p)">
+          <Button type="text" size="small" @click="handleDisablePlugin(p)">
             {{ p.disabled ? t('common.enable') : t('common.disable') }}
           </Button>
-          <Button type="link" size="small" @click="handleEditPlugin(p.id)">
+          <Button type="text" size="small" @click="handleEditPlugin(p.id)">
             {{ t('common.develop') }}
           </Button>
           <Button
             :disabled="p.install && p.installed"
-            type="link"
+            type="text"
             size="small"
             @click="handleDeletePlugin(p)"
           >

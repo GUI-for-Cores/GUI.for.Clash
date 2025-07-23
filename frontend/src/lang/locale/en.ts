@@ -48,6 +48,7 @@ export default {
     develop: 'Develop',
     canceled: 'Canceled',
     downloading: 'Downloading...',
+    empty: 'Data is empty',
   },
   kernel: {
     port: 'HTTP(s) Port',

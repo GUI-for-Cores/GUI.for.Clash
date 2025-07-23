@@ -74,45 +74,33 @@ const clearLogs = () => logsStore.scheduledtasksLogs.splice(0)
 </script>
 
 <template>
-  <div class="logs">
-    <div class="form">
-      <span class="label">
+  <div class="h-full flex flex-col">
+    <div class="flex items-center">
+      <span class="mr-4">
         {{ t('scheduledtasks.name') }}
         :
       </span>
       <Select v-model="plugin" :options="pluginsOptions" size="small" />
       <Input
         v-model="keywords"
-        size="small"
         clearable
         auto-size
+        size="small"
         :placeholder="t('common.keywords')"
         class="ml-8 flex-1"
       />
-      <Button @click="clearLogs" v-tips="'common.clear'" size="small" type="text" class="ml-8">
-        <Icon icon="clear" fill="var(--color)" />
-      </Button>
+      <Button
+        @click="clearLogs"
+        v-tips="'common.clear'"
+        icon="clear"
+        size="small"
+        type="text"
+        class="ml-8"
+      />
     </div>
 
-    <Empty v-if="logsStore.scheduledtasksLogs.length === 0" class="flex-1" />
+    <Empty v-if="filteredLogs.length === 0" />
 
     <Table v-else :columns="columns" :data-source="filteredLogs" sort="start" class="mt-8" />
   </div>
 </template>
-
-<style lang="less" scoped>
-.logs {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.form {
-  display: flex;
-  align-items: center;
-  .label {
-    padding: 0 8px;
-    font-size: 12px;
-  }
-}
-</style>

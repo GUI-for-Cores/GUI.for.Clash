@@ -222,28 +222,32 @@ subscribesStore.subscribes.forEach(async ({ id, name, proxies }) => {
 
 <template>
   <div v-draggable="[groups, DraggableOptions]">
-    <Card v-for="(g, index) in groups" :key="g.id" class="groups-item">
-      <div class="name">
-        <img v-if="g.icon" :src="g.icon" class="icon" />
-        <span v-if="hasLost(g)" @click="showLost" class="warn"> [ ! ] </span>
-        <span v-if="needToAdd(g)" @click="showNeedToAdd" class="error"> [ ! ] </span>
-        {{ g.name }}
-      </div>
-      <div class="count">
-        <Button @click="handleSortGroup(index)" type="link" size="small">
-          (
-          {{ t('profile.use') }}: {{ g.use.length }}
-          /
-          {{ t('profile.proxies') }}: {{ g.proxies.length }}
-          )
-        </Button>
-      </div>
-      <div class="action">
-        <Button @click="handleClearGroup(g)" v-if="hasLost(g)" type="text">
-          {{ t('common.clear') }}
-        </Button>
-        <Button @click="handleEditGroup(index)" icon="edit" type="text" size="small" />
-        <Button @click="handleDeleteGroup(index)" icon="delete" type="text" size="small" />
+    <Card v-for="(g, index) in groups" :key="g.id" class="mb-2">
+      <div class="flex items-center py-2">
+        <div class="font-bold">
+          <img v-if="g.icon" :src="g.icon" class="icon" />
+          <span v-if="hasLost(g)" @click="showLost" class="warn cursor-pointer"> [ ! ] </span>
+          <span v-if="needToAdd(g)" @click="showNeedToAdd" class="error cursor-pointer">
+            [ ! ]
+          </span>
+          {{ g.name }}
+        </div>
+        <div class="count">
+          <Button @click="handleSortGroup(index)" type="link" size="small">
+            (
+            {{ t('profile.use') }}: {{ g.use.length }}
+            /
+            {{ t('profile.proxies') }}: {{ g.proxies.length }}
+            )
+          </Button>
+        </div>
+        <div class="ml-auto">
+          <Button @click="handleClearGroup(g)" v-if="hasLost(g)" type="text" size="small">
+            {{ t('common.clear') }}
+          </Button>
+          <Button @click="handleEditGroup(index)" icon="edit" type="text" size="small" />
+          <Button @click="handleDeleteGroup(index)" icon="delete" type="text" size="small" />
+        </div>
       </div>
     </Card>
   </div>
@@ -256,21 +260,19 @@ subscribesStore.subscribes.forEach(async ({ id, name, proxies }) => {
     max-width="80"
     max-height="80"
   >
-    <div class="group">
-      <Divider>{{ t('profile.use') }}</Divider>
-      <Empty v-if="fields.use.length === 0"></Empty>
-      <div v-draggable="[fields.use, DraggableOptions]" class="group-proxies">
-        <Button v-for="use in fields.use" :key="use" type="link" class="group-item">
-          {{ SubscribesNameMap[use] || use }}
-        </Button>
-      </div>
-      <Divider>{{ t('profile.proxies') }}</Divider>
-      <Empty v-if="fields.proxies.length === 0"></Empty>
-      <div v-draggable="[fields.proxies, DraggableOptions]" class="group-proxies">
-        <Button v-for="proxy in fields.proxies" :key="proxy.id" type="link" class="group-item">
-          {{ proxy.name }}
-        </Button>
-      </div>
+    <Divider>{{ t('profile.use') }}</Divider>
+    <Empty v-if="fields.use.length === 0"></Empty>
+    <div v-draggable="[fields.use, DraggableOptions]">
+      <Button v-for="use in fields.use" :key="use" type="link" class="group-item">
+        {{ SubscribesNameMap[use] || use }}
+      </Button>
+    </div>
+    <Divider>{{ t('profile.proxies') }}</Divider>
+    <Empty v-if="fields.proxies.length === 0"></Empty>
+    <div v-draggable="[fields.proxies, DraggableOptions]">
+      <Button v-for="proxy in fields.proxies" :key="proxy.id" type="link" class="group-item">
+        {{ proxy.name }}
+      </Button>
     </div>
   </Modal>
 
@@ -334,11 +336,11 @@ subscribesStore.subscribes.forEach(async ({ id, name, proxies }) => {
 
     <Divider> {{ t('profile.use') }} & {{ t('profile.proxies') }} </Divider>
 
-    <div v-for="group in proxyGroup" :key="group.id" class="group">
+    <div v-for="group in proxyGroup" :key="group.id">
       <Button
         :type="isExpanded(group.id) ? 'link' : 'text'"
         @click="toggleExpanded(group.id)"
-        class="group-title"
+        class="sticky top-0 backdrop-blur-sm w-full"
       >
         {{ t(group.name) }}
         <div class="ml-auto mr-8">{{ group.proxies.length }}</div>
@@ -348,7 +350,7 @@ subscribesStore.subscribes.forEach(async ({ id, name, proxies }) => {
           class="action-expand"
         />
       </Button>
-      <div v-show="isExpanded(group.id)" class="group-proxies">
+      <div v-show="isExpanded(group.id)">
         <Empty
           v-if="group.proxies.length === 0"
           :description="
@@ -358,8 +360,10 @@ subscribesStore.subscribes.forEach(async ({ id, name, proxies }) => {
           "
         />
         <template v-else>
-          <div v-for="proxy in group.proxies" :key="proxy.id" class="group-item">
+          <div class="w-full grid grid-cols-4 gap-8 p-8">
             <Button
+              v-for="proxy in group.proxies"
+              :key="proxy.id"
               @click="handleAddProxy(group.id, proxy.id, proxy.name)"
               :type="isInuse(group.id, proxy.id) ? 'link' : 'text'"
             >
@@ -375,64 +379,24 @@ subscribesStore.subscribes.forEach(async ({ id, name, proxies }) => {
 </template>
 
 <style lang="less" scoped>
-.groups-item {
-  display: flex;
-  align-items: center;
-  padding: 0 8px;
-  margin-bottom: 2px;
-  .name {
-    display: flex;
-    align-items: center;
-    font-weight: bold;
-    min-width: 90px;
-    .icon {
-      width: 20px;
-      height: 20px;
-      margin-right: 4px;
-    }
-    .warn {
-      color: rgb(200, 193, 11);
-      cursor: pointer;
-    }
-    .error {
-      color: red;
-      cursor: pointer;
-    }
-  }
-  .count {
-    margin-left: 4px;
-  }
-  .action {
-    margin-left: auto;
-  }
+.icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 4px;
+}
+.warn {
+  color: rgb(200, 193, 11);
+  cursor: pointer;
+}
+.error {
+  color: red;
+  cursor: pointer;
 }
 
-.group {
-  .group-title {
-    position: sticky;
-    top: 0;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    backdrop-filter: blur(4px);
-  }
-  .group-proxies {
-    display: flex;
-    flex-wrap: wrap;
-    background: var(--card-bg);
-    border-radius: 8px;
-  }
-  .group-item {
-    display: flex;
-    justify-content: center;
-    width: calc(25% - 8px);
-    margin: 4px;
-  }
-  .action-expand {
-    transition: all 0.2s;
-  }
-  .rotate-z {
-    transform: rotateZ(90deg);
-  }
+.action-expand {
+  transition: all 0.2s;
+}
+.rotate-z {
+  transform: rotateZ(90deg);
 }
 </style>
