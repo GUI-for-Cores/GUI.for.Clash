@@ -73,6 +73,14 @@ type AppSettings = {
     testUrl: string
     concurrencyLimit: number
     controllerCloseMode: ControllerCloseMode
+    main: {
+      env: Recordable
+      args: string[]
+    }
+    alpha: {
+      env: Recordable
+      args: string[]
+    }
   }
   addPluginToMenu: boolean
   addGroupToMenu: boolean

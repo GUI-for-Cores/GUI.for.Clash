@@ -13,6 +13,8 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), { isAlpha: false })
 
+const emit = defineEmits(['config'])
+
 const { t } = useI18n()
 const appSettings = useAppSettingsStore()
 const kernelApiStore = useKernelApiStore()
@@ -53,7 +55,7 @@ const handleClearCoreCache = async () => {
 </script>
 
 <template>
-  <div class="title">
+  <div class="font-bold text-16 mx-4 my-12">
     {{ isAlpha ? 'Alpha' : t('settings.kernel.name') }}
     <Button
       @click="grantCorePermission"
@@ -79,8 +81,9 @@ const handleClearCoreCache = async () => {
       size="small"
       icon="clear3"
     />
+    <Button @click="emit('config')" type="text" size="small" icon="settings3" />
   </div>
-  <div class="tags">
+  <div class="flex items-center py-8">
     <Tag @click="refreshLocalVersion(true)" class="cursor-pointer">
       {{ t('kernel.local') }}
       :
@@ -110,26 +113,7 @@ const handleClearCoreCache = async () => {
       {{ t('kernel.restart') }}
     </Button>
   </div>
-  <div class="detail">
+  <div class="text-12 px-4 py-8 break-all">
     {{ versionDetail }}
   </div>
 </template>
-
-<style lang="less" scoped>
-.title {
-  font-weight: bold;
-  font-size: 16px;
-  margin: 12px 4px;
-}
-.detail {
-  font-size: 12px;
-  padding: 8px 4px;
-  word-wrap: break-word;
-  word-break: break-all;
-}
-.tags {
-  display: flex;
-  align-items: center;
-  min-height: 34px;
-}
-</style>

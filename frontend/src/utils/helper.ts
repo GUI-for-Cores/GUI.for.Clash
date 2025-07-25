@@ -2,6 +2,7 @@ import { parse } from 'yaml'
 
 import { deleteConnection, getConnections, useProxy } from '@/api/kernel'
 import { AbsolutePath, Exec, ExitApp, Readfile, Writefile } from '@/bridge'
+import { CoreWorkingDirectory } from '@/constant'
 import { ProxyGroupType } from '@/enums/kernel'
 import i18n from '@/lang'
 import {
@@ -518,4 +519,31 @@ export const getKernelAssetFileName = (version: string) => {
   const amd64Compatible = arch === 'amd64' && envStore.env.x64Level < 3 ? '-compatible' : ''
   const suffix = { windows: '.zip', linux: '.gz', darwin: '.gz' }[os]
   return `mihomo-${os}-${arch}${amd64Compatible}-${version}${suffix}`
+}
+
+export const processMagicVariables = (str: string) => {
+  const { env } = useEnvStore()
+  let result = str
+  Object.entries({
+    $APP_BASE_PATH: env.basePath,
+    $CORE_BASE_PATH: CoreWorkingDirectory,
+  }).forEach(([source, target]) => {
+    result = result.replaceAll(source, target)
+  })
+  return result
+}
+
+export const getKernelRuntimeEnv = (isAlpha = false) => {
+  const appSettings = useAppSettingsStore()
+  const { env } = isAlpha ? appSettings.app.kernel.alpha : appSettings.app.kernel.main
+  return Object.entries(env).reduce((p, [key, value]) => {
+    p[key] = processMagicVariables(value)
+    return p
+  }, {} as Recordable)
+}
+
+export const getKernelRuntimeArgs = (isAlpha = false) => {
+  const appSettings = useAppSettingsStore()
+  const { args } = isAlpha ? appSettings.app.kernel.alpha : appSettings.app.kernel.main
+  return args.map((arg) => processMagicVariables(arg))
 }

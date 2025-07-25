@@ -16,7 +16,7 @@ import {
   DefaultTestURL,
   UserFilePath,
 } from '@/constant/app'
-import { DefaultConnections } from '@/constant/kernel'
+import { DefaultConnections, DefaultCoreConfig } from '@/constant/kernel'
 import {
   Theme,
   WindowStartState,
@@ -71,6 +71,8 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
       testUrl: DefaultTestURL,
       concurrencyLimit: DefaultConcurrencyLimit,
       controllerCloseMode: ControllerCloseMode.All,
+      main: DefaultCoreConfig(),
+      alpha: DefaultCoreConfig(),
     },
     addPluginToMenu: false,
     addGroupToMenu: false,
@@ -105,6 +107,11 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
       app.value.fontFamily = app.value['font-family']
       // @ts-expect-error(Deprecated)
       delete app.value['font-family']
+    }
+
+    if (!app.value.kernel.main) {
+      app.value.kernel.main = DefaultCoreConfig()
+      app.value.kernel.alpha = DefaultCoreConfig()
     }
 
     firstOpen = !!data

@@ -4,6 +4,7 @@ import { computed, ref, watch } from 'vue'
 import { getConfigs, setConfigs, getProxies, getProviders, Api } from '@/api/kernel'
 import { ProcessInfo, KillProcess, ExecBackground } from '@/bridge'
 import { CoreStopOutputKeyword, CoreWorkingDirectory } from '@/constant'
+import { Branch } from '@/enums/app'
 import {
   useAppSettingsStore,
   useProfilesStore,
@@ -19,6 +20,8 @@ import {
   WebSockets,
   setIntervalImmediately,
   message,
+  getKernelRuntimeArgs,
+  getKernelRuntimeEnv,
 } from '@/utils'
 
 import type {
@@ -269,7 +272,8 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
 
     await stopKernel()
 
-    const fileName = getKernelFileName(branch === 'alpha')
+    const isAlpha = branch === Branch.Alpha
+    const fileName = getKernelFileName(isAlpha)
     const kernelFilePath = CoreWorkingDirectory + '/' + fileName
 
     loading.value = true
@@ -280,7 +284,7 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
       )
       const pid = await ExecBackground(
         kernelFilePath,
-        ['-d', envStore.env.basePath + '/' + CoreWorkingDirectory],
+        getKernelRuntimeArgs(isAlpha),
         (out) => {
           logsStore.recordKernelLog(out)
           if (out.toLowerCase().includes(CoreStopOutputKeyword)) {
@@ -290,6 +294,7 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
         onCoreStopped,
         {
           stopOutputKeyword: CoreStopOutputKeyword,
+          env: getKernelRuntimeEnv(isAlpha),
         },
       )
     } catch (error) {

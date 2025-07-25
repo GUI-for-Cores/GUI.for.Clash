@@ -7,6 +7,7 @@ import {
   RuleType,
   TunStack,
 } from '@/enums/kernel'
+import { useEnvStore } from '@/stores'
 
 export const CoreStopOutputKeyword = 'start initial compatible provider default'
 export const CoreWorkingDirectory = 'data/mihomo'
@@ -275,5 +276,19 @@ export const DefaultConnections = () => {
       'download',
       'start',
     ],
+  }
+}
+
+export const DefaultCoreConfig = () => {
+  const { env } = useEnvStore()
+  const separator = env.os === 'windows' ? ';' : ':'
+
+  return {
+    env: {
+      SAFE_PATHS: ['$APP_BASE_PATH/data/subscribes', '$APP_BASE_PATH/data/rulesets'].join(
+        separator,
+      ),
+    },
+    args: ['-d', '$APP_BASE_PATH/$CORE_BASE_PATH'],
   }
 }
