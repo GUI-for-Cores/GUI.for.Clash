@@ -246,7 +246,7 @@ onActivated(() => {
       style="top: 52px; background-color: var(--card-bg)"
     >
       <div class="text-14 flex items-center gap-2">
-        <img v-if="group.icon" :src="group.icon" class="group-icon" draggable="false" />
+        <img v-if="group.icon" :src="group.icon" class="w-24 h-24 mr-4" draggable="false" />
         <span class="font-bold text-18">{{ group.name }}</span>
         <span class="mx-8">
           {{ group.type }}

@@ -224,23 +224,21 @@ subscribesStore.subscribes.forEach(async ({ id, name, proxies }) => {
   <div v-draggable="[groups, DraggableOptions]">
     <Card v-for="(g, index) in groups" :key="g.id" class="mb-2">
       <div class="flex items-center py-2">
-        <div class="font-bold">
-          <img v-if="g.icon" :src="g.icon" class="icon" />
+        <div class="font-bold flex items-center">
+          <img v-if="g.icon" :src="g.icon" class="w-18 h-18 mr-4" />
           <span v-if="hasLost(g)" @click="showLost" class="warn cursor-pointer"> [ ! ] </span>
           <span v-if="needToAdd(g)" @click="showNeedToAdd" class="error cursor-pointer">
             [ ! ]
           </span>
           {{ g.name }}
         </div>
-        <div class="count">
-          <Button @click="handleSortGroup(index)" type="link" size="small">
-            (
-            {{ t('profile.use') }}: {{ g.use.length }}
-            /
-            {{ t('profile.proxies') }}: {{ g.proxies.length }}
-            )
-          </Button>
-        </div>
+        <Button @click="handleSortGroup(index)" type="link" size="small">
+          (
+          {{ t('profile.use') }}: {{ g.use.length }}
+          /
+          {{ t('profile.proxies') }}: {{ g.proxies.length }}
+          )
+        </Button>
         <div class="ml-auto">
           <Button @click="handleClearGroup(g)" v-if="hasLost(g)" type="text" size="small">
             {{ t('common.clear') }}
@@ -379,18 +377,11 @@ subscribesStore.subscribes.forEach(async ({ id, name, proxies }) => {
 </template>
 
 <style lang="less" scoped>
-.icon {
-  width: 20px;
-  height: 20px;
-  margin-right: 4px;
-}
 .warn {
   color: rgb(200, 193, 11);
-  cursor: pointer;
 }
 .error {
   color: red;
-  cursor: pointer;
 }
 
 .action-expand {
