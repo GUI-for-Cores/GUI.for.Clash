@@ -110,7 +110,7 @@ defineExpose({ modalSlots })
           <div v-draggable="[model.args, DraggableOptions]" class="flex flex-wrap items-center">
             <div v-for="item in model.args" :key="item">
               <Tag size="small">
-                <div class="py-2">{{ item }}</div>
+                <div class="py-2">{{ processMagicVariables(item) }}</div>
               </Tag>
             </div>
           </div>
