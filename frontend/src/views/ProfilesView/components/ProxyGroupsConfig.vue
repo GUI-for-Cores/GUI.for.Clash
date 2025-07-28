@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { GroupsTypeOptions, StrategyOptions, DraggableOptions } from '@/constant'
+import { GroupsTypeOptions, StrategyOptions, DraggableOptions, BuiltInOutbound } from '@/constant'
 import { ProxyGroup } from '@/enums/kernel'
 import { type ProfileType, useSubscribesStore } from '@/stores'
 import { deepClone, sampleID, message } from '@/utils'
@@ -22,9 +22,7 @@ const proxyGroup = ref([
     id: 'Built-In',
     name: 'kernel.proxyGroups.builtIn',
     proxies: [
-      { id: 'DIRECT', name: 'DIRECT', type: 'Built-In' },
-      { id: 'REJECT', name: 'REJECT', type: 'Built-In' },
-      { id: 'PASS', name: 'PASS', type: 'Built-In' },
+      ...BuiltInOutbound.map((v) => ({ id: v, name: v, type: 'Built-In' })),
       ...groups.value.map(({ id, name, type }) => ({ id, name, type })),
     ],
   },
@@ -92,7 +90,7 @@ const handleDeleteGroup = (index: number) => {
 const handleClearGroup = async (g: GroupsType[0]) => {
   g.proxies = g.proxies.filter(({ type, name, id }) => {
     if (type === 'Built-In') {
-      if (['DIRECT', 'REJECT', 'PASS'].includes(name)) {
+      if (BuiltInOutbound.includes(name)) {
         return true
       }
       return groups.value.some((v) => v.id === id)
@@ -169,7 +167,7 @@ const isSupportInverval = computed(() =>
 const hasLost = (g: GroupsType[0]) => {
   const isProxiesLost = g.proxies.some(({ type, id }) => {
     if (type === 'Built-In') {
-      if (['DIRECT', 'REJECT', 'PASS'].includes(id)) {
+      if (BuiltInOutbound.includes(id)) {
         return false
       }
       return groups.value.every((v) => v.id !== id)

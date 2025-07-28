@@ -3,6 +3,7 @@ import { ref, computed, onActivated } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { getProxyDelay, deleteGroupFixed } from '@/api/kernel'
+import { BuiltInOutbound } from '@/constant'
 import { ControllerCloseModeOptions, DefaultConcurrencyLimit, DefaultTestURL } from '@/constant/app'
 import { ControllerCloseMode } from '@/enums/app'
 import { ProxyGroupType } from '@/enums/kernel'
@@ -32,7 +33,7 @@ const groups = computed(() => {
         .filter((proxy) => {
           const condition1 =
             appSettings.app.kernel.unAvailable ||
-            ['DIRECT', 'REJECT', 'PASS'].includes(proxy) ||
+            BuiltInOutbound.includes(proxy) ||
             proxies[proxy].all ||
             proxies[proxy].alive
           const keywords = filterKeywordsMap.value[group.name]

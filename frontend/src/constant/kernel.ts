@@ -240,6 +240,8 @@ export const EmptyRuleSet = {
   payload: [],
 }
 
+export const BuiltInOutbound = ['DIRECT', 'REJECT', 'REJECT-DROP', 'PASS', 'COMPATIBLE']
+
 export const DefaultConnections = () => {
   return {
     visibility: {

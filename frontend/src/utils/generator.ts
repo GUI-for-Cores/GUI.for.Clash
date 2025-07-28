@@ -1,7 +1,7 @@
 import { parse } from 'yaml'
 
 import { Readfile, Writefile } from '@/bridge'
-import { CoreConfigFilePath } from '@/constant/kernel'
+import { BuiltInOutbound, CoreConfigFilePath } from '@/constant/kernel'
 import { LogLevel, ProxyGroup } from '@/enums/kernel'
 import { type ProfileType, useSubscribesStore, useRulesetsStore, usePluginsStore } from '@/stores'
 import { deepClone, APP_TITLE, deepAssign, stringifyNoFolding } from '@/utils'
@@ -142,7 +142,7 @@ export const generateProxyGroup = (
 
   if (proxies.length !== 0) {
     group.proxies = proxies.map((v) => {
-      if (['DIRECT', 'REJECT', 'PASS'].includes(v.id)) {
+      if (BuiltInOutbound.includes(v.id)) {
         return v.name
       }
       const group = groups.find((vv) => vv.id === v.id)

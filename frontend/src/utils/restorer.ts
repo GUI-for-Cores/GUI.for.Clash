@@ -7,6 +7,7 @@ import {
   TunConfigDefaults,
   MixinConfigDefaults,
   ScriptConfigDefaults,
+  BuiltInOutbound,
 } from '@/constant'
 import { RulesetBehavior, RulesetFormat } from '@/enums/kernel'
 import { deepAssign, sampleID } from '@/utils'
@@ -49,7 +50,7 @@ export const restoreProfile = (
   })
 
   function isBuiltIn(proxy: string) {
-    return ['DIRECT', 'REJECT', 'PASS'].includes(proxy)
+    return BuiltInOutbound.includes(proxy)
   }
 
   config['proxy-groups'].forEach((group: any) => {
@@ -86,7 +87,7 @@ export const restoreProfile = (
   })
 
   function getRuleProxy(type: string) {
-    return ['DIRECT', 'REJECT', 'PASS'].includes(type.toUpperCase())
+    return BuiltInOutbound.includes(type.toUpperCase())
       ? type.toUpperCase()
       : GroupNameIdMap[type] || IdNameMap[NameIdMap[type]]
   }

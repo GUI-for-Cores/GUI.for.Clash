@@ -7,6 +7,7 @@ import {
   DraggableOptions,
   RulesetFormatOptions,
   RulesetBehaviorOptions,
+  BuiltInOutbound,
 } from '@/constant'
 import { RulesetBehavior, RulesetFormat } from '@/enums/kernel'
 import { type ProfileType, useRulesetsStore, type RuleSetType } from '@/stores'
@@ -38,9 +39,7 @@ const fields = ref<ProfileType['rulesConfig'][number]>({
 })
 
 const proxyOptions = computed(() => [
-  { label: 'DIRECT', value: 'DIRECT' },
-  { label: 'REJECT', value: 'REJECT' },
-  { label: 'PASS', value: 'PASS' },
+  ...BuiltInOutbound.map((v) => ({ label: v, value: v })),
   ...props.proxyGroups.map(({ id, name }) => ({ label: name, value: id })),
 ])
 
@@ -106,7 +105,7 @@ const handleUseRuleset = (ruleset: RuleSetType) => {
 }
 
 const hasLost = (r: ProfileType['rulesConfig'][0]) => {
-  if (['DIRECT', 'REJECT', 'PASS'].includes(r.proxy)) return false
+  if (BuiltInOutbound.includes(r.proxy)) return false
   return !props.profile.proxyGroupsConfig.find((v) => v.id === r.proxy)
 }
 

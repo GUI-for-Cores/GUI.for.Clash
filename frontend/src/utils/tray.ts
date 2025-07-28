@@ -7,6 +7,7 @@ import {
   UpdateTrayMenus,
   ShowMainWindow,
 } from '@/bridge'
+import { BuiltInOutbound } from '@/constant'
 import { Theme, Color, Lang } from '@/enums/app'
 import { ClashMode } from '@/enums/kernel'
 import i18n from '@/lang'
@@ -94,7 +95,7 @@ const getTrayMenus = () => {
           .filter((proxy) => {
             return (
               appSettings.app.kernel.unAvailable ||
-              ['DIRECT', 'REJECT'].includes(proxy) ||
+              BuiltInOutbound.includes(proxy) ||
               proxies[proxy].all ||
               proxies[proxy].alive
             )
