@@ -199,7 +199,7 @@ const menu: Menu[] = [
     return {
       label,
       handler: async (record: Record<string, any>) => {
-        const options: PickerItem[] = []
+        const options: PickerItem<string>[] = []
         if (record.metadata.host) {
           options.push({
             label: t('kernel.rules.type.DOMAIN'),
@@ -233,7 +233,7 @@ const menu: Menu[] = [
             description: record.metadata.processPath,
           })
         }
-        const payloads = await picker.multi<string[]>('rulesets.selectRuleType', options)
+        const payloads = await picker.multi('rulesets.selectRuleType', options)
         try {
           await addToRuleSet(ruleset as any, payloads)
           await ignoredError(updateProvidersRules, ruleset)

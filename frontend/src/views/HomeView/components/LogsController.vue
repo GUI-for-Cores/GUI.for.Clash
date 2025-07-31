@@ -52,7 +52,7 @@ const menus: Menu[] = [
         return
       }
 
-      const options: PickerItem[] = []
+      const options: PickerItem<string>[] = []
 
       if (isValidIPv4(matches[1])) {
         options.push({
@@ -74,9 +74,7 @@ const menus: Menu[] = [
         })
       }
 
-      const payloads = await picker.multi<string[]>('rulesets.selectRuleType', options, [
-        options?.[0].value,
-      ])
+      const payloads = await picker.multi('rulesets.selectRuleType', options, [options?.[0].value])
 
       try {
         await addToRuleSet(ruleset as any, payloads)
