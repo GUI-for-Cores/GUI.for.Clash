@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, toRaw } from 'vue'
 
 import useI18n from '@/lang'
 
@@ -30,12 +30,16 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emits = defineEmits(['confirm', 'cancel', 'finish'])
 
-const selected = ref(new Set<string>(props.initialValue))
+const selected = ref(
+  new Set<string>(
+    props.initialValue.filter((v) => props.options.find((option) => option.value === v)),
+  ),
+)
 
 const { t } = useI18n.global
 
 const handleConfirm = () => {
-  let res: any = Array.from(selected.value)
+  let res: any = Array.from(selected.value).map((v) => toRaw(v))
   if (props.type === 'single') {
     res = res[0]
   }
@@ -85,13 +89,13 @@ const handleSelectAll = () => {
           :key="i"
           @click="handleSelect(o)"
           :style="{ background: o.background }"
-          class="item my-4 px-8 break-all"
+          class="item my-4 py-8 px-8 break-all"
         >
           <div class="flex items-center justify-between leading-relaxed">
-            <div>{{ t(o.label) }}</div>
+            <div class="font-bold">{{ t(o.label) }}</div>
             <Icon
               v-show="isSelected(o.value)"
-              :size="32"
+              :size="26"
               icon="selected"
               fill="var(--primary-color)"
               class="shrink-0"
