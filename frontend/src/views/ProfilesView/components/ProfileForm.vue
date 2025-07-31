@@ -132,9 +132,7 @@ const modalSlots = {
   title: () =>
     h(
       Dropdown,
-      {
-        trigger: ['hover'],
-      },
+      {},
       {
         default: () =>
           h(

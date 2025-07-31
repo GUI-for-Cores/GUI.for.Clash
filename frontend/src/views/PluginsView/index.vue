@@ -235,13 +235,18 @@ const onSortUpdate = debounce(pluginsStore.savePlugins, 1000)
     <Button @click="handleImportPlugin" type="link" class="ml-auto">
       {{ t('plugins.hub') }}
     </Button>
-    <Dropdown :trigger="['hover', 'click']">
+    <Dropdown>
       <Button @click="handleUpdatePluginHub" :loading="pluginsStore.pluginHubLoading" type="link">
         {{ t('plugins.checkForUpdates') }}
       </Button>
       <template #overlay>
-        <div class="p-4">
-          <Button @click="handleUpdatePlugins" :disabled="noUpdateNeeded" type="text">
+        <div class="p-4 min-w-128">
+          <Button
+            @click="handleUpdatePlugins"
+            :disabled="noUpdateNeeded"
+            type="text"
+            class="w-full"
+          >
             {{ t('common.updateAll') }}
           </Button>
         </div>
@@ -288,10 +293,7 @@ const onSortUpdate = debounce(pluginsStore.savePlugins, 1000)
       </template>
 
       <template #extra>
-        <Dropdown
-          v-if="appSettingsStore.app.pluginsView === View.Grid"
-          :trigger="['hover', 'click']"
-        >
+        <Dropdown v-if="appSettingsStore.app.pluginsView === View.Grid">
           <Button type="link" size="small" icon="more" />
           <template #overlay>
             <div class="flex flex-col gap-4 min-w-64 p-4">
