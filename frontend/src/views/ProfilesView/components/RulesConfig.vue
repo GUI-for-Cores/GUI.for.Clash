@@ -10,7 +10,7 @@ import {
   BuiltInOutbound,
 } from '@/constant'
 import { RulesetBehavior, RulesetFormat } from '@/enums/kernel'
-import { type ProfileType, useRulesetsStore, type RuleSetType } from '@/stores'
+import { type ProfileType, useRulesetsStore, type RuleSet } from '@/stores'
 import { deepClone, sampleID, generateRule, message } from '@/utils'
 
 interface Props {
@@ -99,7 +99,7 @@ const handleAddEnd = () => {
   }
 }
 
-const handleUseRuleset = (ruleset: RuleSetType) => {
+const handleUseRuleset = (ruleset: RuleSet) => {
   fields.value.payload = ruleset.id
   fields.value['no-resolve'] = ruleset.behavior === RulesetBehavior.Ipcidr
 }

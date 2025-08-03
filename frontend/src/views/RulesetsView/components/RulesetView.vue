@@ -6,7 +6,7 @@ import { parse } from 'yaml'
 import { Readfile, Writefile } from '@/bridge'
 import { DraggableOptions } from '@/constant'
 import { RulesetBehavior } from '@/enums/kernel'
-import { type RuleSetType, useRulesetsStore } from '@/stores'
+import { type RuleSet, useRulesetsStore } from '@/stores'
 import { deepClone, ignoredError, isValidIPCIDR, stringifyNoFolding, message } from '@/utils'
 
 import Button from '@/components/Button/index.vue'
@@ -22,7 +22,7 @@ const props = defineProps<Props>()
 const loading = ref(false)
 const keywords = ref('')
 const ruleValue = ref('')
-const ruleset = ref<RuleSetType>()
+const ruleset = ref<RuleSet>()
 
 const rulesetList = ref<string[]>([])
 
@@ -102,7 +102,7 @@ const handleAdd = () => {
   ruleValue.value = ''
 }
 
-const initRulesetList = async (r: RuleSetType) => {
+const initRulesetList = async (r: RuleSet) => {
   const content = (await ignoredError(Readfile, r.path)) || '{}'
   const { payload = [] } = parse(content)
   rulesetList.value.push(...payload)

@@ -7,7 +7,7 @@ import { Removefile, Writefile, BrowserOpenURL } from '@/bridge'
 import { DraggableOptions } from '@/constant'
 import { View } from '@/enums/app'
 import { RulesetFormat } from '@/enums/kernel'
-import { type RuleSetType, useRulesetsStore, useAppSettingsStore, useEnvStore } from '@/stores'
+import { type RuleSet, useRulesetsStore, useAppSettingsStore, useEnvStore } from '@/stores'
 import {
   debounce,
   formatRelativeTime,
@@ -113,7 +113,7 @@ const handleEditRulesetList = (id: string) => {
   modalApi.open()
 }
 
-const handleUpdateRuleset = async (r: RuleSetType) => {
+const handleUpdateRuleset = async (r: RuleSet) => {
   try {
     await rulesetsStore.updateRuleset(r.id)
     await _updateProvidersRules(r.name)
@@ -123,7 +123,7 @@ const handleUpdateRuleset = async (r: RuleSetType) => {
   }
 }
 
-const handleDeleteRuleset = async (r: RuleSetType) => {
+const handleDeleteRuleset = async (r: RuleSet) => {
   try {
     await ignoredError(Removefile, r.path)
     await rulesetsStore.deleteRuleset(r.id)
@@ -133,7 +133,7 @@ const handleDeleteRuleset = async (r: RuleSetType) => {
   }
 }
 
-const handleDisableRuleset = async (r: RuleSetType) => {
+const handleDisableRuleset = async (r: RuleSet) => {
   r.disabled = !r.disabled
   rulesetsStore.editRuleset(r.id, r)
 }
@@ -172,7 +172,7 @@ const _updateAllProvidersRules = async () => {
   }
 }
 
-const generateMenus = (r: RuleSetType) => {
+const generateMenus = (r: RuleSet) => {
   return {
     [RulesetFormat.Yaml]: yamlMenuList,
     [RulesetFormat.Mrs]: mrsMenuList,
