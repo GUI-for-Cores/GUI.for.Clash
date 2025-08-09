@@ -34,6 +34,7 @@ jobs:
           #   GOOS: linux
           #   GOARCH: arm64
     runs-on: ${{ matrix.build.os }}
+    if: github.repository == 'GUI-for-Cores/GUI.for.Clash'
     env:
       APP_NAME: GUI.for.Clash
       ZIP_FILE: GUI.for.Clash-${{ matrix.build.GOOS }}-${{ matrix.build.GOARCH }}.zip
