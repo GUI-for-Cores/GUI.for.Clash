@@ -7,11 +7,11 @@ import {
   UnzipZIPFile,
   HttpGet,
   Exec,
-  Movefile,
-  Removefile,
+  MoveFile,
+  RemoveFile,
   AbsolutePath,
   BrowserOpenURL,
-  Makedir,
+  MakeDir,
   UnzipGZFile,
   FileExists,
 } from '@/bridge'
@@ -93,10 +93,10 @@ export const useCoreBranch = (isAlpha = false) => {
 
       const { update, destroy } = message.info('common.downloading', 10 * 60 * 1_000, () => {
         HttpCancel(downloadCancelId)
-        setTimeout(() => Removefile(downloadCacheFile), 1000)
+        setTimeout(() => RemoveFile(downloadCacheFile), 1000)
       })
 
-      await Makedir(CoreWorkingDirectory)
+      await MakeDir(CoreWorkingDirectory)
 
       await Download(
         asset.browser_download_url,
@@ -110,14 +110,14 @@ export const useCoreBranch = (isAlpha = false) => {
 
       const stableFileName = getKernelFileName()
 
-      await ignoredError(Movefile, CoreFilePath, CoreBakFilePath)
+      await ignoredError(MoveFile, CoreFilePath, CoreBakFilePath)
 
       if (assetName.endsWith('.zip')) {
         if (isAlpha) {
           const tmp = 'data/.cache/alpha'
           await UnzipZIPFile(downloadCacheFile, tmp)
-          await Movefile(`${tmp}/${stableFileName}`, CoreFilePath)
-          await Removefile(tmp)
+          await MoveFile(`${tmp}/${stableFileName}`, CoreFilePath)
+          await RemoveFile(tmp)
         } else {
           await UnzipZIPFile(downloadCacheFile, CoreWorkingDirectory)
         }
@@ -125,7 +125,7 @@ export const useCoreBranch = (isAlpha = false) => {
         await UnzipGZFile(downloadCacheFile, CoreFilePath)
       }
 
-      await Removefile(downloadCacheFile)
+      await RemoveFile(downloadCacheFile)
 
       if (!CoreFilePath.endsWith('.exe')) {
         await ignoredError(Exec, 'chmod', ['+x', await AbsolutePath(CoreFilePath)])
@@ -207,7 +207,7 @@ export const useCoreBranch = (isAlpha = false) => {
   const rollbackCore = async () => {
     await confirm('common.warning', 'settings.kernel.rollback')
 
-    const doRollback = () => Movefile(CoreBakFilePath, CoreFilePath)
+    const doRollback = () => MoveFile(CoreBakFilePath, CoreFilePath)
 
     const { running, branch } = appSettings.app.kernel
     const isCurrentRunning = running && (branch === Branch.Alpha) === isAlpha

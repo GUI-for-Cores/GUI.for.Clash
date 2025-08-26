@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { parse } from 'yaml'
 
-import { Copyfile, Readfile, Writefile, HttpGet, Download, FileExists } from '@/bridge'
+import { CopyFile, ReadFile, WriteFile, HttpGet, Download, FileExists } from '@/bridge'
 import { RulesetsFilePath, EmptyRuleSet, RulesetHubFilePath } from '@/constant'
 import { RulesetBehavior, RulesetFormat } from '@/enums/kernel'
 import {
@@ -40,16 +40,16 @@ export const useRulesetsStore = defineStore('rulesets', () => {
   const rulesetHub = ref<RulesetHub>({ geosite: '', geoip: '', list: [] })
 
   const setupRulesets = async () => {
-    const data = await ignoredError(Readfile, RulesetsFilePath)
+    const data = await ignoredError(ReadFile, RulesetsFilePath)
     data && (rulesets.value = parse(data))
 
-    const list = await ignoredError(Readfile, RulesetHubFilePath)
+    const list = await ignoredError(ReadFile, RulesetHubFilePath)
     list && (rulesetHub.value = JSON.parse(list))
   }
 
   const saveRulesets = debounce(async () => {
     const r = omitArray(rulesets.value, ['updating'])
-    await Writefile(RulesetsFilePath, stringifyNoFolding(r))
+    await WriteFile(RulesetsFilePath, stringifyNoFolding(r))
   }, 500)
 
   const addRuleset = async (r: RuleSet) => {
@@ -92,14 +92,14 @@ export const useRulesetsStore = defineStore('rulesets', () => {
       let isExist = true
 
       if (r.type === 'File') {
-        body = await Readfile(r.url)
+        body = await ReadFile(r.url)
       } else if (r.type === 'Http') {
         const { body: b } = await HttpGet(r.url)
         body = b
       } else if (r.type === 'Manual') {
         isExist = await FileExists(r.path)
         if (isExist) {
-          body = await Readfile(r.path)
+          body = await ReadFile(r.path)
         } else {
           body = stringifyNoFolding(EmptyRuleSet)
         }
@@ -116,7 +116,7 @@ export const useRulesetsStore = defineStore('rulesets', () => {
         (['Http', 'File'].includes(r.type) && r.url !== r.path) ||
         (r.type === 'Manual' && !isExist)
       ) {
-        await Writefile(r.path, stringifyNoFolding(ruleset))
+        await WriteFile(r.path, stringifyNoFolding(ruleset))
       }
 
       r.count = ruleset.payload.length
@@ -124,7 +124,7 @@ export const useRulesetsStore = defineStore('rulesets', () => {
 
     if (r.format === RulesetFormat.Mrs) {
       if (r.type === 'File' && r.url !== r.path) {
-        await Copyfile(r.url, r.path)
+        await CopyFile(r.url, r.path)
       } else if (r.type === 'Http') {
         await Download(r.url, r.path)
       }
@@ -177,7 +177,7 @@ export const useRulesetsStore = defineStore('rulesets', () => {
         'https://github.com/GUI-for-Cores/Ruleset-Hub/releases/download/latest/meta-full.json',
       )
       rulesetHub.value = JSON.parse(body)
-      await Writefile(RulesetHubFilePath, body)
+      await WriteFile(RulesetHubFilePath, body)
     } finally {
       rulesetHubLoading.value = false
     }

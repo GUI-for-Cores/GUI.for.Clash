@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { useI18n, I18nT } from 'vue-i18n'
 
 import { getProvidersRules, updateProvidersRules } from '@/api/kernel'
-import { Removefile, Writefile, BrowserOpenURL } from '@/bridge'
+import { RemoveFile, WriteFile, BrowserOpenURL } from '@/bridge'
 import { DraggableOptions } from '@/constant'
 import { View } from '@/enums/app'
 import { RulesetFormat } from '@/enums/kernel'
@@ -125,7 +125,7 @@ const handleUpdateRuleset = async (r: RuleSet) => {
 
 const handleDeleteRuleset = async (r: RuleSet) => {
   try {
-    await ignoredError(Removefile, r.path)
+    await ignoredError(RemoveFile, r.path)
     await rulesetsStore.deleteRuleset(r.id)
   } catch (error: any) {
     console.error('deleteRuleset: ', error)
@@ -143,7 +143,7 @@ const handleClearRuleset = async (id: string) => {
   if (!r) return
 
   try {
-    await Writefile(r.path, stringifyNoFolding({ payload: [] }))
+    await WriteFile(r.path, stringifyNoFolding({ payload: [] }))
     await _updateProvidersRules(r.name)
     r.count = 0
     rulesetsStore.editRuleset(r.id, r)

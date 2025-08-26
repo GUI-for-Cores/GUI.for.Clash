@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { parse } from 'yaml'
 
-import { Readfile, Writefile } from '@/bridge'
+import { ReadFile, WriteFile } from '@/bridge'
 import { ProfilesFilePath } from '@/constant'
 import { ProxyGroup, RulesetBehavior, RulesetFormat } from '@/enums/kernel'
 import { debounce, ignoredError, stringifyNoFolding } from '@/utils'
@@ -140,7 +140,7 @@ export const useProfilesStore = defineStore('profiles', () => {
   const profiles = ref<ProfileType[]>([])
 
   const setupProfiles = async () => {
-    const data = await ignoredError(Readfile, ProfilesFilePath)
+    const data = await ignoredError(ReadFile, ProfilesFilePath)
     data && (profiles.value = parse(data))
     // compatibility code
     profiles.value.forEach((profile) => {
@@ -157,7 +157,7 @@ export const useProfilesStore = defineStore('profiles', () => {
   }
 
   const saveProfiles = debounce(async () => {
-    await Writefile(ProfilesFilePath, stringifyNoFolding(profiles.value))
+    await WriteFile(ProfilesFilePath, stringifyNoFolding(profiles.value))
   }, 100)
 
   const addProfile = async (p: ProfileType) => {

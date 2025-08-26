@@ -293,8 +293,8 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
         },
         onCoreStopped,
         {
-          stopOutputKeyword: CoreStopOutputKeyword,
-          env: getKernelRuntimeEnv(isAlpha),
+          StopOutputKeyword: CoreStopOutputKeyword,
+          Env: getKernelRuntimeEnv(isAlpha),
         },
       )
     } catch (error) {

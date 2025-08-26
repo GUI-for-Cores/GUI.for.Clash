@@ -3,7 +3,7 @@ import { ref, inject, h } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { parse } from 'yaml'
 
-import { Readfile, Writefile } from '@/bridge'
+import { ReadFile, WriteFile } from '@/bridge'
 import { useSubscribesStore } from '@/stores'
 import { deepClone, ignoredError, message, omitArray, sampleID, stringifyNoFolding } from '@/utils'
 
@@ -37,7 +37,7 @@ const handleSave = async () => {
       name: v.name,
       type: v.type,
     }))
-    await Writefile(
+    await WriteFile(
       path,
       stringifyNoFolding({ proxies: omitArray(proxiesWithId, ['__id_in_gui']) }),
     )
@@ -52,7 +52,7 @@ const handleSave = async () => {
 }
 
 const initProxiesText = async () => {
-  const content = (await ignoredError(Readfile, sub.value.path)) || 'proxies: []'
+  const content = (await ignoredError(ReadFile, sub.value.path)) || 'proxies: []'
   const proxies: Subscription['proxies'] = parse(content).proxies
   const proxiesWithId = proxies.map((proxy) => {
     return {

@@ -3,7 +3,7 @@ import { ref, computed, inject, h } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { parse } from 'yaml'
 
-import { Readfile, Writefile } from '@/bridge'
+import { ReadFile, WriteFile } from '@/bridge'
 import { DraggableOptions } from '@/constant'
 import { RulesetBehavior } from '@/enums/kernel'
 import { type RuleSet, useRulesetsStore } from '@/stores'
@@ -74,7 +74,7 @@ const handleSave = async () => {
   if (!ruleset.value) return
   loading.value = true
   try {
-    await Writefile(ruleset.value.path, stringifyNoFolding({ payload: rulesetList.value }))
+    await WriteFile(ruleset.value.path, stringifyNoFolding({ payload: rulesetList.value }))
     handleSubmit()
   } catch (error: any) {
     message.error(error)
@@ -103,7 +103,7 @@ const handleAdd = () => {
 }
 
 const initRulesetList = async (r: RuleSet) => {
-  const content = (await ignoredError(Readfile, r.path)) || '{}'
+  const content = (await ignoredError(ReadFile, r.path)) || '{}'
   const { payload = [] } = parse(content)
   rulesetList.value.push(...payload)
 }

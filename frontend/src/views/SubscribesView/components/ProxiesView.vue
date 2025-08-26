@@ -3,7 +3,7 @@ import { ref, computed, inject, h } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { parse } from 'yaml'
 
-import { ClipboardSetText, Readfile, Writefile } from '@/bridge'
+import { ClipboardSetText, ReadFile, WriteFile } from '@/bridge'
 import { DraggableOptions } from '@/constant'
 import { useBool } from '@/hooks'
 import { useSubscribesStore } from '@/stores'
@@ -131,7 +131,7 @@ const handleSave = async () => {
       proxies.some((vv) => vv.name === v.name),
     )
     const sortedArray = proxies.map((v) => filteredProxies.find((vv) => vv.name === v.name))
-    await Writefile(path, stringifyNoFolding({ proxies: sortedArray }))
+    await WriteFile(path, stringifyNoFolding({ proxies: sortedArray }))
     await subscribeStore.editSubscribe(id, sub.value)
     handleSubmit()
   } catch (error: any) {
@@ -185,7 +185,7 @@ const onEditEnd = async () => {
 
 const initAllFieldsProxies = async () => {
   if (allFieldsProxies.value.length) return
-  const content = (await ignoredError(Readfile, sub.value!.path)) || '{}'
+  const content = (await ignoredError(ReadFile, sub.value!.path)) || '{}'
   const { proxies: _proxies = [] } = parse(content)
   allFieldsProxies.value = _proxies
 }

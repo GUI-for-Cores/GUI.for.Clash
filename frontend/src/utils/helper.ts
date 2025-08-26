@@ -1,7 +1,7 @@
 import { parse } from 'yaml'
 
 import { deleteConnection, getConnections, useProxy } from '@/api/kernel'
-import { AbsolutePath, Exec, ExitApp, Readfile, Writefile } from '@/bridge'
+import { AbsolutePath, Exec, ExitApp, ReadFile, WriteFile } from '@/bridge'
 import { CoreWorkingDirectory } from '@/constant'
 import { ProxyGroupType } from '@/enums/kernel'
 import i18n from '@/lang'
@@ -405,15 +405,15 @@ export const GetSystemOrKernelProxy = async () => {
 }
 
 export const QuerySchTask = async (taskName: string) => {
-  await Exec('Schtasks', ['/Query', '/TN', taskName, '/XML'], { convert: true })
+  await Exec('Schtasks', ['/Query', '/TN', taskName, '/XML'], { Convert: true })
 }
 
 export const CreateSchTask = async (taskName: string, xmlPath: string) => {
-  await Exec('SchTasks', ['/Create', '/F', '/TN', taskName, '/XML', xmlPath], { convert: true })
+  await Exec('SchTasks', ['/Create', '/F', '/TN', taskName, '/XML', xmlPath], { Convert: true })
 }
 
 export const DeleteSchTask = async (taskName: string) => {
-  await Exec('SchTasks', ['/Delete', '/F', '/TN', taskName], { convert: true })
+  await Exec('SchTasks', ['/Delete', '/F', '/TN', taskName], { Convert: true })
 }
 
 // Others
@@ -455,10 +455,10 @@ export const handleChangeMode = async (mode: 'direct' | 'global' | 'rule') => {
 
 export const addToRuleSet = async (ruleset: 'direct' | 'reject' | 'proxy', payloads: string[]) => {
   const path = `data/rulesets/${ruleset}.yaml`
-  const content = (await ignoredError(Readfile, path)) || '{}'
+  const content = (await ignoredError(ReadFile, path)) || '{}'
   const { payload = [] } = parse(content)
   payload.unshift(...payloads)
-  await Writefile(path, stringifyNoFolding({ payload: [...new Set(payload)] }))
+  await WriteFile(path, stringifyNoFolding({ payload: [...new Set(payload)] }))
 }
 
 export const exitApp = async () => {

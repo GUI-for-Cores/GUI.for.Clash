@@ -1,6 +1,6 @@
 import { parse } from 'yaml'
 
-import { Readfile, Writefile } from '@/bridge'
+import { ReadFile, WriteFile } from '@/bridge'
 import { BuiltInOutbound, CoreConfigFilePath } from '@/constant/kernel'
 import { LogLevel, ProxyGroup } from '@/enums/kernel'
 import { type ProfileType, useSubscribesStore, useRulesetsStore, usePluginsStore } from '@/stores'
@@ -85,7 +85,7 @@ export const generateProxies = async (groups: ProfileType['proxyGroupsConfig']) 
     const sub = subscribesStore.getSubscribeById(subID)
     if (sub) {
       try {
-        const subStr = await Readfile(sub.path)
+        const subStr = await ReadFile(sub.path)
         const { proxies = [] } = parse(subStr)
         proxyMap[sub.id] = proxies
       } catch (error) {
@@ -365,5 +365,5 @@ export const generateConfigFile = async (
     config['log-level'] = LogLevel.Info
   }
 
-  await Writefile(CoreConfigFilePath, header + stringifyNoFolding(config))
+  await WriteFile(CoreConfigFilePath, header + stringifyNoFolding(config))
 }
