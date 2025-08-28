@@ -73,8 +73,8 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
       testUrl: DefaultTestURL,
       concurrencyLimit: DefaultConcurrencyLimit,
       controllerCloseMode: ControllerCloseMode.All,
-      main: DefaultCoreConfig(),
-      alpha: DefaultCoreConfig(),
+      main: undefined as any,
+      alpha: undefined as any,
     },
     addPluginToMenu: false,
     addGroupToMenu: false,
@@ -94,6 +94,11 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
     const data = await ignoredError(ReadFile, UserFilePath)
     data && (app.value = Object.assign(app.value, parse(data)))
 
+    if (!app.value.kernel.main) {
+      app.value.kernel.main = DefaultCoreConfig()
+      app.value.kernel.alpha = DefaultCoreConfig()
+    }
+
     if (app.value.kernel.controllerCloseMode === undefined) {
       app.value.kernel.controllerCloseMode = ControllerCloseMode.All
     }
@@ -109,11 +114,6 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
       app.value.fontFamily = app.value['font-family']
       // @ts-expect-error(Deprecated)
       delete app.value['font-family']
-    }
-
-    if (!app.value.kernel.main) {
-      app.value.kernel.main = DefaultCoreConfig()
-      app.value.kernel.alpha = DefaultCoreConfig()
     }
 
     if (!app.value.kernel.cardColumns) {
