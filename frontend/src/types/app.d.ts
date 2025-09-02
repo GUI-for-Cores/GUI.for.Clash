@@ -90,6 +90,7 @@ type AppSettings = {
   multipleInstance: boolean
   rollingRelease: boolean
   debugOutline: boolean
+  debugNoAnimation: boolean
   pages: string[]
 }
 
