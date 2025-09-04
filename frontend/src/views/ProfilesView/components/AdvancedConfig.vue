@@ -47,17 +47,17 @@ const { t } = useI18n()
       />
     </div>
   </div>
-  <div class="form-item" :class="{ 'flex-start': fields.authentication.length !== 0 }">
+  <div class="form-item" :class="{ 'items-start': fields.authentication.length !== 0 }">
     {{ t('kernel.authentication') }}
     <InputList v-model="fields.authentication" placeholder="username:password" />
   </div>
-  <div class="form-item" :class="{ 'flex-start': fields['skip-auth-prefixes'].length !== 0 }">
+  <div class="form-item" :class="{ 'items-start': fields['skip-auth-prefixes'].length !== 0 }">
     {{ t('kernel.skip-auth-prefixes') }}
     <InputList v-model="fields['skip-auth-prefixes']" placeholder="127.0.0.1/8" />
   </div>
   <div
     v-show="props.profile.generalConfig['allow-lan']"
-    :class="{ 'flex-start': fields['lan-allowed-ips'].length !== 0 }"
+    :class="{ 'items-start': fields['lan-allowed-ips'].length !== 0 }"
     class="form-item"
   >
     {{ t('kernel.lan-allowed-ips') }}
@@ -65,7 +65,7 @@ const { t } = useI18n()
   </div>
   <div
     v-show="props.profile.generalConfig['allow-lan']"
-    :class="{ 'flex-start': fields['lan-disallowed-ips'].length !== 0 }"
+    :class="{ 'items-start': fields['lan-disallowed-ips'].length !== 0 }"
     class="form-item"
   >
     {{ t('kernel.lan-disallowed-ips') }}
@@ -177,9 +177,3 @@ const { t } = useI18n()
     <Input v-model="fields['global-ua']" editable />
   </div>
 </template>
-
-<style lang="less" scoped>
-.flex-start {
-  align-items: flex-start;
-}
-</style>

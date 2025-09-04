@@ -25,7 +25,7 @@ const [showMore, toggleMore] = useBool(false)
       {{ t('kernel.dns.listen') }}
       <Input v-model="fields['listen']" editable />
     </div>
-    <div class="form-item" :class="{ 'flex-start': fields['nameserver'].length !== 0 }">
+    <div class="form-item" :class="{ 'items-start': fields['nameserver'].length !== 0 }">
       {{ t('kernel.dns.nameserver') }}
       <InputList v-model="fields['nameserver']" />
     </div>
@@ -57,7 +57,7 @@ const [showMore, toggleMore] = useBool(false)
       <div
         v-if="fields['use-hosts']"
         class="form-item"
-        :class="{ 'flex-start': Object.keys(fields['hosts']).length !== 0 }"
+        :class="{ 'items-start': Object.keys(fields['hosts']).length !== 0 }"
       >
         {{ t('kernel.dns.hosts') }}
         <KeyValueEditor
@@ -66,7 +66,7 @@ const [showMore, toggleMore] = useBool(false)
         />
       </div>
 
-      <div class="form-item" :class="{ 'flex-start': fields['default-nameserver'].length !== 0 }">
+      <div class="form-item" :class="{ 'items-start': fields['default-nameserver'].length !== 0 }">
         {{ t('kernel.dns.default-nameserver') }}
         <InputList v-model="fields['default-nameserver']" />
       </div>
@@ -80,7 +80,7 @@ const [showMore, toggleMore] = useBool(false)
           {{ t('kernel.dns.fake-ip-filter-mode.name') }}
           <Radio v-model="fields['fake-ip-filter-mode']" :options="FakeipFilterMode" />
         </div>
-        <div class="form-item" :class="{ 'flex-start': fields['fake-ip-filter'].length !== 0 }">
+        <div class="form-item" :class="{ 'items-start': fields['fake-ip-filter'].length !== 0 }">
           {{ t('kernel.dns.fake-ip-filter') }}
           <InputList v-model="fields['fake-ip-filter']" />
         </div>
@@ -88,7 +88,7 @@ const [showMore, toggleMore] = useBool(false)
 
       <div
         class="form-item"
-        :class="{ 'flex-start': fields['proxy-server-nameserver'].length !== 0 }"
+        :class="{ 'items-start': fields['proxy-server-nameserver'].length !== 0 }"
       >
         {{ t('kernel.dns.proxy-server-nameserver') }}
         <InputList v-model="fields['proxy-server-nameserver']" />
@@ -96,7 +96,7 @@ const [showMore, toggleMore] = useBool(false)
 
       <div
         class="form-item"
-        :class="{ 'flex-start': Object.keys(fields['nameserver-policy']).length !== 0 }"
+        :class="{ 'items-start': Object.keys(fields['nameserver-policy']).length !== 0 }"
       >
         {{ t('kernel.dns.nameserver-policy') }}
         <KeyValueEditor
@@ -105,13 +105,13 @@ const [showMore, toggleMore] = useBool(false)
         />
       </div>
 
-      <div class="form-item" :class="{ 'flex-start': fields['fallback'].length !== 0 }">
+      <div class="form-item" :class="{ 'items-start': fields['fallback'].length !== 0 }">
         {{ t('kernel.dns.fallback') }}
         <InputList v-model="fields['fallback']" />
       </div>
 
       <template v-if="fields['fallback'].length !== 0">
-        <div class="form-item flex-start">
+        <div class="form-item items-start">
           {{ t('kernel.dns.fallback-filter.name') }}
           <div style="width: 70%">
             <div class="form-item">
@@ -124,21 +124,21 @@ const [showMore, toggleMore] = useBool(false)
             </div>
             <div
               class="form-item"
-              :class="{ 'flex-start': fields['fallback-filter'].geosite.length !== 0 }"
+              :class="{ 'items-start': fields['fallback-filter'].geosite.length !== 0 }"
             >
               {{ t('kernel.dns.fallback-filter.geosite') }}
               <InputList v-model="fields['fallback-filter'].geosite" />
             </div>
             <div
               class="form-item"
-              :class="{ 'flex-start': fields['fallback-filter'].ipcidr.length !== 0 }"
+              :class="{ 'items-start': fields['fallback-filter'].ipcidr.length !== 0 }"
             >
               {{ t('kernel.dns.fallback-filter.ipcidr') }}
               <InputList v-model="fields['fallback-filter'].ipcidr" />
             </div>
             <div
               class="form-item"
-              :class="{ 'flex-start': fields['fallback-filter'].domain.length !== 0 }"
+              :class="{ 'items-start': fields['fallback-filter'].domain.length !== 0 }"
             >
               {{ t('kernel.dns.fallback-filter.domain') }}
               <InputList v-model="fields['fallback-filter'].domain" />
@@ -149,9 +149,3 @@ const [showMore, toggleMore] = useBool(false)
     </div>
   </template>
 </template>
-
-<style lang="less" scoped>
-.flex-start {
-  align-items: flex-start;
-}
-</style>

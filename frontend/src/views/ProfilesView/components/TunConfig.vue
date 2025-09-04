@@ -25,7 +25,7 @@ const { t } = useI18n()
     </div>
     <div
       v-show="fields['auto-route']"
-      :class="{ 'flex-start': fields['route-address'].length !== 0 }"
+      :class="{ 'items-start': fields['route-address'].length !== 0 }"
       class="form-item"
     >
       {{ t('kernel.tun.route-address') }}
@@ -35,7 +35,7 @@ const { t } = useI18n()
       {{ t('kernel.tun.auto-detect-interface') }}
       <Switch v-model="fields['auto-detect-interface']" />
     </div>
-    <div class="form-item" :class="{ 'flex-start': fields['dns-hijack'].length !== 0 }">
+    <div class="form-item" :class="{ 'items-start': fields['dns-hijack'].length !== 0 }">
       {{ t('kernel.tun.dns-hijack') }}
       <InputList v-model="fields['dns-hijack']" />
     </div>
@@ -57,9 +57,3 @@ const { t } = useI18n()
     </div>
   </template>
 </template>
-
-<style lang="less" scoped>
-.flex-start {
-  align-items: flex-start;
-}
-</style>

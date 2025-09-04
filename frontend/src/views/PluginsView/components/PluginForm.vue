@@ -306,7 +306,7 @@ defineExpose({ modalSlots })
               {{ t('plugin.confKey') }}
               <Input v-model="conf.key" placeholder="key" class="min-w-[75%]" />
             </div>
-            <div class="form-item" :class="{ 'flex-start': conf.value.length !== 0 }">
+            <div class="form-item" :class="{ 'items-start': conf.value.length !== 0 }">
               {{ t('plugin.confDefault') }}
               <Component
                 :is="conf.component"
