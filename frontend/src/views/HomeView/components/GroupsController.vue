@@ -319,6 +319,7 @@ onActivated(() => {
             :selected="proxy.name === group.now"
             :key="proxy.name"
             @click="useProxyWithCatchError(group, proxy)"
+            class="cursor-pointer"
           >
             <Button
               @click.stop="handleProxyDelay(proxy.name)"
