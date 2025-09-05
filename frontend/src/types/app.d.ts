@@ -74,6 +74,7 @@ type AppSettings = {
     testUrl: string
     concurrencyLimit: number
     controllerCloseMode: ControllerCloseMode
+    controllerSensitivity: number
     main: {
       env: Recordable
       args: string[]
