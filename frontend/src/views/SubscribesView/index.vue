@@ -121,9 +121,9 @@ const handleShowSubForm = (id?: string) => {
 const handleUpdateSubs = async () => {
   try {
     await subscribeStore.updateSubscribes()
-    const { running, profile } = appSettingsStore.app.kernel
-    if (running && subscribeStore.getSubscribeById(profile)?.useInternal) {
-      await kernelApiStore.restartKernel()
+    const { profile } = appSettingsStore.app.kernel
+    if (kernelApiStore.running && subscribeStore.getSubscribeById(profile)?.useInternal) {
+      await kernelApiStore.restartCore()
     } else {
       await _updateAllProviderProxies()
     }
@@ -157,9 +157,9 @@ const handleEditProxies = (id: string, editor = false) => {
 const handleUpdateSub = async (s: Subscription) => {
   try {
     await subscribeStore.updateSubscribe(s.id)
-    const { running, profile } = appSettingsStore.app.kernel
-    if (running && s.useInternal && profile === s.id) {
-      await kernelApiStore.restartKernel()
+    const { profile } = appSettingsStore.app.kernel
+    if (kernelApiStore.running && s.useInternal && profile === s.id) {
+      await kernelApiStore.restartCore()
     } else {
       await _updateProviderProxies(s.id)
     }
@@ -185,7 +185,7 @@ const handleDisableSub = async (s: Subscription) => {
 }
 
 const _updateProviderProxies = async (provider: string) => {
-  if (appSettingsStore.app.kernel.running) {
+  if (kernelApiStore.running) {
     await kernelApiStore.refreshProviderProxies()
     if (kernelApiStore.providers[provider]) {
       await updateProvidersProxies(provider)
@@ -195,7 +195,7 @@ const _updateProviderProxies = async (provider: string) => {
 }
 
 const _updateAllProviderProxies = async () => {
-  if (appSettingsStore.app.kernel.running) {
+  if (kernelApiStore.running) {
     await kernelApiStore.refreshProviderProxies()
     const ids = Object.keys(kernelApiStore.providers).filter(
       (v) => v !== 'default' && !kernelApiStore.proxies[v],

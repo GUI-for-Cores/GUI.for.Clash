@@ -7,7 +7,13 @@ import { RemoveFile, WriteFile, BrowserOpenURL } from '@/bridge'
 import { DraggableOptions } from '@/constant'
 import { View } from '@/enums/app'
 import { RulesetFormat } from '@/enums/kernel'
-import { type RuleSet, useRulesetsStore, useAppSettingsStore, useEnvStore } from '@/stores'
+import {
+  type RuleSet,
+  useRulesetsStore,
+  useAppSettingsStore,
+  useEnvStore,
+  useKernelApiStore,
+} from '@/stores'
 import {
   debounce,
   formatRelativeTime,
@@ -57,6 +63,7 @@ const { t } = useI18n()
 const [Modal, modalApi] = useModal({})
 const envStore = useEnvStore()
 const rulesetsStore = useRulesetsStore()
+const kernelApiStore = useKernelApiStore()
 const appSettingsStore = useAppSettingsStore()
 
 const handleImportRuleset = async () => {
@@ -154,7 +161,7 @@ const handleClearRuleset = async (id: string) => {
 }
 
 const _updateProvidersRules = async (ruleset: string) => {
-  if (appSettingsStore.app.kernel.running) {
+  if (kernelApiStore.running) {
     const { providers } = await getProvidersRules()
     if (providers[ruleset]) {
       await updateProvidersRules(ruleset)
@@ -163,7 +170,7 @@ const _updateProvidersRules = async (ruleset: string) => {
 }
 
 const _updateAllProvidersRules = async () => {
-  if (appSettingsStore.app.kernel.running) {
+  if (kernelApiStore.running) {
     const { providers } = await getProvidersRules()
     const rulesets = Object.keys(providers)
     for (let i = 0; i < rulesets.length; i++) {

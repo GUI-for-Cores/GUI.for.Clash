@@ -64,8 +64,6 @@ type AppSettings = {
   kernel: {
     branch: Branch
     profile: string
-    pid: number
-    running: boolean
     autoClose: boolean
     unAvailable: boolean
     cardMode: boolean

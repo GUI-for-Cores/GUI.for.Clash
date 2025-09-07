@@ -60,7 +60,7 @@ const secondaryMenusList: Menu[] = [
     handler: async (id: string) => {
       appSettingsStore.app.kernel.profile = id
       try {
-        await kernelApiStore.startKernel()
+        await kernelApiStore.startCore()
       } catch (error: any) {
         message.error(error)
         console.error(error)
@@ -163,9 +163,9 @@ const handleShowProfileForm = (id?: string, step = 0) => {
   modalApi.setProps({
     minWidth: '70',
     onOk: async () => {
-      const { running, profile } = appSettingsStore.app.kernel
-      if (running && profile === id) {
-        await kernelApiStore.restartKernel()
+      const { profile } = appSettingsStore.app.kernel
+      if (kernelApiStore.running && profile === id) {
+        await kernelApiStore.restartCore()
       }
     },
   })
@@ -173,8 +173,8 @@ const handleShowProfileForm = (id?: string, step = 0) => {
 }
 
 const handleDeleteProfile = async (p: ProfileType) => {
-  const { profile, running } = appSettingsStore.app.kernel
-  if (profile === p.id && running) {
+  const { profile } = appSettingsStore.app.kernel
+  if (profile === p.id && kernelApiStore.running) {
     message.warn('profiles.shouldStop')
     return
   }
@@ -192,8 +192,8 @@ const handleUseProfile = async (p: ProfileType) => {
 
   appSettingsStore.app.kernel.profile = p.id
 
-  if (appSettingsStore.app.kernel.running) {
-    await kernelApiStore.restartKernel()
+  if (kernelApiStore.running) {
+    await kernelApiStore.restartCore()
   }
 }
 

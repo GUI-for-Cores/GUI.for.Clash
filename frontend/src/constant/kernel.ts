@@ -11,6 +11,7 @@ import { useEnvStore } from '@/stores'
 
 export const CoreStopOutputKeyword = 'start initial compatible provider default'
 export const CoreWorkingDirectory = 'data/mihomo'
+export const CorePidFilePath = CoreWorkingDirectory + '/pid.txt'
 export const CoreConfigFilePath = CoreWorkingDirectory + '/config.yaml'
 export const CoreCacheFilePath = CoreWorkingDirectory + '/cache.db'
 
