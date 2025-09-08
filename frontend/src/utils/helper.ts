@@ -469,14 +469,21 @@ export const exitApp = async () => {
   const appSettings = useAppSettingsStore()
   const kernelApiStore = useKernelApiStore()
 
+  appStore.isAppExiting = true
+
   if (kernelApiStore.running && appSettings.app.closeKernelOnExit) {
-    await kernelApiStore.stopCore()
+    try {
+      await kernelApiStore.stopCore()
+    } catch (error: any) {
+      appStore.isAppExiting = false
+      message.error(error)
+      return
+    }
     if (appSettings.app.autoSetSystemProxy) {
       await envStore.clearSystemProxy()
     }
   }
 
-  appStore.isAppExiting = true
   let timedout = false
   const { destroy } = message.info('titlebar.waiting', 10 * 60 * 1000)
 
@@ -486,8 +493,6 @@ export const exitApp = async () => {
     destroy()
     confirm('Warning', t('titlebar.timeout', { reason: t('titlebar.pluginTimeout') })).then(ExitApp)
   }, 10_000)
-
-  appStore.isAppExiting = true
 
   try {
     await pluginsStore.onShutdownTrigger()

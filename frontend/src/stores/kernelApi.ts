@@ -289,6 +289,8 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
   const startCore = async () => {
     if (running.value) throw 'The core is already running'
 
+    logsStore.clearKernelLog()
+
     const { profile: profileID, branch } = appSettingsStore.app.kernel
     const profile = profilesStore.getProfileById(profileID)
     if (!profile) throw 'Choose a profile first'
@@ -314,8 +316,6 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
     await pluginsStore.onBeforeCoreStopTrigger()
     await KillProcess(corePid.value)
     await (isCoreStartedByThisInstance ? coreStoppedPromise : onCoreStopped())
-
-    logsStore.clearKernelLog()
   }
 
   const restartCore = async (cleanupTask?: () => Promise<any>) => {
