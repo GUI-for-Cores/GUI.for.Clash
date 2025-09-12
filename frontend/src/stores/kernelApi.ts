@@ -204,7 +204,9 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
   /* Bridge API */
   const corePid = ref(-1)
   const running = ref(false)
-  const loading = ref(false)
+  const starting = ref(false)
+  const stopping = ref(false)
+  const restarting = ref(false)
   const coreStateLoading = ref(true)
   let isCoreStartedByThisInstance = false
   let coreStoppedResolver: (value: unknown) => void
@@ -253,7 +255,6 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
     await WriteFile(CorePidFilePath, String(pid))
 
     corePid.value = pid
-    loading.value = false
     running.value = true
     isCoreStartedByThisInstance = true
     coreStoppedPromise = new Promise((r) => (coreStoppedResolver = r))
@@ -273,7 +274,6 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
     await RemoveFile(CorePidFilePath)
 
     corePid.value = -1
-    loading.value = false
     running.value = false
 
     if (appSettingsStore.app.autoSetSystemProxy) {
@@ -295,8 +295,7 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
     const profile = profilesStore.getProfileById(profileID)
     if (!profile) throw 'Choose a profile first'
 
-    loading.value = true
-
+    starting.value = true
     try {
       await generateConfigFile(profile, (config) =>
         pluginsStore.onBeforeCoreStartTrigger(config, profile),
@@ -304,24 +303,33 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
       const isAlpha = branch === Branch.Alpha
       const pid = await runCoreProcess(isAlpha)
       pid && (await onCoreStarted(pid))
-    } catch (error) {
-      loading.value = false
-      throw error
+    } finally {
+      starting.value = false
     }
   }
 
   const stopCore = async () => {
     if (!running.value) throw 'The core is not running'
 
-    await pluginsStore.onBeforeCoreStopTrigger()
-    await KillProcess(corePid.value)
-    await (isCoreStartedByThisInstance ? coreStoppedPromise : onCoreStopped())
+    stopping.value = true
+    try {
+      await pluginsStore.onBeforeCoreStopTrigger()
+      await KillProcess(corePid.value)
+      await (isCoreStartedByThisInstance ? coreStoppedPromise : onCoreStopped())
+    } finally {
+      stopping.value = false
+    }
   }
 
   const restartCore = async (cleanupTask?: () => Promise<any>) => {
-    await stopCore()
-    await cleanupTask?.()
-    await startCore()
+    restarting.value = true
+    try {
+      await stopCore()
+      await cleanupTask?.()
+      await startCore()
+    } finally {
+      restarting.value = false
+    }
   }
 
   const getProxyPort = ():
@@ -376,7 +384,9 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
     updateCoreState,
     pid: corePid,
     running,
-    loading,
+    starting,
+    stopping,
+    restarting,
     coreStateLoading,
     config,
     proxies,
