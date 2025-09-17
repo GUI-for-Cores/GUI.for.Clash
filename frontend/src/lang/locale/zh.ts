@@ -568,6 +568,7 @@ export default {
     },
     lang: {
       name: '语言',
+      load: '加载语言文件',
       zh: '简体中文',
       en: 'English',
     },
