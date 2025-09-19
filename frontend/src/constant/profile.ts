@@ -60,6 +60,7 @@ export const TunConfigDefaults = (): ProfileType['tunConfig'] => ({
   stack: 'Mixed',
   'auto-route': true,
   'route-address': [],
+  'route-exclude-address': [],
   'auto-detect-interface': true,
   'dns-hijack': ['any:53'],
   device: '',

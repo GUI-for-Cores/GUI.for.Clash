@@ -31,6 +31,14 @@ const { t } = useI18n()
       {{ t('kernel.tun.route-address') }}
       <InputList v-model="fields['route-address']" placeholder="0.0.0.0/1 ::/1" />
     </div>
+    <div
+      v-show="fields['auto-route']"
+      :class="{ 'items-start': fields['route-exclude-address'].length !== 0 }"
+      class="form-item"
+    >
+      {{ t('kernel.tun.route-exclude-address') }}
+      <InputList v-model="fields['route-exclude-address']" placeholder="192.168.0.0/16 fc00::/7" />
+    </div>
     <div class="form-item">
       {{ t('kernel.tun.auto-detect-interface') }}
       <Switch v-model="fields['auto-detect-interface']" />

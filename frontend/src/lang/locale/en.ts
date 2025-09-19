@@ -96,6 +96,7 @@ export default {
       device: 'Device',
       'auto-route': 'Auto Route',
       'route-address': 'Route Address',
+      'route-exclude-address': 'Route Exclude Address',
       'auto-detect-interface': 'Auto Detect Interface',
       'dns-hijack': 'DNS Hijack',
       'strict-route': 'Strict Route',

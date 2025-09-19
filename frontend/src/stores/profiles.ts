@@ -62,6 +62,7 @@ export type ProfileType = {
     stack: string
     'auto-route': boolean
     'route-address': string[]
+    'route-exclude-address': string[]
     'auto-detect-interface': boolean
     'dns-hijack': string[]
     device: string
@@ -144,6 +145,9 @@ export const useProfilesStore = defineStore('profiles', () => {
     data && (profiles.value = parse(data))
     // compatibility code
     profiles.value.forEach((profile) => {
+      if (profile.tunConfig['route-exclude-address'] === undefined) {
+        profile.tunConfig['route-exclude-address'] = []
+      }
       profile.rulesConfig.forEach((rule) => {
         if (!rule['ruleset-type']) {
           rule['ruleset-type'] = 'file'

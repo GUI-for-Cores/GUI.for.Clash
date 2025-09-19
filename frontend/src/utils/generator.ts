@@ -266,7 +266,15 @@ export const generateConfig = async (originalProfile: ProfileType) => {
   const config: Record<string, any> = {
     ...profile.generalConfig,
     ...profile.advancedConfig,
-    tun: profile.tunConfig,
+    tun: {
+      ...profile.tunConfig,
+      'route-address': profile.tunConfig['route-address'].length
+        ? profile.tunConfig['route-address']
+        : undefined,
+      'route-exclude-address': profile.tunConfig['route-exclude-address'].length
+        ? profile.tunConfig['route-exclude-address']
+        : undefined,
+    },
     dns: profile.dnsConfig,
     hosts: {},
   }
