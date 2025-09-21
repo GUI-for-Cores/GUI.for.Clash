@@ -14,6 +14,7 @@ import {
   MakeDir,
   UnzipGZFile,
   FileExists,
+  ReadDir,
 } from '@/bridge'
 import { CoreWorkingDirectory } from '@/constant/kernel'
 import { Branch } from '@/enums/app'
@@ -89,10 +90,9 @@ export const useCoreBranch = (isAlpha = false) => {
       }
 
       const downloadCacheFile = `data/.cache/${assetName}`
-      const downloadCancelId = downloadCacheFile
 
       const { update, destroy } = message.info('common.downloading', 10 * 60 * 1_000, () => {
-        HttpCancel(downloadCancelId)
+        HttpCancel(downloadCacheFile)
         setTimeout(() => RemoveFile(downloadCacheFile), 1000)
       })
 
@@ -105,22 +105,18 @@ export const useCoreBranch = (isAlpha = false) => {
         (progress, total) => {
           update(t('common.downloading') + ((progress / total) * 100).toFixed(2) + '%')
         },
-        { CancelId: downloadCancelId },
+        { CancelId: downloadCacheFile },
       ).finally(destroy)
-
-      const stableFileName = getKernelFileName()
 
       await ignoredError(MoveFile, CoreFilePath, CoreBakFilePath)
 
       if (assetName.endsWith('.zip')) {
-        if (isAlpha) {
-          const tmp = 'data/.cache/alpha'
-          await UnzipZIPFile(downloadCacheFile, tmp)
-          await MoveFile(`${tmp}/${stableFileName}`, CoreFilePath)
-          await RemoveFile(tmp)
-        } else {
-          await UnzipZIPFile(downloadCacheFile, CoreWorkingDirectory)
-        }
+        const tmp = `data/.cache/${isAlpha ? 'alpha' : 'stable'}`
+        await UnzipZIPFile(downloadCacheFile, tmp)
+        const name = (await ReadDir(tmp)).find((v) => v.name.startsWith('mihomo'))?.name
+        if (!name) throw 'The Core file was not found in the compressed package'
+        await MoveFile(`${tmp}/${name}`, CoreFilePath)
+        await RemoveFile(tmp)
       } else {
         await UnzipGZFile(downloadCacheFile, CoreFilePath)
       }
