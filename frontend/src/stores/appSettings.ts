@@ -9,6 +9,7 @@ import {
   WindowSetSystemDefaultTheme,
   WindowIsMaximised,
   WindowIsMinimised,
+  MoveFile,
 } from '@/bridge'
 import {
   Colors,
@@ -20,7 +21,12 @@ import {
   UserFilePath,
   LocalesFilePath,
 } from '@/constant/app'
-import { CorePidFilePath, DefaultConnections, DefaultCoreConfig } from '@/constant/kernel'
+import {
+  CorePidFilePath,
+  CoreWorkingDirectory,
+  DefaultConnections,
+  DefaultCoreConfig,
+} from '@/constant/kernel'
 import {
   Theme,
   WindowStartState,
@@ -32,7 +38,15 @@ import {
   Branch,
 } from '@/enums/app'
 import i18n, { loadLocaleMessages } from '@/lang'
-import { debounce, updateTrayMenus, APP_TITLE, ignoredError, APP_VERSION, sleep } from '@/utils'
+import {
+  debounce,
+  updateTrayMenus,
+  APP_TITLE,
+  ignoredError,
+  APP_VERSION,
+  sleep,
+  getKernelFileName,
+} from '@/utils'
 
 import type { AppSettings } from '@/types/app'
 
@@ -167,6 +181,21 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
       delete app.value.kernel.running
       // @ts-expect-error(Deprecated)
       delete app.value.kernel.pid
+    }
+
+    const files = await ReadDir(CoreWorkingDirectory).catch(() => [])
+    for (const file of files) {
+      if (
+        file.name.startsWith('mihomo') &&
+        ![getKernelFileName(), getKernelFileName(true)].includes(file.name)
+      ) {
+        const isAlpha = file.name.includes('-alpha')
+        const isBak = file.name.endsWith('.bak')
+        await MoveFile(
+          `${CoreWorkingDirectory}/${file.name}`,
+          `${CoreWorkingDirectory}/${getKernelFileName(isAlpha)}${isBak ? '.bak' : ''}`,
+        )
+      }
     }
   }
 
