@@ -413,6 +413,7 @@ export default {
     mixinSettings: {
       name: 'Mixin',
       priority: 'Priority',
+      format: 'Format',
       mixin: 'Mixin',
       gui: 'GUI',
     },

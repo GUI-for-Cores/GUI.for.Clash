@@ -314,7 +314,7 @@ export const RulesConfigDefaults = (ids: string[]): ProfileType['rulesConfig'] =
 ]
 
 export const MixinConfigDefaults = (): ProfileType['mixinConfig'] => {
-  return { priority: 'mixin', config: '' }
+  return { priority: 'mixin', format: 'json', config: '' }
 }
 
 export const ScriptConfigDefaults = (): ProfileType['scriptConfig'] => {

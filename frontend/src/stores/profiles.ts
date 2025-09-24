@@ -130,6 +130,7 @@ export type ProfileType = {
   }[]
   mixinConfig: {
     priority: 'mixin' | 'gui'
+    format: 'json' | 'yaml'
     config: string
   }
   scriptConfig: {
@@ -145,6 +146,9 @@ export const useProfilesStore = defineStore('profiles', () => {
     data && (profiles.value = parse(data))
     // compatibility code
     profiles.value.forEach((profile) => {
+      if (!profile.mixinConfig.format) {
+        profile.mixinConfig.format = 'json'
+      }
       if (profile.tunConfig['route-exclude-address'] === undefined) {
         profile.tunConfig['route-exclude-address'] = []
       }
