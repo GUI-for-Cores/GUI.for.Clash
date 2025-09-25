@@ -27,7 +27,7 @@ export const AdvancedConfigDefaults = (): ProfileType['advancedConfig'] => ({
   'external-ui-name': '',
   'external-ui-url': '',
   'unified-delay': true,
-  'tcp-concurrent': true,
+  'tcp-concurrent': false,
   authentication: [],
   'skip-auth-prefixes': ['127.0.0.1/8', '::1/128'],
   tls: {

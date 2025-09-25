@@ -33,7 +33,7 @@ const MixinPriorityOptions = [
 
 const MixinFormatOptions = [
   { label: 'JSON', value: 'json' },
-  { label: 'Yaml', value: 'yaml' },
+  { label: 'YAML', value: 'yaml' },
 ]
 
 const MixinEditorKey = ref(0)
