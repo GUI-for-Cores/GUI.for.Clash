@@ -37,7 +37,7 @@ import {
   ControllerCloseMode,
   Branch,
 } from '@/enums/app'
-import i18n, { loadLocaleMessages } from '@/lang'
+import i18n, { loadLocaleMessages, reloadLocale } from '@/lang'
 import {
   debounce,
   updateTrayMenus,
@@ -107,7 +107,7 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
 
   const localesLoading = ref(false)
   const locales = ref<{ label: string; value: string }[]>([])
-  const loadLocales = async (delay = false) => {
+  const loadLocales = async (delay = true, reload = true) => {
     localesLoading.value = true
     locales.value = [
       {
@@ -128,6 +128,7 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
       })
       locales.value.push(...files)
     }
+    reload && (await reloadLocale())
     delay && (await sleep(200))
     localesLoading.value = false
   }
@@ -144,7 +145,7 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
       latestUserSettings = ''
     }
 
-    await loadLocales()
+    await loadLocales(false, false)
 
     if (!app.value.kernel.main) {
       app.value.kernel.main = DefaultCoreConfig()
