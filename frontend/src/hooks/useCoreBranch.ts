@@ -70,7 +70,7 @@ export const useCoreBranch = (isAlpha = false) => {
   const CoreFilePath = `${CoreWorkingDirectory}/${getKernelFileName(isAlpha)}`
   const CoreBakFilePath = `${CoreFilePath}.bak`
 
-  const downloadCore = async () => {
+  const downloadCore = async (cpuLevel?: 'v1' | 'v2' | 'v3') => {
     downloading.value = true
     try {
       const { body } = await HttpGet<Record<string, any>>(releaseUrl, {
@@ -79,7 +79,7 @@ export const useCoreBranch = (isAlpha = false) => {
       if (body.message) throw body.message
 
       const { assets, name } = body
-      const assetName = getKernelAssetFileName(isAlpha ? remoteVersion.value : name)
+      const assetName = getKernelAssetFileName(isAlpha ? remoteVersion.value : name, cpuLevel)
       const asset = assets.find((v: any) => v.name === assetName)
       if (!asset) throw 'Asset Not Found:' + assetName
       if (asset.uploader.type !== 'Bot') {

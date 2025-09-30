@@ -510,12 +510,12 @@ export const getKernelFileName = (isAlpha = false) => {
   return `mihomo${alpha}${fileSuffix}`
 }
 
-export const getKernelAssetFileName = (version: string) => {
+export const getKernelAssetFileName = (version: string, cpuLevel: 'v1' | 'v2' | 'v3' = 'v3') => {
   const envStore = useEnvStore()
   const { os, arch } = envStore.env
-  const cpuLevel = arch === 'amd64' ? '-v3' : ''
+  const cpuLevelFlag = arch === 'amd64' ? `-${cpuLevel}` : ''
   const suffix = { windows: '.zip', linux: '.gz', darwin: '.gz' }[os]
-  return `mihomo-${os}-${arch}${cpuLevel}-${version}${suffix}`
+  return `mihomo-${os}-${arch}${cpuLevelFlag}-${version}${suffix}`
 }
 
 export const processMagicVariables = (str: string) => {

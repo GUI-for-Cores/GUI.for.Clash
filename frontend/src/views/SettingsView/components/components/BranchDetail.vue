@@ -99,15 +99,19 @@ const handleClearCoreCache = async () => {
       :
       {{ remoteVersionLoading ? 'Loading' : remoteVersion }}
     </Tag>
-    <Button
-      v-show="!localVersionLoading && !remoteVersionLoading && updatable"
-      @click="downloadCore"
-      :loading="downloading"
-      size="small"
-      type="primary"
-    >
-      {{ t('kernel.update') }} : {{ remoteVersion }}
-    </Button>
+    <Dropdown v-show="!localVersionLoading && !remoteVersionLoading && updatable">
+      <Button @click="downloadCore()" :loading="downloading" size="small" type="primary">
+        {{ t('kernel.update') }} : {{ remoteVersion }}
+      </Button>
+      <template #overlay>
+        <div v-if="!downloading" class="flex flex-col gap-4 min-w-64 p-4">
+          <Button @click="downloadCore('v1')" type="text"> v1 </Button>
+          <Button @click="downloadCore('v2')" type="text"> v2 </Button>
+          <Button @click="downloadCore('v3')" type="text"> v3(default) </Button>
+        </div>
+      </template>
+    </Dropdown>
+
     <Button
       v-show="!localVersionLoading && !remoteVersionLoading && restartable"
       @click="restartCore"
