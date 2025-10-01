@@ -5,7 +5,7 @@ import useI18n from '@/lang'
 import { debounce } from '@/utils'
 
 export interface Props {
-  modelValue: string | number
+  modelValue: string | number | undefined
   autoSize?: boolean
   placeholder?: string
   type?: 'number' | 'text' | 'code'
@@ -116,7 +116,9 @@ defineExpose({
       class="editable flex-1 overflow-hidden whitespace-nowrap text-ellipsis"
     >
       <Icon v-if="disabled" icon="forbidden" class="disabled shrink-0" />
-      {{ modelValue || t('common.none') }}
+      <slot name="editable" v-bind="{ value: modelValue }">
+        {{ modelValue || t('common.none') }}
+      </slot>
     </div>
     <template v-else>
       <CodeViewer
