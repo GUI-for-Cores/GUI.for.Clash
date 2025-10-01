@@ -55,6 +55,7 @@ export const useAppStore = defineStore('app', () => {
   const customActions = ref<Recordable<(CustomAction | CustomActionFn)[]>>({
     core_state: [],
     title_bar: [],
+    profiles_header: [],
   })
   const addCustomActions = (
     target: string,

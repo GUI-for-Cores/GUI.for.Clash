@@ -11,6 +11,7 @@ import {
   useKernelApiStore,
   useSubscribesStore,
   usePluginsStore,
+  useAppStore,
 } from '@/stores'
 import {
   debounce,
@@ -30,6 +31,7 @@ import type { Menu } from '@/types/app'
 
 const { t } = useI18n()
 const [Modal, modalApi] = useModal({})
+const appStore = useAppStore()
 const profilesStore = useProfilesStore()
 const subscribesStore = useSubscribesStore()
 const appSettingsStore = useAppSettingsStore()
@@ -232,6 +234,8 @@ const onSortUpdate = debounce(profilesStore.saveProfiles, 1000)
       ]"
       class="mr-auto"
     />
+
+    <CustomAction :actions="appStore.customActions.profiles_header" />
     <Button @click="handleShowProfileForm()" type="primary" icon="add">
       {{ t('common.add') }}
     </Button>
