@@ -166,27 +166,33 @@ defineExpose({ modalSlots })
     </div>
     <div class="form-item">
       {{ t('ruleset.name') }} *
-      <Input v-model="ruleset.name" autofocus class="min-w-[75%]" />
+      <div class="min-w-[75%]">
+        <Input v-model="ruleset.name" autofocus class="w-full" />
+      </div>
     </div>
     <div v-show="ruleset.type !== 'Manual'" class="form-item">
       {{ t('ruleset.url') }} *
-      <Input
-        v-model="ruleset.url"
-        :placeholder="
-          ruleset.type === 'Http'
-            ? 'http(s)://'
-            : 'data/local/{filename}.' + (ruleset.format === RulesetFormat.Mrs ? 'mrs' : 'yaml')
-        "
-        class="min-w-[75%]"
-      />
+      <div class="min-w-[75%]">
+        <Input
+          v-model="ruleset.url"
+          :placeholder="
+            ruleset.type === 'Http'
+              ? 'http(s)://'
+              : 'data/local/{filename}.' + (ruleset.format === RulesetFormat.Mrs ? 'mrs' : 'yaml')
+          "
+          class="w-full"
+        />
+      </div>
     </div>
     <div class="form-item">
       {{ t('ruleset.path') }} *
-      <Input
-        v-model="ruleset.path"
-        :placeholder="`data/rulesets/{filename}.${ruleset.format === RulesetFormat.Mrs ? 'mrs' : 'yaml'}`"
-        class="min-w-[75%]"
-      />
+      <div class="min-w-[75%]">
+        <Input
+          v-model="ruleset.path"
+          :placeholder="`data/rulesets/{filename}.${ruleset.format === RulesetFormat.Mrs ? 'mrs' : 'yaml'}`"
+          class="w-full"
+        />
+      </div>
     </div>
   </div>
 </template>

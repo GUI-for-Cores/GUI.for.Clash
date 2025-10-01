@@ -227,10 +227,10 @@ defineExpose({ modalSlots })
     <div v-show="currentStep === Step.Name">
       <Input
         v-model="profile.name"
-        auto-size
         autofocus
         :border="false"
         :placeholder="t('profile.name')"
+        class="w-full"
       />
     </div>
 

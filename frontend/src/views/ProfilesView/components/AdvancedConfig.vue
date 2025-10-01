@@ -38,13 +38,16 @@ const { t } = useI18n()
   <div class="form-item">
     {{ t('kernel.secret') }}
     <div class="flex items-center">
-      <Input v-model="fields.secret" editable />
-      <Button
-        @click="() => (fields.secret = generateSecureKey())"
-        type="text"
-        size="small"
-        icon="refresh"
-      />
+      <Input v-model="fields.secret" editable>
+        <template #suffix>
+          <Button
+            @click="() => (fields.secret = generateSecureKey())"
+            type="text"
+            size="small"
+            icon="refresh"
+          />
+        </template>
+      </Input>
     </div>
   </div>
   <div class="form-item" :class="{ 'items-start': fields.authentication.length !== 0 }">

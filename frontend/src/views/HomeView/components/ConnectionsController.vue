@@ -330,14 +330,7 @@ onUnmounted(() => {
         ]"
         size="small"
       />
-      <Input
-        v-model="keywords"
-        clearable
-        auto-size
-        size="small"
-        placeholder="Search"
-        class="ml-8 flex-1"
-      />
+      <Input v-model="keywords" clearable size="small" placeholder="Search" class="ml-8 flex-1" />
       <Button
         @click="togglePause"
         :icon="isPause ? 'play' : 'pause'"

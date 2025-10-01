@@ -33,7 +33,7 @@ const handleUpdateGEO = async () => {
 <template>
   <div>
     <Divider class="w-full mb-8"> {{ t('home.overview.settingsTips') }} </Divider>
-    <div class="grid grid-cols-4 gap-8">
+    <div class="grid grid-cols-4 gap-8 pb-16">
       <Card :title="t('kernel.mixed-port')">
         <Input
           v-model="kernelApiStore.config['mixed-port']"
@@ -44,6 +44,7 @@ const handleUpdateGEO = async () => {
           :border="false"
           editable
           auto-size
+          class="w-full"
         />
       </Card>
       <Card :title="t('kernel.port')">
@@ -56,6 +57,7 @@ const handleUpdateGEO = async () => {
           :border="false"
           editable
           auto-size
+          class="w-full"
         />
       </Card>
       <Card :title="t('kernel.socks-port')">
@@ -68,6 +70,7 @@ const handleUpdateGEO = async () => {
           :border="false"
           editable
           auto-size
+          class="w-full"
         />
       </Card>
       <Card :title="t('kernel.allow-lan')">
@@ -89,6 +92,7 @@ const handleUpdateGEO = async () => {
           editable
           :border="false"
           auto-size
+          class="w-full"
         />
       </Card>
       <Card :title="t('kernel.interface-name')">
