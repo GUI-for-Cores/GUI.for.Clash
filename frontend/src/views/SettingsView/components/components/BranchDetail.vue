@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { RemoveFile } from '@/bridge'
 import { CoreCacheFilePath } from '@/constant'
 import { useCoreBranch } from '@/hooks/useCoreBranch'
-import { useKernelApiStore } from '@/stores'
+import { useEnvStore, useKernelApiStore } from '@/stores'
 import { message } from '@/utils'
 
 interface Props {
@@ -16,6 +16,7 @@ const props = withDefaults(defineProps<Props>(), { isAlpha: false })
 const emit = defineEmits(['config'])
 
 const { t } = useI18n()
+const envStore = useEnvStore()
 const kernelApiStore = useKernelApiStore()
 
 const {
@@ -103,7 +104,7 @@ const handleClearCoreCache = async () => {
       <Button @click="downloadCore()" :loading="downloading" size="small" type="primary">
         {{ t('kernel.update') }} : {{ remoteVersion }}
       </Button>
-      <template #overlay>
+      <template v-if="envStore.env.arch === 'amd64'" #overlay>
         <div v-if="!downloading" class="flex flex-col gap-4 min-w-64 p-4">
           <Button @click="downloadCore('v1')" type="text"> v1 </Button>
           <Button @click="downloadCore('v2')" type="text"> v2 </Button>
