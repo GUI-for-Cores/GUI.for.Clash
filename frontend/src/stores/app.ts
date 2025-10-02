@@ -56,6 +56,7 @@ export const useAppStore = defineStore('app', () => {
     core_state: [],
     title_bar: [],
     profiles_header: [],
+    subscriptions_header: [],
   })
   const addCustomActions = (
     target: string,

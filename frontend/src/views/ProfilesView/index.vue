@@ -221,6 +221,9 @@ const onSortUpdate = debounce(profilesStore.saveProfiles, 1000)
             <Button @click="handleShowProfileForm()" type="link">{{ t('common.add') }}</Button>
           </template>
         </I18nT>
+        <div class="flex items-center">
+          <CustomAction :actions="appStore.customActions.profiles_header" />
+        </div>
       </template>
     </Empty>
   </div>

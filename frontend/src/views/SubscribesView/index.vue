@@ -11,6 +11,7 @@ import {
   useAppSettingsStore,
   useKernelApiStore,
   usePluginsStore,
+  useAppStore,
 } from '@/stores'
 import {
   formatBytes,
@@ -60,6 +61,7 @@ const menuList: Menu[] = [
 
 const { t } = useI18n()
 const [Modal, modalApi] = useModal({})
+const appStore = useAppStore()
 const subscribeStore = useSubscribesStore()
 const appSettingsStore = useAppSettingsStore()
 const kernelApiStore = useKernelApiStore()
@@ -232,6 +234,9 @@ const onSortUpdate = debounce(subscribeStore.saveSubscribes, 1000)
             <Button @click="handleShowSubForm()" type="link">{{ t('common.add') }}</Button>
           </template>
         </I18nT>
+        <div class="flex items-center">
+          <CustomAction :actions="appStore.customActions.subscriptions_header" />
+        </div>
       </template>
     </Empty>
   </div>
@@ -245,6 +250,7 @@ const onSortUpdate = debounce(subscribeStore.saveSubscribes, 1000)
       ]"
       class="mr-auto"
     />
+    <CustomAction :actions="appStore.customActions.subscriptions_header" />
     <Button
       @click="handleUpdateSubs"
       :disabled="noUpdateNeeded"
