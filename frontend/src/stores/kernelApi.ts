@@ -237,7 +237,7 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
         (out) => {
           output = out
           logsStore.recordKernelLog(out)
-          if (out.toLowerCase().includes(CoreStopOutputKeyword)) {
+          if (out.includes(CoreStopOutputKeyword)) {
             resolve(pid)
           }
         },
