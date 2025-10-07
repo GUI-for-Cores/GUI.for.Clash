@@ -3,7 +3,7 @@ import { parse } from 'yaml'
 import { deleteConnection, getConnections, useProxy } from '@/api/kernel'
 import { AbsolutePath, Exec, ExitApp, ReadFile, WriteFile } from '@/bridge'
 import { CoreWorkingDirectory } from '@/constant'
-import { ProxyGroupType } from '@/enums/kernel'
+import { ProxyGroupType, RulesetBehavior, RulesetFormat } from '@/enums/kernel'
 import i18n from '@/lang'
 import {
   type ProxyType,
@@ -12,6 +12,7 @@ import {
   useEnvStore,
   useKernelApiStore,
   usePluginsStore,
+  useRulesetsStore,
 } from '@/stores'
 import { ignoredError, stringifyNoFolding, message, confirm } from '@/utils'
 
@@ -453,8 +454,26 @@ export const handleChangeMode = async (mode: 'direct' | 'global' | 'rule') => {
   await Promise.all(promises)
 }
 
-export const addToRuleSet = async (ruleset: 'direct' | 'reject' | 'proxy', payloads: string[]) => {
-  const path = `data/rulesets/${ruleset}.yaml`
+export const addToRuleSet = async (id: 'direct' | 'reject' | 'proxy', payloads: string[]) => {
+  const path = `data/rulesets/${id}.yaml`
+
+  const rulesetsStoe = useRulesetsStore()
+  const ruleset = rulesetsStoe.getRulesetById(id)
+  if (!ruleset) {
+    rulesetsStoe.addRuleset({
+      id,
+      name: id,
+      updateTime: Date.now(),
+      type: 'Manual',
+      behavior: RulesetBehavior.Classical,
+      format: RulesetFormat.Yaml,
+      url: '',
+      path,
+      count: payloads.length,
+      disabled: false,
+    })
+  }
+
   const content = (await ignoredError(ReadFile, path)) || '{}'
   const { payload = [] } = parse(content)
   payload.unshift(...payloads)
