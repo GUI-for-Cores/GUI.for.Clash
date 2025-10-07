@@ -88,7 +88,7 @@ const getTrayMenus = () => {
   if (!groupMenusHidden) {
     if (!providers.default) return []
     groupMenus = providers.default.proxies
-      .concat([proxies.GLOBAL])
+      .concat(proxies.GLOBAL || [])
       .filter((v) => v.all && !v.hidden)
       .map((group) => {
         const all = group.all
@@ -96,12 +96,12 @@ const getTrayMenus = () => {
             return (
               appSettings.app.kernel.unAvailable ||
               BuiltInOutbound.includes(proxy) ||
-              proxies[proxy].all ||
-              proxies[proxy].alive
+              proxies[proxy]?.all ||
+              proxies[proxy]?.alive
             )
           })
           .map((proxy) => {
-            const history = proxies[proxy].history || []
+            const history = proxies[proxy]?.history || []
             const delay = history[history.length - 1]?.delay || 0
             return { ...proxies[proxy], delay }
           })

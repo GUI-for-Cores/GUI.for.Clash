@@ -203,7 +203,7 @@ const _updateAllProviderProxies = async () => {
       (v) => v !== 'default' && !kernelApiStore.proxies[v],
     )
     for (let i = 0; i < ids.length; i++) {
-      await updateProvidersProxies(ids[i])
+      await updateProvidersProxies(ids[i]!)
     }
     if (ids.length !== 0) {
       await kernelApiStore.refreshProviderProxies()

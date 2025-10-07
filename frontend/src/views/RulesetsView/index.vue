@@ -174,7 +174,7 @@ const _updateAllProvidersRules = async () => {
     const { providers } = await getProvidersRules()
     const rulesets = Object.keys(providers)
     for (let i = 0; i < rulesets.length; i++) {
-      await updateProvidersRules(rulesets[i])
+      await updateProvidersRules(rulesets[i]!)
     }
   }
 }

@@ -55,7 +55,7 @@ export const restoreProfile = (
 
   config['proxy-groups'].forEach((group: any) => {
     const _group: ProfileType['proxyGroupsConfig'][number] = {
-      id: GroupNameIdMap[group.name],
+      id: GroupNameIdMap[group.name]!,
       name: group.name,
       type: group.type,
       proxies: (group.proxies || [])
@@ -64,7 +64,7 @@ export const restoreProfile = (
           type: GroupNameIdMap[proxy] || isBuiltIn(proxy) ? 'Built-In' : subID,
           name: GroupNameIdMap[proxy]
             ? GroupIdNameMap[GroupNameIdMap[proxy]]
-            : IdNameMap[NameIdMap[proxy]] || (isBuiltIn(proxy) && proxy),
+            : IdNameMap[NameIdMap[proxy]!] || (isBuiltIn(proxy) && proxy),
         }))
         // The absence of a 'name' attribute indicates that this proxy has been excluded after processing by filters or plugins.
         .filter((v: any) => v.name),
@@ -89,7 +89,7 @@ export const restoreProfile = (
   function getRuleProxy(type: string) {
     return BuiltInOutbound.includes(type.toUpperCase())
       ? type.toUpperCase()
-      : GroupNameIdMap[type] || IdNameMap[NameIdMap[type]]
+      : GroupNameIdMap[type] || IdNameMap[NameIdMap[type]!]
   }
 
   let isGeoModeEnabled = false
@@ -113,7 +113,7 @@ export const restoreProfile = (
       })
     } else if (field === 'rules') {
       config[field].forEach((rule: string, index: number) => {
-        const [type, payload, proxy = '', noResolve] = rule.split(',')
+        const [type = '', payload = '', proxy = '', noResolve] = rule.split(',')
 
         const _proxy = type === 'MATCH' ? getRuleProxy(payload) : getRuleProxy(proxy)
 

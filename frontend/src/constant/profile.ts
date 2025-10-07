@@ -111,7 +111,9 @@ export const DnsConfigDefaults = (): ProfileType['dnsConfig'] => ({
   hosts: {},
 })
 
-export const ProxyGroupsConfigDefaults = (ids: string[]): ProfileType['proxyGroupsConfig'] => {
+export const ProxyGroupsConfigDefaults = (
+  ids: readonly [string, string, string, string, string],
+): ProfileType['proxyGroupsConfig'] => {
   return [
     {
       id: ids[0],
@@ -210,7 +212,9 @@ export const ProxyGroupsConfigDefaults = (ids: string[]): ProfileType['proxyGrou
   ]
 }
 
-export const RulesConfigDefaults = (ids: string[]): ProfileType['rulesConfig'] => [
+export const RulesConfigDefaults = (
+  ids: readonly [string, string, string, string, string],
+): ProfileType['rulesConfig'] => [
   {
     id: sampleID(),
     type: 'LOGIC',

@@ -54,7 +54,7 @@ const stepItems = [
   { title: 'profile.step.mixin-script' },
 ]
 
-const ids = [sampleID(), sampleID(), sampleID(), sampleID(), sampleID()]
+const ids = [sampleID(), sampleID(), sampleID(), sampleID(), sampleID()] as const
 
 const profile = ref<ProfileType>({
   id: sampleID(),
@@ -109,7 +109,7 @@ const handleAdd = () => {
     [Step.Group]: groupsRef,
     [Step.Rules]: rulesRef,
   }
-  map[currentStep.value].value.handleAdd()
+  map[currentStep.value]!.value.handleAdd()
 }
 
 const handlePreview = async () => {
@@ -140,7 +140,7 @@ const modalSlots = {
             {
               class: 'font-bold',
             },
-            `${t(stepItems[currentStep.value].title)} （${currentStep.value + 1} / ${stepItems.length}）`,
+            `${t(stepItems[currentStep.value]!.title)} （${currentStep.value + 1} / ${stepItems.length}）`,
           ),
         overlay: () =>
           h(

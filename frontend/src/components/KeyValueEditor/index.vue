@@ -29,7 +29,7 @@ watch(
   ([keys, values]) => {
     const obj = keys.reduce(
       (obj, key, index) => {
-        obj[key] = values[index]
+        obj[key] = values[index]!
         return obj
       },
       {} as Record<string, string>,
@@ -53,6 +53,6 @@ watch(
 
 <style lang="less" scoped>
 .gui-kv-editor {
-  min-width: 440px;
+  min-width: 400px;
 }
 </style>

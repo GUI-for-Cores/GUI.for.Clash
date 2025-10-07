@@ -79,7 +79,7 @@ const handleAdd = () => {
 defineExpose({ handleAdd })
 
 const handleDeleteGroup = (index: number) => {
-  const name = groups.value[index].name
+  const name = groups.value[index]!.name
   groups.value.splice(index, 1)
   proxyGroup.value = proxyGroup.value.map((v) => ({
     ...v,
@@ -105,7 +105,7 @@ const handleClearGroup = async (g: GroupsType[0]) => {
 
 const handleEditGroup = (index: number) => {
   updateGroupId = index
-  fields.value = deepClone(groups.value[index])
+  fields.value = deepClone(groups.value[index]!)
   showModal.value = true
 }
 
@@ -138,14 +138,14 @@ const handleAddEnd = () => {
   // Add
   if (updateGroupId === -1) {
     groups.value.unshift(fields.value)
-    proxyGroup.value[0].proxies.unshift({ id, name, type })
+    proxyGroup.value[0]!.proxies.unshift({ id, name, type })
     return
   }
   // Update
   groups.value[updateGroupId] = fields.value
-  const idx = proxyGroup.value[0].proxies.findIndex((v) => v.id === id)
+  const idx = proxyGroup.value[0]!.proxies.findIndex((v) => v.id === id)
   if (idx !== -1) {
-    proxyGroup.value[0].proxies.splice(idx, 1, { id, name, type })
+    proxyGroup.value[0]!.proxies.splice(idx, 1, { id, name, type })
     groups.value.forEach((group) => {
       const proxy = group.proxies.find((proxy) => proxy.id === id)
       proxy && (proxy.name = name)
@@ -187,7 +187,7 @@ const hasLost = (g: GroupsType[0]) => {
 
 const handleSortGroup = (index: number) => {
   updateGroupId = index
-  fields.value = deepClone(groups.value[index])
+  fields.value = deepClone(groups.value[index]!)
   showSortModal.value = true
 }
 
@@ -212,7 +212,7 @@ const showLost = () => message.warn('kernel.proxyGroups.notFound')
 const showNeedToAdd = () => message.error('kernel.proxyGroups.needToAdd')
 
 subscribesStore.subscribes.forEach(async ({ id, name, proxies }) => {
-  proxyGroup.value[1].proxies.push({ id, name, type: 'use' })
+  proxyGroup.value[1]!.proxies.push({ id, name, type: 'use' })
   proxyGroup.value.push({ id, name, proxies })
   SubscribesNameMap.value[id] = name
 })

@@ -12,12 +12,12 @@ import { type PickerItem } from '@/components/Picker/index.vue'
 
 import type { Menu } from '@/types/app'
 
-const logType = ref('info')
+const logType = ref<'error' | 'warning' | 'info' | 'debug'>('info')
 const keywords = ref('')
 const logs = ref<{ type: string; payload: string }[]>([])
 const keywordsRegexp = computed(() => new RegExp(keywords.value))
 
-const LogLevelMap: Record<string, string[]> = {
+const LogLevelMap = {
   silent: ['silent'],
   error: ['error'],
   warning: ['error', 'warning'],
@@ -76,7 +76,7 @@ const menus: Menu[] = (
         })
       }
 
-      const payloads = await picker.multi('rulesets.selectRuleType', options, [options?.[0].value])
+      const payloads = await picker.multi('rulesets.selectRuleType', options)
 
       try {
         await addToRuleSet(ruleset, payloads)

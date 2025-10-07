@@ -87,7 +87,7 @@ const handleDeleteRule = (index: number) => {
 
 const handleEditRule = (index: number) => {
   updateRuleId = index
-  fields.value = deepClone(rules.value[index])
+  fields.value = deepClone(rules.value[index]!)
   showModal.value = true
 }
 

@@ -73,7 +73,10 @@ export const useSubscribesStore = defineStore('subscribes', () => {
     try {
       await saveSubscribes()
     } catch (error) {
-      subscribes.value.pop()
+      const idx = subscribes.value.indexOf(s)
+      if (idx !== -1) {
+        subscribes.value.splice(idx, 1)
+      }
       throw error
     }
   }
@@ -113,7 +116,7 @@ export const useSubscribesStore = defineStore('subscribes', () => {
   const deleteSubscribe = async (id: string) => {
     const idx = subscribes.value.findIndex((v) => v.id === id)
     if (idx === -1) return
-    const backup = subscribes.value.splice(idx, 1)[0]
+    const backup = subscribes.value.splice(idx, 1)[0]!
     try {
       await saveSubscribes()
     } catch (error) {
@@ -125,7 +128,7 @@ export const useSubscribesStore = defineStore('subscribes', () => {
   const editSubscribe = async (id: string, s: Subscription) => {
     const idx = subscribes.value.findIndex((v) => v.id === id)
     if (idx === -1) return
-    const backup = subscribes.value.splice(idx, 1, s)[0]
+    const backup = subscribes.value.splice(idx, 1, s)[0]!
     try {
       await saveSubscribes()
     } catch (error) {
@@ -160,7 +163,7 @@ export const useSubscribesStore = defineStore('subscribes', () => {
       Object.assign(h, s.header.response)
       if (h['Subscription-Userinfo']) {
         ;(h['Subscription-Userinfo'] as string).split(/\s*;\s*/).forEach((part) => {
-          const [key, value] = part.split('=')
+          const [key, value] = part.split('=') as [string, string]
           userInfo[key] = parseInt(value) || 0
         })
       }

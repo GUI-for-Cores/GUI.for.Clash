@@ -78,7 +78,7 @@ const handleSave = async () => {
     return
   }
 
-  const ids = [sampleID(), sampleID(), sampleID(), sampleID(), sampleID()]
+  const ids = [sampleID(), sampleID(), sampleID(), sampleID(), sampleID()] as const
   const profile: ProfileType = {
     id: sampleID(),
     name: name.value,
@@ -92,8 +92,10 @@ const handleSave = async () => {
     scriptConfig: Defaults.ScriptConfigDefaults(),
   }
 
-  profile.proxyGroupsConfig[0].use = [subscribeID]
-  profile.proxyGroupsConfig[1].use = [subscribeID]
+  if (profile.proxyGroupsConfig[0] && profile.proxyGroupsConfig[1]) {
+    profile.proxyGroupsConfig[0].use = [subscribeID]
+    profile.proxyGroupsConfig[1].use = [subscribeID]
+  }
 
   await profilesStore.addProfile(profile)
 

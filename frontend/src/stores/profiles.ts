@@ -181,7 +181,7 @@ export const useProfilesStore = defineStore('profiles', () => {
   const deleteProfile = async (id: string) => {
     const idx = profiles.value.findIndex((v) => v.id === id)
     if (idx === -1) return
-    const backup = profiles.value.splice(idx, 1)[0]
+    const backup = profiles.value.splice(idx, 1)[0]!
     try {
       await saveProfiles()
     } catch (error) {
@@ -193,7 +193,7 @@ export const useProfilesStore = defineStore('profiles', () => {
   const editProfile = async (id: string, p: ProfileType) => {
     const idx = profiles.value.findIndex((v) => v.id === id)
     if (idx === -1) return
-    const backup = profiles.value.splice(idx, 1, p)[0]
+    const backup = profiles.value.splice(idx, 1, p)[0]!
     try {
       await saveProfiles()
     } catch (error) {
