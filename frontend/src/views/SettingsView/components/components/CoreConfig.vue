@@ -28,7 +28,6 @@ const appSettings = useAppSettingsStore()
 
 const source = props.isAlpha ? appSettings.app.kernel.alpha : appSettings.app.kernel.main
 
-const kvEditorKey = ref(performance.now())
 const model = ref(deepClone(source))
 
 const handleSave = () => {
@@ -43,11 +42,10 @@ const modalSlots = {
       {
         type: 'link',
         class: 'mr-auto',
-        onClick: async () => {
-          const defaultConfig = await DefaultCoreConfig()
+        onClick: () => {
+          const defaultConfig = DefaultCoreConfig()
           model.value.env = defaultConfig.env
           model.value.args.splice(0, model.value.args.length, ...defaultConfig.args)
-          kvEditorKey.value = performance.now()
           message.success('common.success')
         },
       },
@@ -105,7 +103,7 @@ defineExpose({ modalSlots })
             </div>
           </div>
         </Card>
-        <KeyValueEditor v-model="model.env" :key="kvEditorKey" class="mt-16" />
+        <KeyValueEditor v-model="model.env" class="mt-16" />
       </template>
 
       <template #args>
