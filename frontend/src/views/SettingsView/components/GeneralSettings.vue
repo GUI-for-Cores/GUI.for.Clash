@@ -243,6 +243,13 @@ if (envStore.env.os === 'windows') {
     </div>
     <div class="px-16 py-8">
       <div class="text-18 font-bold pt-8 pb-16">
+        {{ t('settings.proxyBypassList') }}
+        <span class="text-14">({{ t('settings.proxyBypassListTips') }})</span>
+      </div>
+      <CodeViewer v-model="appSettings.app.proxyBypassList" editable lang="yaml" />
+    </div>
+    <div class="px-16 py-8">
+      <div class="text-18 font-bold pt-8 pb-16">
         {{ t('settings.realMemoryUsage') }}
       </div>
       <Switch v-model="appSettings.app.kernel.realMemoryUsage" />
@@ -256,21 +263,21 @@ if (envStore.env.os === 'windows') {
     <div v-if="envStore.env.os === 'windows'" class="px-16 py-8">
       <div class="text-18 font-bold pt-8 pb-16">
         {{ t('settings.admin') }}
-        <span class="tips">({{ t('settings.needRestart') }})</span>
+        <span class="text-14">({{ t('settings.needRestart') }})</span>
       </div>
       <Switch v-model="isAdmin" @change="onPermChange" />
     </div>
     <div v-if="envStore.env.os === 'linux'" class="px-16 py-8">
       <div class="text-18 font-bold pt-8 pb-16">
         {{ t('settings.webviewGpuPolicy.name') }}
-        <span class="tips">({{ t('settings.needRestart') }})</span>
+        <span class="text-14">({{ t('settings.needRestart') }})</span>
       </div>
       <Radio v-model="appSettings.app.webviewGpuPolicy" :options="webviewGpuPolicy" />
     </div>
     <div v-if="envStore.env.os === 'windows'" class="px-16 py-8">
       <div class="text-18 font-bold pt-8 pb-16">
         {{ t('settings.startup.name') }}
-        <span class="tips">({{ t('settings.needAdmin') }})</span>
+        <span class="text-14">({{ t('settings.needAdmin') }})</span>
       </div>
       <div class="flex items-center">
         <Switch v-model="isTaskScheduled" @change="onTaskSchChange" class="mr-16" />
@@ -301,14 +308,14 @@ if (envStore.env.os === 'windows') {
     <div class="px-16 py-8">
       <div class="text-18 font-bold pt-8 pb-16">
         {{ t('settings.multipleInstance') }}
-        <span class="tips">({{ t('settings.needRestart') }})</span>
+        <span class="text-14">({{ t('settings.needRestart') }})</span>
       </div>
       <Switch v-model="appSettings.app.multipleInstance" />
     </div>
     <div class="px-16 py-8">
       <div class="text-18 font-bold pt-8 pb-16">
         {{ t('settings.rollingRelease') }}
-        <span class="tips">({{ t('settings.needRestart') }})</span>
+        <span class="text-14">({{ t('settings.needRestart') }})</span>
       </div>
       <Switch v-model="appSettings.app.rollingRelease" />
     </div>
@@ -327,14 +334,14 @@ if (envStore.env.os === 'windows') {
     <div class="px-16 py-8">
       <div class="text-18 font-bold pt-8 pb-16">
         {{ t('settings.githubapi.name') }}
-        <span class="tips">({{ t('settings.githubapi.tips') }})</span>
+        <span class="text-14">({{ t('settings.githubapi.tips') }})</span>
       </div>
       <Input v-model.lazy="appSettings.app.githubApiToken" editable />
     </div>
     <div class="px-16 py-8">
       <div class="text-18 font-bold pt-8 pb-16">
         {{ t('settings.debugOutline') }}
-        <span class="tips">(debug)</span>
+        <span class="text-14">(debug)</span>
       </div>
       <Switch v-model="appSettings.app.debugOutline" />
     </div>

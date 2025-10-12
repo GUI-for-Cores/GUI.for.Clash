@@ -46,12 +46,17 @@ import {
   APP_VERSION,
   sleep,
   getKernelFileName,
+  GetSystemProxyBypass,
 } from '@/utils'
+
+import { useEnvStore } from './env'
 
 import type { AppSettings } from '@/types/app'
 
 export const useAppSettingsStore = defineStore('app-settings', () => {
   const themeMode = ref<Theme.Dark | Theme.Light>(Theme.Light)
+
+  const envStore = useEnvStore()
 
   const app = ref<AppSettings>({
     lang: Lang.EN,
@@ -70,6 +75,7 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
     exitOnClose: true,
     closeKernelOnExit: true,
     autoSetSystemProxy: true,
+    proxyBypassList: '',
     autoStartKernel: false,
     userAgent: APP_TITLE + '/' + APP_VERSION,
     startupDelay: 30,
@@ -187,6 +193,9 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
     if (app.value.kernel.realMemoryUsage === undefined) {
       app.value.kernel.realMemoryUsage = false
     }
+    if (!app.value.proxyBypassList) {
+      app.value.proxyBypassList = await GetSystemProxyBypass()
+    }
 
     const files = await ReadDir(CoreWorkingDirectory).catch(() => [])
     for (const file of files) {
@@ -281,6 +290,10 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
     updateTrayMenus,
   )
   watch(themeMode, setAppTheme, { immediate: true })
+
+  const setSystemProxy = debounce(() => envStore.systemProxy && envStore.setSystemProxy(), 3000)
+
+  watch(() => app.value.proxyBypassList, setSystemProxy)
 
   return { setupAppSettings, app, themeMode, locales, localesLoading, loadLocales }
 })

@@ -54,6 +54,7 @@ type AppSettings = {
   exitOnClose: boolean
   closeKernelOnExit: boolean
   autoSetSystemProxy: boolean
+  proxyBypassList: string
   autoStartKernel: boolean
   userAgent: string
   startupDelay: number
