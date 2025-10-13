@@ -126,7 +126,7 @@ async function setWindowsSystemProxy(
     '/v',
     'ProxyOverride',
     '/d',
-    enabled ? bypass : '',
+    bypass.trim(),
     '/f',
   ])
 
@@ -155,7 +155,10 @@ async function setDarwinSystemProxy(
     const p4 = ignoredError(Exec, 'networksetup', [
       '-setproxybypassdomains',
       device,
-      enabled ? bypass.split(';').join(' ') : '',
+      ...bypass
+        .split(';')
+        .map((v) => v.trim())
+        .filter(Boolean),
     ])
 
     const [serverName, serverPort] = server.split(':') as [string, string]
@@ -248,12 +251,11 @@ async function setLinuxSystemProxy(
       'Proxy Settings',
       '--key',
       'NoProxyFor',
-      enabled
-        ? bypass
-            .split(';')
-            .map((v) => v.trim())
-            .join(',')
-        : '',
+      bypass
+        .split(';')
+        .map((v) => v.trim())
+        .filter(Boolean)
+        .join(','),
     ])
     await Promise.all([p1, p2, p3, p4, p5])
   } else if (desktop.includes('GNOME')) {
@@ -303,12 +305,12 @@ async function setLinuxSystemProxy(
       'set',
       'org.gnome.system.proxy',
       'ignore-hosts',
-      enabled
-        ? `[${bypass
-            .split(';')
-            .map((v) => `'${v.trim()}'`)
-            .join(',')}]`
-        : '[]',
+      `[${bypass
+        .split(';')
+        .map((v) => v.trim())
+        .filter(Boolean)
+        .map((v) => `'${v}'`)
+        .join(',')}]`,
     ])
     await Promise.all([p1, p2, p3, p4, p5, p6, p7, p8])
   }
