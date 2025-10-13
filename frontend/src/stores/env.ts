@@ -60,7 +60,8 @@ export const useEnvStore = defineStore('env', () => {
   }
 
   const clearSystemProxy = async () => {
-    await SetSystemProxy(false, '')
+    const proxyBypassList = appSettings.app.proxyBypassList
+    await SetSystemProxy(false, '', undefined, proxyBypassList)
     systemProxy.value = false
   }
 

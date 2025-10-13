@@ -126,7 +126,11 @@ async function setWindowsSystemProxy(
     '/v',
     'ProxyOverride',
     '/d',
-    bypass.trim(),
+    bypass
+      .split(';')
+      .map((v) => v.trim())
+      .filter(Boolean)
+      .join(';'),
     '/f',
   ])
 
