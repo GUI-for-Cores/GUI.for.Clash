@@ -206,6 +206,8 @@ export default {
       },
     },
     rules: {
+      insertionPoint: 'The new rule will be inserted here',
+      addInsertionPoint: 'Add insertion point',
       payload: 'Payload',
       proxy: 'Proxy',
       'no-resolve': 'No Resolve',

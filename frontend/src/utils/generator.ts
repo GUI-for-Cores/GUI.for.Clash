@@ -2,7 +2,7 @@ import { parse } from 'yaml'
 
 import { ReadFile, WriteFile } from '@/bridge'
 import { BuiltInOutbound, CoreConfigFilePath } from '@/constant/kernel'
-import { LogLevel, ProxyGroup } from '@/enums/kernel'
+import { LogLevel, ProxyGroup, RuleType } from '@/enums/kernel'
 import { type ProfileType, useSubscribesStore, useRulesetsStore, usePluginsStore } from '@/stores'
 import { deepClone, APP_TITLE, deepAssign, stringifyNoFolding } from '@/utils'
 
@@ -18,10 +18,10 @@ export const generateRule = (
     'ruleset-type': rulesetType,
     'ruleset-name': rulesetName,
   } = rule
-  let ruleStr = type
+  let ruleStr: string = type
   let proxyStr = proxy
-  if (type !== 'MATCH') {
-    if (type === 'RULE-SET') {
+  if (type !== RuleType.Match) {
+    if (type === RuleType.RuleSet) {
       if (rulesetType === 'file') {
         const rulesetsStore = useRulesetsStore()
         const ruleset = rulesetsStore.getRulesetById(payload)
@@ -33,7 +33,7 @@ export const generateRule = (
       } else if (rulesetType === 'inline') {
         ruleStr += ',' + rulesetName
       }
-    } else if (type === 'LOGIC') {
+    } else if (type === RuleType.Logic) {
       ruleStr = payload
     } else {
       ruleStr += ',' + payload
@@ -50,12 +50,12 @@ export const generateRule = (
   ruleStr += ',' + proxyStr
 
   const supportNoResolve = [
-    'GEOIP',
-    'IP-CIDR',
-    'IP-CIDR6',
-    'SCRIPT',
-    'RULE-SET',
-    'IP-ASN',
+    RuleType.Geoip,
+    RuleType.IpCidr,
+    RuleType.IpCidr6,
+    RuleType.SCRIPT,
+    RuleType.RuleSet,
+    RuleType.IpAsn,
   ].includes(type)
 
   if (noResolve && supportNoResolve) {
@@ -327,7 +327,14 @@ export const generateConfig = async (originalProfile: ProfileType) => {
   )
 
   config['rules'] = profile.rulesConfig
-    .filter(({ type }) => profile.advancedConfig['geodata-mode'] || !type.startsWith('GEO'))
+    .filter(({ type }) => {
+      if (type === RuleType.InsertionPoint) {
+        return false
+      }
+      return (
+        profile.advancedConfig['geodata-mode'] || ![RuleType.Geosite, RuleType.Geoip].includes(type)
+      )
+    })
     .map((rule) => generateRule(rule, profile.proxyGroupsConfig))
 
   // step 2

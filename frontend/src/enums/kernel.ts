@@ -62,5 +62,9 @@ export enum RuleType {
   Logic = 'LOGIC',
   Geoip = 'GEOIP',
   Geosite = 'GEOSITE',
+  SCRIPT = 'SCRIPT',
   Match = 'MATCH',
+  // GUI
+  Inline = 'inline',
+  InsertionPoint = 'InsertionPoint',
 }

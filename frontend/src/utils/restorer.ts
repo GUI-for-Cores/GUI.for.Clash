@@ -9,7 +9,7 @@ import {
   ScriptConfigDefaults,
   BuiltInOutbound,
 } from '@/constant'
-import { RulesetBehavior, RulesetFormat } from '@/enums/kernel'
+import { RulesetBehavior, RulesetFormat, RuleType } from '@/enums/kernel'
 import { deepAssign, sampleID } from '@/utils'
 
 import type { ProfileType } from '@/stores'
@@ -32,7 +32,20 @@ export const restoreProfile = (
     }),
     tunConfig: TunConfigDefaults(),
     proxyGroupsConfig: [],
-    rulesConfig: [],
+    rulesConfig: [
+      {
+        id: RuleType.InsertionPoint,
+        type: RuleType.InsertionPoint,
+        payload: '',
+        proxy: '',
+        'no-resolve': false,
+        'ruleset-name': '',
+        'ruleset-type': 'file',
+        'ruleset-behavior': RulesetBehavior.Domain,
+        'ruleset-format': RulesetFormat.Mrs,
+        'ruleset-proxy': '',
+      },
+    ],
     mixinConfig: MixinConfigDefaults(),
     scriptConfig: ScriptConfigDefaults(),
   }
@@ -115,14 +128,14 @@ export const restoreProfile = (
       config[field].forEach((rule: string, index: number) => {
         const [type = '', payload = '', proxy = '', noResolve] = rule.split(',')
 
-        const _proxy = type === 'MATCH' ? getRuleProxy(payload) : getRuleProxy(proxy)
+        const _proxy = type === RuleType.Match ? getRuleProxy(payload) : getRuleProxy(proxy)
 
         // Skip invalid rules：proxy missing
         if (!_proxy) {
           return
         }
 
-        if (type === 'RULE-SET') {
+        if (type === RuleType.RuleSet) {
           const provider = config['rule-providers'][payload]
           // Skip invalid rules：rule-provider missing
           if (!provider) {
@@ -143,13 +156,13 @@ export const restoreProfile = (
           return
         }
 
-        if (type === 'GEOIP' || type === 'GEOSITE') {
+        if (type === RuleType.Geoip || type === RuleType.Geosite) {
           isGeoModeEnabled = true
         }
 
         profile.rulesConfig.push({
           id: index.toString(),
-          type: type,
+          type: type as RuleType,
           payload: type === 'MATCH' ? '' : payload,
           proxy: _proxy,
           'no-resolve': !!noResolve,

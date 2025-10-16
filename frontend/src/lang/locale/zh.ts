@@ -206,6 +206,8 @@ export default {
       },
     },
     rules: {
+      insertionPoint: '新规则将插入到这里',
+      addInsertionPoint: '添加插入点',
       payload: '载荷',
       proxy: '代理',
       'no-resolve': '跳过DNS解析',

@@ -4,7 +4,7 @@ import { parse } from 'yaml'
 
 import { ReadFile, WriteFile } from '@/bridge'
 import { ProfilesFilePath } from '@/constant'
-import { ProxyGroup, RulesetBehavior, RulesetFormat } from '@/enums/kernel'
+import { ProxyGroup, RulesetBehavior, RulesetFormat, RuleType } from '@/enums/kernel'
 import { debounce, ignoredError, stringifyNoFolding } from '@/utils'
 
 export type ProfileType = {
@@ -118,7 +118,7 @@ export type ProfileType = {
   }[]
   rulesConfig: {
     id: string
-    type: string
+    type: RuleType
     payload: string
     proxy: string
     'no-resolve': boolean

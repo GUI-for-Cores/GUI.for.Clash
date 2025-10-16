@@ -1,4 +1,4 @@
-import { ProxyGroup, RulesetBehavior, RulesetFormat } from '@/enums/kernel'
+import { ProxyGroup, RulesetBehavior, RulesetFormat, RuleType } from '@/enums/kernel'
 import i18n from '@/lang'
 import { generateSecureKey, sampleID } from '@/utils'
 
@@ -216,8 +216,20 @@ export const RulesConfigDefaults = (
   ids: readonly [string, string, string, string, string],
 ): ProfileType['rulesConfig'] => [
   {
+    id: RuleType.InsertionPoint,
+    type: RuleType.InsertionPoint,
+    payload: '',
+    proxy: '',
+    'no-resolve': false,
+    'ruleset-name': '',
+    'ruleset-type': 'file',
+    'ruleset-behavior': RulesetBehavior.Domain,
+    'ruleset-format': RulesetFormat.Mrs,
+    'ruleset-proxy': '',
+  },
+  {
     id: sampleID(),
-    type: 'LOGIC',
+    type: RuleType.Logic,
     payload: 'AND,((DST-PORT,443),(NETWORK,udp))',
     proxy: ids[3],
     'no-resolve': false,
@@ -229,7 +241,7 @@ export const RulesConfigDefaults = (
   },
   {
     id: sampleID(),
-    type: 'RULE-SET',
+    type: RuleType.RuleSet,
     payload:
       'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/category-ads-all.mrs',
     proxy: ids[3],
@@ -242,7 +254,7 @@ export const RulesConfigDefaults = (
   },
   {
     id: sampleID(),
-    type: 'RULE-SET',
+    type: RuleType.RuleSet,
     payload:
       'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geoip/private.mrs',
     proxy: ids[2],
@@ -255,7 +267,7 @@ export const RulesConfigDefaults = (
   },
   {
     id: sampleID(),
-    type: 'RULE-SET',
+    type: RuleType.RuleSet,
     payload: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geoip/cn.mrs',
     proxy: ids[2],
     'no-resolve': true,
@@ -267,7 +279,7 @@ export const RulesConfigDefaults = (
   },
   {
     id: sampleID(),
-    type: 'RULE-SET',
+    type: RuleType.RuleSet,
     payload:
       'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/private.mrs',
     proxy: ids[2],
@@ -280,7 +292,7 @@ export const RulesConfigDefaults = (
   },
   {
     id: sampleID(),
-    type: 'RULE-SET',
+    type: RuleType.RuleSet,
     payload: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/cn.mrs',
     proxy: ids[2],
     'no-resolve': false,
@@ -292,7 +304,7 @@ export const RulesConfigDefaults = (
   },
   {
     id: sampleID(),
-    type: 'RULE-SET',
+    type: RuleType.RuleSet,
     payload:
       'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/geolocation-!cn.mrs',
     proxy: ids[0],
@@ -305,7 +317,7 @@ export const RulesConfigDefaults = (
   },
   {
     id: sampleID(),
-    type: 'MATCH',
+    type: RuleType.Match,
     payload: '',
     proxy: ids[4],
     'no-resolve': false,

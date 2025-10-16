@@ -219,6 +219,14 @@ subscribesStore.subscribes.forEach(async ({ id, name, proxies }) => {
 </script>
 
 <template>
+  <Empty v-if="groups.length === 0">
+    <template #description>
+      <Button @click="handleAdd" icon="add" type="primary" size="small">
+        {{ t('common.add') }}
+      </Button>
+    </template>
+  </Empty>
+
   <div v-draggable="[groups, DraggableOptions]">
     <Card v-for="(g, index) in groups" :key="g.id" class="mb-2">
       <div class="flex items-center py-2">

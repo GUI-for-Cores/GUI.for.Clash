@@ -9,7 +9,7 @@ import {
   RulesetBehaviorOptions,
   BuiltInOutbound,
 } from '@/constant'
-import { RulesetBehavior, RulesetFormat } from '@/enums/kernel'
+import { RulesetBehavior, RulesetFormat, RuleType } from '@/enums/kernel'
 import { type ProfileType, useRulesetsStore, type RuleSet } from '@/stores'
 import { deepClone, sampleID, generateRule, message } from '@/utils'
 
@@ -27,7 +27,7 @@ const showModal = ref(false)
 
 const fields = ref<ProfileType['rulesConfig'][number]>({
   id: sampleID(),
-  type: 'RULE-SET',
+  type: RuleType.RuleSet,
   payload: '',
   proxy: '',
   'no-resolve': false,
@@ -44,19 +44,24 @@ const proxyOptions = computed(() => [
 ])
 
 const supportNoResolve = computed(() =>
-  ['GEOIP', 'IP-CIDR', 'IP-CIDR6', 'SCRIPT', 'RULE-SET', 'IP-ASN'].includes(fields.value.type),
+  [
+    RuleType.Geoip,
+    RuleType.IpCidr,
+    RuleType.IpCidr6,
+    RuleType.SCRIPT,
+    RuleType.RuleSet,
+    RuleType.IpAsn,
+  ].includes(fields.value.type),
 )
 
 const supportPayload = computed(
   () =>
-    !['MATCH', 'RULE-SET'].includes(fields.value.type) ||
-    (fields.value.type === 'RULE-SET' && fields.value['ruleset-type'] === 'http'),
+    ![RuleType.Match, RuleType.RuleSet, RuleType.InsertionPoint].includes(fields.value.type) ||
+    (fields.value.type === RuleType.RuleSet && fields.value['ruleset-type'] === 'http'),
 )
 
-const filteredRulesTypeOptions = computed(() =>
-  RulesTypeOptions.filter(
-    ({ value }) => props.profile.advancedConfig['geodata-mode'] || !value.startsWith('GEO'),
-  ),
+const isInsertionPointMissing = computed(
+  () => rules.value.findIndex((rule) => rule.type === RuleType.InsertionPoint) === -1,
 )
 
 const { t } = useI18n()
@@ -66,7 +71,7 @@ const handleAdd = () => {
   updateRuleId = -1
   fields.value = {
     id: sampleID(),
-    type: 'RULE-SET',
+    type: RuleType.RuleSet,
     payload: '',
     proxy: '',
     'no-resolve': false,
@@ -80,6 +85,21 @@ const handleAdd = () => {
 }
 
 defineExpose({ handleAdd })
+
+const handleAddInsertionPoint = () => {
+  rules.value.unshift({
+    id: RuleType.InsertionPoint,
+    type: RuleType.InsertionPoint,
+    payload: '',
+    proxy: '',
+    'no-resolve': false,
+    'ruleset-name': '',
+    'ruleset-type': 'file',
+    'ruleset-behavior': RulesetBehavior.Domain,
+    'ruleset-format': RulesetFormat.Mrs,
+    'ruleset-proxy': '',
+  })
+}
 
 const handleDeleteRule = (index: number) => {
   rules.value.splice(index, 1)
@@ -95,7 +115,12 @@ const handleAddEnd = () => {
   if (updateRuleId !== -1) {
     rules.value[updateRuleId] = fields.value
   } else {
-    rules.value.unshift(fields.value)
+    const index = rules.value.findIndex((v) => v.type === RuleType.InsertionPoint)
+    if (index !== -1) {
+      rules.value.splice(index + 1, 0, fields.value)
+    } else {
+      rules.value.unshift(fields.value)
+    }
   }
 }
 
@@ -110,7 +135,10 @@ const hasLost = (r: ProfileType['rulesConfig'][0]) => {
 }
 
 const notSupport = (r: ProfileType['rulesConfig'][0]) => {
-  return r.type.startsWith('GEO') && !props.profile.advancedConfig['geodata-mode']
+  return (
+    !props.profile.advancedConfig['geodata-mode'] &&
+    [RuleType.Geoip, RuleType.Geosite].includes(r.type)
+  )
 }
 
 const showNotSupport = () => message.warn('kernel.rules.needGeodataMode')
@@ -119,9 +147,30 @@ const showLost = () => message.warn('kernel.rules.notFound')
 </script>
 
 <template>
+  <Empty v-if="rules.length === 0 || (rules.length === 1 && !isInsertionPointMissing)">
+    <template #description>
+      <Button @click="handleAdd" icon="add" type="primary" size="small">
+        {{ t('common.add') }}
+      </Button>
+    </template>
+  </Empty>
+
+  <Divider v-if="isInsertionPointMissing">
+    <Button @click="handleAddInsertionPoint" type="text" size="small">
+      {{ t('kernel.rules.addInsertionPoint') }}
+    </Button>
+  </Divider>
+
   <div v-draggable="[rules, DraggableOptions]">
     <Card v-for="(r, index) in rules" :key="r.id" class="mb-2">
-      <div class="flex items-center py-2">
+      <div v-if="r.type === RuleType.InsertionPoint" class="text-center font-bold">
+        <Divider class="cursor-move">
+          <Button @click="handleAdd" icon="add" type="text" size="small">
+            {{ t('kernel.rules.insertionPoint') }}
+          </Button>
+        </Divider>
+      </div>
+      <div v-else class="flex items-center py-2">
         <div class="font-bold">
           <span v-if="hasLost(r)" @click="showLost" class="warn cursor-pointer"> [ ! ] </span>
           <span v-if="notSupport(r)" @click="showNotSupport" class="warn cursor-pointer">
@@ -146,7 +195,7 @@ const showLost = () => message.warn('kernel.rules.notFound')
   >
     <div class="form-item">
       {{ t('kernel.rules.type.name') }}
-      <Select v-model="fields.type" :options="filteredRulesTypeOptions" />
+      <Select v-model="fields.type" :options="RulesTypeOptions" />
     </div>
     <div v-show="supportPayload" class="form-item">
       {{ t('kernel.rules.payload') }}
@@ -163,7 +212,7 @@ const showLost = () => message.warn('kernel.rules.notFound')
       {{ t('kernel.rules.proxy') }}
       <Select v-model="fields.proxy" :options="proxyOptions" />
     </div>
-    <div v-if="fields.type === 'RULE-SET'" class="form-item">
+    <div v-if="fields.type === RuleType.RuleSet" class="form-item">
       {{ t('kernel.rules.rule-set-type') }}
       <Select
         v-model="fields['ruleset-type']"
@@ -179,7 +228,7 @@ const showLost = () => message.warn('kernel.rules.notFound')
       <Switch v-model="fields['no-resolve']" />
     </div>
 
-    <template v-if="fields.type === 'RULE-SET' && fields['ruleset-type'] === 'file'">
+    <template v-if="fields.type === RuleType.RuleSet && fields['ruleset-type'] === 'file'">
       <Divider>{{ t('kernel.rules.rulesets') }}</Divider>
       <Empty v-if="rulesetsStore.rulesets.length === 0" :description="t('kernel.rules.empty')" />
       <div class="grid grid-cols-3 gap-8">
@@ -197,7 +246,7 @@ const showLost = () => message.warn('kernel.rules.notFound')
       </div>
     </template>
 
-    <template v-if="fields.type === 'RULE-SET' && fields['ruleset-type'] === 'http'">
+    <template v-if="fields.type === RuleType.RuleSet && fields['ruleset-type'] === 'http'">
       <Divider>{{ t('kernel.rules.ruleset') }}</Divider>
       <div class="form-item">
         {{ t('kernel.rules.ruleset-name') }}
@@ -217,7 +266,7 @@ const showLost = () => message.warn('kernel.rules.notFound')
       </div>
     </template>
 
-    <template v-if="fields.type === 'RULE-SET' && fields['ruleset-type'] === 'inline'">
+    <template v-if="fields.type === RuleType.RuleSet && fields['ruleset-type'] === 'inline'">
       <Divider>{{ t('kernel.rules.ruleset') }}</Divider>
       <div class="form-item">
         {{ t('kernel.rules.ruleset-name') }}
