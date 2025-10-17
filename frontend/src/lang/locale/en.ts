@@ -618,6 +618,8 @@ export default {
       stable: 'Stable version',
       alpha: 'Alpha version',
       grant: 'Grant Privileges',
+      openTip: 'Open File Location',
+      linkTip: 'View on GitHub Releases',
       risk: 'This version is not auto-built by GitHub and may pose a security risk.',
       stillDownload: 'Still download',
       rollbackTip: 'Rollback to the previous version',
