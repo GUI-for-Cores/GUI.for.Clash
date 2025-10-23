@@ -9,15 +9,40 @@ import { message } from '@/utils'
 const { t } = useI18n()
 const kernelApiStore = useKernelApiStore()
 
-const onPortSubmit = (port: number) => kernelApiStore.updateConfig({ port })
-const onSocksPortSubmit = (port: number) => kernelApiStore.updateConfig({ 'socks-port': port })
-const onMixedPortSubmit = (port: number) => kernelApiStore.updateConfig({ 'mixed-port': port })
-const onAllowLanChange = (allow: boolean) => kernelApiStore.updateConfig({ 'allow-lan': allow })
-const conStackChange = (stack: string) =>
-  kernelApiStore.updateConfig({ tun: { stack, enable: kernelApiStore.config.tun.enable } })
-const onTunDeviceSubmit = (device: string) =>
-  kernelApiStore.updateConfig({ tun: { device, enable: kernelApiStore.config.tun.enable } })
-const onInterfaceChange = (name: string) => kernelApiStore.updateConfig({ 'interface-name': name })
+const createValueWatcher = (
+  initialValue: number | string | boolean,
+  callback: (value: number | string | boolean) => Promise<void>,
+) => {
+  let lastValue = initialValue
+  return (newValue: number | boolean) => {
+    if (newValue !== lastValue) {
+      lastValue = newValue
+      callback(newValue).catch((e) => message.error(e.message || e))
+    }
+  }
+}
+
+const onPortSubmit = createValueWatcher(kernelApiStore.config.port, (port) =>
+  kernelApiStore.updateConfig({ port }),
+)
+const onSocksPortSubmit = createValueWatcher(kernelApiStore.config['socks-port'], (port) =>
+  kernelApiStore.updateConfig({ 'socks-port': port }),
+)
+const onMixedPortSubmit = createValueWatcher(kernelApiStore.config['mixed-port'], (port) =>
+  kernelApiStore.updateConfig({ 'mixed-port': port }),
+)
+const onAllowLanChange = createValueWatcher(kernelApiStore.config['allow-lan'], (allow) =>
+  kernelApiStore.updateConfig({ 'allow-lan': allow }),
+)
+const conStackChange = createValueWatcher(kernelApiStore.config.tun.stack, (stack) =>
+  kernelApiStore.updateConfig({ tun: { stack, enable: kernelApiStore.config.tun.enable } }),
+)
+const onTunDeviceSubmit = createValueWatcher(kernelApiStore.config.tun.device, (device) =>
+  kernelApiStore.updateConfig({ tun: { device, enable: kernelApiStore.config.tun.enable } }),
+)
+const onInterfaceChange = createValueWatcher(kernelApiStore.config['interface-name'], (name) =>
+  kernelApiStore.updateConfig({ 'interface-name': name }),
+)
 
 const handleUpdateGEO = async () => {
   try {
