@@ -57,6 +57,7 @@ const handleSave = async () => {
     disabled: false,
     inSecure: false,
     requestMethod: RequestMethod.Get,
+    requestTimeout: 15,
     header: {
       request: {},
       response: {},

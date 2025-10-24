@@ -181,6 +181,7 @@ export interface Subscription {
   inSecure: boolean
   proxies: { id: string; name: string; type: string }[]
   requestMethod: RequestMethod
+  requestTimeout: number
   header: {
     request: Recordable
     response: Recordable

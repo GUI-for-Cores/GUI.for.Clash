@@ -368,6 +368,7 @@ export default {
     useInternal: 'Use internal proxy-groups and rules',
     inSecure: 'Skip TLS Verification',
     requestMethod: 'Request Method',
+    requestTimeout: 'Request Timeout (seconds)',
     header: {
       request: 'Request Header',
       response: 'Response Header',
