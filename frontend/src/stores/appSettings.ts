@@ -41,9 +41,7 @@ import i18n, { loadLocaleMessages, reloadLocale } from '@/lang'
 import {
   debounce,
   updateTrayMenus,
-  APP_TITLE,
   ignoredError,
-  APP_VERSION,
   sleep,
   getKernelFileName,
   GetSystemProxyBypass,
@@ -77,7 +75,7 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
     autoSetSystemProxy: true,
     proxyBypassList: '',
     autoStartKernel: false,
-    userAgent: APP_TITLE + '/' + APP_VERSION,
+    userAgent: '',
     startupDelay: 30,
     connections: DefaultConnections(),
     kernel: {
