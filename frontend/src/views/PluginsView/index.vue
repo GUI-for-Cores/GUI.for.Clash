@@ -303,23 +303,17 @@ const onSortUpdate = debounce(pluginsStore.savePlugins, 1000)
                 v-if="!p.disabled"
                 :loading="p.updating"
                 type="text"
-                size="small"
                 @click="handleUpdatePlugin(p)"
               >
                 {{ t('common.update') }}
               </Button>
-              <Button type="text" size="small" @click="handleDisablePlugin(p)">
+              <Button type="text" @click="handleDisablePlugin(p)">
                 {{ p.disabled ? t('common.enable') : t('common.disable') }}
               </Button>
-              <Button type="text" size="small" @click="handleEditPlugin(p.id)">
+              <Button type="text" @click="handleEditPlugin(p.id)">
                 {{ t('common.develop') }}
               </Button>
-              <Button
-                v-if="!p.install || !p.installed"
-                type="text"
-                size="small"
-                @click="handleDeletePlugin(p)"
-              >
+              <Button v-if="!p.install || !p.installed" type="text" @click="handleDeletePlugin(p)">
                 {{ t('common.delete') }}
               </Button>
             </div>
