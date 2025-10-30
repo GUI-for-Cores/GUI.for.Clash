@@ -9,7 +9,7 @@ import {
 } from '@/bridge'
 import { BuiltInOutbound } from '@/constant'
 import { Theme, Color } from '@/enums/app'
-import { ClashMode } from '@/enums/kernel'
+import { ClashMode, ProxyGroupType } from '@/enums/kernel'
 import i18n from '@/lang'
 import { useAppSettingsStore, useKernelApiStore, useEnvStore, usePluginsStore } from '@/stores'
 import {
@@ -83,13 +83,25 @@ const getTrayMenus = () => {
   let groupMenus: MenuItem[] = []
   const groupMenusHidden = !appSettings.app.addGroupToMenu
 
-  const { providers, proxies } = kernelApiStore
+  const { proxies } = kernelApiStore
 
   if (!groupMenusHidden) {
-    if (!providers.default) return []
-    groupMenus = providers.default.proxies
-      .concat(proxies.GLOBAL || [])
-      .filter((v) => v.all && !v.hidden)
+    groupMenus = Object.values(proxies)
+      .filter(
+        (v) =>
+          [
+            ProxyGroupType.Selector,
+            ProxyGroupType.UrlTest,
+            ProxyGroupType.Fallback,
+            ProxyGroupType.Relay,
+            ProxyGroupType.LoadBalance,
+          ].includes(v.type as ProxyGroupType) && v.name !== 'GLOBAL',
+      )
+      .sort((a, b) => {
+        const aIndex = proxies.GLOBAL?.all.indexOf(a.name) || 0
+        const bIndex = proxies.GLOBAL?.all.indexOf(b.name) || 0
+        return aIndex - bIndex
+      })
       .map((group) => {
         const all = group.all
           .filter((proxy) => {

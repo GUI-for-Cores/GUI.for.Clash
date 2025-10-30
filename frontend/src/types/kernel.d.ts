@@ -31,16 +31,6 @@ export interface CoreApiProxies {
   proxies: Record<string, Proxy>
 }
 
-export interface CoreApiProviders {
-  providers: Record<
-    string,
-    {
-      name: string
-      proxies: Proxy[]
-    }
-  >
-}
-
 export interface CoreApiConnections {
   connections: {
     id: string
@@ -61,21 +51,6 @@ export interface CoreApiMemoryData {
 export interface CoreApiLogsData {
   type: string
   payload: string
-}
-
-export interface CoreApiProvidersRules {
-  providers: Record<
-    string,
-    {
-      behavior: string
-      format: string
-      name: string
-      ruleCount: number
-      type: string
-      updatedAt: string
-      vehicleType: string
-    }
-  >
 }
 
 export interface CoreApiConnectionsData {

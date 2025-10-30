@@ -2,11 +2,10 @@
 import { ref, computed, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { updateProvidersRules } from '@/api/kernel'
 import { LogLevelOptions } from '@/constant'
 import { useBool } from '@/hooks'
 import { useKernelApiStore } from '@/stores'
-import { isValidIPv4, isValidIPv6, addToRuleSet, ignoredError, message, picker } from '@/utils'
+import { isValidIPv4, isValidIPv6, addToRuleSet, message, picker } from '@/utils'
 
 import { type PickerItem } from '@/components/Picker/index.vue'
 
@@ -80,7 +79,6 @@ const menus: Menu[] = (
 
       try {
         await addToRuleSet(ruleset, payloads)
-        await ignoredError(updateProvidersRules, ruleset)
         message.success('common.success')
       } catch (error: any) {
         message.error(error)

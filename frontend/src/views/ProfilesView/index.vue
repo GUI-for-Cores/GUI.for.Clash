@@ -166,15 +166,7 @@ const generateMenus = (profile: ProfileType) => {
 }
 
 const handleShowProfileForm = (id?: string, step = 0) => {
-  modalApi.setProps({
-    minWidth: '70',
-    onOk: async () => {
-      const { profile } = appSettingsStore.app.kernel
-      if (kernelApiStore.running && profile === id) {
-        await kernelApiStore.restartCore()
-      }
-    },
-  })
+  modalApi.setProps({ minWidth: '70' })
   modalApi.setContent(ProfileForm, { id, step }).open()
 }
 

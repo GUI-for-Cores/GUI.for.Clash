@@ -2,17 +2,10 @@
 import { computed } from 'vue'
 import { useI18n, I18nT } from 'vue-i18n'
 
-import { updateProvidersProxies } from '@/api/kernel'
 import { BrowserOpenURL, ClipboardSetText, RemoveFile } from '@/bridge'
 import { DraggableOptions } from '@/constant'
 import { View } from '@/enums/app'
-import {
-  useSubscribesStore,
-  useAppSettingsStore,
-  useKernelApiStore,
-  usePluginsStore,
-  useAppStore,
-} from '@/stores'
+import { useSubscribesStore, useAppSettingsStore, usePluginsStore, useAppStore } from '@/stores'
 import {
   formatBytes,
   formatRelativeTime,
@@ -64,7 +57,6 @@ const [Modal, modalApi] = useModal({})
 const appStore = useAppStore()
 const subscribeStore = useSubscribesStore()
 const appSettingsStore = useAppSettingsStore()
-const kernelApiStore = useKernelApiStore()
 const pluginsStore = usePluginsStore()
 
 const generateMenus = (subscription: Subscription) => {
@@ -123,12 +115,6 @@ const handleShowSubForm = (id?: string) => {
 const handleUpdateSubs = async () => {
   try {
     await subscribeStore.updateSubscribes()
-    const { profile } = appSettingsStore.app.kernel
-    if (kernelApiStore.running && subscribeStore.getSubscribeById(profile)?.useInternal) {
-      await kernelApiStore.restartCore()
-    } else {
-      await _updateAllProviderProxies()
-    }
     message.success('common.success')
   } catch (error: any) {
     console.error('updateSubscribes: ', error)
@@ -139,19 +125,7 @@ const handleUpdateSubs = async () => {
 const handleEditProxies = (id: string, editor = false) => {
   const sub = subscribeStore.getSubscribeById(id)
   if (sub) {
-    modalApi.setProps({
-      title: sub.name,
-      height: '90',
-      width: '90',
-      onOk: async () => {
-        try {
-          await _updateProviderProxies(sub.id)
-        } catch (error: any) {
-          console.error(error)
-          message.error(error)
-        }
-      },
-    })
+    modalApi.setProps({ title: sub.name, height: '90', width: '90' })
     modalApi.setContent(editor ? ProxiesEditor : ProxiesView, { sub }).open()
   }
 }
@@ -159,12 +133,6 @@ const handleEditProxies = (id: string, editor = false) => {
 const handleUpdateSub = async (s: Subscription) => {
   try {
     await subscribeStore.updateSubscribe(s.id)
-    const { profile } = appSettingsStore.app.kernel
-    if (kernelApiStore.running && s.useInternal && profile === s.id) {
-      await kernelApiStore.restartCore()
-    } else {
-      await _updateProviderProxies(s.id)
-    }
   } catch (error: any) {
     console.error('updateSubscribe: ', error)
     message.error(error)
@@ -184,31 +152,6 @@ const handleDeleteSub = async (s: Subscription) => {
 const handleDisableSub = async (s: Subscription) => {
   s.disabled = !s.disabled
   subscribeStore.editSubscribe(s.id, s)
-}
-
-const _updateProviderProxies = async (provider: string) => {
-  if (kernelApiStore.running) {
-    await kernelApiStore.refreshProviderProxies()
-    if (kernelApiStore.providers[provider]) {
-      await updateProvidersProxies(provider)
-      await kernelApiStore.refreshProviderProxies()
-    }
-  }
-}
-
-const _updateAllProviderProxies = async () => {
-  if (kernelApiStore.running) {
-    await kernelApiStore.refreshProviderProxies()
-    const ids = Object.keys(kernelApiStore.providers).filter(
-      (v) => v !== 'default' && !kernelApiStore.proxies[v],
-    )
-    for (let i = 0; i < ids.length; i++) {
-      await updateProvidersProxies(ids[i]!)
-    }
-    if (ids.length !== 0) {
-      await kernelApiStore.refreshProviderProxies()
-    }
-  }
 }
 
 const noUpdateNeeded = computed(() => subscribeStore.subscribes.every((v) => v.disabled))

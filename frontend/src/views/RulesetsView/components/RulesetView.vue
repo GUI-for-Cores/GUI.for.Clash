@@ -1,17 +1,12 @@
 <script setup lang="ts">
-import { ref, computed, inject, h } from 'vue'
+import { ref, inject, h } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { parse } from 'yaml'
 
 import { ReadFile, WriteFile } from '@/bridge'
-import { DraggableOptions } from '@/constant'
-import { RulesetBehavior } from '@/enums/kernel'
 import { type RuleSet, useRulesetsStore } from '@/stores'
-import { deepClone, ignoredError, isValidIPCIDR, stringifyNoFolding, message } from '@/utils'
+import { deepClone, ignoredError, isValidPaylodYAML, message } from '@/utils'
 
 import Button from '@/components/Button/index.vue'
-
-import type { Menu } from '@/types/app'
 
 interface Props {
   id: string
@@ -20,49 +15,8 @@ interface Props {
 const props = defineProps<Props>()
 
 const loading = ref(false)
-const keywords = ref('')
-const ruleValue = ref('')
 const ruleset = ref<RuleSet>()
-
-const rulesetList = ref<string[]>([])
-
-const keywordsRegexp = computed(() => {
-  try {
-    return new RegExp(keywords.value, 'i')
-  } catch {
-    return keywords.value
-  }
-})
-
-const filteredList = computed(() => {
-  return rulesetList.value.filter((v) => {
-    if (typeof keywordsRegexp.value === 'string') {
-      return v.toLowerCase().includes(keywordsRegexp.value.toLowerCase())
-    }
-    return keywordsRegexp.value.test(v)
-  })
-})
-
-const placeholder = computed(() => {
-  if (!ruleset.value) return ''
-  return {
-    [RulesetBehavior.Classical]: 'DOMAIN,domain.com|IP-CIDR,127.0.0.0/8',
-    [RulesetBehavior.Domain]: '.blogger.com|*.*.microsoft.com|books.itunes.apple.com',
-    [RulesetBehavior.Ipcidr]: '192.168.1.0/24|10.0.0.1/32',
-  }[ruleset.value.behavior]
-})
-
-const menus: Menu[] = [
-  {
-    label: 'common.delete',
-    handler: (record: string) => {
-      const idx = rulesetList.value.findIndex((v) => v === record)
-      if (idx !== -1) {
-        rulesetList.value.splice(idx, 1)
-      }
-    },
-  },
-]
+const rulesetContent = ref<string>('')
 
 const handleCancel = inject('cancel') as any
 const handleSubmit = inject('submit') as any
@@ -74,45 +28,30 @@ const handleSave = async () => {
   if (!ruleset.value) return
   loading.value = true
   try {
-    await WriteFile(ruleset.value.path, stringifyNoFolding({ payload: rulesetList.value }))
-    handleSubmit()
+    if (!isValidPaylodYAML(rulesetContent.value)) {
+      throw 'syntax error'
+    }
+    await WriteFile(ruleset.value.path, rulesetContent.value)
+    await rulesetsStore.updateRuleset(ruleset.value.id)
+    await handleSubmit()
   } catch (error: any) {
     message.error(error)
     console.log(error)
+  } finally {
+    loading.value = false
   }
-  loading.value = false
 }
 
-const handleAdd = () => {
-  const rule = ruleValue.value.trim()
-  if (!rule || rulesetList.value.includes(rule)) {
-    ruleValue.value = ''
-    return
+const initContent = async () => {
+  const r = rulesetsStore.getRulesetById(props.id)
+  if (r) {
+    ruleset.value = deepClone(r)
+    const content = (await ignoredError(ReadFile, r.path)) || ''
+    rulesetContent.value = content
   }
-  const rules = [
-    ...new Set(rule.split('|').filter((rule) => rule && !rulesetList.value.includes(rule))),
-  ]
-  if (ruleset.value?.behavior === RulesetBehavior.Ipcidr) {
-    if (rules.some((rule) => !isValidIPCIDR(rule))) {
-      message.warn('Not a valid IP-CIDR format')
-      return
-    }
-  }
-  rulesetList.value.push(...rules)
-  ruleValue.value = ''
 }
 
-const initRulesetList = async (r: RuleSet) => {
-  const content = (await ignoredError(ReadFile, r.path)) || '{}'
-  const { payload = [] } = parse(content)
-  rulesetList.value.push(...payload)
-}
-
-const r = rulesetsStore.getRulesetById(props.id)
-if (r) {
-  ruleset.value = deepClone(r)
-  initRulesetList(r)
-}
+initContent()
 
 const modalSlots = {
   cancel: () =>
@@ -140,65 +79,5 @@ defineExpose({ modalSlots })
 </script>
 
 <template>
-  <div class="ruleset-view">
-    <div class="form">
-      <Input v-model="keywords" clearable size="small" :placeholder="t('common.keywords')" />
-      <Input
-        v-model="ruleValue"
-        :placeholder="placeholder"
-        clearable
-        auto-size
-        size="small"
-        class="ml-8 flex-1"
-      />
-      <Button @click="handleAdd" type="primary" size="small" class="ml-8">
-        {{ t('common.add') }}
-      </Button>
-    </div>
-
-    <Empty v-if="rulesetList.length === 0" class="flex-1" />
-
-    <div v-else v-draggable="[rulesetList, DraggableOptions]" class="rules">
-      <div
-        v-for="rule in filteredList"
-        :key="rule"
-        v-menu="menus.map((v) => ({ ...v, handler: () => v.handler?.(rule) }))"
-        class="rule"
-      >
-        {{ rule }}
-      </div>
-    </div>
-  </div>
+  <CodeViewer v-model="rulesetContent" lang="yaml" editable class="h-full" />
 </template>
-
-<style lang="less" scoped>
-.ruleset-view {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-.form {
-  display: flex;
-  align-items: center;
-}
-.rules {
-  margin-top: 8px;
-  flex: 1;
-  overflow-y: auto;
-  display: flex;
-  flex-wrap: wrap;
-  .rule {
-    display: flex;
-    align-items: center;
-    width: calc(33.33% - 4px);
-    margin: 2px;
-    padding: 0 8px;
-    line-height: 20px;
-    height: 40px;
-    word-break: break-all;
-    font-size: 12px;
-    background: var(--card-bg);
-    overflow: hidden;
-  }
-}
-</style>

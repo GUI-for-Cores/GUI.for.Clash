@@ -12,6 +12,7 @@ import {
   omitArray,
   stringifyNoFolding,
   asyncPool,
+  eventBus,
 } from '@/utils'
 
 export interface RuleSet {
@@ -75,6 +76,8 @@ export const useRulesetsStore = defineStore('rulesets', () => {
       rulesets.value.splice(idx, 0, backup)
       throw error
     }
+
+    eventBus.emit('rulesetChange', { id })
   }
 
   const editRuleset = async (id: string, r: RuleSet) => {
@@ -87,6 +90,8 @@ export const useRulesetsStore = defineStore('rulesets', () => {
       rulesets.value.splice(idx, 1, backup)
       throw error
     }
+
+    eventBus.emit('rulesetChange', { id })
   }
 
   const _doUpdateRuleset = async (r: RuleSet) => {
@@ -100,11 +105,10 @@ export const useRulesetsStore = defineStore('rulesets', () => {
         const { body: b } = await HttpGet(r.url)
         body = b
       } else if (r.type === 'Manual') {
-        isExist = await FileExists(r.path)
-        if (isExist) {
-          body = await ReadFile(r.path)
-        } else {
+        body = await ReadFile(r.path).catch(() => '')
+        if (!body) {
           body = stringifyNoFolding(EmptyRuleSet)
+          isExist = false
         }
       }
 
@@ -144,10 +148,13 @@ export const useRulesetsStore = defineStore('rulesets', () => {
       r.updating = true
       await _doUpdateRuleset(r)
       await saveRulesets()
-      return `Ruleset [${r.name}] updated successfully.`
     } finally {
       r.updating = false
     }
+
+    eventBus.emit('rulesetChange', { id })
+
+    return `Ruleset [${r.name}] updated successfully.`
   }
 
   const updateRulesets = async () => {
@@ -170,6 +177,8 @@ export const useRulesetsStore = defineStore('rulesets', () => {
     )
 
     if (needSave) saveRulesets()
+
+    eventBus.emit('rulesetsChange', undefined)
   }
 
   const rulesetHubLoading = ref(false)

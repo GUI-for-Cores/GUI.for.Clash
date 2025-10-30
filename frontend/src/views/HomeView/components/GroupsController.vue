@@ -29,13 +29,26 @@ const appSettings = useAppSettingsStore()
 const kernelApiStore = useKernelApiStore()
 
 const groups = computed(() => {
-  const { providers, proxies } = kernelApiStore
-  if (!providers.default) return []
-  return providers.default.proxies
+  const { proxies } = kernelApiStore
+  return Object.values(proxies)
+    .filter(
+      (v) =>
+        [
+          ProxyGroupType.Selector,
+          ProxyGroupType.UrlTest,
+          ProxyGroupType.Fallback,
+          ProxyGroupType.Relay,
+          ProxyGroupType.LoadBalance,
+        ].includes(v.type as ProxyGroupType) && v.name !== 'GLOBAL',
+    )
+    .sort((a, b) => {
+      const aIndex = proxies.GLOBAL?.all.indexOf(a.name) || 0
+      const bIndex = proxies.GLOBAL?.all.indexOf(b.name) || 0
+      return aIndex - bIndex
+    })
     .concat(proxies.GLOBAL || [])
-    .filter((v) => v.all && !v.hidden)
     .map((group) => {
-      const all = group.all
+      const all = (group.all || [])
         .filter((proxy) => {
           const condition1 =
             appSettings.app.kernel.unAvailable ||

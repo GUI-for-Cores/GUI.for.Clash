@@ -2,18 +2,11 @@
 import { computed } from 'vue'
 import { useI18n, I18nT } from 'vue-i18n'
 
-import { getProvidersRules, updateProvidersRules } from '@/api/kernel'
 import { RemoveFile, WriteFile, BrowserOpenURL } from '@/bridge'
 import { DraggableOptions } from '@/constant'
 import { View } from '@/enums/app'
 import { RulesetFormat } from '@/enums/kernel'
-import {
-  type RuleSet,
-  useRulesetsStore,
-  useAppSettingsStore,
-  useEnvStore,
-  useKernelApiStore,
-} from '@/stores'
+import { type RuleSet, useRulesetsStore, useAppSettingsStore, useEnvStore } from '@/stores'
 import {
   debounce,
   formatRelativeTime,
@@ -63,7 +56,6 @@ const { t } = useI18n()
 const [Modal, modalApi] = useModal({})
 const envStore = useEnvStore()
 const rulesetsStore = useRulesetsStore()
-const kernelApiStore = useKernelApiStore()
 const appSettingsStore = useAppSettingsStore()
 
 const handleImportRuleset = async () => {
@@ -92,7 +84,6 @@ const handleShowRulesetForm = async (id?: string, isUpdate = false) => {
 const handleUpdateRulesets = async () => {
   try {
     await rulesetsStore.updateRulesets()
-    await _updateAllProvidersRules()
     message.success('common.success')
   } catch (error: any) {
     console.error('updateRulesets: ', error)
@@ -101,20 +92,10 @@ const handleUpdateRulesets = async () => {
 }
 
 const handleEditRulesetList = (id: string) => {
-  const name = rulesetsStore.getRulesetById(id)?.name
   modalApi.setProps({
-    title: name,
+    title: rulesetsStore.getRulesetById(id)?.name,
     height: '90',
     width: '90',
-    onOk: async () => {
-      if (!name) return
-      try {
-        await _updateProvidersRules(name)
-      } catch (error: any) {
-        message.error(error)
-        console.log(error)
-      }
-    },
   })
   modalApi.setContent(RulesetView, { id })
   modalApi.open()
@@ -123,7 +104,6 @@ const handleEditRulesetList = (id: string) => {
 const handleUpdateRuleset = async (r: RuleSet) => {
   try {
     await rulesetsStore.updateRuleset(r.id)
-    await _updateProvidersRules(r.name)
   } catch (error: any) {
     console.error('updateRuleset: ', error)
     message.error(error)
@@ -151,31 +131,11 @@ const handleClearRuleset = async (id: string) => {
 
   try {
     await WriteFile(r.path, stringifyNoFolding({ payload: [] }))
-    await _updateProvidersRules(r.name)
     r.count = 0
     rulesetsStore.editRuleset(r.id, r)
   } catch (error: any) {
     message.error(error)
     console.log(error)
-  }
-}
-
-const _updateProvidersRules = async (ruleset: string) => {
-  if (kernelApiStore.running) {
-    const { providers } = await getProvidersRules()
-    if (providers[ruleset]) {
-      await updateProvidersRules(ruleset)
-    }
-  }
-}
-
-const _updateAllProvidersRules = async () => {
-  if (kernelApiStore.running) {
-    const { providers } = await getProvidersRules()
-    const rulesets = Object.keys(providers)
-    for (let i = 0; i < rulesets.length; i++) {
-      await updateProvidersRules(rulesets[i]!)
-    }
   }
 }
 

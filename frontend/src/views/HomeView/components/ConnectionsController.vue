@@ -2,18 +2,11 @@
 import { ref, computed, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { deleteConnection, updateProvidersRules } from '@/api/kernel'
+import { deleteConnection } from '@/api/kernel'
 import { DefaultConnections, DraggableOptions } from '@/constant'
 import { useBool } from '@/hooks'
 import { useAppSettingsStore, useKernelApiStore } from '@/stores'
-import {
-  formatBytes,
-  formatRelativeTime,
-  addToRuleSet,
-  ignoredError,
-  message,
-  picker,
-} from '@/utils'
+import { formatBytes, formatRelativeTime, addToRuleSet, message, picker } from '@/utils'
 
 import { type PickerItem } from '@/components/Picker/index.vue'
 
@@ -238,7 +231,6 @@ const menu: Menu[] = [
         const payloads = await picker.multi('rulesets.selectRuleType', options)
         try {
           await addToRuleSet(ruleset, payloads)
-          await ignoredError(updateProvidersRules, ruleset)
           message.success('common.success')
         } catch (error: any) {
           message.error(error)

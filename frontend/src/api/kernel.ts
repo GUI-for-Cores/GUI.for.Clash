@@ -1,25 +1,17 @@
 import { useAppSettingsStore, useProfilesStore } from '@/stores'
 import { Request } from '@/utils/request'
 
-import type {
-  CoreApiConfig,
-  CoreApiConnections,
-  CoreApiProviders,
-  CoreApiProvidersRules,
-  CoreApiProxies,
-} from '@/types/kernel'
+import type { CoreApiConfig, CoreApiProxies, CoreApiConnections } from '@/types/kernel'
 
 export enum Api {
   Configs = '/configs',
   Memory = '/memory',
   Proxies = '/proxies',
-  Providers = '/providers/proxies',
   ProxyDelay = '/proxies/{0}/delay',
   Connections = '/connections',
   Traffic = '/traffic',
   Logs = '/logs',
   GEO = '/configs/geo',
-  ProvidersRules = '/providers/rules',
 }
 
 const setupKernelApi = () => {
@@ -51,8 +43,6 @@ export const setConfigs = (body = {}) => request.patch<null>(Api.Configs, body)
 
 export const getProxies = () => request.get<CoreApiProxies>(Api.Proxies)
 
-export const getProviders = () => request.get<CoreApiProviders>(Api.Providers)
-
 export const getConnections = () => request.get<CoreApiConnections>(Api.Connections)
 
 export const deleteConnection = (id: string) => request.delete<null>(Api.Connections + '/' + id)
@@ -71,13 +61,3 @@ export const getProxyDelay = (proxy: string, url: string) => {
 }
 
 export const updateGEO = () => request.post<{ message: string } | null>(Api.GEO)
-
-export const getProvidersRules = () => request.get<CoreApiProvidersRules>(Api.ProvidersRules)
-
-export const updateProvidersRules = (ruleset: string) => {
-  return request.put<null>(Api.ProvidersRules + '/' + ruleset)
-}
-
-export const updateProvidersProxies = (provider: string) => {
-  return request.put<null>(Api.Providers + '/' + provider)
-}

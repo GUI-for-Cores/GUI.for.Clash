@@ -1,11 +1,12 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { parse } from 'yaml'
 
 import { ReadFile, WriteFile } from '@/bridge'
 import { ProfilesFilePath } from '@/constant'
 import { ProxyGroup, RulesetBehavior, RulesetFormat, RuleType } from '@/enums/kernel'
-import { debounce, ignoredError, stringifyNoFolding } from '@/utils'
+import { useAppSettingsStore } from '@/stores'
+import { debounce, eventBus, ignoredError, stringifyNoFolding } from '@/utils'
 
 export type ProfileType = {
   id: string
@@ -139,7 +140,10 @@ export type ProfileType = {
 }
 
 export const useProfilesStore = defineStore('profiles', () => {
+  const appSettingsStore = useAppSettingsStore()
+
   const profiles = ref<ProfileType[]>([])
+  const currentProfile = computed(() => getProfileById(appSettingsStore.app.kernel.profile))
 
   const setupProfiles = async () => {
     const data = await ignoredError(ReadFile, ProfilesFilePath)
@@ -188,6 +192,8 @@ export const useProfilesStore = defineStore('profiles', () => {
       profiles.value.splice(idx, 0, backup)
       throw error
     }
+
+    eventBus.emit('profileChange', { id })
   }
 
   const editProfile = async (id: string, p: ProfileType) => {
@@ -200,12 +206,15 @@ export const useProfilesStore = defineStore('profiles', () => {
       profiles.value.splice(idx, 1, backup)
       throw error
     }
+
+    eventBus.emit('profileChange', { id })
   }
 
   const getProfileById = (id: string) => profiles.value.find((v) => v.id === id)
 
   return {
     profiles,
+    currentProfile,
     setupProfiles,
     saveProfiles,
     addProfile,

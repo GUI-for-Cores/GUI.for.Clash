@@ -579,26 +579,28 @@ export const addToRuleSet = async (id: 'direct' | 'reject' | 'proxy', payloads: 
   const path = `data/rulesets/${id}.yaml`
 
   const rulesetsStoe = useRulesetsStore()
-  const ruleset = rulesetsStoe.getRulesetById(id)
+  let ruleset = rulesetsStoe.getRulesetById(id)
   if (!ruleset) {
-    rulesetsStoe.addRuleset({
+    ruleset = {
       id,
       name: id,
-      updateTime: Date.now(),
+      updateTime: 0,
       type: 'Manual',
       behavior: RulesetBehavior.Classical,
       format: RulesetFormat.Yaml,
       url: '',
       path,
-      count: payloads.length,
+      count: 0,
       disabled: false,
-    })
+    }
+    await rulesetsStoe.addRuleset(ruleset)
   }
 
   const content = (await ignoredError(ReadFile, path)) || '{}'
   const { payload = [] } = parse(content)
   payload.unshift(...payloads)
   await WriteFile(path, stringifyNoFolding({ payload: [...new Set(payload)] }))
+  await rulesetsStoe.updateRuleset(id)
 }
 
 export const exitApp = async () => {

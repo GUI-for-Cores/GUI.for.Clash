@@ -1,16 +1,19 @@
 import { defineStore } from 'pinia'
 import { computed, ref, watch } from 'vue'
 
-import { getConfigs, setConfigs, getProxies, getProviders, Api } from '@/api/kernel'
+import { getConfigs, setConfigs, getProxies, Api } from '@/api/kernel'
 import { ProcessInfo, KillProcess, ExecBackground, ReadFile, WriteFile, RemoveFile } from '@/bridge'
 import { CorePidFilePath, CoreStopOutputKeyword, CoreWorkingDirectory } from '@/constant'
 import { Branch } from '@/enums/app'
+import { RuleType } from '@/enums/kernel'
 import {
   useAppSettingsStore,
   useProfilesStore,
   useLogsStore,
   useEnvStore,
   usePluginsStore,
+  useSubscribesStore,
+  useRulesetsStore,
 } from '@/stores'
 import {
   generateConfigFile,
@@ -21,6 +24,7 @@ import {
   message,
   getKernelRuntimeArgs,
   getKernelRuntimeEnv,
+  eventBus,
 } from '@/utils'
 
 import type {
@@ -39,6 +43,8 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
   const logsStore = useLogsStore()
   const pluginsStore = usePluginsStore()
   const profilesStore = useProfilesStore()
+  const subscribesStore = useSubscribesStore()
+  const rulesetsStore = useRulesetsStore()
   const appSettingsStore = useAppSettingsStore()
 
   /** RESTful API */
@@ -51,18 +57,12 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
     mode: '',
     tun: {
       enable: false,
-      stack: 'gVisor',
+      stack: '',
       device: '',
     },
   })
 
   const proxies = ref<Record<string, CoreApiProxy>>({})
-  const providers = ref<{
-    [key: string]: {
-      name: string
-      proxies: CoreApiProxy[]
-    }
-  }>({})
 
   const refreshConfig = async () => {
     config.value = await getConfigs()
@@ -74,8 +74,7 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
   }
 
   const refreshProviderProxies = async () => {
-    const [{ providers: a }, { proxies: b }] = await Promise.all([getProviders(), getProxies()])
-    providers.value = a
+    const { proxies: b } = await getProxies()
     proxies.value = b
   }
 
@@ -207,6 +206,7 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
   const starting = ref(false)
   const stopping = ref(false)
   const restarting = ref(false)
+  const needRestart = ref(false)
   const coreStateLoading = ref(true)
   let isCoreStartedByThisInstance = false
   let { promise: coreStoppedPromise, resolve: coreStoppedResolver } = Promise.withResolvers()
@@ -255,6 +255,7 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
 
     corePid.value = pid
     running.value = true
+    needRestart.value = false
     isCoreStartedByThisInstance = true
     coreStoppedPromise = new Promise((r) => (coreStoppedResolver = r))
 
@@ -361,6 +362,67 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
     return undefined
   }
 
+  eventBus.on('profileChange', ({ id }) => {
+    if (running.value && id === appSettingsStore.app.kernel.profile) {
+      needRestart.value = true
+    }
+  })
+
+  eventBus.on('subscriptionChange', ({ id }) => {
+    if (running.value && profilesStore.currentProfile) {
+      const inUse = profilesStore.currentProfile.proxyGroupsConfig.some(
+        (group) => group.use.includes(id) || group.proxies.some((proxy) => proxy.type === id),
+      )
+      if (inUse) {
+        needRestart.value = true
+      }
+    }
+  })
+
+  eventBus.on('subscriptionsChange', () => {
+    if (running.value && profilesStore.currentProfile) {
+      const enabledSubs = subscribesStore.subscribes.flatMap((v) => (v.disabled ? [] : v.id))
+      const inUse = profilesStore.currentProfile.proxyGroupsConfig.some(
+        (group) =>
+          group.use.some((sub) => enabledSubs.includes(sub)) ||
+          group.proxies.some((proxy) => enabledSubs.includes(proxy.type)),
+      )
+      if (inUse) {
+        needRestart.value = true
+      }
+    }
+  })
+
+  const collectRulesetIDs = () => {
+    if (!profilesStore.currentProfile) return []
+    const l1 = Object.keys(profilesStore.currentProfile.dnsConfig['nameserver-policy']).flatMap(
+      (v) => (v.startsWith('rule-set:') ? v.slice('rule-set:'.length) : []),
+    )
+    const l2 = profilesStore.currentProfile.rulesConfig.flatMap((v) =>
+      v.type === RuleType.RuleSet ? v.payload : [],
+    )
+    return [...l1, ...l2]
+  }
+
+  eventBus.on('rulesetChange', ({ id }) => {
+    if (running.value && profilesStore.currentProfile) {
+      const inUse = collectRulesetIDs().includes(id)
+      if (inUse) {
+        needRestart.value = true
+      }
+    }
+  })
+
+  eventBus.on('rulesetsChange', () => {
+    if (running.value && profilesStore.currentProfile) {
+      const enabledRulesets = rulesetsStore.rulesets.flatMap((v) => (v.disabled ? [] : v.id))
+      const inUse = collectRulesetIDs().some((v) => enabledRulesets.includes(v))
+      if (inUse) {
+        needRestart.value = true
+      }
+    }
+  })
+
   const watchSources = computed(() => {
     const source = [config.value.mode, config.value.tun.enable]
     if (!appSettingsStore.app.addGroupToMenu) return source.join('')
@@ -387,10 +449,10 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
     starting,
     stopping,
     restarting,
+    needRestart,
     coreStateLoading,
     config,
     proxies,
-    providers,
     refreshConfig,
     updateConfig,
     refreshProviderProxies,
