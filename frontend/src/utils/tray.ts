@@ -87,16 +87,16 @@ const getTrayMenus = () => {
 
   if (!groupMenusHidden) {
     groupMenus = Object.values(proxies)
-      .filter(
-        (v) =>
-          [
-            ProxyGroupType.Selector,
-            ProxyGroupType.UrlTest,
-            ProxyGroupType.Fallback,
-            ProxyGroupType.Relay,
-            ProxyGroupType.LoadBalance,
-          ].includes(v.type as ProxyGroupType) && v.name !== 'GLOBAL',
-      )
+      .filter((v) => {
+        if (v.hidden || v.name === 'GLOBAL') return false
+        return [
+          ProxyGroupType.Selector,
+          ProxyGroupType.UrlTest,
+          ProxyGroupType.Fallback,
+          ProxyGroupType.Relay,
+          ProxyGroupType.LoadBalance,
+        ].includes(v.type as ProxyGroupType)
+      })
       .sort((a, b) => {
         const aIndex = proxies.GLOBAL?.all.indexOf(a.name) || 0
         const bIndex = proxies.GLOBAL?.all.indexOf(b.name) || 0
