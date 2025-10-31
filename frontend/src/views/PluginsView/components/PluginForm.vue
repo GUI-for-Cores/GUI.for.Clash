@@ -2,11 +2,11 @@
 import { ref, inject, computed, h } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { PluginsTriggerOptions, DraggableOptions } from '@/constant'
+import { PluginsTriggerOptions, DraggableOptions } from '@/constant/app'
 import { PluginTrigger } from '@/enums/app'
 import { useBool } from '@/hooks'
 import { usePluginsStore } from '@/stores'
-import { deepClone, sampleID, message } from '@/utils'
+import { deepClone, message, sampleID } from '@/utils'
 
 import Button from '@/components/Button/index.vue'
 
@@ -193,9 +193,7 @@ defineExpose({ modalSlots })
 <template>
   <div class="w-full h-full">
     <div class="form-item">
-      <div class="name">
-        {{ t('plugin.type') }}
-      </div>
+      {{ t('plugin.type') }}
       <Radio
         v-model="plugin.type"
         :options="[
@@ -213,7 +211,7 @@ defineExpose({ modalSlots })
       <CheckBox v-model="plugin.triggers" :options="PluginsTriggerOptions.slice(0, 6)" />
     </div>
     <div class="form-item">
-      <div class=""></div>
+      <div class="name"></div>
       <CheckBox v-model="plugin.triggers" :options="PluginsTriggerOptions.slice(6)" />
     </div>
     <div class="form-item">
@@ -299,7 +297,7 @@ defineExpose({ modalSlots })
         <template v-for="(conf, index) in plugin.configuration" :key="conf.id">
           <Card v-if="conf.component" :title="conf.component">
             <template #title-prefix>
-              <Icon icon="drag" class="drag" style="cursor: move" />
+              <Icon icon="drag" class="drag cursor-move" />
               <div class="ml-8">{{ index + 1 }}.</div>
             </template>
             <template #extra>
@@ -364,6 +362,7 @@ defineExpose({ modalSlots })
           </Card>
         </template>
       </div>
+
       <div :class="plugin.configuration.length !== 0 ? 'mt-8' : ''" class="mx-8">
         <Button @click="handleAddParam" type="primary" icon="add" class="w-full" />
       </div>

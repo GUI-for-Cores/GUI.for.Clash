@@ -447,8 +447,4 @@ onActivated(() => {
     transform: rotate(0deg);
   }
 }
-
-.rotation {
-  animation: rotate 2s infinite linear;
-}
 </style>

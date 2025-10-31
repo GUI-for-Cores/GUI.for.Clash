@@ -156,9 +156,7 @@ onUnmounted(() => {
 <template>
   <div>
     <div class="flex items-center rounded-8 px-8 py-4" style="background-color: var(--card-bg)">
-      <Button @click="handleShowSettings" type="text" size="small">
-        <Icon icon="settings" />
-      </Button>
+      <Button @click="handleShowSettings" type="text" size="small" icon="settings" />
       <Switch
         v-model="envStore.systemProxy"
         @change="onSystemProxySwitchChange"

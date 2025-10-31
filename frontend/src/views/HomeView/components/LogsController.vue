@@ -118,12 +118,14 @@ onUnmounted(() => {
         :placeholder="t('common.keywords')"
         class="ml-8 flex-1"
       />
-      <Button @click="togglePause" type="text" size="small" class="ml-8">
-        <Icon :icon="pause ? 'play' : 'pause'" fill="var(--color)" />
-      </Button>
-      <Button @click="handleClear" v-tips="'common.clear'" size="small" type="text">
-        <Icon icon="clear" fill="var(--color)" />
-      </Button>
+      <Button
+        @click="togglePause"
+        :icon="pause ? 'play' : 'pause'"
+        type="text"
+        size="small"
+        class="ml-8"
+      />
+      <Button @click="handleClear" v-tips="'common.clear'" icon="clear" size="small" type="text" />
     </div>
 
     <Empty v-if="filteredLogs.length === 0" />
