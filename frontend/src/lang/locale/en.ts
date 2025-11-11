@@ -216,6 +216,7 @@ export default {
       'rule-set-type': 'RuleSet Type',
       'ruleset-name': 'Name',
       'ruleset-proxy': 'Proxy',
+      'ruleset-interval': 'Interval',
       needGeodataMode: 'Please enable the "geodata-mode" option in the advanced settings',
       notFound: 'proxy group does not exist',
       empty: 'Ruleset list is empty',

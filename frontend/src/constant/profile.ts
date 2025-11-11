@@ -226,6 +226,7 @@ export const RulesConfigDefaults = (
     'ruleset-behavior': RulesetBehavior.Domain,
     'ruleset-format': RulesetFormat.Mrs,
     'ruleset-proxy': '',
+    'ruleset-interval': 0,
   },
   {
     id: sampleID(),
@@ -238,6 +239,7 @@ export const RulesConfigDefaults = (
     'ruleset-behavior': RulesetBehavior.Domain,
     'ruleset-format': RulesetFormat.Mrs,
     'ruleset-proxy': ids[2],
+    'ruleset-interval': 0,
   },
   {
     id: sampleID(),
@@ -251,6 +253,7 @@ export const RulesConfigDefaults = (
     'ruleset-behavior': RulesetBehavior.Domain,
     'ruleset-format': RulesetFormat.Mrs,
     'ruleset-proxy': ids[2],
+    'ruleset-interval': 0,
   },
   {
     id: sampleID(),
@@ -264,6 +267,7 @@ export const RulesConfigDefaults = (
     'ruleset-behavior': RulesetBehavior.Ipcidr,
     'ruleset-format': RulesetFormat.Mrs,
     'ruleset-proxy': ids[2],
+    'ruleset-interval': 0,
   },
   {
     id: sampleID(),
@@ -276,6 +280,7 @@ export const RulesConfigDefaults = (
     'ruleset-behavior': RulesetBehavior.Ipcidr,
     'ruleset-format': RulesetFormat.Mrs,
     'ruleset-proxy': ids[2],
+    'ruleset-interval': 0,
   },
   {
     id: sampleID(),
@@ -289,6 +294,7 @@ export const RulesConfigDefaults = (
     'ruleset-behavior': RulesetBehavior.Domain,
     'ruleset-format': RulesetFormat.Mrs,
     'ruleset-proxy': ids[2],
+    'ruleset-interval': 0,
   },
   {
     id: sampleID(),
@@ -301,6 +307,7 @@ export const RulesConfigDefaults = (
     'ruleset-behavior': RulesetBehavior.Domain,
     'ruleset-format': RulesetFormat.Mrs,
     'ruleset-proxy': ids[2],
+    'ruleset-interval': 0,
   },
   {
     id: sampleID(),
@@ -314,6 +321,7 @@ export const RulesConfigDefaults = (
     'ruleset-behavior': RulesetBehavior.Domain,
     'ruleset-format': RulesetFormat.Mrs,
     'ruleset-proxy': ids[2],
+    'ruleset-interval': 0,
   },
   {
     id: sampleID(),
@@ -326,6 +334,7 @@ export const RulesConfigDefaults = (
     'ruleset-behavior': RulesetBehavior.Domain,
     'ruleset-format': RulesetFormat.Mrs,
     'ruleset-proxy': ids[2],
+    'ruleset-interval': 0,
   },
 ]
 

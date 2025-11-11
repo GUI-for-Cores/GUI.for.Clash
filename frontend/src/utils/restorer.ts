@@ -44,6 +44,7 @@ export const restoreProfile = (
         'ruleset-behavior': RulesetBehavior.Domain,
         'ruleset-format': RulesetFormat.Mrs,
         'ruleset-proxy': '',
+        'ruleset-interval': 0,
       },
     ],
     mixinConfig: MixinConfigDefaults(),
@@ -152,6 +153,7 @@ export const restoreProfile = (
             'ruleset-type': provider.type || 'http',
             'ruleset-name': payload,
             'ruleset-proxy': 'DIRECT',
+            'ruleset-interval': provider.interval ?? 0,
           })
           return
         }
@@ -171,6 +173,7 @@ export const restoreProfile = (
           'ruleset-type': 'http',
           'ruleset-name': '',
           'ruleset-proxy': '',
+          'ruleset-interval': 0,
         })
       })
     }

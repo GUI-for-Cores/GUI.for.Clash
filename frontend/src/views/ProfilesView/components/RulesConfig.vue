@@ -36,6 +36,7 @@ const fields = ref<ProfileType['rulesConfig'][number]>({
   'ruleset-behavior': RulesetBehavior.Domain,
   'ruleset-format': RulesetFormat.Mrs,
   'ruleset-proxy': '',
+  'ruleset-interval': 0,
 })
 
 const proxyOptions = computed(() => [
@@ -80,6 +81,7 @@ const handleAdd = () => {
     'ruleset-behavior': RulesetBehavior.Domain,
     'ruleset-format': RulesetFormat.Mrs,
     'ruleset-proxy': '',
+    'ruleset-interval': 0,
   }
   showModal.value = true
 }
@@ -98,6 +100,7 @@ const handleAddInsertionPoint = () => {
     'ruleset-behavior': RulesetBehavior.Domain,
     'ruleset-format': RulesetFormat.Mrs,
     'ruleset-proxy': '',
+    'ruleset-interval': 0,
   })
 }
 
@@ -263,6 +266,10 @@ const showLost = () => message.warn('kernel.rules.notFound')
       <div class="form-item">
         {{ t('kernel.rules.ruleset-proxy') }}
         <Select v-model="fields['ruleset-proxy']" :options="proxyOptions" />
+      </div>
+      <div class="form-item">
+        {{ t('kernel.rules.ruleset-interval') }}
+        <Input v-model="fields['ruleset-interval']" type="number" />
       </div>
     </template>
 

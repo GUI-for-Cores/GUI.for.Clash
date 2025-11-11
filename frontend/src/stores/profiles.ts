@@ -128,6 +128,7 @@ export type ProfileType = {
     'ruleset-behavior': RulesetBehavior
     'ruleset-format': RulesetFormat
     'ruleset-proxy': string
+    'ruleset-interval': number
   }[]
   mixinConfig: {
     priority: 'mixin' | 'gui'

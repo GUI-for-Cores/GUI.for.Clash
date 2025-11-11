@@ -216,6 +216,7 @@ export default {
       'rule-set-type': '规则集类型',
       'ruleset-name': '名称',
       'ruleset-proxy': '下载方式',
+      'ruleset-interval': '更新间隔',
       needGeodataMode: '请在高级设置中打开"GEO数据模式"',
       notFound: '策略组不存在',
       empty: '规则集列表为空',
