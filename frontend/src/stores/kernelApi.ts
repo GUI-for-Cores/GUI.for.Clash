@@ -329,6 +329,7 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
       await cleanupTask?.()
       await startCore()
     } finally {
+      needRestart.value = false
       restarting.value = false
     }
   }
