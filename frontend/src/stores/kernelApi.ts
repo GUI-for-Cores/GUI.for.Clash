@@ -276,6 +276,7 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
 
     corePid.value = -1
     running.value = false
+    needRestart.value = false
 
     destroyCoreWebsockets()
 
