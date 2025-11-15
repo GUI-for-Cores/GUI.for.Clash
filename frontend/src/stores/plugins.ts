@@ -7,7 +7,6 @@ import { PluginHubFilePath, PluginsFilePath } from '@/constant/app'
 import { PluginTrigger, PluginTriggerEvent } from '@/enums/app'
 import { useAppSettingsStore, type ProfileType } from '@/stores'
 import {
-  debounce,
   omitArray,
   ignoredError,
   isNumber,
@@ -167,19 +166,22 @@ export const usePluginsStore = defineStore('plugins', () => {
     }
   }
 
-  const savePlugins = debounce(async () => {
+  const savePlugins = () => {
     const p = omitArray(plugins.value, ['updating', 'loading', 'running'])
-    await WriteFile(PluginsFilePath, stringifyNoFolding(p))
-  }, 100)
+    return WriteFile(PluginsFilePath, stringifyNoFolding(p))
+  }
 
   const addPlugin = async (plugin: Plugin) => {
     plugins.value.push(plugin)
+    await _doUpdatePlugin(plugin).catch((_) => {})
     try {
-      await _doUpdatePlugin(plugin)
       await savePlugins()
       updatePluginTrigger(plugin)
     } catch (error) {
-      plugins.value.pop()
+      const idx = plugins.value.indexOf(plugin)
+      if (idx !== -1) {
+        plugins.value.splice(idx, 1)
+      }
       throw error
     }
   }
@@ -196,7 +198,7 @@ export const usePluginsStore = defineStore('plugins', () => {
       plugins.value.splice(idx, 0, plugin)
       throw error
     }
-    plugin.path.startsWith('data') && RemoveFile(plugin.path)
+    plugin.path.startsWith('data') && (await RemoveFile(plugin.path).catch((_) => {}))
     // Remove configuration
     if (appSettingsStore.app.pluginSettings[plugin.id]) {
       if (await confirm('Tips', 'plugins.removeConfiguration').catch(() => 0)) {
@@ -301,7 +303,7 @@ export const usePluginsStore = defineStore('plugins', () => {
       update,
     )
 
-    if (needSave) savePlugins()
+    if (needSave) await savePlugins()
   }
 
   const pluginHubLoading = ref(false)

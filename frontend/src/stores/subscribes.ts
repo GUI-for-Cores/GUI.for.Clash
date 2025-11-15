@@ -7,7 +7,6 @@ import { DefaultSubscribeScript, SubscribesFilePath } from '@/constant'
 import { PluginTriggerEvent, RequestMethod } from '@/enums/app'
 import { usePluginsStore, useProfilesStore } from '@/stores'
 import {
-  debounce,
   sampleID,
   isValidSubYAML,
   restoreProfile,
@@ -69,10 +68,10 @@ export const useSubscribesStore = defineStore('subscribes', () => {
     }
   }
 
-  const saveSubscribes = debounce(async () => {
+  const saveSubscribes = () => {
     const s = omitArray(subscribes.value, ['updating'])
-    await WriteFile(SubscribesFilePath, stringifyNoFolding(s))
-  }, 500)
+    return WriteFile(SubscribesFilePath, stringifyNoFolding(s))
+  }
 
   const addSubscribe = async (s: Subscription) => {
     subscribes.value.push(s)
@@ -259,10 +258,15 @@ export const useSubscribesStore = defineStore('subscribes', () => {
     s.proxies = proxies.map(({ name, type, __id__ }) => ({ id: __id__, name, type }))
 
     const fn = new window.AsyncFunction(
-      `${s.script};return await ${PluginTriggerEvent.OnSubscribe}(${JSON.stringify(proxies)}, ${JSON.stringify(s)})`,
-    ) as () => Promise<{ proxies: Recordable<any>[]; subscription: Subscription }>
+      'proxies',
+      'subscription',
+      `${s.script}; return await ${PluginTriggerEvent.OnSubscribe}(proxies, subscription)`,
+    ) as (
+      proxies: Recordable[],
+      subscription: Subscription,
+    ) => Promise<{ proxies: Recordable[]; subscription: Subscription }>
 
-    const { proxies: _proxies, subscription } = await fn()
+    const { proxies: _proxies, subscription } = await fn(proxies, s)
 
     Object.assign(s, subscription)
     s.proxies = _proxies.map(({ name, type, __id__ }) => ({ id: __id__, name, type }))
@@ -309,7 +313,7 @@ export const useSubscribesStore = defineStore('subscribes', () => {
       update,
     )
 
-    if (needSave) saveSubscribes()
+    if (needSave) await saveSubscribes()
 
     eventBus.emit('subscriptionsChange', undefined)
   }

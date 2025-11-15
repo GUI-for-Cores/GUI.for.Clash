@@ -2,11 +2,10 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { parse } from 'yaml'
 
-import { CopyFile, ReadFile, WriteFile, HttpGet, Download, FileExists } from '@/bridge'
+import { CopyFile, ReadFile, WriteFile, HttpGet, Download } from '@/bridge'
 import { RulesetsFilePath, EmptyRuleSet, RulesetHubFilePath } from '@/constant'
 import { RulesetBehavior, RulesetFormat } from '@/enums/kernel'
 import {
-  debounce,
   isValidPaylodYAML,
   ignoredError,
   omitArray,
@@ -48,10 +47,10 @@ export const useRulesetsStore = defineStore('rulesets', () => {
     list && (rulesetHub.value = JSON.parse(list))
   }
 
-  const saveRulesets = debounce(async () => {
+  const saveRulesets = () => {
     const r = omitArray(rulesets.value, ['updating'])
-    await WriteFile(RulesetsFilePath, stringifyNoFolding(r))
-  }, 500)
+    return WriteFile(RulesetsFilePath, stringifyNoFolding(r))
+  }
 
   const addRuleset = async (r: RuleSet) => {
     rulesets.value.push(r)
@@ -176,7 +175,7 @@ export const useRulesetsStore = defineStore('rulesets', () => {
       update,
     )
 
-    if (needSave) saveRulesets()
+    if (needSave) await saveRulesets()
 
     eventBus.emit('rulesetsChange', undefined)
   }
