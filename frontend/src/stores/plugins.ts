@@ -335,10 +335,11 @@ export const usePluginsStore = defineStore('plugins', () => {
 
   const getPluginCodefromCache = (id: string) => PluginsCache[id]?.code
 
-  const onSubscribeTrigger = async (proxies: Record<string, any>[], subscription: Subscription) => {
+  const onSubscribeTrigger = async (proxies: Recordable[], subscription: Subscription) => {
     const { fnName, observers } = PluginsTriggerMap[PluginTrigger.OnSubscribe]
+    if (observers.length === 0) return proxies
 
-    let result = proxies
+    subscription = deepClone(subscription)
 
     for (const observer of observers) {
       const cache = PluginsCache[observer]
@@ -347,21 +348,23 @@ export const usePluginsStore = defineStore('plugins', () => {
 
       const metadata = getPluginMetadata(cache.plugin)
       try {
-        const fn = new window.AsyncFunction(`const Plugin = ${JSON.stringify(metadata)};
-          ${cache.code};
-          return await ${fnName}(${JSON.stringify(result)}, ${JSON.stringify(subscription)})
-        `) as <T>(params: T) => Promise<T>
-        result = await fn(result)
+        const fn = new window.AsyncFunction(
+          'Plugin',
+          'proxies',
+          'subscription',
+          `${cache.code}; return await ${fnName}(proxies, subscription)`,
+        )
+        proxies = await fn(metadata, proxies, subscription)
       } catch (error: any) {
         throw `${cache.plugin.name} : ` + (error.message || error)
       }
 
-      if (!Array.isArray(result)) {
+      if (!Array.isArray(proxies)) {
         throw `${cache.plugin.name} : Wrong result`
       }
     }
 
-    return result
+    return proxies
   }
 
   const noParamsTrigger = async (trigger: PluginTrigger, interruptOnError = false) => {
@@ -375,10 +378,8 @@ export const usePluginsStore = defineStore('plugins', () => {
 
       const metadata = getPluginMetadata(cache.plugin)
       try {
-        const fn = new window.AsyncFunction(
-          `const Plugin = ${JSON.stringify(metadata)}; ${cache.code}; return await ${fnName}()`,
-        )
-        const exitCode = await fn()
+        const fn = new window.AsyncFunction('Plugin', `${cache.code}; return await ${fnName}()`)
+        const exitCode = await fn(metadata)
         if (isNumber(exitCode) && exitCode !== cache.plugin.status) {
           cache.plugin.status = exitCode
           editPlugin(cache.plugin.id, cache.plugin)
@@ -391,12 +392,13 @@ export const usePluginsStore = defineStore('plugins', () => {
         console.error(msg)
       }
     }
-    return
   }
 
-  const onGenerateTrigger = async (params: Record<string, any>, profile: ProfileType) => {
+  const onGenerateTrigger = async (config: Recordable, profile: ProfileType) => {
     const { fnName, observers } = PluginsTriggerMap[PluginTrigger.OnGenerate]
-    if (observers.length === 0) return params
+    if (observers.length === 0) return config
+
+    profile = deepClone(profile)
 
     for (const observer of observers) {
       const cache = PluginsCache[observer]
@@ -406,23 +408,28 @@ export const usePluginsStore = defineStore('plugins', () => {
       const metadata = getPluginMetadata(cache.plugin)
       try {
         const fn = new window.AsyncFunction(
-          `const Plugin = ${JSON.stringify(metadata)}; ${cache.code}; return await ${fnName}(${JSON.stringify(params)}, ${JSON.stringify(profile)})`,
+          'Plugin',
+          'config',
+          'profile',
+          `${cache.code}; return await ${fnName}(config, profile)`,
         )
-        params = await fn()
+        config = await fn(metadata, config, profile)
       } catch (error: any) {
         throw `${cache.plugin.name} : ` + (error.message || error)
       }
 
-      if (!params) throw `${cache.plugin.name} : Wrong result`
+      if (!config) throw `${cache.plugin.name} : Wrong result`
     }
 
-    return params as Record<string, any>
+    return config
   }
 
-  const onBeforeCoreStartTrigger = async (params: Record<string, any>, profile: ProfileType) => {
+  const onBeforeCoreStartTrigger = async (params: Recordable, profile: ProfileType) => {
     const { fnName, observers } = PluginsTriggerMap[PluginTrigger.OnBeforeCoreStart]
     if (observers.length === 0) return params
 
+    profile = deepClone(profile)
+
     for (const observer of observers) {
       const cache = PluginsCache[observer]
 
@@ -431,9 +438,12 @@ export const usePluginsStore = defineStore('plugins', () => {
       const metadata = getPluginMetadata(cache.plugin)
       try {
         const fn = new window.AsyncFunction(
-          `const Plugin = ${JSON.stringify(metadata)}; ${cache.code}; return await ${fnName}(${JSON.stringify(params)}, ${JSON.stringify(profile)})`,
+          'Plugin',
+          'config',
+          'profile',
+          `${cache.code}; return await ${fnName}(config, profile)`,
         )
-        params = await fn()
+        params = await fn(metadata, params, profile)
       } catch (error: any) {
         throw `${cache.plugin.name} : ` + (error.message || error)
       }
@@ -441,7 +451,7 @@ export const usePluginsStore = defineStore('plugins', () => {
       if (!params) throw `${cache.plugin.name} : Wrong result`
     }
 
-    return params as Record<string, any>
+    return params
   }
 
   const manualTrigger = async (id: string, event: PluginTriggerEvent, ...args: any[]) => {
@@ -451,14 +461,15 @@ export const usePluginsStore = defineStore('plugins', () => {
     if (!cache) throw `${plugin.name} is Missing source code`
     if (cache.plugin.disabled) throw `${plugin.name} is Disabled`
     const metadata = getPluginMetadata(plugin)
-    const _args = args.map((arg) => JSON.stringify(arg))
+    args = deepClone(args)
     try {
       const fn = new window.AsyncFunction(
-        `const Plugin = ${JSON.stringify(metadata)};
-        ${cache.code};
-        return await ${event}(${_args.join(',')})`,
+        'Plugin',
+        '...args',
+        `${cache.code}; return await ${event}(...args)`,
       )
-      const exitCode = await fn()
+
+      const exitCode = await fn(metadata, ...args)
       if (isNumber(exitCode) && exitCode !== plugin.status) {
         plugin.status = exitCode
         editPlugin(id, plugin)
@@ -471,6 +482,7 @@ export const usePluginsStore = defineStore('plugins', () => {
 
   const onTrayUpdateTrigger = async (tray: TrayContent, menus: MenuItem[]) => {
     const { fnName, observers } = PluginsTriggerMap[PluginTrigger.OnTrayUpdate]
+    if (observers.length === 0) return [tray, menus] as const
 
     let finalTray = tray
     let finalMenus = menus

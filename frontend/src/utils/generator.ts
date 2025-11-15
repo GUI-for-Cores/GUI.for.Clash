@@ -352,11 +352,12 @@ export const generateConfig = async (originalProfile: ProfileType) => {
 
   // step 4
   const fn = new window.AsyncFunction(
-    `${profile.scriptConfig.code};return await onGenerate(${JSON.stringify(_config)})`,
+    'config',
+    `${originalProfile.scriptConfig.code}; return await onGenerate(config)`,
   )
   let result
   try {
-    result = await fn()
+    result = await fn(_config)
   } catch (error: any) {
     throw error.message || error
   }
