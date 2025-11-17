@@ -36,6 +36,7 @@ export const restoreProfile = (
       {
         id: RuleType.InsertionPoint,
         type: RuleType.InsertionPoint,
+        enable: true,
         payload: '',
         proxy: '',
         'no-resolve': false,
@@ -145,6 +146,7 @@ export const restoreProfile = (
           profile.rulesConfig.push({
             id: index.toString(),
             type: type,
+            enable: true,
             payload: provider.type == 'inline' ? stringify(provider.payload) : provider.url,
             proxy: _proxy,
             'no-resolve': !!noResolve,
@@ -165,6 +167,7 @@ export const restoreProfile = (
         profile.rulesConfig.push({
           id: index.toString(),
           type: type as RuleType,
+          enable: true,
           payload: type === 'MATCH' ? '' : payload,
           proxy: _proxy,
           'no-resolve': !!noResolve,

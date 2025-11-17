@@ -228,7 +228,7 @@ const generateRuleProviders = async (
   }
 
   rules
-    .filter((rule) => rule.type === 'RULE-SET')
+    .filter((rule) => rule.type === 'RULE-SET' && rule.enable)
     .forEach((rule) => {
       if (rule['ruleset-type'] === 'file') {
         appendLocalProvider(rule.payload)
@@ -328,8 +328,8 @@ export const generateConfig = async (originalProfile: ProfileType) => {
   )
 
   config['rules'] = profile.rulesConfig
-    .filter(({ type }) => {
-      if (type === RuleType.InsertionPoint) {
+    .filter(({ type, enable }) => {
+      if (type === RuleType.InsertionPoint || !enable) {
         return false
       }
       return (

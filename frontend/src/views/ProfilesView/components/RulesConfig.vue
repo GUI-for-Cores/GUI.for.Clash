@@ -28,6 +28,7 @@ const showModal = ref(false)
 const fields = ref<ProfileType['rulesConfig'][number]>({
   id: sampleID(),
   type: RuleType.RuleSet,
+  enable: true,
   payload: '',
   proxy: '',
   'no-resolve': false,
@@ -73,6 +74,7 @@ const handleAdd = () => {
   fields.value = {
     id: sampleID(),
     type: RuleType.RuleSet,
+    enable: true,
     payload: '',
     proxy: '',
     'no-resolve': false,
@@ -92,6 +94,7 @@ const handleAddInsertionPoint = () => {
   rules.value.unshift({
     id: RuleType.InsertionPoint,
     type: RuleType.InsertionPoint,
+    enable: true,
     payload: '',
     proxy: '',
     'no-resolve': false,
@@ -173,7 +176,8 @@ const showLost = () => message.warn('kernel.rules.notFound')
           </Button>
         </Divider>
       </div>
-      <div v-else class="flex items-center py-2">
+      <div v-else class="flex items-center py-2 gap-8">
+        <Switch v-model="r.enable" size="small" border="square" />
         <div class="font-bold">
           <span v-if="hasLost(r)" @click="showLost" class="warn cursor-pointer"> [ ! ] </span>
           <span v-if="notSupport(r)" @click="showNotSupport" class="warn cursor-pointer">

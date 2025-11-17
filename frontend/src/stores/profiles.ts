@@ -119,6 +119,7 @@ export type ProfileType = {
   }[]
   rulesConfig: {
     id: string
+    enable: boolean
     type: RuleType
     payload: string
     proxy: string
@@ -158,6 +159,9 @@ export const useProfilesStore = defineStore('profiles', () => {
         profile.tunConfig['route-exclude-address'] = []
       }
       profile.rulesConfig.forEach((rule) => {
+        if (typeof rule.enable === 'undefined') {
+          rule.enable = true
+        }
         if (!rule['ruleset-type']) {
           rule['ruleset-type'] = 'file'
           rule['ruleset-name'] = ''
