@@ -56,6 +56,7 @@ type AppSettings = {
   autoSetSystemProxy: boolean
   proxyBypassList: string
   autoStartKernel: boolean
+  autoRestartKernel: boolean
   userAgent: string
   startupDelay: number
   connections: {
