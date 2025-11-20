@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useI18n, I18nT } from 'vue-i18n'
 
-import { RemoveFile, WriteFile, BrowserOpenURL } from '@/bridge'
+import { RemoveFile, WriteFile, OpenURI } from '@/bridge'
 import { DraggableOptions } from '@/constant'
 import { View } from '@/enums/app'
 import { RulesetFormat } from '@/enums/kernel'
@@ -31,9 +31,9 @@ const yamlMenuList: Menu[] = [
   },
   {
     label: 'common.openFile',
-    handler: (id: string) => {
+    handler: async (id: string) => {
       const ruleset = rulesetsStore.getRulesetById(id)
-      BrowserOpenURL(envStore.env.basePath + '/' + ruleset!.path)
+      await OpenURI(envStore.env.basePath + '/' + ruleset!.path)
     },
   },
   {

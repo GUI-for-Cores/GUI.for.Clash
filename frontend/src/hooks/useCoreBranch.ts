@@ -15,6 +15,7 @@ import {
   UnzipGZFile,
   FileExists,
   ReadDir,
+  OpenDir,
 } from '@/bridge'
 import { CoreWorkingDirectory } from '@/constant/kernel'
 import { Branch } from '@/enums/app'
@@ -221,8 +222,7 @@ export const useCoreBranch = (isAlpha = false) => {
   }
 
   const openFileLocation = async () => {
-    const path = await AbsolutePath(CoreWorkingDirectory)
-    BrowserOpenURL(path)
+    await OpenDir(CoreWorkingDirectory)
   }
 
   watch(
