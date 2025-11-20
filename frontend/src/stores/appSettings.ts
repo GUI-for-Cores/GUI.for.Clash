@@ -103,6 +103,7 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
     rollingRelease: true,
     debugOutline: false,
     debugNoAnimation: false,
+    debugBorder: false,
     pages: ['Overview', 'Profiles', 'Subscriptions', 'Plugins'],
   })
 
@@ -245,6 +246,7 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
     document.body.style.fontFamily = settings.fontFamily
     document.body.setAttribute('debug-outline', String(settings.debugOutline))
     document.body.setAttribute('debug-no-animation', String(settings.debugNoAnimation))
+    document.body.setAttribute('debug-border', String(settings.debugBorder))
   }
 
   watch(

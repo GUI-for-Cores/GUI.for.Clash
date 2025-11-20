@@ -620,6 +620,7 @@ export default {
     rollingRelease: 'Enable Rolling Release',
     debugOutline: 'Show interface outline',
     debugNoAnimation: 'Disable Animation',
+    debugBorder: 'Show window border',
     startup: {
       name: 'Run at startup',
       delay: 'Delay(s)',
