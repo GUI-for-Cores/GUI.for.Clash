@@ -198,10 +198,12 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
     }
 
     const files = await ReadDir(CoreWorkingDirectory).catch(() => [])
+    const stable = getKernelFileName()
+    const alpha = getKernelFileName(true)
     for (const file of files) {
       if (
         file.name.startsWith('mihomo') &&
-        ![getKernelFileName(), getKernelFileName(true)].includes(file.name)
+        ![stable, `${stable}.bak`, alpha, `${alpha}.bak`].includes(file.name)
       ) {
         const isAlpha = file.name.includes('-alpha')
         const isBak = file.name.endsWith('.bak')
