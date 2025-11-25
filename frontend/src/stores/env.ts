@@ -14,6 +14,7 @@ export const useEnvStore = defineStore('env', () => {
     appName: '',
     appVersion: '',
     basePath: '',
+    appPath: '',
     os: '',
     arch: '',
   })
@@ -22,7 +23,11 @@ export const useEnvStore = defineStore('env', () => {
 
   const setupEnv = async () => {
     const _env = await GetEnv()
-    env.value = _env
+    const appPath = `${_env.basePath}/${_env.appName}`
+    env.value = {
+      ..._env,
+      appPath: _env.os === 'windows' ? appPath.replaceAll('/', '\\') : appPath,
+    }
   }
 
   const updateSystemProxyStatus = async () => {

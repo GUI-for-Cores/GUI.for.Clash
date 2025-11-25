@@ -18,13 +18,13 @@ import { ignoredError, stringifyNoFolding, message, confirm } from '@/utils'
 
 // Permissions Helper
 export const SwitchPermissions = async (enable: boolean) => {
-  const { basePath, appName } = useEnvStore().env
+  const { appPath } = useEnvStore().env
   const args = enable
     ? [
         'add',
         'HKEY_CURRENT_USER\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers',
         '/v',
-        basePath + '\\' + appName,
+        appPath,
         '/t',
         'REG_SZ',
         '/d',
@@ -35,20 +35,20 @@ export const SwitchPermissions = async (enable: boolean) => {
         'delete',
         'HKEY_CURRENT_USER\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers',
         '/v',
-        basePath + '\\' + appName,
+        appPath,
         '/f',
       ]
   await Exec('reg', args)
 }
 
 export const CheckPermissions = async () => {
-  const { basePath, appName } = useEnvStore().env
+  const { appPath } = useEnvStore().env
   try {
     const out = await Exec('reg', [
       'query',
       'HKEY_CURRENT_USER\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers',
       '/v',
-      basePath + '\\' + appName,
+      appPath,
       '/t',
       'REG_SZ',
     ])
