@@ -150,27 +150,6 @@ export const useProfilesStore = defineStore('profiles', () => {
   const setupProfiles = async () => {
     const data = await ignoredError(ReadFile, ProfilesFilePath)
     data && (profiles.value = parse(data))
-    // compatibility code
-    profiles.value.forEach((profile) => {
-      if (!profile.mixinConfig.format) {
-        profile.mixinConfig.format = 'json'
-      }
-      if (profile.tunConfig['route-exclude-address'] === undefined) {
-        profile.tunConfig['route-exclude-address'] = []
-      }
-      profile.rulesConfig.forEach((rule) => {
-        if (typeof rule.enable === 'undefined') {
-          rule.enable = true
-        }
-        if (!rule['ruleset-type']) {
-          rule['ruleset-type'] = 'file'
-          rule['ruleset-name'] = ''
-          rule['ruleset-behavior'] = RulesetBehavior.Domain
-          rule['ruleset-format'] = RulesetFormat.Yaml
-          rule['ruleset-proxy'] = ''
-        }
-      })
-    })
   }
 
   const saveProfiles = () => {

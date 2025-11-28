@@ -9,7 +9,6 @@ import {
   WindowSetSystemDefaultTheme,
   WindowIsMaximised,
   WindowIsMinimised,
-  MoveFile,
 } from '@/bridge'
 import {
   Colors,
@@ -21,12 +20,7 @@ import {
   UserFilePath,
   LocalesFilePath,
 } from '@/constant/app'
-import {
-  CorePidFilePath,
-  CoreWorkingDirectory,
-  DefaultConnections,
-  DefaultCoreConfig,
-} from '@/constant/kernel'
+import { DefaultConnections, DefaultCoreConfig } from '@/constant/kernel'
 import {
   Theme,
   WindowStartState,
@@ -38,14 +32,7 @@ import {
   Branch,
 } from '@/enums/app'
 import i18n, { loadLocaleMessages, reloadLocale } from '@/lang'
-import {
-  debounce,
-  updateTrayMenus,
-  ignoredError,
-  sleep,
-  getKernelFileName,
-  GetSystemProxyBypass,
-} from '@/utils'
+import { debounce, updateTrayMenus, ignoredError, sleep, GetSystemProxyBypass } from '@/utils'
 
 import { useEnvStore } from './env'
 
@@ -157,61 +144,8 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
       app.value.kernel.main = DefaultCoreConfig()
       app.value.kernel.alpha = DefaultCoreConfig()
     }
-
-    if (app.value.kernel.controllerCloseMode === undefined) {
-      app.value.kernel.controllerCloseMode = ControllerCloseMode.All
-    }
-    if (app.value.kernel.controllerSensitivity === undefined) {
-      app.value.kernel.controllerSensitivity = DefaultControllerSensitivity
-    }
-    if (app.value.addGroupToMenu === undefined) {
-      app.value.addGroupToMenu = false
-    }
-    if (app.value.kernel.concurrencyLimit === undefined) {
-      app.value.kernel.concurrencyLimit = DefaultConcurrencyLimit
-    }
-    // @ts-expect-error(Deprecated)
-    if (app.value['font-family'] !== undefined) {
-      // @ts-expect-error(Deprecated)
-      app.value.fontFamily = app.value['font-family']
-      // @ts-expect-error(Deprecated)
-      delete app.value['font-family']
-    }
-
-    if (!app.value.kernel.cardColumns) {
-      app.value.kernel.cardColumns = DefaultCardColumns
-    }
-    // @ts-expect-error(Deprecated)
-    if (app.value.kernel.running !== undefined) {
-      // @ts-expect-error(Deprecated)
-      await WriteFile(CorePidFilePath, String(app.value.kernel.pid))
-      // @ts-expect-error(Deprecated)
-      delete app.value.kernel.running
-      // @ts-expect-error(Deprecated)
-      delete app.value.kernel.pid
-    }
-    if (app.value.kernel.realMemoryUsage === undefined) {
-      app.value.kernel.realMemoryUsage = false
-    }
     if (!app.value.proxyBypassList) {
       app.value.proxyBypassList = await GetSystemProxyBypass()
-    }
-
-    const files = await ReadDir(CoreWorkingDirectory).catch(() => [])
-    const stable = getKernelFileName()
-    const alpha = getKernelFileName(true)
-    for (const file of files) {
-      if (
-        file.name.startsWith('mihomo') &&
-        ![stable, `${stable}.bak`, alpha, `${alpha}.bak`].includes(file.name)
-      ) {
-        const isAlpha = file.name.includes('-alpha')
-        const isBak = file.name.endsWith('.bak')
-        await MoveFile(
-          `${CoreWorkingDirectory}/${file.name}`,
-          `${CoreWorkingDirectory}/${getKernelFileName(isAlpha)}${isBak ? '.bak' : ''}`,
-        )
-      }
     }
   }
 
