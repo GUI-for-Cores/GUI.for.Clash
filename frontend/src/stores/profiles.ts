@@ -6,7 +6,7 @@ import { ReadFile, WriteFile } from '@/bridge'
 import { ProfilesFilePath } from '@/constant'
 import { ProxyGroup, RulesetBehavior, RulesetFormat, RuleType } from '@/enums/kernel'
 import { useAppSettingsStore } from '@/stores'
-import { eventBus, ignoredError, stringifyNoFolding } from '@/utils'
+import { eventBus, ignoredError, stringifyNoFolding, migrateProfiles } from '@/utils'
 
 export type ProfileType = {
   id: string
@@ -150,6 +150,8 @@ export const useProfilesStore = defineStore('profiles', () => {
   const setupProfiles = async () => {
     const data = await ignoredError(ReadFile, ProfilesFilePath)
     data && (profiles.value = parse(data))
+
+    await migrateProfiles(profiles.value, saveProfiles)
   }
 
   const saveProfiles = () => {
