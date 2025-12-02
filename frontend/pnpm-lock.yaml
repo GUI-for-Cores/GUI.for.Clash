@@ -42,8 +42,8 @@ importers:
         specifier: 6.0.2
         version: 6.0.2
       croner:
-        specifier: ^9.1.0
-        version: 9.1.0
+        specifier: 10.0.0-dev.7
+        version: 10.0.0-dev.7
       marked:
         specifier: ^17.0.0
         version: 17.0.0
@@ -724,8 +724,8 @@ packages:
   crelt@1.0.6:
     resolution: {integrity: sha512-VQ2MBenTq1fWZUH9DJNGti7kKv6EeAuYr3cLwxUWhIu1baTaXh4Ib5W2CqHVqib4/MqbYGJqiL3Zb8GJZr3l4g==}
 
-  croner@9.1.0:
-    resolution: {integrity: sha512-p9nwwR4qyT5W996vBZhdvBCnMhicY5ytZkR4D1Xj0wuTDEiMnjwR57Q3RXYY/s0EpX6Ay3vgIcfaR+ewGHsi+g==}
+  croner@10.0.0-dev.7:
+    resolution: {integrity: sha512-VJep78quuILCBNnQ7fYf/4MGrUD1M5ajxGnz7liOyPPXKyzBuO3wXhIo+TJBOC0AvAkW1REakjnqdtJ5XyMgNA==}
     engines: {node: '>=18.0'}
 
   cross-spawn@7.0.6:
@@ -2627,7 +2627,7 @@ snapshots:
 
   crelt@1.0.6: {}
 
-  croner@9.1.0: {}
+  croner@10.0.0-dev.7: {}
 
   cross-spawn@7.0.6:
     dependencies:
