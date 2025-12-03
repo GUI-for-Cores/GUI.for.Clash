@@ -4,9 +4,10 @@ import { parse } from 'yaml'
 
 import { ReadFile, WriteFile } from '@/bridge'
 import { ProfilesFilePath } from '@/constant'
+import * as Defaults from '@/constant/profile'
 import { ProxyGroup, RulesetBehavior, RulesetFormat, RuleType } from '@/enums/kernel'
 import { useAppSettingsStore } from '@/stores'
-import { eventBus, ignoredError, stringifyNoFolding, migrateProfiles } from '@/utils'
+import { eventBus, ignoredError, stringifyNoFolding, migrateProfiles, sampleID } from '@/utils'
 
 export type ProfileType = {
   id: string
@@ -199,6 +200,22 @@ export const useProfilesStore = defineStore('profiles', () => {
     eventBus.emit('profileChange', { id })
   }
 
+  const getProfileTemplate = (name = ''): ProfileType => {
+    const ids = [sampleID(), sampleID(), sampleID(), sampleID(), sampleID()] as const
+    return {
+      id: sampleID(),
+      name: name,
+      generalConfig: Defaults.GeneralConfigDefaults(),
+      advancedConfig: Defaults.AdvancedConfigDefaults(),
+      tunConfig: Defaults.TunConfigDefaults(),
+      dnsConfig: Defaults.DnsConfigDefaults(),
+      proxyGroupsConfig: Defaults.ProxyGroupsConfigDefaults(ids),
+      rulesConfig: Defaults.RulesConfigDefaults(ids),
+      mixinConfig: Defaults.MixinConfigDefaults(),
+      scriptConfig: Defaults.ScriptConfigDefaults(),
+    }
+  }
+
   const getProfileById = (id: string) => profiles.value.find((v) => v.id === id)
 
   return {
@@ -210,5 +227,6 @@ export const useProfilesStore = defineStore('profiles', () => {
     editProfile,
     deleteProfile,
     getProfileById,
+    getProfileTemplate,
   }
 })

@@ -47,36 +47,7 @@ export const useSubscribesStore = defineStore('subscribes', () => {
   }
 
   const importSubscribe = async (name: string, url: string) => {
-    const id = sampleID()
-    await addSubscribe({
-      id: id,
-      name: name,
-      useInternal: false,
-      upload: 0,
-      download: 0,
-      total: 0,
-      expire: 0,
-      updateTime: 0,
-      type: 'Http',
-      url: url,
-      website: '',
-      path: `data/subscribes/${id}.yaml`,
-      include: '',
-      exclude: '',
-      includeProtocol: '',
-      excludeProtocol: '',
-      proxyPrefix: '',
-      disabled: false,
-      inSecure: false,
-      requestMethod: RequestMethod.Get,
-      requestTimeout: 15,
-      header: {
-        request: {},
-        response: {},
-      },
-      script: DefaultSubscribeScript,
-      proxies: [],
-    })
+    await addSubscribe(getSubscribeTemplate(name, { url }))
   }
 
   const deleteSubscribe = async (id: string) => {
@@ -280,6 +251,39 @@ export const useSubscribesStore = defineStore('subscribes', () => {
 
   const getSubscribeById = (id: string) => subscribes.value.find((v) => v.id === id)
 
+  const getSubscribeTemplate = (name = '', options: { url?: string } = {}): Subscription => {
+    const id = sampleID()
+    return {
+      id: id,
+      name: name,
+      useInternal: false,
+      upload: 0,
+      download: 0,
+      total: 0,
+      expire: 0,
+      updateTime: 0,
+      type: 'Http',
+      url: options.url || '',
+      website: '',
+      path: `data/subscribes/${id}.yaml`,
+      include: '',
+      exclude: '',
+      includeProtocol: '',
+      excludeProtocol: '',
+      proxyPrefix: '',
+      disabled: false,
+      inSecure: false,
+      requestMethod: RequestMethod.Get,
+      requestTimeout: 15,
+      header: {
+        request: {},
+        response: {},
+      },
+      script: DefaultSubscribeScript,
+      proxies: [],
+    }
+  }
+
   return {
     subscribes,
     setupSubscribes,
@@ -291,5 +295,6 @@ export const useSubscribesStore = defineStore('subscribes', () => {
     updateSubscribes,
     getSubscribeById,
     importSubscribe,
+    getSubscribeTemplate,
   }
 })

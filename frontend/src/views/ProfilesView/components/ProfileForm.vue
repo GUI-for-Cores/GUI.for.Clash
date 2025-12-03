@@ -2,10 +2,9 @@
 import { ref, inject, type Ref, computed, useTemplateRef, h } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import * as Defaults from '@/constant/profile'
 import { useBool } from '@/hooks'
 import { type ProfileType, useProfilesStore } from '@/stores'
-import { deepClone, generateConfig, sampleID, stringifyNoFolding, message, alert } from '@/utils'
+import { deepClone, generateConfig, stringifyNoFolding, message, alert } from '@/utils'
 
 import Button from '@/components/Button/index.vue'
 import Dropdown from '@/components/Dropdown/index.vue'
@@ -39,9 +38,13 @@ const props = withDefaults(defineProps<Props>(), {
   step: Step.Name,
 })
 
-const loading = ref(false)
+const { t } = useI18n()
 const groupsRef = useTemplateRef<typeof ProxyGroupsConfig>('groupsRef')
 const rulesRef = useTemplateRef<typeof RulesConfig>('rulesRef')
+const profilesStore = useProfilesStore()
+const [showAdvancedSetting, toggleAdvancedSetting] = useBool(false)
+
+const loading = ref(false)
 const currentStep = ref(props.step)
 
 const stepItems = [
@@ -54,20 +57,7 @@ const stepItems = [
   { title: 'profile.step.mixin-script' },
 ]
 
-const ids = [sampleID(), sampleID(), sampleID(), sampleID(), sampleID()] as const
-
-const profile = ref<ProfileType>({
-  id: sampleID(),
-  name: '',
-  generalConfig: Defaults.GeneralConfigDefaults(),
-  advancedConfig: Defaults.AdvancedConfigDefaults(),
-  tunConfig: Defaults.TunConfigDefaults(),
-  dnsConfig: Defaults.DnsConfigDefaults(),
-  proxyGroupsConfig: Defaults.ProxyGroupsConfigDefaults(ids),
-  rulesConfig: Defaults.RulesConfigDefaults(ids),
-  mixinConfig: Defaults.MixinConfigDefaults(),
-  scriptConfig: Defaults.ScriptConfigDefaults(),
-})
+const profile = ref<ProfileType>(profilesStore.getProfileTemplate())
 
 const mixinAndScriptConfig = computed({
   get() {
@@ -78,10 +68,6 @@ const mixinAndScriptConfig = computed({
     profile.value.scriptConfig = script
   },
 })
-
-const { t } = useI18n()
-const profilesStore = useProfilesStore()
-const [showAdvancedSetting, toggleAdvancedSetting] = useBool(false)
 
 const handleCancel = inject('cancel') as any
 const handleSubmit = inject('submit') as any

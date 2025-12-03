@@ -2,20 +2,10 @@
 import { h, inject, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import * as Defaults from '@/constant'
-import { DefaultSubscribeScript } from '@/constant/app'
-import { RequestMethod } from '@/enums/app'
-import {
-  useProfilesStore,
-  useAppSettingsStore,
-  useSubscribesStore,
-  type ProfileType,
-} from '@/stores'
+import { useProfilesStore, useAppSettingsStore, useSubscribesStore } from '@/stores'
 import { message, sampleID } from '@/utils'
 
 import Button from '@/components/Button/index.vue'
-
-import type { Subscription } from '@/types/app'
 
 const url = ref('')
 const name = ref('')
@@ -30,72 +20,30 @@ const handleCancel = inject('cancel') as any
 const handleSubmit = inject('submit') as any
 
 const handleSave = async () => {
-  const subscribeID = sampleID()
-
   if (!name.value) {
     name.value = sampleID()
   }
 
-  const subscribe: Subscription = {
-    id: subscribeID,
-    name: name.value,
-    useInternal: false,
-    url: url.value,
-    upload: 0,
-    download: 0,
-    total: 0,
-    expire: 0,
-    updateTime: 0,
-    type: 'Http',
-    website: '',
-    path: `data/subscribes/${subscribeID}.yaml`,
-    include: '',
-    exclude: '',
-    includeProtocol: '',
-    excludeProtocol: '',
-    proxyPrefix: '',
-    disabled: false,
-    inSecure: false,
-    requestMethod: RequestMethod.Get,
-    requestTimeout: 15,
-    header: {
-      request: {},
-      response: {},
-    },
-    script: DefaultSubscribeScript,
-    proxies: [],
-  }
+  const sub = subscribeStore.getSubscribeTemplate(name.value, { url: url.value })
 
   loading.value = true
 
   try {
-    await subscribeStore.addSubscribe(subscribe)
-    await subscribeStore.updateSubscribe(subscribe.id)
+    await subscribeStore.addSubscribe(sub)
+    await subscribeStore.updateSubscribe(sub.id)
   } catch (error: any) {
     loading.value = false
     console.log(error)
     message.error(error)
-    subscribeStore.deleteSubscribe(subscribeID)
+    subscribeStore.deleteSubscribe(sub.id)
     return
   }
 
-  const ids = [sampleID(), sampleID(), sampleID(), sampleID(), sampleID()] as const
-  const profile: ProfileType = {
-    id: sampleID(),
-    name: name.value,
-    generalConfig: Defaults.GeneralConfigDefaults(),
-    advancedConfig: Defaults.AdvancedConfigDefaults(),
-    tunConfig: Defaults.TunConfigDefaults(),
-    dnsConfig: Defaults.DnsConfigDefaults(),
-    proxyGroupsConfig: Defaults.ProxyGroupsConfigDefaults(ids),
-    rulesConfig: Defaults.RulesConfigDefaults(ids),
-    mixinConfig: Defaults.MixinConfigDefaults(),
-    scriptConfig: Defaults.ScriptConfigDefaults(),
-  }
+  const profile = profilesStore.getProfileTemplate(name.value)
 
   if (profile.proxyGroupsConfig[0] && profile.proxyGroupsConfig[1]) {
-    profile.proxyGroupsConfig[0].use = [subscribeID]
-    profile.proxyGroupsConfig[1].use = [subscribeID]
+    profile.proxyGroupsConfig[0].use = [sub.id]
+    profile.proxyGroupsConfig[1].use = [sub.id]
   }
 
   await profilesStore.addProfile(profile)
