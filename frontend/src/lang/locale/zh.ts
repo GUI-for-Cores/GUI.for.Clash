@@ -126,7 +126,8 @@ export default {
       },
       'prefer-h3': '是否开启 DOH 的 http/3',
       'enhanced-mode': '增强模式',
-      'fake-ip-range': 'Fake-IP 范围',
+      'fake-ip-range': 'Fake-IP 范围(IPv4)',
+      'fake-ip-range6': 'Fake-IP 范围(IPv6)',
       'fake-ip-filter-mode': {
         name: 'Fake-IP 过滤模式',
         blacklist: '黑名单',

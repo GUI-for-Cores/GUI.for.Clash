@@ -126,7 +126,8 @@ export default {
       },
       'prefer-h3': 'Prefer h3',
       'enhanced-mode': 'Enhanced Mode',
-      'fake-ip-range': 'Fake-IP Range',
+      'fake-ip-range': 'Fake-IP Range(IPv4)',
+      'fake-ip-range6': 'Fake-IP Range(IPv6)',
       'fake-ip-filter-mode': {
         name: 'Fake-IP Filter Mode',
         blacklist: 'Blacklist',

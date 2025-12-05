@@ -77,6 +77,10 @@ const [showMore, toggleMore] = useBool(false)
           <Input v-model="fields['fake-ip-range']" editable />
         </div>
         <div class="form-item">
+          {{ t('kernel.dns.fake-ip-range6') }}
+          <Input v-model="fields['fake-ip-range6']" editable />
+        </div>
+        <div class="form-item">
           {{ t('kernel.dns.fake-ip-filter-mode.name') }}
           <Radio v-model="fields['fake-ip-filter-mode']" :options="FakeipFilterMode" />
         </div>

@@ -8,7 +8,7 @@ const { t } = i18n.global
 
 export const GeneralConfigDefaults = (): ProfileType['generalConfig'] => ({
   mode: 'rule',
-  ipv6: false,
+  ipv6: true,
   'mixed-port': 20112,
   'allow-lan': false,
   'log-level': 'silent',
@@ -72,7 +72,7 @@ export const TunConfigDefaults = (): ProfileType['tunConfig'] => ({
 export const DnsConfigDefaults = (): ProfileType['dnsConfig'] => ({
   enable: true,
   listen: '',
-  ipv6: false,
+  ipv6: true,
   'use-hosts': false,
   'use-system-hosts': true,
   'default-nameserver': [],
@@ -86,6 +86,7 @@ export const DnsConfigDefaults = (): ProfileType['dnsConfig'] => ({
   },
   'enhanced-mode': 'redir-host',
   'fake-ip-range': '198.18.0.1/16',
+  'fake-ip-range6': 'fc00::/18',
   'fake-ip-filter-mode': 'blacklist',
   'fake-ip-filter': [
     '*.lan',
