@@ -5,7 +5,7 @@ import { useI18n } from 'vue-i18n'
 import { LogLevelOptions } from '@/constant'
 import { useBool } from '@/hooks'
 import { useKernelApiStore } from '@/stores'
-import { isValidIPv4, isValidIPv6, addToRuleSet, message, picker } from '@/utils'
+import { isValidIPv4, isValidIPv6, addToRuleSet, message, picker, buildSmartRegExp } from '@/utils'
 
 import { type PickerItem } from '@/components/Picker/index.vue'
 
@@ -14,7 +14,6 @@ import type { Menu } from '@/types/app'
 const logType = ref<'error' | 'warning' | 'info' | 'debug'>('info')
 const keywords = ref('')
 const logs = ref<{ type: string; payload: string }[]>([])
-const keywordsRegexp = computed(() => new RegExp(keywords.value))
 
 const LogLevelMap = {
   silent: ['silent'],
@@ -27,7 +26,7 @@ const LogLevelMap = {
 const filteredLogs = computed(() => {
   return logs.value.filter((v) => {
     const hitType = LogLevelMap[logType.value].includes(v.type)
-    const hitName = keywordsRegexp.value.test(v.payload)
+    const hitName = buildSmartRegExp(keywords.value, 'i').test(v.payload)
     return hitName && hitType
   })
 })

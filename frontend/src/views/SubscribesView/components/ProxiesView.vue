@@ -7,7 +7,14 @@ import { ClipboardSetText, ReadFile, WriteFile } from '@/bridge'
 import { DraggableOptions } from '@/constant'
 import { useBool } from '@/hooks'
 import { useSubscribesStore } from '@/stores'
-import { deepClone, ignoredError, sampleID, stringifyNoFolding, message } from '@/utils'
+import {
+  deepClone,
+  ignoredError,
+  sampleID,
+  stringifyNoFolding,
+  message,
+  buildSmartRegExp,
+} from '@/utils'
 
 import Button from '@/components/Button/index.vue'
 
@@ -30,14 +37,6 @@ const sub = ref(deepClone(props.sub))
 
 const [showDetails, toggleDetails] = useBool(false)
 
-const keywordsRegexp = computed(() => {
-  try {
-    return new RegExp(keywords.value, 'i')
-  } catch {
-    return keywords.value
-  }
-})
-
 const filteredProxyTypeOptions = computed(() => {
   const proxyProtocols = sub.value.proxies.reduce((p, c) => {
     p[c.type] = (p[c.type] || 0) + 1
@@ -55,12 +54,7 @@ const filteredProxyTypeOptions = computed(() => {
 const filteredProxies = computed(() => {
   return sub.value.proxies.filter((v) => {
     const hitType = proxyType.value ? proxyType.value === v.type : true
-    let hitName = true
-    if (typeof keywordsRegexp.value === 'string') {
-      hitName = v.name.toLowerCase().includes(keywordsRegexp.value.toLowerCase())
-    } else {
-      hitName = keywordsRegexp.value.test(v.name)
-    }
+    const hitName = buildSmartRegExp(keywords.value, 'i').test(v.name)
     return hitName && hitType
   })
 })
