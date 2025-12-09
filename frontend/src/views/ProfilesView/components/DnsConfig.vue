@@ -92,14 +92,6 @@ const [showMore, toggleMore] = useBool(false)
 
       <div
         class="form-item"
-        :class="{ 'items-start': fields['proxy-server-nameserver'].length !== 0 }"
-      >
-        {{ t('kernel.dns.proxy-server-nameserver') }}
-        <InputList v-model="fields['proxy-server-nameserver']" />
-      </div>
-
-      <div
-        class="form-item"
         :class="{ 'items-start': Object.keys(fields['nameserver-policy']).length !== 0 }"
       >
         {{ t('kernel.dns.nameserver-policy') }}
@@ -107,6 +99,19 @@ const [showMore, toggleMore] = useBool(false)
           v-model="fields['nameserver-policy']"
           :placeholder="['google.com', '8.8.8.8,114.114.114.114']"
         />
+      </div>
+
+      <div class="form-item" :class="{ 'items-start': fields['direct-nameserver'].length !== 0 }">
+        {{ t('kernel.dns.direct-nameserver') }}
+        <InputList v-model="fields['direct-nameserver']" />
+      </div>
+
+      <div
+        class="form-item"
+        :class="{ 'items-start': fields['proxy-server-nameserver'].length !== 0 }"
+      >
+        {{ t('kernel.dns.proxy-server-nameserver') }}
+        <InputList v-model="fields['proxy-server-nameserver']" />
       </div>
 
       <div class="form-item" :class="{ 'items-start': fields['fallback'].length !== 0 }">

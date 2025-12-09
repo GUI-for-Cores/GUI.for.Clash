@@ -114,6 +114,7 @@ export default {
       'use-hosts': 'Use Hosts',
       'use-system-hosts': 'Use System Hosts',
       'proxy-server-nameserver': 'Proxy Server Nameserver',
+      'direct-nameserver': 'Direct Nameserver',
       'nameserver-policy': 'Nameserver Policy',
       fallback: 'Fallback',
       'fallback-filter': {

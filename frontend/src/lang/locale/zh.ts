@@ -113,6 +113,7 @@ export default {
       'use-hosts': '查询配置hosts',
       'use-system-hosts': '查询系统hosts',
       'proxy-server-nameserver': '代理节点域名解析服务器',
+      'direct-nameserver': '直连出口域名解析服务器',
       'nameserver-policy': '域名服务器策略',
       fallback: '后备域名解析服务器',
       ipv6: 'IPv6',

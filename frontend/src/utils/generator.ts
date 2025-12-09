@@ -304,6 +304,10 @@ export const generateConfig = async (originalProfile: ProfileType) => {
     delete config.dns['fallback-filter']
   }
 
+  if (config.dns['direct-nameserver'].length === 0) {
+    delete config.dns['direct-nameserver']
+  }
+
   if (config.dns['proxy-server-nameserver'].length === 0) {
     delete config.dns['proxy-server-nameserver']
   }

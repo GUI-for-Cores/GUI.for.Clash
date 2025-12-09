@@ -14,6 +14,10 @@ export const migrateProfiles = async (profiles: ProfileType[], save: () => Promi
       profile.dnsConfig['fake-ip-range6'] = 'fc00::/18'
       needSync = true
     }
+    if (typeof profile.dnsConfig['direct-nameserver'] === 'undefined') {
+      profile.dnsConfig['direct-nameserver'] = []
+      needSync = true
+    }
   })
 
   if (needSync) await save()

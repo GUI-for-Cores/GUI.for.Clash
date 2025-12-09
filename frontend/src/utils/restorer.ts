@@ -27,7 +27,7 @@ export const restoreProfile = (
     generalConfig: GeneralConfigDefaults(),
     advancedConfig: AdvancedConfigDefaults(),
     dnsConfig: Object.assign(DnsConfigDefaults(), {
-      'proxy-server-nameserver': [],
+      nameserver: [],
       'nameserver-policy': {},
     }),
     tunConfig: TunConfigDefaults(),

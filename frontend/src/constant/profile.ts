@@ -77,9 +77,8 @@ export const DnsConfigDefaults = (): ProfileType['dnsConfig'] => ({
   'use-system-hosts': true,
   'default-nameserver': [],
   nameserver: ['tls://8.8.8.8#' + t('kernel.proxyGroups.built-in.select')],
-  'proxy-server-nameserver': [
-    'https://223.5.5.5/dns-query#' + t('kernel.proxyGroups.built-in.direct'),
-  ],
+  'direct-nameserver': [],
+  'proxy-server-nameserver': [],
   'nameserver-policy': {
     'rule-set:GEOSITE-CN': 'https://223.5.5.5/dns-query#' + t('kernel.proxyGroups.built-in.direct'),
     'rule-set:geolocation-!cn': 'tls://8.8.8.8#' + t('kernel.proxyGroups.built-in.select'),
