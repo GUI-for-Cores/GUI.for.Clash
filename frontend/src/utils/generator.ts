@@ -180,8 +180,6 @@ export const generateProxyGroup = (
       'disable-udp': disableUDP,
       strategy,
     })
-  } else if (type === ProxyGroup.Relay) {
-    Object.assign(group, {})
   }
 
   return group

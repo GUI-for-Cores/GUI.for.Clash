@@ -33,7 +33,6 @@ export enum ProxyGroup {
   Select = 'select',
   UrlTest = 'url-test',
   Fallback = 'fallback',
-  Relay = 'relay',
   LoadBalance = 'load-balance',
 }
 
@@ -41,7 +40,6 @@ export enum ProxyGroupType {
   Selector = 'Selector',
   UrlTest = 'URLTest',
   Fallback = 'Fallback',
-  Relay = 'Relay',
   LoadBalance = 'LoadBalance',
 }
 

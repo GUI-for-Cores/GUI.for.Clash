@@ -93,7 +93,6 @@ const getTrayMenus = () => {
           ProxyGroupType.Selector,
           ProxyGroupType.UrlTest,
           ProxyGroupType.Fallback,
-          ProxyGroupType.Relay,
           ProxyGroupType.LoadBalance,
         ].includes(v.type as ProxyGroupType)
       })

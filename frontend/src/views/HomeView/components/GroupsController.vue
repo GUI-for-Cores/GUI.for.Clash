@@ -44,7 +44,6 @@ const groups = computed(() => {
         ProxyGroupType.Selector,
         ProxyGroupType.UrlTest,
         ProxyGroupType.Fallback,
-        ProxyGroupType.Relay,
         ProxyGroupType.LoadBalance,
       ].includes(v.type as ProxyGroupType)
     })
@@ -79,15 +78,11 @@ const groups = computed(() => {
         })
 
       const chains = []
-      if (group.type === ProxyGroupType.Relay) {
-        chains.push(...group.all)
-      } else {
-        chains.push(group.now)
-        let tmp = proxies[group.now]
-        while (tmp) {
-          tmp.now && chains.push(tmp.now)
-          tmp = proxies[tmp.now]
-        }
+      chains.push(group.now)
+      let tmp = proxies[group.now]
+      while (tmp) {
+        tmp.now && chains.push(tmp.now)
+        tmp = proxies[tmp.now]
       }
 
       return { ...group, all, chains }

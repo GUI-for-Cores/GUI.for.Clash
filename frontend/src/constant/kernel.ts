@@ -107,10 +107,6 @@ export const GroupsTypeOptions = [
     value: ProxyGroup.Fallback,
   },
   {
-    label: 'kernel.proxyGroups.type.relay',
-    value: ProxyGroup.Relay,
-  },
-  {
     label: 'kernel.proxyGroups.type.load-balance',
     value: ProxyGroup.LoadBalance,
   },
