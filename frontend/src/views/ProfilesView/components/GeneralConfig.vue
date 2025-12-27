@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 
-import { ModeOptions, LogLevelOptions, GeneralConfigDefaults } from '@/constant'
+import { ModeOptions, LogLevelOptions } from '@/constant/kernel'
+import { GeneralConfigDefaults } from '@/constant/profile'
 import { type ProfileType } from '@/stores'
 
 const fields = defineModel<ProfileType['generalConfig']>({ default: GeneralConfigDefaults() })

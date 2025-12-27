@@ -6,8 +6,8 @@ import {
   GeodataLoaderOptions,
   GeoSiteMatcherOptions,
   GlobalClientFingerprintOptions,
-  AdvancedConfigDefaults,
-} from '@/constant'
+} from '@/constant/kernel'
+import { AdvancedConfigDefaults } from '@/constant/profile'
 import { type ProfileType } from '@/stores'
 import { generateSecureKey } from '@/utils'
 

@@ -3,7 +3,7 @@ import { computed, ref, watch } from 'vue'
 
 import { getConfigs, setConfigs, getProxies, Api } from '@/api/kernel'
 import { ProcessInfo, KillProcess, ExecBackground, ReadFile, WriteFile, RemoveFile } from '@/bridge'
-import { CorePidFilePath, CoreStopOutputKeyword, CoreWorkingDirectory } from '@/constant'
+import { CorePidFilePath, CoreStopOutputKeyword, CoreWorkingDirectory } from '@/constant/kernel'
 import { Branch } from '@/enums/app'
 import { RuleType } from '@/enums/kernel'
 import {

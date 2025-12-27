@@ -2,7 +2,7 @@
 import { useI18n } from 'vue-i18n'
 
 import { updateGEO } from '@/api/kernel'
-import { StackOptions } from '@/constant'
+import { StackOptions } from '@/constant/kernel'
 import { useKernelApiStore } from '@/stores'
 import { message } from '@/utils'
 

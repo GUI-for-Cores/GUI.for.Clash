@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { useI18n, I18nT } from 'vue-i18n'
 
 import { RemoveFile, WriteFile, OpenURI } from '@/bridge'
-import { DraggableOptions } from '@/constant'
+import { DraggableOptions } from '@/constant/app'
 import { View } from '@/enums/app'
 import { RulesetFormat } from '@/enums/kernel'
 import { type RuleSet, useRulesetsStore, useAppSettingsStore, useEnvStore } from '@/stores'

@@ -2,7 +2,7 @@
 import { ref, computed, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { LogLevelOptions } from '@/constant'
+import { LogLevelOptions } from '@/constant/kernel'
 import { useBool } from '@/hooks'
 import { useKernelApiStore } from '@/stores'
 import { isValidIPv4, isValidIPv6, addToRuleSet, message, picker, buildSmartRegExp } from '@/utils'

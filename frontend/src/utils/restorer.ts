@@ -1,5 +1,6 @@
 import { stringify } from 'yaml'
 
+import { BuiltInOutbound } from '@/constant/kernel'
 import {
   AdvancedConfigDefaults,
   DnsConfigDefaults,
@@ -7,8 +8,7 @@ import {
   TunConfigDefaults,
   MixinConfigDefaults,
   ScriptConfigDefaults,
-  BuiltInOutbound,
-} from '@/constant'
+} from '@/constant/profile'
 import { RulesetBehavior, RulesetFormat, RuleType } from '@/enums/kernel'
 import { deepAssign, sampleID } from '@/utils'
 

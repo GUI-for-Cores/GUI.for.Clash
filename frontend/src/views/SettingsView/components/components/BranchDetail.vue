@@ -2,7 +2,7 @@
 import { useI18n } from 'vue-i18n'
 
 import { RemoveFile } from '@/bridge'
-import { CoreCacheFilePath } from '@/constant'
+import { CoreCacheFilePath } from '@/constant/kernel'
 import { useCoreBranch } from '@/hooks/useCoreBranch'
 import { useEnvStore, useKernelApiStore } from '@/stores'
 import { message } from '@/utils'

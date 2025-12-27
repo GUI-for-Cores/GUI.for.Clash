@@ -3,7 +3,6 @@ import { ref, computed, onActivated } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { getProxyDelay, deleteGroupFixed } from '@/api/kernel'
-import { BuiltInOutbound } from '@/constant'
 import {
   ControllerCloseModeOptions,
   DefaultCardColumns,
@@ -11,6 +10,7 @@ import {
   DefaultControllerSensitivity,
   DefaultTestURL,
 } from '@/constant/app'
+import { BuiltInOutbound } from '@/constant/kernel'
 import { ControllerCloseMode } from '@/enums/app'
 import { ProxyGroupType } from '@/enums/kernel'
 import { useBool } from '@/hooks'

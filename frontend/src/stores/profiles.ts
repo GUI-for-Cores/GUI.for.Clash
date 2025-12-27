@@ -3,7 +3,7 @@ import { computed, ref } from 'vue'
 import { parse } from 'yaml'
 
 import { ReadFile, WriteFile } from '@/bridge'
-import { ProfilesFilePath } from '@/constant'
+import { ProfilesFilePath } from '@/constant/app'
 import * as Defaults from '@/constant/profile'
 import { ProxyGroup, RulesetBehavior, RulesetFormat, RuleType } from '@/enums/kernel'
 import { useAppSettingsStore } from '@/stores'

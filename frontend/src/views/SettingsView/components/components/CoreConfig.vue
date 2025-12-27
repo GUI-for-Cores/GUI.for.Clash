@@ -2,7 +2,8 @@
 import { h, inject, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { DefaultCoreConfig, DraggableOptions } from '@/constant'
+import { DraggableOptions } from '@/constant/app'
+import { DefaultCoreConfig } from '@/constant/kernel'
 import { useAppSettingsStore } from '@/stores'
 import { deepClone, message, processMagicVariables } from '@/utils'
 

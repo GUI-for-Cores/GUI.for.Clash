@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { parse } from 'yaml'
 
 import { ClipboardSetText, ReadFile, WriteFile } from '@/bridge'
-import { DraggableOptions } from '@/constant'
+import { DraggableOptions } from '@/constant/app'
 import { useBool } from '@/hooks'
 import { useSubscribesStore } from '@/stores'
 import {

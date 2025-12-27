@@ -2,7 +2,8 @@
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { GroupsTypeOptions, StrategyOptions, DraggableOptions, BuiltInOutbound } from '@/constant'
+import { DraggableOptions } from '@/constant/app'
+import { GroupsTypeOptions, StrategyOptions, BuiltInOutbound } from '@/constant/kernel'
 import { ProxyGroup } from '@/enums/kernel'
 import { type ProfileType, useSubscribesStore } from '@/stores'
 import { deepClone, sampleID, message } from '@/utils'

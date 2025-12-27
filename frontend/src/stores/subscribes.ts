@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { parse } from 'yaml'
 
 import { ReadFile, WriteFile, Requests } from '@/bridge'
-import { DefaultSubscribeScript, SubscribesFilePath } from '@/constant'
+import { DefaultSubscribeScript, SubscribesFilePath } from '@/constant/app'
 import { PluginTriggerEvent, RequestMethod } from '@/enums/app'
 import { usePluginsStore, useProfilesStore } from '@/stores'
 import {

@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { parse, stringify } from 'yaml'
 
-import { MixinConfigDefaults, ScriptConfigDefaults } from '@/constant'
+import { MixinConfigDefaults, ScriptConfigDefaults } from '@/constant/profile'
 import { type ProfileType } from '@/stores'
 import { message } from '@/utils'
 

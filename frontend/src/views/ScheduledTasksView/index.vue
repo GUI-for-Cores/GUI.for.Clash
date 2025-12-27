@@ -2,7 +2,7 @@
 import { Cron } from 'croner'
 import { useI18n, I18nT } from 'vue-i18n'
 
-import { DraggableOptions, ViewOptions } from '@/constant'
+import { DraggableOptions, ViewOptions } from '@/constant/app'
 import { View } from '@/enums/app'
 import { useAppSettingsStore, useScheduledTasksStore } from '@/stores'
 import { debounce, formatRelativeTime, formatDate, message, alert } from '@/utils'

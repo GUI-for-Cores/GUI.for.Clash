@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { useI18n, I18nT } from 'vue-i18n'
 
 import { BrowserOpenURL, ClipboardSetText, RemoveFile } from '@/bridge'
-import { DraggableOptions } from '@/constant'
+import { DraggableOptions } from '@/constant/app'
 import { View } from '@/enums/app'
 import { useSubscribesStore, useAppSettingsStore, usePluginsStore, useAppStore } from '@/stores'
 import {

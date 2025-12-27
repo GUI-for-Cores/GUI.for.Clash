@@ -2,13 +2,13 @@
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
+import { DraggableOptions } from '@/constant/app'
 import {
   RulesTypeOptions,
-  DraggableOptions,
   RulesetFormatOptions,
   RulesetBehaviorOptions,
   BuiltInOutbound,
-} from '@/constant'
+} from '@/constant/kernel'
 import { RulesetBehavior, RulesetFormat, RuleType } from '@/enums/kernel'
 import { type ProfileType, useRulesetsStore, type RuleSet } from '@/stores'
 import { deepClone, sampleID, generateRule, message } from '@/utils'

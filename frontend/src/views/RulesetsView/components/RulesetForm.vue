@@ -2,7 +2,7 @@
 import { ref, inject, watch, computed, h } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { RulesetFormatOptions, RulesetBehaviorOptions } from '@/constant'
+import { RulesetFormatOptions, RulesetBehaviorOptions } from '@/constant/kernel'
 import { RulesetBehavior, RulesetFormat } from '@/enums/kernel'
 import { type RuleSet, useRulesetsStore } from '@/stores'
 import { deepClone, sampleID, message } from '@/utils'
