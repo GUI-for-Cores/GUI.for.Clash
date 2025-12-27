@@ -95,6 +95,7 @@ type AppSettings = {
   rollingRelease: boolean
   debugOutline: boolean
   debugNoAnimation: boolean
+  debugNoRounded: boolean
   debugBorder: boolean
   pages: string[]
 }
