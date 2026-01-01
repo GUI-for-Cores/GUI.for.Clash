@@ -201,8 +201,8 @@ const handleNotify = (type: string) => {
   <div class="icons">
     <Icon
       v-for="icon in icons"
-      v-tips.fast="icon"
       :key="icon"
+      v-tips.fast="icon"
       :icon="icon"
       :size="32"
       class="icon"
@@ -219,10 +219,10 @@ const handleNotify = (type: string) => {
 
   <h2>message & picker & confirm & prompt</h2>
   <div>
-    <Button @click="message.info('info', 1_000)" icon="messageInfo"> Info </Button>
-    <Button @click="message.warn('warn', 1_000)" icon="messageWarn"> Warn </Button>
-    <Button @click="message.error('error', 1_000)" icon="messageError"> Error </Button>
-    <Button @click="message.success('success', 1_000)" icon="messageSuccess"> Success </Button>
+    <Button icon="messageInfo" @click="message.info('info', 1_000)"> Info </Button>
+    <Button icon="messageWarn" @click="message.warn('warn', 1_000)"> Warn </Button>
+    <Button icon="messageError" @click="message.error('error', 1_000)"> Error </Button>
+    <Button icon="messageSuccess" @click="message.success('success', 1_000)"> Success </Button>
     <Button @click="handleUpdateMessage">Update Me</Button>
   </div>
   <div>

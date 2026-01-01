@@ -134,7 +134,7 @@ defineExpose({ modalSlots })
           size="small"
           class="flex-1"
         />
-        <Button @click="handleUpdatePluginHub" icon="refresh" size="small">
+        <Button icon="refresh" size="small" @click="handleUpdatePluginHub">
           {{ t('plugins.update') }}
         </Button>
       </div>
@@ -154,10 +154,10 @@ defineExpose({ modalSlots })
             <div class="flex items-center justify-between">
               {{ t('rulesets.rulesetCount') }} : {{ ruleset.count }}
               <Button
-                @click="handlePreview(ruleset, RulesetFormat.Yaml)"
                 icon="preview"
                 size="small"
                 type="text"
+                @click="handlePreview(ruleset, RulesetFormat.Yaml)"
               />
             </div>
             <!-- <div v-tips="ruleset.description" class="flex-1 line-clamp-2">
@@ -173,9 +173,9 @@ defineExpose({ modalSlots })
               </template>
               <template v-else>
                 <Button
-                  @click="handleAddRuleset(ruleset, RulesetFormat.Yaml)"
                   type="link"
                   size="small"
+                  @click="handleAddRuleset(ruleset, RulesetFormat.Yaml)"
                 >
                   {{ t('common.add') }} {{ t('ruleset.format.yaml') }}
                 </Button>
@@ -189,9 +189,9 @@ defineExpose({ modalSlots })
               </template>
               <template v-else>
                 <Button
-                  @click="handleAddRuleset(ruleset, RulesetFormat.Mrs)"
                   type="link"
                   size="small"
+                  @click="handleAddRuleset(ruleset, RulesetFormat.Mrs)"
                 >
                   {{ t('common.add') }} {{ t('ruleset.format.mrs') }}
                 </Button>

@@ -64,12 +64,12 @@ const handleUpdateGEO = async () => {
           v-model="kernelApiStore.config['mixed-port']"
           :min="0"
           :max="65535"
-          @submit="onMixedPortSubmit"
           type="number"
           :border="false"
           editable
           auto-size
           class="w-full"
+          @submit="onMixedPortSubmit"
         />
       </Card>
       <Card :title="t('kernel.port')">
@@ -77,12 +77,12 @@ const handleUpdateGEO = async () => {
           v-model="kernelApiStore.config.port"
           :min="0"
           :max="65535"
-          @submit="onPortSubmit"
           type="number"
           :border="false"
           editable
           auto-size
           class="w-full"
+          @submit="onPortSubmit"
         />
       </Card>
       <Card :title="t('kernel.socks-port')">
@@ -90,12 +90,12 @@ const handleUpdateGEO = async () => {
           v-model="kernelApiStore.config['socks-port']"
           :min="0"
           :max="65535"
-          @submit="onSocksPortSubmit"
           type="number"
           :border="false"
           editable
           auto-size
           class="w-full"
+          @submit="onSocksPortSubmit"
         />
       </Card>
       <Card :title="t('kernel.allow-lan')">
@@ -113,11 +113,11 @@ const handleUpdateGEO = async () => {
       <Card :title="t('kernel.tun.device')">
         <Input
           v-model="kernelApiStore.config.tun.device"
-          @submit="onTunDeviceSubmit"
           editable
           :border="false"
           auto-size
           class="w-full"
+          @submit="onTunDeviceSubmit"
         />
       </Card>
       <Card :title="t('kernel.interface-name')">
@@ -129,7 +129,7 @@ const handleUpdateGEO = async () => {
         />
       </Card>
       <Card :title="t('common.update')">
-        <Button @click="handleUpdateGEO" size="small" type="text">
+        <Button size="small" type="text" @click="handleUpdateGEO">
           {{ t('home.overview.updateGEO') }}
         </Button>
       </Card>

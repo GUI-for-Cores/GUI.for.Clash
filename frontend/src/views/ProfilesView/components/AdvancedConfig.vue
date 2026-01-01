@@ -41,10 +41,10 @@ const { t } = useI18n()
       <Input v-model="fields.secret" editable>
         <template #suffix>
           <Button
-            @click="() => (fields.secret = generateSecureKey())"
             type="text"
             size="small"
             icon="refresh"
+            @click="() => (fields.secret = generateSecureKey())"
           />
         </template>
       </Input>

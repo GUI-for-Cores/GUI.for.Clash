@@ -155,14 +155,14 @@ const showLost = () => message.warn('kernel.rules.notFound')
 <template>
   <Empty v-if="rules.length === 0 || (rules.length === 1 && !isInsertionPointMissing)">
     <template #description>
-      <Button @click="handleAdd" icon="add" type="primary" size="small">
+      <Button icon="add" type="primary" size="small" @click="handleAdd">
         {{ t('common.add') }}
       </Button>
     </template>
   </Empty>
 
   <Divider v-if="isInsertionPointMissing">
-    <Button @click="handleAddInsertionPoint" type="text" size="small">
+    <Button type="text" size="small" @click="handleAddInsertionPoint">
       {{ t('kernel.rules.addInsertionPoint') }}
     </Button>
   </Divider>
@@ -171,7 +171,7 @@ const showLost = () => message.warn('kernel.rules.notFound')
     <Card v-for="(r, index) in rules" :key="r.id" class="mb-2">
       <div v-if="r.type === RuleType.InsertionPoint" class="text-center font-bold">
         <Divider class="cursor-move">
-          <Button @click="handleAdd" icon="add" type="text" size="small">
+          <Button icon="add" type="text" size="small" @click="handleAdd">
             {{ t('kernel.rules.insertionPoint') }}
           </Button>
         </Divider>
@@ -179,15 +179,15 @@ const showLost = () => message.warn('kernel.rules.notFound')
       <div v-else class="flex items-center py-2 gap-8">
         <Switch v-model="r.enable" size="small" border="square" />
         <div class="font-bold">
-          <span v-if="hasLost(r)" @click="showLost" class="warn cursor-pointer"> [ ! ] </span>
-          <span v-if="notSupport(r)" @click="showNotSupport" class="warn cursor-pointer">
+          <span v-if="hasLost(r)" class="warn cursor-pointer" @click="showLost"> [ ! ] </span>
+          <span v-if="notSupport(r)" class="warn cursor-pointer" @click="showNotSupport">
             [ ! ]
           </span>
           {{ generateRule(r, profile.proxyGroupsConfig) }}
         </div>
         <div class="ml-auto">
-          <Button @click="handleEditRule(index)" icon="edit" type="text" size="small" />
-          <Button @click="handleDeleteRule(index)" icon="delete" type="text" size="small" />
+          <Button icon="edit" type="text" size="small" @click="handleEditRule(index)" />
+          <Button icon="delete" type="text" size="small" @click="handleDeleteRule(index)" />
         </div>
       </div>
     </Card>
@@ -242,11 +242,11 @@ const showLost = () => message.warn('kernel.rules.notFound')
         <Card
           v-for="ruleset in rulesetsStore.rulesets"
           :key="ruleset.name"
-          @click="handleUseRuleset(ruleset)"
+          v-tips="ruleset.path"
           :selected="fields.payload === ruleset.id"
           :title="ruleset.name"
-          v-tips="ruleset.path"
           class="text-12 line-clamp-1"
+          @click="handleUseRuleset(ruleset)"
         >
           {{ ruleset.path }}
         </Card>
