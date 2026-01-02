@@ -77,8 +77,7 @@ const groups = computed(() => {
           return a.delay - b.delay
         })
 
-      const chains = []
-      chains.push(group.now)
+      const chains = [group.now]
       let tmp = proxies[group.now]
       while (tmp) {
         tmp.now && chains.push(tmp.now)
