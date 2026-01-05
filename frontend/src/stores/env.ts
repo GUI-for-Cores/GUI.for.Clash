@@ -3,7 +3,7 @@ import { ref, watch } from 'vue'
 
 import { GetEnv } from '@/bridge'
 import { useAppSettingsStore, useKernelApiStore } from '@/stores'
-import { updateTrayMenus } from '@/utils'
+import { updateTrayAndMenus } from '@/utils'
 import { SetSystemProxy, GetSystemProxy } from '@/utils'
 
 export const useEnvStore = defineStore('env', () => {
@@ -75,7 +75,7 @@ export const useEnvStore = defineStore('env', () => {
     else await clearSystemProxy()
   }
 
-  watch(systemProxy, updateTrayMenus)
+  watch(systemProxy, updateTrayAndMenus)
 
   return {
     env,

@@ -27,7 +27,7 @@ import {
 } from '@/stores'
 import {
   generateConfigFile,
-  updateTrayMenus,
+  updateTrayAndMenus,
   getKernelFileName,
   message,
   getKernelRuntimeArgs,
@@ -326,7 +326,7 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
     return source.concat([proxySignature, unAvailable, sortByDelay]).join('')
   })
 
-  watch([watchSources, running], updateTrayMenus)
+  watch([watchSources, running], updateTrayAndMenus)
 
   return {
     startCore,
