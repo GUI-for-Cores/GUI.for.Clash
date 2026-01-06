@@ -91,6 +91,7 @@ type AppSettings = {
   addGroupToMenu: boolean
   pluginSettings: Record<string, Record<string, any>>
   githubApiToken: string
+  githubProxy: string
   multipleInstance: boolean
   rollingRelease: boolean
   debugOutline: boolean
@@ -106,17 +107,17 @@ export interface PluginConfiguration {
   description: string
   key: string
   component:
-    | 'CheckBox'
-    | 'CodeViewer'
-    | 'Input'
-    | 'InputList'
-    | 'KeyValueEditor'
-    | 'Radio'
-    | 'Select'
-    | 'MultipleSelect'
-    | 'Switch'
-    | 'ColorPicker'
-    | ''
+  | 'CheckBox'
+  | 'CodeViewer'
+  | 'Input'
+  | 'InputList'
+  | 'KeyValueEditor'
+  | 'Radio'
+  | 'Select'
+  | 'MultipleSelect'
+  | 'Switch'
+  | 'ColorPicker'
+  | ''
   value: any
   options: any[]
 }
