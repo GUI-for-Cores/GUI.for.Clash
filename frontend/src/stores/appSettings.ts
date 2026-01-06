@@ -88,6 +88,7 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
     addGroupToMenu: false,
     pluginSettings: {},
     githubApiToken: '',
+    githubProxy: '',
     multipleInstance: false,
     rollingRelease: true,
     debugOutline: false,
@@ -181,9 +182,9 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
         : settings.theme
     let primary, secondary
     if (settings.color === Color.Custom) {
-      ;({ primaryColor: primary, secondaryColor: secondary } = settings)
+      ; ({ primaryColor: primary, secondaryColor: secondary } = settings)
     } else {
-      ;({ primary, secondary } = Colors[settings.color] ?? { primary: '', secondary: '' })
+      ; ({ primary, secondary } = Colors[settings.color] ?? { primary: '', secondary: '' })
     }
     document.documentElement.style.setProperty('--primary-color', primary)
     document.documentElement.style.setProperty('--secondary-color', secondary)

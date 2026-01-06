@@ -660,6 +660,10 @@ export default {
       name: 'GitHub REST API Token',
       tips: 'Provides a higher rate limit',
     },
+    githubProxy: {
+      name: 'GitHub Download Proxy',
+      tips: 'Accelerate kernel downloads, leave empty for direct connection',
+    },
   },
   about: {
     new: 'New',

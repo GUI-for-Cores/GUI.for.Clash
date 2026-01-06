@@ -659,6 +659,10 @@ export default {
       name: 'GitHub REST API 访问令牌',
       tips: '可获得更高的速率限制',
     },
+    githubProxy: {
+      name: 'GitHub 下载加速',
+      tips: '用于加速内核下载，留空则直连',
+    },
   },
   about: {
     new: '新版本',
