@@ -92,7 +92,7 @@ const handleClearCoreCache = async () => {
     />
     <Button
       v-tips="'settings.kernel.openTip'"
-      icon="folder2"
+      icon="folder"
       type="text"
       size="small"
       @click="openFileLocation"
