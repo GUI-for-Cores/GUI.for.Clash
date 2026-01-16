@@ -17,6 +17,7 @@ export const useEnvStore = defineStore('env', () => {
     appPath: '',
     os: '',
     arch: '',
+    isPrivileged: false,
   })
 
   const systemProxy = ref(false)
