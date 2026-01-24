@@ -4,7 +4,7 @@ import { ref } from 'vue'
 import { HttpGet, HttpPost, Upload, Notify, Download, HttpCancel } from '@/bridge'
 import { APP_TITLE, APP_VERSION, sleep, message, confirm, prompt, picker, alert } from '@/utils'
 
-import icons from '@/components/Icon/icons'
+import { icons, type IconName } from '@/components/Icon/icons'
 
 const code = ref(`
 const appName = '${APP_TITLE}'
@@ -200,10 +200,10 @@ const handleNotify = (type: string) => {
   <h2>Icons</h2>
   <div class="icons">
     <Icon
-      v-for="icon in icons"
+      v-for="icon in Object.keys(icons)"
       :key="icon"
       v-tips.fast="icon"
-      :icon="icon"
+      :icon="icon as IconName"
       :size="32"
       class="icon"
     />
