@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, inject, type Ref, computed, useTemplateRef, h } from 'vue'
+import { ref, inject, type Ref, computed, useTemplateRef, h, defineAsyncComponent } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { useBool } from '@/hooks'
@@ -8,14 +8,6 @@ import { deepClone, generateConfig, stringifyNoFolding, message, alert } from '@
 
 import Button from '@/components/Button/index.vue'
 import Dropdown from '@/components/Dropdown/index.vue'
-
-import AdvancedConfig from './AdvancedConfig.vue'
-import DnsConfig from './DnsConfig.vue'
-import GeneralConfig from './GeneralConfig.vue'
-import MixinAndScript from './MixinAndScriptConfig.vue'
-import ProxyGroupsConfig from './ProxyGroupsConfig.vue'
-import RulesConfig from './RulesConfig.vue'
-import TunConfig from './TunConfig.vue'
 
 interface Props {
   id?: string
@@ -37,6 +29,14 @@ const props = withDefaults(defineProps<Props>(), {
   isUpdate: false,
   step: Step.Name,
 })
+
+const AdvancedConfig = defineAsyncComponent(() => import('./AdvancedConfig.vue'))
+const DnsConfig = defineAsyncComponent(() => import('./DnsConfig.vue'))
+const GeneralConfig = defineAsyncComponent(() => import('./GeneralConfig.vue'))
+const MixinAndScript = defineAsyncComponent(() => import('./MixinAndScriptConfig.vue'))
+const ProxyGroupsConfig = defineAsyncComponent(() => import('./ProxyGroupsConfig.vue'))
+const RulesConfig = defineAsyncComponent(() => import('./RulesConfig.vue'))
+const TunConfig = defineAsyncComponent(() => import('./TunConfig.vue'))
 
 const { t } = useI18n()
 const groupsRef = useTemplateRef<typeof ProxyGroupsConfig>('groupsRef')
@@ -210,7 +210,7 @@ defineExpose({ modalSlots })
 
 <template>
   <div>
-    <div v-show="currentStep === Step.Name">
+    <div v-if="currentStep === Step.Name">
       <Input
         v-model="profile.name"
         autofocus
@@ -220,7 +220,7 @@ defineExpose({ modalSlots })
       />
     </div>
 
-    <div v-show="currentStep === Step.General">
+    <div v-if="currentStep === Step.General">
       <GeneralConfig v-model="profile.generalConfig" />
       <Divider>
         <Button type="text" size="small" @click="toggleAdvancedSetting">
@@ -232,19 +232,19 @@ defineExpose({ modalSlots })
       </div>
     </div>
 
-    <div v-show="currentStep === Step.Tun">
+    <div v-if="currentStep === Step.Tun">
       <TunConfig v-model="profile.tunConfig" />
     </div>
 
-    <div v-show="currentStep === Step.Dns">
+    <div v-if="currentStep === Step.Dns">
       <DnsConfig v-model="profile.dnsConfig" />
     </div>
 
-    <div v-show="currentStep === Step.Group">
+    <div v-if="currentStep === Step.Group">
       <ProxyGroupsConfig ref="groupsRef" v-model="profile.proxyGroupsConfig" />
     </div>
 
-    <div v-show="currentStep === Step.Rules">
+    <div v-if="currentStep === Step.Rules">
       <RulesConfig
         ref="rulesRef"
         v-model="profile.rulesConfig"
@@ -253,7 +253,7 @@ defineExpose({ modalSlots })
       />
     </div>
 
-    <div v-show="currentStep === Step.MixinScript">
+    <div v-if="currentStep === Step.MixinScript">
       <MixinAndScript v-model="mixinAndScriptConfig" />
     </div>
   </div>

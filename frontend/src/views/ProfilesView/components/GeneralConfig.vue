@@ -36,5 +36,3 @@ const { t } = useI18n()
     <Input v-model="fields['mixed-port']" :min="0" :max="65535" type="number" editable />
   </div>
 </template>
-
-<style lang="less" scoped></style>

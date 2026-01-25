@@ -3,8 +3,6 @@ import {
   RestartApp,
   EventsOn,
   EventsOff,
-  UpdateTray,
-  UpdateTrayMenus,
   ShowMainWindow,
   UpdateTrayAndMenus,
 } from '@/bridge'
@@ -12,7 +10,13 @@ import { ColorOptions, ThemeOptions } from '@/constant/app'
 import { BuiltInOutbound, ModeOptions } from '@/constant/kernel'
 import { ProxyGroupType } from '@/enums/kernel'
 import i18n from '@/lang'
-import { useAppSettingsStore, useKernelApiStore, useEnvStore, usePluginsStore } from '@/stores'
+import {
+  useAppSettingsStore,
+  useKernelApiStore,
+  useEnvStore,
+  usePluginsStore,
+  useAppStore,
+} from '@/stores'
 import {
   debounce,
   exitApp,
@@ -73,6 +77,7 @@ const generateUniqueEventsForMenu = (menus: MenuItem[]) => {
 }
 
 const getTrayMenus = () => {
+  const appStore = useAppStore()
   const envStore = useEnvStore()
   const appSettings = useAppSettingsStore()
   const kernelApiStore = useKernelApiStore()
@@ -290,7 +295,7 @@ const getTrayMenus = () => {
         {
           type: 'item',
           text: 'settings.lang.name',
-          children: appSettings.locales.map((v) => ({
+          children: appStore.locales.map((v) => ({
             type: 'item',
             text: v.label,
             checked: appSettings.app.lang === v.value,
