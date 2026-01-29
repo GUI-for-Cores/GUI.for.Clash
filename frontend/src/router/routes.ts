@@ -1,7 +1,5 @@
 import { type RouteRecordRaw } from 'vue-router'
 
-import { isDev } from '@/utils'
-
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
@@ -67,16 +65,18 @@ const routes: RouteRecordRaw[] = [
       hidden: false,
     },
   },
-  {
+]
+
+if (import.meta.env.DEV) {
+  routes.push({
     path: '/playground',
     name: 'Playground',
     component: () => import('@/views/PlaygroundView/index.vue'),
     meta: {
       name: 'Develop',
       icon: 'code',
-      hidden: !isDev,
     },
-  },
-]
+  })
+}
 
 export default routes
