@@ -75,6 +75,7 @@ if (import.meta.env.DEV) {
     meta: {
       name: 'Develop',
       icon: 'code',
+      hidden: false,
     },
   })
 }

@@ -216,6 +216,9 @@ const handleNotify = (type: string) => {
   <div>
     <KeyValueEditor v-model="kv" />
   </div>
+  <div>
+    <Select />
+  </div>
 
   <h2>message & picker & confirm & prompt</h2>
   <div>
