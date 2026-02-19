@@ -9,8 +9,8 @@ import {
   onMemory,
   onTraffic,
   onConnections,
-  connectWebsocket,
-  disconnectWebsocket,
+  initWebsocket,
+  destroyWebsocket,
 } from '@/api/kernel'
 import { ProcessInfo, KillProcess, ExecBackground, ReadFile, RemoveFile } from '@/bridge'
 import { CorePidFilePath, CoreStopOutputKeyword, CoreWorkingDirectory } from '@/constant/kernel'
@@ -98,7 +98,7 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
     coreStateLoading.value = false
 
     if (running.value) {
-      connectWebsocket()
+      initWebsocket()
       await Promise.all([refreshConfig(), refreshProviderProxies()])
       await envStore.updateSystemProxyStatus()
     } else if (appSettingsStore.app.autoStartKernel) {
@@ -139,7 +139,7 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
     isCoreStartedByThisInstance = true
     coreStoppedPromise = new Promise((r) => (coreStoppedResolver = r))
 
-    connectWebsocket()
+    initWebsocket()
     await Promise.all([refreshConfig(), refreshProviderProxies()])
 
     if (appSettingsStore.app.autoSetSystemProxy) {
@@ -159,7 +159,7 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
     running.value = false
     needRestart.value = false
 
-    disconnectWebsocket()
+    destroyWebsocket()
 
     if (appSettingsStore.app.autoSetSystemProxy) {
       await envStore.clearSystemProxy()

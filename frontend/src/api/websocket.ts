@@ -4,7 +4,7 @@ type WebSocketsOptions = {
   beforeConnect?: () => void
 }
 
-type URLType = { name: string; url: string; cb: (data: any) => void; params?: Record<string, any> }
+type Options = { url: string; cb: (data: any) => void; params?: Record<string, any> }
 
 export class WebSockets {
   public base: string
@@ -17,44 +17,38 @@ export class WebSockets {
     this.beforeConnect = options.beforeConnect || (() => 0)
   }
 
-  public createWS(urls: URLType[]) {
+  public createWS(options: Options) {
     this.beforeConnect()
 
-    const wsMap: Recordable<{ close: () => void; open: () => void; isManualClose: boolean }> = {}
+    const params = { ...options.params, token: this.bearer }
+    const query = new URLSearchParams(params).toString()
+    const url = query ? `${options.url}?${query}` : options.url
 
-    urls.forEach(({ name, url, params = {}, cb }) => {
-      Object.assign(params, { token: this.bearer })
+    let isManualClose = false
+    let ws: WebSocket | null = null
 
-      const query = new URLSearchParams(params).toString()
-
-      query && (url += '?' + query)
-
-      let ws: WebSocket | null = null
-
-      const open = () => {
-        ws = new WebSocket(this.base + url)
-        ws.onmessage = (e) => cb(JSON.parse(e.data))
-        ws.onclose = () => {
-          setTimeout(() => {
-            if (!wsMap[name]!.isManualClose) {
-              setTimeout(open, 3000)
-            }
-          }, 1000)
-        }
+    const connect = () => {
+      ws = new WebSocket(this.base + url)
+      ws.onmessage = (e) => options.cb(JSON.parse(e.data))
+      ws.onclose = () => {
+        setTimeout(() => {
+          if (!isManualClose) {
+            setTimeout(connect, 3000)
+          }
+        }, 1000)
       }
+    }
 
-      const close = () => {
-        wsMap[name]!.isManualClose = true
-        ws?.close()
+    const disconnect = () => {
+      isManualClose = true
+      if (ws) {
+        ws.onmessage = null
+        ws.onclose = null
+        ws.close()
         ws = null
       }
-
-      wsMap[name] = { open, close, isManualClose: false }
-    })
-
-    return {
-      connect: () => Object.values(wsMap).forEach((ws) => ws.open()),
-      disconnect: () => Object.values(wsMap).forEach((ws) => ws.close()),
     }
+
+    return { connect, disconnect }
   }
 }

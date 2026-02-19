@@ -93,3 +93,10 @@ export interface CoreApiConnectionsData {
     rulePayload: string
   }[]
 }
+
+export type CoreApiWsDataMap = {
+  logs: CoreApiLogsData
+  memory: CoreApiMemoryData
+  traffic: CoreApiTrafficData
+  connections: CoreApiConnectionsData
+}
