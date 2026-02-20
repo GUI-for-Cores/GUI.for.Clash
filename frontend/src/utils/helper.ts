@@ -1,7 +1,7 @@
 import { parse } from 'yaml'
 
 import { deleteConnection, getConnections, useProxy } from '@/api/kernel'
-import { AbsolutePath, Exec, ExitApp, ReadFile, WriteFile } from '@/bridge'
+import { AbsolutePath, Exec, ExitApp, ReadFile, WindowReloadApp, WriteFile } from '@/bridge'
 import { CoreWorkingDirectory } from '@/constant/kernel'
 import { ProxyGroupType, RulesetBehavior, RulesetFormat } from '@/enums/kernel'
 import i18n from '@/lang'
@@ -633,6 +633,38 @@ export const addToRuleSet = async (id: 'direct' | 'reject' | 'proxy', payloads: 
   await rulesetsStoe.updateRuleset(id)
 }
 
+export const reloadApp = async () => {
+  const { t } = i18n.global
+  const appStore = useAppStore()
+  const pluginsStore = usePluginsStore()
+
+  appStore.isAppReloading = true
+
+  let timedout = false
+  const { destroy } = message.info('titlebar.reloadPending', 10 * 60 * 1000)
+
+  const timeoutId = setTimeout(async () => {
+    timedout = true
+    appStore.isAppReloading = false
+    destroy()
+    confirm('Warning', t('titlebar.reloadTimeout')).then(WindowReloadApp)
+  }, 10_000)
+
+  try {
+    await pluginsStore.onReloadTrigger()
+    if (!timedout) {
+      clearTimeout(timeoutId)
+      WindowReloadApp()
+    }
+  } catch (err: any) {
+    clearTimeout(timeoutId)
+    confirm('Error', t('titlebar.reloadError', { reason: err })).then(WindowReloadApp)
+  }
+
+  appStore.isAppReloading = false
+  destroy()
+}
+
 export const exitApp = async () => {
   const { t } = i18n.global
   const appStore = useAppStore()
@@ -644,13 +676,13 @@ export const exitApp = async () => {
   appStore.isAppExiting = true
 
   let timedout = false
-  const { destroy } = message.info('titlebar.waiting', 10 * 60 * 1000)
+  const { destroy } = message.info('titlebar.exitPending', 10 * 60 * 1000)
 
   const timeoutId = setTimeout(async () => {
     timedout = true
     appStore.isAppExiting = false
     destroy()
-    confirm('Warning', t('titlebar.timeout')).then(ExitApp)
+    confirm('Warning', t('titlebar.exitTimeout')).then(ExitApp)
   }, 10_000)
 
   try {

@@ -135,6 +135,15 @@ export const getCompletions = (pluginScope: any = undefined) => {
       },
     ),
     snippetCompletion(
+      `/* ${t('plugin.trigger') + ' ' + t('plugin.on::reload')} */\n` +
+        `const ${PluginTriggerEvent.OnReload} = async () => {\n\t\${}\n}`,
+      {
+        label: PluginTriggerEvent.OnReload,
+        type: 'keyword',
+        detail: t('plugin.trigger') + ' ' + t('plugin.on::reload'),
+      },
+    ),
+    snippetCompletion(
       `/* ${t('plugin.trigger') + ' ' + t('plugin.on::task')} */\n` +
         `const ${PluginTriggerEvent.OnTask} = async () => {\n\t\${}\n}`,
       {

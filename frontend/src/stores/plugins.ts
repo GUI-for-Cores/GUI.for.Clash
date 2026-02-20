@@ -55,6 +55,10 @@ const PluginsTriggerMap: {
     fnName: PluginTriggerEvent.OnReady,
     observers: [],
   },
+  [PluginTrigger.OnReload]: {
+    fnName: PluginTriggerEvent.OnReload,
+    observers: [],
+  },
   [PluginTrigger.OnCoreStarted]: {
     fnName: PluginTriggerEvent.OnCoreStarted,
     observers: [],
@@ -549,6 +553,7 @@ export const usePluginsStore = defineStore('plugins', () => {
     onStartupTrigger: () => noParamsTrigger(PluginTrigger.OnStartup),
     onShutdownTrigger: () => noParamsTrigger(PluginTrigger.OnShutdown, true),
     onReadyTrigger: () => noParamsTrigger(PluginTrigger.OnReady),
+    onReloadTrigger: () => noParamsTrigger(PluginTrigger.OnReload, true),
     onCoreStartedTrigger: () => noParamsTrigger(PluginTrigger.OnCoreStarted),
     onCoreStoppedTrigger: () => noParamsTrigger(PluginTrigger.OnCoreStopped),
     onBeforeCoreStopTrigger: () => noParamsTrigger(PluginTrigger.OnBeforeCoreStop, true),

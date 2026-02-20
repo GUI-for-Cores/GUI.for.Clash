@@ -7,13 +7,12 @@ import {
   WindowHide,
   WindowMinimise,
   WindowSetSize,
-  WindowReloadApp,
   WindowToggleMaximise,
   WindowIsMaximised,
   RestartApp,
 } from '@/bridge'
 import { useAppSettingsStore, useKernelApiStore, useEnvStore, useAppStore } from '@/stores'
-import { APP_TITLE, APP_VERSION, debounce, exitApp } from '@/utils'
+import { APP_TITLE, APP_VERSION, debounce, exitApp, reloadApp } from '@/utils'
 
 import type { Menu } from '@/types/app'
 
@@ -47,7 +46,7 @@ const menus: Menu[] = [
   },
   {
     label: 'titlebar.reload',
-    handler: WindowReloadApp,
+    handler: reloadApp,
   },
   {
     label: 'titlebar.restart',
@@ -103,7 +102,7 @@ onUnmounted(() => window.removeEventListener('resize', onResize))
       />
       <Button
         :class="{ 'hover:!bg-red': appSettingsStore.app.exitOnClose }"
-        :loading="appStore.isAppExiting"
+        :loading="appStore.isAppExiting || appStore.isAppReloading"
         icon="close"
         type="text"
         @click.stop="closeWindow"

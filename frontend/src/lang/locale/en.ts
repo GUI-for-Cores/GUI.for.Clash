@@ -472,6 +472,7 @@ export default {
     'on::generate': 'on::generate',
     'on::subscribe': 'on::subscribe',
     'on::ready': 'on::ready',
+    'on::reload': 'on::reload',
     'on::task': 'on::task',
     'on::install': 'on::install',
     'on::uninstall': 'on::uninstall',
@@ -676,9 +677,13 @@ export default {
     reload: 'Reload Window',
     restart: 'Restart App',
     exitApp: 'Exit App',
-    waiting: 'Waiting for the program to exit...',
-    timeout: 'The program exit timed out. Do you want to force quit?',
+    exitPending: 'Waiting for the program to exit...',
+    exitTimeout: 'The program exit timed out. Do you want to force quit?',
     exitError: 'An error occurred during exit. Do you want to force quit?\n\nReason: {reason}',
+    reloadPending: 'Waiting for the program to reload...',
+    reloadTimeout: 'The reload timed out. Do you want to force reload?',
+    reloadError:
+      'An error occurred during reload. Do you want to force reload?\n\nReason: {reason}',
   },
   tray: {
     showMainWindow: 'Show Main Window',

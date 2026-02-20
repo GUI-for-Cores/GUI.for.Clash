@@ -130,6 +130,7 @@ export const DraggableOptions = {
 export const PluginsTriggerOptions = [
   { label: 'plugin.on::startup', value: PluginTrigger.OnStartup },
   { label: 'plugin.on::ready', value: PluginTrigger.OnReady },
+  { label: 'plugin.on::reload', value: PluginTrigger.OnReload },
   { label: 'plugin.on::shutdown', value: PluginTrigger.OnShutdown },
   { label: 'plugin.on::manual', value: PluginTrigger.OnManual },
   { label: 'plugin.on::generate', value: PluginTrigger.OnGenerate },
