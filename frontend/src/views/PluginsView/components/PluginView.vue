@@ -50,7 +50,7 @@ const handleTest = async (event: PluginTriggerEvent, arg1?: any, arg2?: any) => 
   testing.value = true
   try {
     const metadata = JSON.stringify({
-      ...pluginsStore.getPluginMetadata(plugin.value),
+      ...pluginsStore.getPluginMetadata(props.id),
       Mode: 'Dev',
     })
     if (event === PluginTriggerEvent.OnSubscribe) {
@@ -87,7 +87,7 @@ const initPluginCode = async (p: Plugin) => {
 const p = pluginsStore.getPluginById(props.id)
 if (p) {
   plugin.value = deepClone(p)
-  metadata.value = pluginsStore.getPluginMetadata(plugin.value)
+  metadata.value = pluginsStore.getPluginMetadata(props.id)
   initPluginCode(p)
 }
 

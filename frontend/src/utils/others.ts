@@ -272,6 +272,38 @@ export const deepAssign = (...args: any[]) => {
   return target
 }
 
+export const readonly = <T>(obj: T): T => {
+  if (typeof obj !== 'object' || obj === null) return obj
+  return new Proxy(obj, {
+    get(target, key) {
+      const result = Reflect.get(target, key)
+      if (typeof result === 'object' && result !== null) {
+        return readonly(result)
+      }
+      return result
+    },
+    set(target, key) {
+      console.warn(`Set operation on key "${String(key)}" failed: target is readonly.`, target)
+      return true
+    },
+    deleteProperty(target, key) {
+      console.warn(`Delete operation on key "${String(key)}" failed: target is readonly.`, target)
+      return true
+    },
+    defineProperty(target, key) {
+      console.warn(
+        `DefineProperty operation on key "${String(key)}" failed: target is readonly.`,
+        target,
+      )
+      return false
+    },
+    setPrototypeOf(target) {
+      console.warn(`SetPrototypeOf operation failed: target is readonly.`, target)
+      return false
+    },
+  })
+}
+
 export const base64Encode = (str: string) => {
   return btoa(
     encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) =>

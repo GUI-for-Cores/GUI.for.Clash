@@ -15,6 +15,7 @@ import {
   deepClone,
   confirm,
   asyncPool,
+  readonly,
 } from '@/utils'
 
 import type { Plugin, Subscription, TrayContent, MenuItem } from '@/types/app'
@@ -102,28 +103,92 @@ export const usePluginsStore = defineStore('plugins', () => {
     }
   }
 
-  const getPluginMetadata = (plugin: Plugin) => {
-    const configuration: Recordable = {}
-    for (const { key, value } of plugin.configuration) {
-      configuration[key] = value
+  const getPluginMetadata = (id: string) => {
+    const lastConfiguration: Recordable = { time: 0, data: undefined }
+    const buildConfiguration = (plugin: Plugin) => {
+      const now = performance.now()
+      if (lastConfiguration.data && now - lastConfiguration.time < 1000) {
+        return lastConfiguration.data
+      }
+
+      const configuration: Recordable = {}
+      for (const { key, value } of plugin.configuration) {
+        configuration[key] = value
+      }
+
+      const userSettings = appSettingsStore.app.pluginSettings[plugin.id]
+      if (userSettings) {
+        for (const key in userSettings) {
+          configuration[key] = userSettings[key]
+        }
+      }
+
+      lastConfiguration.time = now
+      lastConfiguration.data = configuration
+      return configuration
     }
-    Object.assign(configuration, appSettingsStore.app.pluginSettings[plugin.id] ?? {})
-    const metadata = deepClone({ ...plugin, ...configuration })
-    const proxy = new Proxy(metadata, {
-      get(target, p, receiver) {
-        return Reflect.get(target, p, receiver)
+
+    const lastPlugin: { time: number; data: Plugin | undefined } = { time: 0, data: undefined }
+    const getPlugin = () => {
+      const now = performance.now()
+      if (lastPlugin.data && now - lastPlugin.time < 1000) {
+        return lastPlugin.data
+      }
+      const cache = PluginsCache[id]
+      if (!cache) throw new Error()
+
+      lastPlugin.time = now
+      lastPlugin.data = cache.plugin
+      return cache.plugin
+    }
+
+    const proxy = new Proxy({} as Plugin & Recordable, {
+      get(_, p) {
+        const plugin = getPlugin()
+        if (typeof p === 'string' && p.startsWith('__v_')) {
+          return Reflect.get(plugin, p)
+        }
+
+        let value
+        if (Object.hasOwn(plugin, p)) {
+          value = Reflect.get(plugin, p)
+        } else {
+          const configuration = buildConfiguration(plugin)
+          value = Reflect.get(configuration, p)
+        }
+
+        if (p === 'status') return value
+
+        return readonly(value)
       },
-      set(target, p, newValue, receiver) {
+
+      set(_, p, newValue) {
+        const plugin = getPlugin()
+
         if (p === 'status') {
           plugin.status = newValue
           editPlugin(plugin.id, plugin)
-          Reflect.set(target, p, newValue, receiver)
           return true
         }
+
         console.warn(`[${plugin.name}] Property "${String(p)}" is read-only.`)
         return false
       },
+
+      ownKeys() {
+        const plugin = getPlugin()
+        const configuration = buildConfiguration(plugin)
+        return [...Reflect.ownKeys(plugin), ...Reflect.ownKeys(configuration)]
+      },
+
+      getOwnPropertyDescriptor() {
+        return {
+          enumerable: true,
+          configurable: true,
+        }
+      },
     })
+
     return proxy
   }
 
@@ -209,6 +274,9 @@ export const usePluginsStore = defineStore('plugins', () => {
     const plugin = plugins.value.splice(idx, 1, newPlugin)[0]!
     try {
       await savePlugins()
+      if (PluginsCache[plugin.id]) {
+        PluginsCache[plugin.id]!.plugin = newPlugin
+      }
       updatePluginTrigger(newPlugin)
     } catch (error) {
       plugins.value.splice(idx, 1, plugin)
@@ -352,7 +420,8 @@ export const usePluginsStore = defineStore('plugins', () => {
 
       if (isPluginUnavailable(cache)) continue
 
-      const metadata = getPluginMetadata(cache.plugin)
+      const metadata = getPluginMetadata(observer)
+
       try {
         const fn = new window.AsyncFunction(
           'Plugin',
@@ -382,7 +451,7 @@ export const usePluginsStore = defineStore('plugins', () => {
 
       if (isPluginUnavailable(cache)) continue
 
-      const metadata = getPluginMetadata(cache.plugin)
+      const metadata = getPluginMetadata(observer)
       try {
         const fn = new window.AsyncFunction('Plugin', `${cache.code}; return await ${fnName}()`)
         const exitCode = await fn(metadata)
@@ -411,7 +480,7 @@ export const usePluginsStore = defineStore('plugins', () => {
 
       if (isPluginUnavailable(cache)) continue
 
-      const metadata = getPluginMetadata(cache.plugin)
+      const metadata = getPluginMetadata(observer)
       try {
         const fn = new window.AsyncFunction(
           'Plugin',
@@ -441,7 +510,7 @@ export const usePluginsStore = defineStore('plugins', () => {
 
       if (isPluginUnavailable(cache)) continue
 
-      const metadata = getPluginMetadata(cache.plugin)
+      const metadata = getPluginMetadata(observer)
       try {
         const fn = new window.AsyncFunction(
           'Plugin',
@@ -466,7 +535,7 @@ export const usePluginsStore = defineStore('plugins', () => {
     const cache = PluginsCache[plugin.id]
     if (!cache) throw `${plugin.name} is Missing source code`
     if (cache.plugin.disabled) throw `${plugin.name} is Disabled`
-    const metadata = getPluginMetadata(plugin)
+    const metadata = getPluginMetadata(id)
     args = deepClone(args)
     try {
       const fn = new window.AsyncFunction(
@@ -497,7 +566,7 @@ export const usePluginsStore = defineStore('plugins', () => {
 
       if (isPluginUnavailable(cache)) continue
 
-      const metadata = getPluginMetadata(cache.plugin)
+      const metadata = getPluginMetadata(observer)
       try {
         const fn = new window.AsyncFunction(
           'Plugin',
