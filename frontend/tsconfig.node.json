@@ -1,9 +1,6 @@
 {
   "extends": "@tsconfig/node24/tsconfig.json",
-  "include": [
-    "vite.config.*",
-    "eslint.config.*"
-  ],
+  "include": ["vite.config.*", "eslint.config.*"],
   "compilerOptions": {
     "composite": true,
     "noEmit": true,
