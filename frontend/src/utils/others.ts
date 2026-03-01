@@ -304,21 +304,34 @@ export const readonly = <T>(obj: T): T => {
   })
 }
 
-export const base64Encode = (str: string) => {
-  return btoa(
-    encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) =>
-      String.fromCharCode(('0x' + p1) as any),
-    ),
-  )
+export const normalizeBase64 = (str: string): string => {
+  const normalized = str.trim().replace(/\s+/g, '').replace(/-/g, '+').replace(/_/g, '/')
+
+  const padding = (4 - (normalized.length % 4)) % 4
+  return normalized + '='.repeat(padding)
 }
 
-export const base64Decode = (str: string) => {
-  return decodeURIComponent(
-    atob(str)
-      .split('')
-      .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-      .join(''),
-  )
+export const base64UrlEncode = (str: string): string => {
+  return base64Encode(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+}
+
+export const base64Encode = (str: string): string => {
+  const bytes = new TextEncoder().encode(str)
+  const len = bytes.length
+  const chars = Array(len)
+
+  for (let i = 0; i < len; i++) {
+    chars[i] = String.fromCharCode(bytes[i]!)
+  }
+
+  return btoa(chars.join(''))
+}
+
+export const base64Decode = (input: string): string => {
+  const base64 = normalizeBase64(input)
+  const binary = atob(base64)
+  const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0))
+  return new TextDecoder().decode(bytes)
 }
 
 export const stringifyNoFolding = (content: any) => {

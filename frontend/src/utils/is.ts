@@ -1,13 +1,19 @@
 import { Cron } from 'croner'
 import { parse } from 'yaml'
 
+import { normalizeBase64 } from './others'
+
 export const isValidBase64 = (str: string) => {
   if (typeof str !== 'string') return false
   if (str === '' || str.trim() === '') {
     return false
   }
+
+  // Accept URL-safe base64 and ignore line breaks/spaces in subscription responses.
+  const normalized = normalizeBase64(str)
   try {
-    return btoa(atob(str)) == str
+    atob(normalized)
+    return true
   } catch {
     return false
   }
