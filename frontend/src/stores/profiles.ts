@@ -39,7 +39,6 @@ export type ProfileType = {
       certificate: string
       'private-key': string
     }
-    'global-client-fingerprint': string
     'geodata-mode': boolean
     'geo-auto-update': boolean
     'geo-update-interval': number

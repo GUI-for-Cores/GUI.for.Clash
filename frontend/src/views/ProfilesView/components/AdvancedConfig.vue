@@ -5,7 +5,6 @@ import {
   FindProcessModeOptions,
   GeodataLoaderOptions,
   GeoSiteMatcherOptions,
-  GlobalClientFingerprintOptions,
 } from '@/constant/kernel'
 import { AdvancedConfigDefaults } from '@/constant/profile'
 import { type ProfileType } from '@/stores'
@@ -105,13 +104,6 @@ const { t } = useI18n()
   <div class="form-item">
     {{ t('kernel.external-ui-url') }}
     <Input v-model="fields['external-ui-url']" editable />
-  </div>
-  <div class="form-item">
-    {{ t('kernel.global-client-fingerprint') }}
-    <Select
-      v-model="fields['global-client-fingerprint']"
-      :options="GlobalClientFingerprintOptions"
-    />
   </div>
   <div class="form-item">
     {{ t('kernel.store-selected') }}

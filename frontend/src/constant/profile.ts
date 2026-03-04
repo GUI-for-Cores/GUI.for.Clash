@@ -34,7 +34,6 @@ export const AdvancedConfigDefaults = (): ProfileType['advancedConfig'] => ({
     certificate: '',
     'private-key': '',
   },
-  'global-client-fingerprint': 'chrome',
   'geodata-mode': false,
   'geo-auto-update': false,
   'geo-update-interval': 24,

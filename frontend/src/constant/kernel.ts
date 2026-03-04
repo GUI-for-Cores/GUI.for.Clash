@@ -71,18 +71,6 @@ export const FindProcessModeOptions = [
   },
 ]
 
-export const GlobalClientFingerprintOptions = [
-  { label: 'kernel.chrome', value: 'chrome' },
-  { label: 'kernel.firefox', value: 'firefox' },
-  { label: 'kernel.safari', value: 'safari' },
-  { label: 'kernel.iOS', value: 'iOS' },
-  { label: 'kernel.android', value: 'android' },
-  { label: 'kernel.edge', value: 'edge' },
-  { label: 'kernel.360', value: '360' },
-  { label: 'kernel.qq', value: 'qq' },
-  { label: 'kernel.random', value: 'random' },
-]
-
 export const GeodataLoaderOptions = [
   { label: 'kernel.standard', value: 'standard' },
   { label: 'kernel.memconservative', value: 'memconservative' },

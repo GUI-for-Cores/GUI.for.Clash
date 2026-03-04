@@ -18,6 +18,10 @@ export const migrateProfiles = async (profiles: ProfileType[], save: () => Promi
       profile.dnsConfig['direct-nameserver'] = []
       needSync = true
     }
+    if ('global-client-fingerprint' in profile.advancedConfig) {
+      delete profile.advancedConfig['global-client-fingerprint']
+      needSync = true
+    }
   })
 
   if (needSync) await save()
