@@ -98,10 +98,10 @@ export const deleteGroupFixed = (group: string) => request.delete(Api.Proxies + 
 export const useProxy = (group: string, proxy: string) => {
   return request.put<null>(Api.Proxies + '/' + group, { name: proxy })
 }
-export const getProxyDelay = (proxy: string, url: string) => {
+export const getProxyDelay = (proxy: string, url: string, timeout: number) => {
   return request.get<Record<string, number>>(Api.ProxyDelay.replace('{0}', proxy), {
     url,
-    timeout: 5000,
+    timeout,
   })
 }
 export const updateGEO = () => request.post<{ message: string } | null>(Api.GEO)
