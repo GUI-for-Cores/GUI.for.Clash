@@ -112,6 +112,7 @@ defineExpose({ modalSlots })
         <Input
           v-model="sub.url"
           :placeholder="isRemote ? 'http(s)://' : 'data/local/{filename}.txt'"
+          allow-paste
           class="w-full"
         />
       </div>
