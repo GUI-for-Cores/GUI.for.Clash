@@ -219,6 +219,15 @@ const handleNotify = (type: string) => {
   <div>
     <Select />
   </div>
+  <div>
+    <Tag color="red">red</Tag>
+    <Tag color="cyan">cyan</Tag>
+    <Tag color="green">green</Tag>
+    <Tag color="orange">orange</Tag>
+    <Tag color="gold">gold</Tag>
+    <Tag color="blue">blue</Tag>
+    <Tag color="purple" :borderd="false">purple</Tag>
+  </div>
 
   <h2>message & picker & confirm & prompt</h2>
   <div>
