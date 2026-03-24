@@ -1,3 +1,4 @@
+import { SnifferDefaults } from '@/constant/profile'
 import type { ProfileType } from '@/stores'
 
 export const migrateProfiles = async (profiles: ProfileType[], save: () => Promise<string>) => {
@@ -20,6 +21,11 @@ export const migrateProfiles = async (profiles: ProfileType[], save: () => Promi
     }
     if ('global-client-fingerprint' in profile.advancedConfig) {
       delete profile.advancedConfig['global-client-fingerprint']
+      needSync = true
+    }
+    if (!profile.sniffer) {
+      profile.sniffer = SnifferDefaults()
+      profile.sniffer.enable = false
       needSync = true
     }
   })

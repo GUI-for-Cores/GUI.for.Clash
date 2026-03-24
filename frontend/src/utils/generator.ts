@@ -275,6 +275,7 @@ export const generateConfig = async (originalProfile: ProfileType) => {
         : undefined,
     },
     dns: profile.dnsConfig,
+    sniffer: profile.sniffer,
     hosts: {},
   }
 
@@ -322,6 +323,22 @@ export const generateConfig = async (originalProfile: ProfileType) => {
     profile.rulesConfig,
     profile.proxyGroupsConfig,
   )
+
+  if (config.sniffer.sniff.HTTP.enable) {
+    delete config.sniffer.sniff.HTTP.enable
+  } else {
+    delete config.sniffer.sniff.HTTP
+  }
+  if (config.sniffer.sniff.TLS.enable) {
+    delete config.sniffer.sniff.TLS.enable
+  } else {
+    delete config.sniffer.sniff.TLS
+  }
+  if (config.sniffer.sniff.QUIC.enable) {
+    delete config.sniffer.sniff.QUIC.enable
+  } else {
+    delete config.sniffer.sniff.QUIC
+  }
 
   config['proxies'] = await generateProxies(profile.proxyGroupsConfig)
 

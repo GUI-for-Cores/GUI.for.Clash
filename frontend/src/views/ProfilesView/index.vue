@@ -44,6 +44,7 @@ const menuList: Menu[] = [
   'profile.step.general',
   'profile.step.tun',
   'profile.step.dns',
+  'profile.step.sniffer',
   'profile.step.groups',
   'profile.step.rules',
   'profile.step.mixin-script',

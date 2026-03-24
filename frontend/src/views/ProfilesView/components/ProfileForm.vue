@@ -19,9 +19,10 @@ enum Step {
   General = 1,
   Tun = 2,
   Dns = 3,
-  Group = 4,
-  Rules = 5,
-  MixinScript = 6,
+  Sniffer = 4,
+  Group = 5,
+  Rules = 6,
+  MixinScript = 7,
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -37,6 +38,7 @@ const MixinAndScript = defineAsyncComponent(() => import('./MixinAndScriptConfig
 const ProxyGroupsConfig = defineAsyncComponent(() => import('./ProxyGroupsConfig.vue'))
 const RulesConfig = defineAsyncComponent(() => import('./RulesConfig.vue'))
 const TunConfig = defineAsyncComponent(() => import('./TunConfig.vue'))
+const SnifferConfig = defineAsyncComponent(() => import('./SnifferConfig.vue'))
 
 const { t } = useI18n()
 const groupsRef = useTemplateRef<typeof ProxyGroupsConfig>('groupsRef')
@@ -52,6 +54,7 @@ const stepItems = [
   { title: 'profile.step.general' },
   { title: 'profile.step.tun' },
   { title: 'profile.step.dns' },
+  { title: 'profile.step.sniffer' },
   { title: 'profile.step.groups' },
   { title: 'profile.step.rules' },
   { title: 'profile.step.mixin-script' },
@@ -238,6 +241,10 @@ defineExpose({ modalSlots })
 
     <div v-if="currentStep === Step.Dns">
       <DnsConfig v-model="profile.dnsConfig" />
+    </div>
+
+    <div v-if="currentStep === Step.Sniffer">
+      <SnifferConfig v-model="profile.sniffer" />
     </div>
 
     <div v-if="currentStep === Step.Group">

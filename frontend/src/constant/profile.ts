@@ -346,6 +346,31 @@ export const RulesConfigDefaults = (
   },
 ]
 
+export const SnifferDefaults = (): ProfileType['sniffer'] => ({
+  enable: true,
+  'force-dns-mapping': true,
+  'parse-pure-ip': true,
+  'override-destination': false,
+  'force-domain': [],
+  'skip-domain': [],
+  'skip-src-address': [],
+  'skip-dst-address': [],
+  sniff: {
+    HTTP: {
+      enable: true,
+      ports: ['80', '8080-8880'],
+    },
+    TLS: {
+      enable: true,
+      ports: ['443', '8443'],
+    },
+    QUIC: {
+      enable: true,
+      ports: ['443', '8443'],
+    },
+  },
+})
+
 export const MixinConfigDefaults = (): ProfileType['mixinConfig'] => {
   return { priority: 'mixin', format: 'json', config: '' }
 }

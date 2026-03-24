@@ -8,6 +8,7 @@ import {
   TunConfigDefaults,
   MixinConfigDefaults,
   ScriptConfigDefaults,
+  SnifferDefaults,
 } from '@/constant/profile'
 import { RulesetBehavior, RulesetFormat, RuleType } from '@/enums/kernel'
 import { deepAssign, sampleID } from '@/utils'
@@ -31,6 +32,7 @@ export const restoreProfile = (
       'nameserver-policy': {},
     }),
     tunConfig: TunConfigDefaults(),
+    sniffer: SnifferDefaults(),
     proxyGroupsConfig: [],
     rulesConfig: [
       {
