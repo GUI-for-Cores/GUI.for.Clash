@@ -1,10 +1,20 @@
-import { ProxyGroup, RulesetBehavior, RulesetFormat, RuleType } from '@/enums/kernel'
+import { ProxyGroup, RulesetBehavior, RulesetFormat, RuleType, TunStack } from '@/enums/kernel'
 import i18n from '@/lang'
 import { generateSecureKey, sampleID } from '@/utils'
 
 import type { ProfileType } from '@/stores'
+import { DefaultTestURL } from './app'
 
 const { t } = i18n.global
+
+const DefaultOutboundIds = {
+  Select: 'outbound-select',
+  Urltest: 'outbound-urltest',
+  Direct: 'outbound-direct',
+  Block: 'outbound-block',
+  Fallback: 'outbound-fallback',
+  Global: 'outbound-global',
+}
 
 export const GeneralConfigDefaults = (): ProfileType['generalConfig'] => ({
   mode: 'rule',
@@ -40,10 +50,10 @@ export const AdvancedConfigDefaults = (): ProfileType['advancedConfig'] => ({
   'geodata-loader': 'standard',
   'geosite-matcher': 'mph',
   'geox-url': {
-    geoip: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.dat',
-    geosite: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geosite.dat',
-    mmdb: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/country.mmdb',
-    asn: 'https://github.com/xishang0128/geoip/releases/download/latest/GeoLite2-ASN.mmdb',
+    geoip: '',
+    geosite: '',
+    mmdb: '',
+    asn: '',
   },
   'global-ua': 'chrome',
   profile: {
@@ -56,14 +66,14 @@ export const AdvancedConfigDefaults = (): ProfileType['advancedConfig'] => ({
 
 export const TunConfigDefaults = (): ProfileType['tunConfig'] => ({
   enable: false,
-  stack: 'Mixed',
+  stack: TunStack.Mixed,
   'auto-route': true,
   'route-address': [],
   'route-exclude-address': [],
   'auto-detect-interface': true,
   'dns-hijack': ['any:53'],
   device: '',
-  mtu: 9000,
+  mtu: 0,
   'strict-route': true,
   'endpoint-independent-nat': false,
 })
@@ -110,16 +120,20 @@ export const DnsConfigDefaults = (): ProfileType['dnsConfig'] => ({
   hosts: {},
 })
 
-export const ProxyGroupsConfigDefaults = (
-  ids: readonly [string, string, string, string, string],
-): ProfileType['proxyGroupsConfig'] => {
+export const ProxyGroupsConfigDefaults = (): ProfileType['proxyGroupsConfig'] => {
   return [
     {
-      id: ids[0],
+      id: DefaultOutboundIds.Select,
       name: t('kernel.proxyGroups.built-in.select'),
       type: ProxyGroup.Select,
-      proxies: [{ id: ids[1], type: 'Built-In', name: t('kernel.proxyGroups.built-in.auto') }],
-      url: 'https://www.gstatic.com/generate_204',
+      proxies: [
+        {
+          id: DefaultOutboundIds.Urltest,
+          type: 'Built-In',
+          name: t('kernel.proxyGroups.built-in.auto'),
+        },
+      ],
+      url: '',
       interval: 300,
       strategy: 'consistent-hashing',
       use: [],
@@ -132,11 +146,11 @@ export const ProxyGroupsConfigDefaults = (
       icon: '',
     },
     {
-      id: ids[1],
+      id: DefaultOutboundIds.Urltest,
       name: t('kernel.proxyGroups.built-in.auto'),
       type: ProxyGroup.UrlTest,
       proxies: [],
-      url: 'https://www.gstatic.com/generate_204',
+      url: DefaultTestURL,
       interval: 300,
       strategy: 'consistent-hashing',
       use: [],
@@ -149,14 +163,14 @@ export const ProxyGroupsConfigDefaults = (
       icon: '',
     },
     {
-      id: ids[2],
+      id: DefaultOutboundIds.Direct,
       name: t('kernel.proxyGroups.built-in.direct'),
       type: ProxyGroup.Select,
       proxies: [
         { id: 'DIRECT', type: 'Built-In', name: 'DIRECT' },
         { id: 'REJECT', type: 'Built-In', name: 'REJECT' },
       ],
-      url: 'https://www.gstatic.com/generate_204',
+      url: '',
       interval: 300,
       strategy: 'consistent-hashing',
       use: [],
@@ -169,14 +183,14 @@ export const ProxyGroupsConfigDefaults = (
       icon: '',
     },
     {
-      id: ids[3],
+      id: DefaultOutboundIds.Block,
       name: t('kernel.proxyGroups.built-in.reject'),
       type: ProxyGroup.Select,
       proxies: [
         { id: 'REJECT', type: 'Built-In', name: 'REJECT' },
         { id: 'DIRECT', type: 'Built-In', name: 'DIRECT' },
       ],
-      url: 'https://www.gstatic.com/generate_204',
+      url: '',
       interval: 300,
       strategy: 'consistent-hashing',
       use: [],
@@ -189,14 +203,65 @@ export const ProxyGroupsConfigDefaults = (
       icon: '',
     },
     {
-      id: ids[4],
+      id: DefaultOutboundIds.Fallback,
       name: t('kernel.proxyGroups.built-in.fallback'),
       type: ProxyGroup.Select,
       proxies: [
-        { id: ids[0], type: 'Built-In', name: t('kernel.proxyGroups.built-in.select') },
-        { id: ids[2], type: 'Built-In', name: t('kernel.proxyGroups.built-in.direct') },
+        {
+          id: DefaultOutboundIds.Select,
+          type: 'Built-In',
+          name: t('kernel.proxyGroups.built-in.select'),
+        },
+        {
+          id: DefaultOutboundIds.Direct,
+          type: 'Built-In',
+          name: t('kernel.proxyGroups.built-in.direct'),
+        },
       ],
-      url: 'https://www.gstatic.com/generate_204',
+      url: '',
+      interval: 300,
+      strategy: 'consistent-hashing',
+      use: [],
+      tolerance: 150,
+      lazy: true,
+      'disable-udp': false,
+      filter: '',
+      'exclude-filter': '',
+      hidden: false,
+      icon: '',
+    },
+    {
+      id: DefaultOutboundIds.Global,
+      name: 'GLOBAL',
+      type: ProxyGroup.Select,
+      proxies: [
+        {
+          id: DefaultOutboundIds.Select,
+          type: 'Built-In',
+          name: t('kernel.proxyGroups.built-in.select'),
+        },
+        {
+          id: DefaultOutboundIds.Urltest,
+          type: 'Built-In',
+          name: t('kernel.proxyGroups.built-in.auto'),
+        },
+        {
+          id: DefaultOutboundIds.Direct,
+          type: 'Built-In',
+          name: t('kernel.proxyGroups.built-in.direct'),
+        },
+        {
+          id: DefaultOutboundIds.Block,
+          type: 'Built-In',
+          name: t('kernel.proxyGroups.built-in.reject'),
+        },
+        {
+          id: DefaultOutboundIds.Fallback,
+          type: 'Built-In',
+          name: t('kernel.proxyGroups.built-in.fallback'),
+        },
+      ],
+      url: '',
       interval: 300,
       strategy: 'consistent-hashing',
       use: [],
@@ -211,9 +276,7 @@ export const ProxyGroupsConfigDefaults = (
   ]
 }
 
-export const RulesConfigDefaults = (
-  ids: readonly [string, string, string, string, string],
-): ProfileType['rulesConfig'] => [
+export const RulesConfigDefaults = (): ProfileType['rulesConfig'] => [
   {
     id: RuleType.InsertionPoint,
     type: RuleType.InsertionPoint,
@@ -233,13 +296,13 @@ export const RulesConfigDefaults = (
     type: RuleType.Logic,
     enable: true,
     payload: 'AND,((DST-PORT,443),(NETWORK,udp))',
-    proxy: ids[3],
+    proxy: DefaultOutboundIds.Block,
     'no-resolve': false,
     'ruleset-name': '',
     'ruleset-type': 'file',
     'ruleset-behavior': RulesetBehavior.Domain,
     'ruleset-format': RulesetFormat.Mrs,
-    'ruleset-proxy': ids[2],
+    'ruleset-proxy': DefaultOutboundIds.Direct,
     'ruleset-interval': 0,
   },
   {
@@ -248,13 +311,13 @@ export const RulesConfigDefaults = (
     enable: true,
     payload:
       'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/category-ads-all.mrs',
-    proxy: ids[3],
+    proxy: DefaultOutboundIds.Block,
     'no-resolve': false,
     'ruleset-name': 'category-ads-all',
     'ruleset-type': 'http',
     'ruleset-behavior': RulesetBehavior.Domain,
     'ruleset-format': RulesetFormat.Mrs,
-    'ruleset-proxy': ids[2],
+    'ruleset-proxy': DefaultOutboundIds.Direct,
     'ruleset-interval': 0,
   },
   {
@@ -263,13 +326,13 @@ export const RulesConfigDefaults = (
     enable: true,
     payload:
       'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geoip/private.mrs',
-    proxy: ids[2],
+    proxy: DefaultOutboundIds.Direct,
     'no-resolve': true,
     'ruleset-name': 'GEOIP-Private',
     'ruleset-type': 'http',
     'ruleset-behavior': RulesetBehavior.Ipcidr,
     'ruleset-format': RulesetFormat.Mrs,
-    'ruleset-proxy': ids[2],
+    'ruleset-proxy': DefaultOutboundIds.Direct,
     'ruleset-interval': 0,
   },
   {
@@ -277,13 +340,13 @@ export const RulesConfigDefaults = (
     type: RuleType.RuleSet,
     enable: true,
     payload: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geoip/cn.mrs',
-    proxy: ids[2],
+    proxy: DefaultOutboundIds.Direct,
     'no-resolve': true,
     'ruleset-name': 'GEOIP-CN',
     'ruleset-type': 'http',
     'ruleset-behavior': RulesetBehavior.Ipcidr,
     'ruleset-format': RulesetFormat.Mrs,
-    'ruleset-proxy': ids[2],
+    'ruleset-proxy': DefaultOutboundIds.Direct,
     'ruleset-interval': 0,
   },
   {
@@ -292,13 +355,13 @@ export const RulesConfigDefaults = (
     enable: true,
     payload:
       'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/private.mrs',
-    proxy: ids[2],
+    proxy: DefaultOutboundIds.Direct,
     'no-resolve': false,
     'ruleset-name': 'GEOSITE-Private',
     'ruleset-type': 'http',
     'ruleset-behavior': RulesetBehavior.Domain,
     'ruleset-format': RulesetFormat.Mrs,
-    'ruleset-proxy': ids[2],
+    'ruleset-proxy': DefaultOutboundIds.Direct,
     'ruleset-interval': 0,
   },
   {
@@ -306,13 +369,13 @@ export const RulesConfigDefaults = (
     type: RuleType.RuleSet,
     enable: true,
     payload: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/cn.mrs',
-    proxy: ids[2],
+    proxy: DefaultOutboundIds.Direct,
     'no-resolve': false,
     'ruleset-name': 'GEOSITE-CN',
     'ruleset-type': 'http',
     'ruleset-behavior': RulesetBehavior.Domain,
     'ruleset-format': RulesetFormat.Mrs,
-    'ruleset-proxy': ids[2],
+    'ruleset-proxy': DefaultOutboundIds.Direct,
     'ruleset-interval': 0,
   },
   {
@@ -321,13 +384,13 @@ export const RulesConfigDefaults = (
     enable: true,
     payload:
       'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/geolocation-!cn.mrs',
-    proxy: ids[0],
+    proxy: DefaultOutboundIds.Select,
     'no-resolve': false,
     'ruleset-name': 'geolocation-!cn',
     'ruleset-type': 'http',
     'ruleset-behavior': RulesetBehavior.Domain,
     'ruleset-format': RulesetFormat.Mrs,
-    'ruleset-proxy': ids[2],
+    'ruleset-proxy': DefaultOutboundIds.Direct,
     'ruleset-interval': 0,
   },
   {
@@ -335,13 +398,13 @@ export const RulesConfigDefaults = (
     type: RuleType.Match,
     enable: true,
     payload: '',
-    proxy: ids[4],
+    proxy: DefaultOutboundIds.Fallback,
     'no-resolve': false,
     'ruleset-name': '',
     'ruleset-type': 'file',
     'ruleset-behavior': RulesetBehavior.Domain,
     'ruleset-format': RulesetFormat.Mrs,
-    'ruleset-proxy': ids[2],
+    'ruleset-proxy': DefaultOutboundIds.Direct,
     'ruleset-interval': 0,
   },
 ]

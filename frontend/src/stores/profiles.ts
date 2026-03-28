@@ -226,7 +226,6 @@ export const useProfilesStore = defineStore('profiles', () => {
   }
 
   const getProfileTemplate = (name = ''): ProfileType => {
-    const ids = [sampleID(), sampleID(), sampleID(), sampleID(), sampleID()] as const
     return {
       id: sampleID(),
       name: name,
@@ -234,8 +233,8 @@ export const useProfilesStore = defineStore('profiles', () => {
       advancedConfig: Defaults.AdvancedConfigDefaults(),
       tunConfig: Defaults.TunConfigDefaults(),
       dnsConfig: Defaults.DnsConfigDefaults(),
-      proxyGroupsConfig: Defaults.ProxyGroupsConfigDefaults(ids),
-      rulesConfig: Defaults.RulesConfigDefaults(ids),
+      proxyGroupsConfig: Defaults.ProxyGroupsConfigDefaults(),
+      rulesConfig: Defaults.RulesConfigDefaults(),
       sniffer: Defaults.SnifferDefaults(),
       mixinConfig: Defaults.MixinConfigDefaults(),
       scriptConfig: Defaults.ScriptConfigDefaults(),

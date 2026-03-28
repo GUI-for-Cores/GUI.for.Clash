@@ -346,6 +346,12 @@ export const generateConfig = async (originalProfile: ProfileType) => {
     generateProxyGroup(proxyGruoup, profile.proxyGroupsConfig),
   )
 
+  const global = config['proxy-groups'].find((v: Recordable) => v.name === 'GLOBAL')
+  if (global) {
+    const groups = config['proxy-groups'].map((v: Recordable) => v.name)
+    global.proxies.sort((a: string, b: string) => groups.indexOf(a) - groups.indexOf(b))
+  }
+
   config['rules'] = profile.rulesConfig
     .filter(({ type, enable }) => {
       if (type === RuleType.InsertionPoint || !enable) {
