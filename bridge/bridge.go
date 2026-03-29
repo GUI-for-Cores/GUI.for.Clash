@@ -28,7 +28,7 @@ var Env = &EnvResult{
 	FromTaskSch:  false,
 	WebviewPath:  "",
 	AppName:      "",
-	AppVersion:   "v1.21.1",
+	AppVersion:   "v1.21.0",
 	BasePath:     "",
 	OS:           sysruntime.GOOS,
 	ARCH:         sysruntime.GOARCH,
@@ -107,8 +107,11 @@ func (a *App) RestartApp() FlagResult {
 	return FlagResult{true, "Success"}
 }
 
-func (a *App) GetEnv() EnvResult {
-	log.Printf("GetEnv")
+func (a *App) GetEnv(key string) any {
+	log.Printf("GetEnv: %s", key)
+	if key != "" {
+		return os.Getenv(key)
+	}
 	return EnvResult{
 		AppName:      Env.AppName,
 		AppVersion:   Env.AppVersion,
