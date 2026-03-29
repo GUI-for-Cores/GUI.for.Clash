@@ -191,8 +191,8 @@ const handleRequestWithCancel = async () => {
   console.log(status, body, headers)
 }
 
-const handleNotify = (type: string) => {
-  Notify('Notification', 'test', type)
+const handleNotify = () => {
+  Notify('Notification', 'test')
 }
 </script>
 
@@ -257,9 +257,9 @@ const handleNotify = (type: string) => {
 
   <h2>Notify</h2>
   <div>
-    <Button @click="handleNotify('success')">Success</Button>
-    <Button @click="handleNotify('error')">Error</Button>
-    <Button @click="handleNotify('')">Normal</Button>
+    <Button @click="handleNotify()">Success</Button>
+    <Button @click="handleNotify()">Error</Button>
+    <Button @click="handleNotify()">Normal</Button>
   </div>
 </template>
 
