@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, inject, type Ref, computed, useTemplateRef, h, defineAsyncComponent } from 'vue'
+import { ref, inject, type Ref, computed, useTemplateRef, h } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { useBool } from '@/hooks'
@@ -8,6 +8,15 @@ import { deepClone, generateConfig, stringifyNoFolding, message, alert } from '@
 
 import Button from '@/components/Button/index.vue'
 import Dropdown from '@/components/Dropdown/index.vue'
+
+import AdvancedConfig from './AdvancedConfig.vue'
+import DnsConfig from './DnsConfig.vue'
+import GeneralConfig from './GeneralConfig.vue'
+import MixinAndScript from './MixinAndScriptConfig.vue'
+import ProxyGroupsConfig from './ProxyGroupsConfig.vue'
+import RulesConfig from './RulesConfig.vue'
+import TunConfig from './TunConfig.vue'
+import SnifferConfig from './SnifferConfig.vue'
 
 interface Props {
   id?: string
@@ -30,15 +39,6 @@ const props = withDefaults(defineProps<Props>(), {
   isUpdate: false,
   step: Step.Name,
 })
-
-const AdvancedConfig = defineAsyncComponent(() => import('./AdvancedConfig.vue'))
-const DnsConfig = defineAsyncComponent(() => import('./DnsConfig.vue'))
-const GeneralConfig = defineAsyncComponent(() => import('./GeneralConfig.vue'))
-const MixinAndScript = defineAsyncComponent(() => import('./MixinAndScriptConfig.vue'))
-const ProxyGroupsConfig = defineAsyncComponent(() => import('./ProxyGroupsConfig.vue'))
-const RulesConfig = defineAsyncComponent(() => import('./RulesConfig.vue'))
-const TunConfig = defineAsyncComponent(() => import('./TunConfig.vue'))
-const SnifferConfig = defineAsyncComponent(() => import('./SnifferConfig.vue'))
 
 const { t } = useI18n()
 const groupsRef = useTemplateRef<typeof ProxyGroupsConfig>('groupsRef')
