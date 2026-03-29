@@ -3,8 +3,8 @@ import { ref, watch } from 'vue'
 
 import { GetEnv } from '@/bridge'
 import { useAppSettingsStore, useKernelApiStore } from '@/stores'
-import { updateTrayAndMenus } from '@/utils'
-import { SetSystemProxy, GetSystemProxy } from '@/utils'
+import { updateTrayAndMenus, SetSystemProxy, GetSystemProxy } from '@/utils'
+import { OS } from '@/enums/app'
 
 export const useEnvStore = defineStore('env', () => {
   const appSettings = useAppSettingsStore()
@@ -27,7 +27,7 @@ export const useEnvStore = defineStore('env', () => {
     const appPath = `${_env.basePath}/${_env.appName}`
     env.value = {
       ..._env,
-      appPath: _env.os === 'windows' ? appPath.replaceAll('/', '\\') : appPath,
+      appPath: _env.os === OS.Windows ? appPath.replaceAll('/', '\\') : appPath,
     }
   }
 

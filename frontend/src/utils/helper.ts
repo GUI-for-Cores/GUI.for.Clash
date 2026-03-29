@@ -22,6 +22,7 @@ import {
   APP_TITLE,
   getTaskSchXmlString,
 } from '@/utils'
+import { OS } from '@/enums/app'
 
 // Permissions Helper
 export const SwitchPermissions = async (enable: boolean) => {
@@ -72,11 +73,10 @@ export const CheckPermissions = async () => {
 export const GrantTUNPermission = async (path: string) => {
   const { os } = useEnvStore().env
   const absPath = await AbsolutePath(path)
-  if (os === 'darwin') {
-    const osaScript = `chown root:admin ${absPath}\nchmod +sx ${absPath}`
-    const bashScript = `osascript -e 'do shell script "${osaScript}" with administrator privileges'`
-    await Exec('bash', ['-c', bashScript])
-  } else if (os === 'linux') {
+  if (os === OS.Darwin) {
+    const command = `chown root:admin "${absPath}"; chmod +sx "${absPath}"`
+    await RunWithOsaScript(command, [], { admin: true, wait: true })
+  } else if (os === OS.Linux) {
     await Exec('pkexec', [
       'setcap',
       'cap_net_bind_service,cap_net_admin,cap_dac_override=+ep',
@@ -85,10 +85,30 @@ export const GrantTUNPermission = async (path: string) => {
   }
 }
 
+export const RunWithOsaScript = async (
+  path: string,
+  args: string[] = [],
+  options: { admin?: boolean; wait?: boolean } = {},
+) => {
+  const { admin = false, wait = true, ...others } = options
+  const escapedArgs = args.map((arg) => `'${arg.replace(/'/g, "'\\''")}'`).join(' ')
+  let shellCmd = `${path} ${escapedArgs}`.trim()
+  if (!wait) {
+    shellCmd += ' > /dev/null 2>&1 &'
+  }
+  const escapedShellCmd = shellCmd.replace(/\\/g, '\\\\').replace(/"/g, '\\"')
+  let appleScript = `do shell script "${escapedShellCmd}"`
+  if (admin) {
+    appleScript += ' with administrator privileges'
+  }
+  const osaArgs = ['-e', appleScript]
+  return await Exec('osascript', osaArgs, others)
+}
+
 export const RunWithPowerShell = async (
   path: string,
   args: string[] = [],
-  options: { admin?: boolean; hidden?: boolean; wait?: boolean },
+  options: { admin?: boolean; hidden?: boolean; wait?: boolean } = {},
 ) => {
   const { admin = false, hidden = false, wait = true, ...others } = options
   const psArgs: string[] = []
@@ -107,7 +127,7 @@ export const RunWithPowerShell = async (
     command += ' -Wait'
   }
   psArgs.push('-NoProfile', '-Command', command)
-  await Exec('powershell', psArgs, { Convert: true, ...others })
+  return await Exec('powershell', psArgs, { Convert: true, ...others })
 }
 
 // SystemProxy Helper
@@ -120,9 +140,9 @@ export const SetSystemProxy = async (
   const { os } = useEnvStore().env
 
   const handler = {
-    windows: setWindowsSystemProxy,
-    darwin: setDarwinSystemProxy,
-    linux: setLinuxSystemProxy,
+    [OS.Windows]: setWindowsSystemProxy,
+    [OS.Darwin]: setDarwinSystemProxy,
+    [OS.Linux]: setLinuxSystemProxy,
   }[os]
 
   await handler?.(server, enable, proxyType, bypass)
@@ -359,7 +379,7 @@ async function setLinuxSystemProxy(
 export const GetSystemProxy = async () => {
   const { os } = useEnvStore().env
   try {
-    if (os === 'windows') {
+    if (os === OS.Windows) {
       const out1 = await Exec(
         'reg',
         [
@@ -394,7 +414,7 @@ export const GetSystemProxy = async () => {
       return match ? (match?.[1]?.startsWith('socks') ? match[1] : 'http://' + match[1]) : ''
     }
 
-    if (os === 'darwin') {
+    if (os === OS.Darwin) {
       const out = await Exec('scutil', ['--proxy'])
       const regex =
         /(?:HTTPEnable|HTTPPort|HTTPProxy|SOCKSEnable|SOCKSPort|SOCKSProxy)\s*:\s*([^}\n]+)/g
@@ -418,7 +438,7 @@ export const GetSystemProxy = async () => {
       return ''
     }
 
-    if (os === 'linux') {
+    if (os === OS.Linux) {
       const desktop = (await Exec('sh', ['-c', 'echo $XDG_CURRENT_DESKTOP'])).trim()
       if (desktop.includes('KDE')) {
         const out = await Exec('kreadconfig5', [
@@ -489,7 +509,7 @@ export const GetSystemProxy = async () => {
 export const GetSystemProxyBypass = async () => {
   const { os } = useEnvStore().env
 
-  if (os === 'windows') {
+  if (os === OS.Windows) {
     const out = await ignoredError(Exec, 'reg', [
       'query',
       'HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings',
@@ -500,7 +520,7 @@ export const GetSystemProxyBypass = async () => {
     return out.match(/ProxyOverride\s+REG_SZ\s+(\S+)/)?.[1] || ''
   }
 
-  if (os === 'darwin') {
+  if (os === OS.Darwin) {
     async function _get(device: string) {
       const out = await ignoredError(Exec, 'networksetup', ['-getproxybypassdomains', device])
       if (!out) return []
@@ -510,7 +530,7 @@ export const GetSystemProxyBypass = async () => {
     return res.flat().join(';')
   }
 
-  if (os === 'linux') {
+  if (os === OS.Linux) {
     const desktop = (await Exec('sh', ['-c', 'echo $XDG_CURRENT_DESKTOP'])).trim()
     if (desktop.includes('KDE')) {
       const out = await ignoredError(Exec, 'kreadconfig5', [
@@ -574,18 +594,18 @@ export const GetSystemOrKernelProxy = async () => {
 export const IsAutoStartEnabled = async () => {
   const { os } = useEnvStore().env
   let isAutoStart = false
-  if (os === 'windows') {
+  if (os === OS.Windows) {
     isAutoStart = await Exec('Schtasks', ['/Query', '/TN', APP_TITLE, '/XML'], { Convert: true })
       .then(() => true)
       .catch(() => false)
-  } else if (os === 'darwin') {
+  } else if (os === OS.Darwin) {
     isAutoStart = await Exec('osascript', [
       '-e',
       `tell application "System Events" to get exists login item "${APP_TITLE}"`,
     ])
       .then((res) => res.includes('true'))
       .catch(() => false)
-  } else if (os === 'linux') {
+  } else if (os === OS.Linux) {
     // TODO
   }
   return isAutoStart
@@ -593,7 +613,7 @@ export const IsAutoStartEnabled = async () => {
 
 export const EnableAutoStart = async (delay = 10) => {
   const { os, appPath, basePath, isPrivileged } = useEnvStore().env
-  if (os === 'windows') {
+  if (os === OS.Windows) {
     const xmlPath = await AbsolutePath('data/.cache/tasksch.xml')
     const xmlContent = getTaskSchXmlString(appPath, delay)
     await WriteFile(xmlPath, xmlContent)
@@ -602,28 +622,28 @@ export const EnableAutoStart = async (delay = 10) => {
       admin: true,
       hidden: true,
     })
-  } else if (os === 'darwin') {
+  } else if (os === OS.Darwin) {
     const path = basePath.replace('/Contents/MacOS', '')
     await Exec('osascript', [
       '-e',
       `tell application "System Events" to make login item at end with properties {name:"${APP_TITLE}", path:"${path}"}`,
     ])
-  } else if (os === 'linux') {
+  } else if (os === OS.Linux) {
     // TODO
   }
 }
 
 export const DisableAutoStart = async () => {
   const { os, isPrivileged } = useEnvStore().env
-  if (os === 'windows') {
+  if (os === OS.Windows) {
     const fn = isPrivileged ? Exec : RunWithPowerShell
     await fn('SchTasks', ['/Delete', '/F', '/TN', APP_TITLE], { admin: true, hidden: true })
-  } else if (os === 'darwin') {
+  } else if (os === OS.Darwin) {
     await Exec('osascript', [
       '-e',
       `tell application "System Events" to delete login item "${APP_TITLE}"`,
     ])
-  } else if (os === 'linux') {
+  } else if (os === OS.Linux) {
     // TODO
   }
 }
@@ -769,7 +789,7 @@ export const exitApp = async () => {
 export const getKernelFileName = (isAlpha = false) => {
   const envStore = useEnvStore()
   const { os } = envStore.env
-  const fileSuffix = { windows: '.exe', linux: '', darwin: '' }[os]
+  const fileSuffix = { [OS.Windows]: '.exe', [OS.Linux]: '', [OS.Darwin]: '' }[os]
   const alpha = isAlpha ? '-alpha' : ''
   return `mihomo${alpha}${fileSuffix}`
 }
@@ -778,7 +798,7 @@ export const getKernelAssetFileName = (version: string, cpuLevel: 'v1' | 'v2' | 
   const envStore = useEnvStore()
   const { os, arch } = envStore.env
   const cpuLevelFlag = arch === 'amd64' ? `-${cpuLevel}` : ''
-  const suffix = { windows: '.zip', linux: '.gz', darwin: '.gz' }[os]
+  const suffix = { [OS.Windows]: '.zip', [OS.Linux]: '.gz', [OS.Darwin]: '.gz' }[os]
   return `mihomo-${os}-${arch}${cpuLevelFlag}-${version}${suffix}`
 }
 

@@ -1,3 +1,4 @@
+import { OS } from '@/enums/app'
 import {
   ClashMode,
   LogLevel,
@@ -268,7 +269,7 @@ export const DefaultConnections = () => {
 
 export const DefaultCoreConfig = () => {
   const { env } = useEnvStore()
-  const separator = env.os === 'windows' ? ';' : ':'
+  const separator = env.os === OS.Windows ? ';' : ':'
 
   return {
     env: {
