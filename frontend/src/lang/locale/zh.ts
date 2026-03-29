@@ -169,7 +169,7 @@ export default {
       interval: '间隔',
       tolerance: '容差',
       url: '测速链接',
-      filter: '过滤',
+      filter: '包含',
       'exclude-filter': '排除',
       hidden: '隐藏',
       icon: '图标',

@@ -231,7 +231,7 @@ subscribesStore.subscribes.forEach(async ({ id, name, proxies }) => {
   <div v-draggable="[groups, DraggableOptions]">
     <Card v-for="(g, index) in groups" :key="g.id" class="mb-2">
       <div class="flex items-center py-2">
-        <div class="font-bold flex items-center">
+        <div class="font-bold flex items-center" style="min-width: 90px">
           <img v-if="g.icon" :src="g.icon" class="w-18 h-18 mr-4" />
           <span v-if="hasLost(g)" class="warn cursor-pointer" @click="showLost"> [ ! ] </span>
           <span v-if="needToAdd(g)" class="error cursor-pointer" @click="showNeedToAdd">
@@ -293,8 +293,8 @@ subscribesStore.subscribes.forEach(async ({ id, name, proxies }) => {
       <Input v-model="fields.name" autofocus />
     </div>
     <div class="form-item">
-      {{ t('kernel.proxyGroups.icon') }}
-      <Input v-model="fields.icon" clearable />
+      {{ t('kernel.proxyGroups.type.name') }}
+      <Radio v-model="fields.type" :options="GroupsTypeOptions" />
     </div>
     <div class="form-item">
       {{ t('kernel.proxyGroups.hidden') }}
@@ -309,8 +309,11 @@ subscribesStore.subscribes.forEach(async ({ id, name, proxies }) => {
       <Input v-model="fields['exclude-filter']" placeholder="keyword1|keyword2" />
     </div>
     <div class="form-item">
-      {{ t('kernel.proxyGroups.type.name') }}
-      <Radio v-model="fields.type" :options="GroupsTypeOptions" />
+      <div class="flex items-center gap-8">
+        {{ t('kernel.proxyGroups.icon') }}
+        <img v-if="fields.icon" :src="fields.icon" class="w-18 h-18" />
+      </div>
+      <Input v-model="fields.icon" clearable placeholder="https://" />
     </div>
     <div class="form-item">
       {{ t('kernel.proxyGroups.disable-udp') }}
