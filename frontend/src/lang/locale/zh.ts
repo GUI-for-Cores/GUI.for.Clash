@@ -642,6 +642,7 @@ export default {
       grant: '授予特权',
       openTip: '打开文件所在位置',
       linkTip: '在GitHub上查看发布版本',
+      update: '立即更新',
       risk: '该版本非GitHub自动构建，有安全风险。',
       stillDownload: '仍要下载',
       rollbackTip: '回滚到上一版本',

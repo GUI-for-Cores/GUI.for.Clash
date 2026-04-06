@@ -30,6 +30,8 @@ const {
   remoteVersion,
   remoteVersionLoading,
   downloading,
+  downloadProgress,
+  cancelDownload,
   refreshLocalVersion,
   refreshRemoteVersion,
   downloadCore,
@@ -56,8 +58,8 @@ const handleClearCoreCache = async () => {
 </script>
 
 <template>
-  <div class="flex items-center px-4 my-12">
-    <div class="mr-8 font-bold text-16">
+  <div class="flex items-center">
+    <div class="px-8 py-12 text-18 font-bold">
       {{ isAlpha ? 'Alpha' : t('settings.kernel.name') }}
     </div>
     <Button
@@ -105,41 +107,69 @@ const handleClearCoreCache = async () => {
       @click="emit('config')"
     />
   </div>
-  <div class="flex items-center py-8 min-h-42">
-    <Tag class="cursor-pointer" @click="refreshLocalVersion(true)">
-      {{ t('kernel.local') }}
-      :
-      {{ localVersionLoading ? 'Loading' : localVersion || t('kernel.notFound') }}
-    </Tag>
-    <Tag class="cursor-pointer" @click="refreshRemoteVersion(true)">
-      {{ t('kernel.remote') }}
-      :
-      {{ remoteVersionLoading ? 'Loading' : remoteVersion }}
-    </Tag>
-    <Dropdown v-show="!localVersionLoading && !remoteVersionLoading && updatable" :delay="500">
-      <Button :loading="downloading" size="small" type="primary" @click="downloadCore()">
-        {{ t('kernel.update') }} : {{ remoteVersion }}
+  <Card>
+    <div v-if="versionDetail" class="text-12 pt-8 break-all line-clamp-2">
+      {{ versionDetail }}
+    </div>
+    <div class="flex items-center min-h-38">
+      <Tag
+        :color="updatable ? 'orange' : 'default'"
+        class="cursor-pointer"
+        @click="refreshLocalVersion(true)"
+      >
+        {{ t('kernel.local') }}
+        :
+        {{ localVersionLoading ? 'Loading' : localVersion || t('kernel.notFound') }}
+      </Tag>
+      <Tag
+        :color="updatable ? 'purple' : 'default'"
+        class="cursor-pointer"
+        @click="refreshRemoteVersion(true)"
+      >
+        {{ t('kernel.remote') }}
+        :
+        {{ remoteVersionLoading ? 'Loading' : remoteVersion }}
+      </Tag>
+      <Dropdown
+        v-show="!localVersionLoading && !remoteVersionLoading && updatable"
+        :delay="500"
+        class="ml-auto"
+      >
+        <Button
+          :loading="downloading"
+          icon="sparkle"
+          size="small"
+          type="primary"
+          @click="downloadCore()"
+        >
+          {{ downloading ? downloadProgress : t('settings.kernel.update') }}
+        </Button>
+        <template v-if="envStore.env.arch === 'amd64'" #overlay>
+          <div v-if="!downloading" class="flex flex-col gap-4 min-w-64 p-4">
+            <Button type="text" @click="downloadCore('v1')"> v1 </Button>
+            <Button type="text" @click="downloadCore('v2')"> v2 </Button>
+            <Button type="text" @click="downloadCore('v3')"> v3(default) </Button>
+          </div>
+        </template>
+      </Dropdown>
+      <Button
+        v-if="downloading && cancelDownload"
+        icon="close"
+        size="small"
+        type="primary"
+        class="ml-2"
+        @click="cancelDownload"
+      />
+      <Button
+        v-show="!localVersionLoading && !remoteVersionLoading && restartable"
+        :loading="kernelApiStore.restarting"
+        size="small"
+        type="primary"
+        class="ml-auto"
+        @click="restartCore"
+      >
+        {{ t('kernel.restart') }}
       </Button>
-      <template v-if="envStore.env.arch === 'amd64'" #overlay>
-        <div v-if="!downloading" class="flex flex-col gap-4 min-w-64 p-4">
-          <Button type="text" @click="downloadCore('v1')"> v1 </Button>
-          <Button type="text" @click="downloadCore('v2')"> v2 </Button>
-          <Button type="text" @click="downloadCore('v3')"> v3(default) </Button>
-        </div>
-      </template>
-    </Dropdown>
-
-    <Button
-      v-show="!localVersionLoading && !remoteVersionLoading && restartable"
-      :loading="kernelApiStore.restarting"
-      size="small"
-      type="primary"
-      @click="restartCore"
-    >
-      {{ t('kernel.restart') }}
-    </Button>
-  </div>
-  <div class="text-12 px-4 py-8 break-all">
-    {{ versionDetail }}
-  </div>
+    </div>
+  </Card>
 </template>

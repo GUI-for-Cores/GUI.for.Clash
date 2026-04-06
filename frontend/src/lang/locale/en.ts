@@ -643,6 +643,7 @@ export default {
       grant: 'Grant Privileges',
       openTip: 'Open File Location',
       linkTip: 'View on GitHub Releases',
+      update: 'Update',
       risk: 'This version is not auto-built by GitHub and may pose a security risk.',
       stillDownload: 'Still download',
       rollbackTip: 'Rollback to the previous version',
