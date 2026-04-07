@@ -135,7 +135,6 @@ export const useAppStore = defineStore('app', () => {
       ).finally(destroy)
 
       const { appName, os, basePath } = envStore.env
-      const suffix = { [OS.Windows]: '.exe', [OS.Linux]: '' }[os]
 
       if (os === OS.Darwin) {
         const cur_pkg = basePath.replace('/Contents/MacOS', '')
@@ -148,6 +147,7 @@ export const useAppStore = defineStore('app', () => {
         await RemoveFile(tmp_dir)
         await RemoveFile(cur_pkg_bak)
       } else {
+        const suffix = { [OS.Windows]: '.exe', [OS.Linux]: '' }[os]
         await MoveFile(appName, appName + '.bak')
         await UnzipZIPFile(downloadCacheFile, '.')
         await MoveFile(APP_TITLE + suffix, appName)
