@@ -139,7 +139,7 @@ export const useSubscribesStore = defineStore('subscribes', () => {
     proxies = await pluginStore.onSubscribeTrigger(proxies, s)
 
     if (proxies.some((proxy) => proxy.base64)) {
-      throw 'You need to install the [节点转换] plugin first'
+      throw 'You need to add the [节点转换] plugin first'
     }
 
     if (s.type !== 'Manual') {
