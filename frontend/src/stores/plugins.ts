@@ -777,7 +777,7 @@ export const usePluginsStore = defineStore('plugins', () => {
     const exitCode = await runPluginEvent(id, event, args)
     if (isNumber(exitCode) && exitCode !== plugin.status) {
       plugin.status = exitCode
-      editPlugin(id, plugin)
+      await updatePluginState(id, plugin)
     }
     return exitCode
   }
