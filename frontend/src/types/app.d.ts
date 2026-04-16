@@ -62,6 +62,7 @@ type AppSettings = {
   scheduledtasksView: View
   windowStartState: WindowStartState
   webviewGpuPolicy: WebviewGpuPolicy
+  contentProtection: boolean
   width: number
   height: number
   exitOnClose: boolean
