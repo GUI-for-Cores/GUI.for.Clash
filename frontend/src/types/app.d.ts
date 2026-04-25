@@ -46,6 +46,7 @@ export interface MenuItem {
   children?: MenuItem[]
   hidden?: boolean
   checked?: boolean
+  checkable?: boolean
 }
 
 type AppSettings = {
