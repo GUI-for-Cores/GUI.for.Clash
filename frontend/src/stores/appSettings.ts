@@ -17,6 +17,7 @@ import {
   DefaultFontFamily,
   DefaultTestTimeout,
   DefaultTestURL,
+  DefaultPluginHubSources,
   UserFilePath,
 } from '@/constant/app'
 import { DefaultConnections, DefaultCoreConfig } from '@/constant/kernel'
@@ -91,6 +92,9 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
       main: undefined as any,
       alpha: undefined as any,
     },
+    plugins: {
+      sources: [],
+    },
     addPluginToMenu: false,
     addGroupToMenu: false,
     pluginSettings: {},
@@ -126,8 +130,10 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
     if (!settings.proxyBypassList) {
       settings.proxyBypassList = await GetSystemProxyBypass()
     }
-    if (typeof settings.contentProtection === 'undefined') {
-      settings.contentProtection = true
+    if (!settings.plugins) {
+      settings.plugins = {
+        sources: DefaultPluginHubSources(),
+      }
     }
 
     app.value = settings

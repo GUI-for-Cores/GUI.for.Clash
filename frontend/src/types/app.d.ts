@@ -101,6 +101,9 @@ type AppSettings = {
       args: string[]
     }
   }
+  plugins: {
+    sources: { enable: boolean; name: string; url: string }[]
+  }
   addPluginToMenu: boolean
   addGroupToMenu: boolean
   pluginSettings: Record<string, Record<string, any>>

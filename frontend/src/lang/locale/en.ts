@@ -527,6 +527,9 @@ export default {
     deprecated: 'Deprecated',
     newVersion: 'New',
     slogan: 'Make {0} work your way',
+    sourceConfig: {
+      name: 'Plugin Source',
+    },
   },
   scheduledtask: {
     name: 'Name',
