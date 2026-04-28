@@ -13,6 +13,7 @@ import {
   WriteFile,
 } from '@/bridge'
 import { CoreWorkingDirectory } from '@/constant/kernel'
+import { OS } from '@/enums/app'
 import { ProxyGroupType, RulesetBehavior, RulesetFormat } from '@/enums/kernel'
 import i18n from '@/lang'
 import {
@@ -32,7 +33,6 @@ import {
   APP_TITLE,
   getAutoStartConfiguration,
 } from '@/utils'
-import { OS } from '@/enums/app'
 
 // Permissions Helper
 export const SwitchPermissions = async (enable: boolean) => {

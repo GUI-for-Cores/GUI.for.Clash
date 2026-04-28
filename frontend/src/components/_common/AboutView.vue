@@ -3,6 +3,7 @@ import { useI18n } from 'vue-i18n'
 
 import logo from '@/assets/logo'
 import { BrowserOpenURL, ExitApp, RestartApp } from '@/bridge'
+import { OS } from '@/enums/app'
 import { useAppStore, useEnvStore } from '@/stores'
 import {
   APP_TITLE,
@@ -13,7 +14,6 @@ import {
   message,
   RunWithOsaScript,
 } from '@/utils'
-import { OS } from '@/enums/app'
 
 const { t } = useI18n()
 const envStore = useEnvStore()

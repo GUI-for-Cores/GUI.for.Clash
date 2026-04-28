@@ -303,11 +303,7 @@ const onSortUpdate = debounce(pluginsStore.savePlugins, 1000)
           <Button type="link" size="small" icon="more" />
           <template #overlay>
             <div class="flex flex-col gap-4 min-w-64 p-4">
-              <Button
-                :loading="p.updating"
-                type="text"
-                @click="handleUpdatePlugin(p)"
-              >
+              <Button :loading="p.updating" type="text" @click="handleUpdatePlugin(p)">
                 {{ t('common.update') }}
               </Button>
               <Button type="text" @click="handleDisablePlugin(p)">
@@ -324,12 +320,7 @@ const onSortUpdate = debounce(pluginsStore.savePlugins, 1000)
         </Dropdown>
 
         <template v-else>
-          <Button
-            :loading="p.updating"
-            type="text"
-            size="small"
-            @click="handleUpdatePlugin(p)"
-          >
+          <Button :loading="p.updating" type="text" size="small" @click="handleUpdatePlugin(p)">
             {{ t('common.update') }}
           </Button>
           <Button type="text" size="small" @click="handleDisablePlugin(p)">

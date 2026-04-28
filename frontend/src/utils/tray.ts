@@ -8,6 +8,7 @@ import {
 } from '@/bridge'
 import { ColorOptions, ThemeOptions } from '@/constant/app'
 import { BuiltInOutbound, ModeOptions } from '@/constant/kernel'
+import { OS } from '@/enums/app'
 import { ProxyGroupType } from '@/enums/kernel'
 import i18n from '@/lang'
 import {
@@ -27,7 +28,6 @@ import {
 } from '@/utils'
 
 import type { MenuItem } from '@/types/app'
-import { OS } from '@/enums/app'
 
 const getTrayIcons = () => {
   const envStore = useEnvStore()

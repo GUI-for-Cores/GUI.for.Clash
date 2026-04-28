@@ -15,8 +15,8 @@ import GeneralConfig from './GeneralConfig.vue'
 import MixinAndScript from './MixinAndScriptConfig.vue'
 import ProxyGroupsConfig from './ProxyGroupsConfig.vue'
 import RulesConfig from './RulesConfig.vue'
-import TunConfig from './TunConfig.vue'
 import SnifferConfig from './SnifferConfig.vue'
+import TunConfig from './TunConfig.vue'
 
 interface Props {
   id?: string

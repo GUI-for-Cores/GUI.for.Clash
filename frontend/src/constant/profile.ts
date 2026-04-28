@@ -3,6 +3,7 @@ import i18n from '@/lang'
 import { generateSecureKey, sampleID } from '@/utils'
 
 import type { ProfileType } from '@/stores'
+
 import { DefaultTestURL } from './app'
 
 const { t } = i18n.global
