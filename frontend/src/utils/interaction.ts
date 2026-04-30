@@ -1,7 +1,7 @@
 import { render, h, type VNode, nextTick } from 'vue'
 
 import i18n from '@/lang'
-import { APP_TITLE, sampleID } from '@/utils'
+import { APP_TITLE, normalizeErrorMessage, sampleID } from '@/utils'
 
 import ConfirmComp from '@/components/Confirm/index.vue'
 import MessageComp from '@/components/Message/index.vue'
@@ -56,7 +56,7 @@ class Message {
   }
 
   private buildMessage = (icon: MessageIcon) => {
-    return (content: string, duration = 3_000, onClose?: () => void) => {
+    return (content: unknown, duration = 3_000, onClose?: () => void) => {
       const id = sampleID()
       const dom = document.createElement('div')
 
@@ -74,7 +74,7 @@ class Message {
 
         const vnode = h(MessageComp, {
           icon,
-          content,
+          content: normalizeErrorMessage(content),
           onClose: () => {
             onClose?.()
             onDestroy()
@@ -99,11 +99,11 @@ class Message {
 
       return {
         id,
-        info: (content: string) => this.update(id, content, 'info'),
-        warn: (content: string) => this.update(id, content, 'warn'),
-        error: (content: string) => this.update(id, content, 'error'),
-        success: (content: string) => this.update(id, content, 'success'),
-        update: (content: string, icon?: MessageIcon) => this.update(id, content, icon),
+        info: (content: unknown) => this.update(id, content, 'info'),
+        warn: (content: unknown) => this.update(id, content, 'warn'),
+        error: (content: unknown) => this.update(id, content, 'error'),
+        success: (content: unknown) => this.update(id, content, 'success'),
+        update: (content: unknown, icon?: MessageIcon) => this.update(id, content, icon),
         destroy: onDestroy,
       }
     }
@@ -114,11 +114,11 @@ class Message {
   public error = this.buildMessage('error')
   public success = this.buildMessage('success')
 
-  public update = (id: string, content: string, icon?: MessageIcon) => {
+  public update = (id: string, content: unknown, icon?: MessageIcon) => {
     const instance = this.instances[id]
     if (instance) {
       icon && (instance.vnode.component!.props.icon = icon)
-      content && (instance.vnode.component!.props.content = content)
+      content && (instance.vnode.component!.props.content = normalizeErrorMessage(content))
     }
   }
 

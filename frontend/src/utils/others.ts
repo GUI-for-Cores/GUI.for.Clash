@@ -332,6 +332,12 @@ export const readonly = <T>(obj: T): T => {
   })
 }
 
+export const normalizeErrorMessage = (error: unknown) => {
+  if (typeof error === 'string') return error
+  if (error instanceof Error) return error.message
+  return String(error)
+}
+
 export const normalizeBase64 = (str: string): string => {
   const normalized = str.trim().replace(/\s+/g, '').replace(/-/g, '+').replace(/_/g, '/')
 
@@ -367,9 +373,9 @@ export const stringifyNoFolding = (content: any) => {
   return stringify(content, { lineWidth: 0, minContentWidth: 0 })
 }
 
-export const createTextMatcher = (include: string, exclude: string) => {
-  const includeRegex = include ? buildSmartRegExp(include) : null
-  const excludeRegex = exclude ? buildSmartRegExp(exclude) : null
+export const createTextMatcher = (include: string, exclude: string, flags = '') => {
+  const includeRegex = include ? buildSmartRegExp(include, flags) : null
+  const excludeRegex = exclude ? buildSmartRegExp(exclude, flags) : null
   return (text: string) => {
     const flag1 = includeRegex ? includeRegex.test(text) : true
     const flag2 = excludeRegex ? excludeRegex.test(text) : false
