@@ -2,7 +2,7 @@ import { stringify } from 'yaml'
 
 import { OS } from '@/enums/app'
 import { useAppSettingsStore } from '@/stores'
-import { APP_TITLE, APP_VERSION } from '@/utils'
+import { APP_TITLE, APP_VERSION, isValidIPv4, isValidIPv6 } from '@/utils'
 
 export const deepClone = <T>(json: T): T => JSON.parse(JSON.stringify(json))
 
@@ -371,6 +371,16 @@ export const base64Decode = (input: string): string => {
 export const stringifyNoFolding = (content: any) => {
   // Disable string folding
   return stringify(content, { lineWidth: 0, minContentWidth: 0 })
+}
+
+export const getDomainSuffixes = (host: string) => {
+  const normalizedHost = host.trim().replace(/\.+$/, '').toLowerCase()
+  if (!normalizedHost || isValidIPv4(normalizedHost) || isValidIPv6(normalizedHost)) return []
+
+  const labels = normalizedHost.split('.').filter(Boolean)
+  if (labels.length < 2) return []
+
+  return labels.slice(0, -1).map((_, index) => labels.slice(index).join('.'))
 }
 
 export const createTextMatcher = (include: string, exclude: string, flags = '') => {
