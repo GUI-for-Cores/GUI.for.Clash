@@ -21,7 +21,7 @@ import (
 func (a *App) Exec(path string, args []string, options ExecOptions) FlagResult {
 	log.Printf("Exec: %s %s %v", path, args, options)
 
-	exePath := GetPath(path)
+	exePath := resolvePath(path)
 
 	if _, err := os.Stat(exePath); os.IsNotExist(err) {
 		exePath = path
@@ -41,7 +41,7 @@ func (a *App) Exec(path string, args []string, options ExecOptions) FlagResult {
 
 	var output string
 	if options.Convert {
-		output = strings.TrimSpace(ConvertByte2String(out))
+		output = strings.TrimSpace(decodeGB18030(out))
 	} else {
 		output = strings.TrimSpace(string(out))
 	}
@@ -59,7 +59,7 @@ func (a *App) Exec(path string, args []string, options ExecOptions) FlagResult {
 func (a *App) ExecBackground(path string, args []string, outEvent string, endEvent string, options ExecOptions) FlagResult {
 	log.Printf("ExecBackground: %s %s %s %s %v", path, args, outEvent, endEvent, options)
 
-	exePath := GetPath(path)
+	exePath := resolvePath(path)
 	pidPath := ""
 
 	if _, err := os.Stat(exePath); os.IsNotExist(err) {
@@ -67,7 +67,7 @@ func (a *App) ExecBackground(path string, args []string, outEvent string, endEve
 	}
 
 	if options.PidFile != "" {
-		pidPath = GetPath(options.PidFile)
+		pidPath = resolvePath(options.PidFile)
 	}
 
 	cmd := exec.Command(exePath, args...)
@@ -80,12 +80,15 @@ func (a *App) ExecBackground(path string, args []string, outEvent string, endEve
 		cmd.Env = append(cmd.Env, key+"="+value)
 	}
 
-	stdout, err := cmd.StdoutPipe()
-	if err != nil {
-		return FlagResult{false, err.Error()}
+	var stdout io.ReadCloser
+	var err error
+	if outEvent != "" {
+		stdout, err = cmd.StdoutPipe()
+		if err != nil {
+			return FlagResult{false, err.Error()}
+		}
+		cmd.Stderr = cmd.Stdout
 	}
-
-	cmd.Stderr = cmd.Stdout
 
 	if err := cmd.Start(); err != nil {
 		return FlagResult{false, err.Error()}
@@ -98,6 +101,7 @@ func (a *App) ExecBackground(path string, args []string, outEvent string, endEve
 		if err != nil {
 			_ = SendExitSignal(cmd.Process)
 			_ = waitForProcessExitWithTimeout(cmd.Process, 10)
+			_ = cmd.Wait()
 			return FlagResult{false, err.Error()}
 		}
 	}
@@ -105,11 +109,12 @@ func (a *App) ExecBackground(path string, args []string, outEvent string, endEve
 	if outEvent != "" {
 		scanAndEmit := func(reader io.Reader) {
 			scanner := bufio.NewScanner(reader)
+			scanner.Buffer(make([]byte, 64*1024), 1024*1024)
 			stopOutput := false
 			for scanner.Scan() {
 				var text string
 				if options.Convert {
-					text = ConvertByte2String(scanner.Bytes())
+					text = decodeGB18030(scanner.Bytes())
 				} else {
 					text = scanner.Text()
 				}
@@ -127,15 +132,19 @@ func (a *App) ExecBackground(path string, args []string, outEvent string, endEve
 		go scanAndEmit(stdout)
 	}
 
-	if endEvent != "" {
-		go func() {
-			cmd.Wait()
-			if pidPath != "" {
-				_ = os.Remove(pidPath)
+	go func() {
+		err := cmd.Wait()
+		if pidPath != "" {
+			_ = os.Remove(pidPath)
+		}
+		if endEvent != "" {
+			if err != nil {
+				runtime.EventsEmit(a.Ctx, endEvent, err.Error())
+				return
 			}
 			runtime.EventsEmit(a.Ctx, endEvent)
-		}()
-	}
+		}
+	}()
 
 	return FlagResult{true, pid}
 }

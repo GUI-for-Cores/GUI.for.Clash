@@ -88,7 +88,7 @@ func createMenuItem(menu MenuItem, a *App, parent *systray.MenuItem) {
 
 func updateTray(a *App, tray TrayContent) {
 	if tray.Icon != "" {
-		ico, err := os.ReadFile(GetPath(tray.Icon))
+		ico, err := os.ReadFile(resolvePath(tray.Icon))
 		if err == nil {
 			systray.SetIcon(ico)
 		}
