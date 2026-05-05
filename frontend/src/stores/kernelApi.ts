@@ -13,7 +13,12 @@ import {
   destroyWebsocket,
 } from '@/api/kernel'
 import { ProcessInfo, KillProcess, ExecBackground, ReadFile, RemoveFile } from '@/bridge'
-import { CorePidFilePath, CoreStopOutputKeyword, CoreWorkingDirectory } from '@/constant/kernel'
+import {
+  CoreLogFilePath,
+  CorePidFilePath,
+  CoreStopOutputKeyword,
+  CoreWorkingDirectory,
+} from '@/constant/kernel'
 import { Branch } from '@/enums/app'
 import { RuleType } from '@/enums/kernel'
 import {
@@ -125,6 +130,7 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
         },
         {
           PidFile: CorePidFilePath,
+          LogFile: CoreLogFilePath,
           StopOutputKeyword: CoreStopOutputKeyword,
           Env: getKernelRuntimeEnv(isAlpha),
         },

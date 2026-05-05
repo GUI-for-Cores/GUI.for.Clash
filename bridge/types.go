@@ -37,6 +37,7 @@ type RequestOptions struct {
 
 type ExecOptions struct {
 	PidFile           string
+	LogFile           string
 	StopOutputKeyword string
 	WorkingDirectory  string
 	Convert           bool
