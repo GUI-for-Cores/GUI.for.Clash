@@ -592,7 +592,10 @@ export const usePluginsStore = defineStore('plugins', () => {
     }
 
     if (nextPlugin.type === 'Http') {
-      const { body } = await HttpGet(nextPlugin.url)
+      const { status, body } = await HttpGet(nextPlugin.url)
+      if (status !== 200) {
+        throw new Error(`Failed to fetch plugin code from ${nextPlugin.url}. Status: ${status}`)
+      }
       code = body
     }
 
