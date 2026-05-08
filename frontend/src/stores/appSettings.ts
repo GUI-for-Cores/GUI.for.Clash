@@ -93,7 +93,7 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
       alpha: undefined as any,
     },
     plugins: {
-      sources: [],
+      sources: DefaultPluginHubSources(),
     },
     addPluginToMenu: false,
     addGroupToMenu: false,

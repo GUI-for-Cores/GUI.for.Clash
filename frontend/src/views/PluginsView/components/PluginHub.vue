@@ -131,7 +131,19 @@ if (pluginsStore.pluginHub.length === 0) {
     </div>
 
     <div v-if="filteredPlugins.length == 0" class="flex items-center justify-center h-256">
-      <Empty />
+      <Empty>
+        <template #description>
+          <Button
+            icon="refresh"
+            :loading="pluginsStore.pluginHubLoading"
+            type="primary"
+            size="small"
+            @click="handleUpdatePluginHub"
+          >
+            {{ $t('plugins.update') }}
+          </Button>
+        </template>
+      </Empty>
     </div>
 
     <div v-for="group in filteredPlugins" :key="group.name">
