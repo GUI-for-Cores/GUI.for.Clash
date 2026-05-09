@@ -30,6 +30,7 @@ import {
   WebviewGpuPolicy,
   ControllerCloseMode,
   Branch,
+  RequestProxyMode,
 } from '@/enums/app'
 import i18n, { loadLocale } from '@/lang'
 import { useAppStore, useEnvStore } from '@/stores'
@@ -69,6 +70,8 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
     exitOnClose: true,
     closeKernelOnExit: true,
     autoSetSystemProxy: true,
+    requestProxyMode: RequestProxyMode.System,
+    customProxy: '',
     proxyBypassList: '',
     autoStartKernel: false,
     autoRestartKernel: false,
@@ -129,6 +132,12 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
     }
     if (!settings.proxyBypassList) {
       settings.proxyBypassList = await GetSystemProxyBypass()
+    }
+    if (!settings.requestProxyMode) {
+      settings.requestProxyMode = RequestProxyMode.System
+    }
+    if (settings.customProxy === undefined) {
+      settings.customProxy = ''
     }
     if (!settings.plugins) {
       settings.plugins = {

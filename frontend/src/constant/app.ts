@@ -4,6 +4,7 @@ import {
   ControllerCloseMode,
   PluginTrigger,
   RequestMethod,
+  RequestProxyMode,
   ScheduledTasksType,
   Theme,
   View,
@@ -76,6 +77,13 @@ export const RequestMethodOptions = [
   { label: RequestMethod.Put, value: RequestMethod.Put },
   { label: RequestMethod.Head, value: RequestMethod.Head },
   { label: RequestMethod.Patch, value: RequestMethod.Patch },
+]
+
+export const RequestProxyModeOptions = [
+  { label: 'settings.requestProxy.none', value: RequestProxyMode.None },
+  { label: 'settings.requestProxy.system', value: RequestProxyMode.System },
+  { label: 'settings.requestProxy.kernel', value: RequestProxyMode.Kernel },
+  { label: 'settings.requestProxy.custom', value: RequestProxyMode.Custom },
 ]
 
 export const ThemeOptions = [

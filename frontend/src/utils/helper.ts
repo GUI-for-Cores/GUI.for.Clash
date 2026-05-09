@@ -13,7 +13,7 @@ import {
   WriteFile,
 } from '@/bridge'
 import { CoreWorkingDirectory } from '@/constant/kernel'
-import { OS } from '@/enums/app'
+import { OS, RequestProxyMode } from '@/enums/app'
 import { ProxyGroupType, RulesetBehavior, RulesetFormat } from '@/enums/kernel'
 import i18n from '@/lang'
 import {
@@ -27,6 +27,7 @@ import {
 } from '@/stores'
 import {
   ignoredError,
+  normalizeRequestProxy,
   stringifyNoFolding,
   message,
   confirm,
@@ -575,29 +576,38 @@ export const GetSystemProxyBypass = async () => {
   return ''
 }
 
-const proxy_cache: { proxyPromise: Promise<string> | null; lastAccessTime: number } = {
+const requestProxyCache: { proxyPromise: Promise<string> | null; lastAccessTime: number } = {
   proxyPromise: null,
   lastAccessTime: 0,
 }
 
-export const GetSystemOrKernelProxy = async () => {
-  if (useKernelApiStore().running) {
+export const GetRequestProxy = async () => {
+  const appSettings = useAppSettingsStore()
+
+  if (appSettings.app.requestProxyMode === RequestProxyMode.None) {
+    return ''
+  }
+
+  if (appSettings.app.requestProxyMode === RequestProxyMode.Kernel) {
     const kernelProxy = useKernelApiStore().getProxyPort()
-    if (kernelProxy !== undefined) {
-      if (kernelProxy.proxyType === 'socks') {
-        return `socks5://127.0.0.1:${kernelProxy.port}`
-      }
-      return `http://127.0.0.1:${kernelProxy.port}`
+    if (!kernelProxy) return ''
+    if (kernelProxy.proxyType === 'socks') {
+      return `socks5://127.0.0.1:${kernelProxy.port}`
     }
+    return `http://127.0.0.1:${kernelProxy.port}`
   }
 
-  if (proxy_cache.proxyPromise && Date.now() - proxy_cache.lastAccessTime < 1000) {
-    return proxy_cache.proxyPromise
+  if (appSettings.app.requestProxyMode === RequestProxyMode.Custom) {
+    return normalizeRequestProxy(appSettings.app.customProxy)
   }
 
-  proxy_cache.lastAccessTime = Date.now()
-  proxy_cache.proxyPromise = GetSystemProxy()
-  return proxy_cache.proxyPromise
+  if (requestProxyCache.proxyPromise && Date.now() - requestProxyCache.lastAccessTime < 1000) {
+    return requestProxyCache.proxyPromise
+  }
+
+  requestProxyCache.lastAccessTime = Date.now()
+  requestProxyCache.proxyPromise = GetSystemProxy()
+  return requestProxyCache.proxyPromise
 }
 
 // Auto-start

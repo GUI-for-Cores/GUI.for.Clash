@@ -373,6 +373,13 @@ export const stringifyNoFolding = (content: any) => {
   return stringify(content, { lineWidth: 0, minContentWidth: 0 })
 }
 
+export const normalizeRequestProxy = (proxy: string) => {
+  const trimmed = proxy.trim()
+  if (!trimmed) return ''
+  if (/^[a-z][a-z\d+\-.]*:\/\//i.test(trimmed)) return trimmed
+  return `http://${trimmed}`
+}
+
 export const getDomainSuffixes = (host: string) => {
   const normalizedHost = host.trim().replace(/\.+$/, '').toLowerCase()
   if (!normalizedHost || isValidIPv4(normalizedHost) || isValidIPv6(normalizedHost)) return []

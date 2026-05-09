@@ -9,6 +9,7 @@ import type {
   WebviewGpuPolicy,
   Branch,
   ControllerCloseMode,
+  RequestProxyMode,
   PluginTrigger,
   ScheduledTasksType,
   RequestMethod,
@@ -69,6 +70,8 @@ type AppSettings = {
   exitOnClose: boolean
   closeKernelOnExit: boolean
   autoSetSystemProxy: boolean
+  requestProxyMode: RequestProxyMode
+  customProxy: string
   proxyBypassList: string
   autoStartKernel: boolean
   autoRestartKernel: boolean

@@ -48,6 +48,13 @@ export enum Branch {
   Alpha = 'alpha',
 }
 
+export enum RequestProxyMode {
+  None = 'none',
+  System = 'system',
+  Kernel = 'kernel',
+  Custom = 'custom',
+}
+
 export enum ScheduledTasksType {
   UpdateSubscription = 'update::subscription',
   UpdateRuleset = 'update::ruleset',
