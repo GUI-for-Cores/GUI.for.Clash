@@ -380,6 +380,13 @@ export const normalizeRequestProxy = (proxy: string) => {
   return `http://${trimmed}`
 }
 
+export const normalizeProxyHost = (host: string) => {
+  if (!host || ['0.0.0.0', '::', '[::]'].includes(host)) {
+    return '127.0.0.1'
+  }
+  return host
+}
+
 export const getDomainSuffixes = (host: string) => {
   const normalizedHost = host.trim().replace(/\.+$/, '').toLowerCase()
   if (!normalizedHost || isValidIPv4(normalizedHost) || isValidIPv6(normalizedHost)) return []

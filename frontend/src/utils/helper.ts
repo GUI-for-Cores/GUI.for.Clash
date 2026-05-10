@@ -26,6 +26,7 @@ import {
   useRulesetsStore,
 } from '@/stores'
 import {
+  formatProxyHost,
   ignoredError,
   normalizeRequestProxy,
   stringifyNoFolding,
@@ -589,12 +590,16 @@ export const GetRequestProxy = async () => {
   }
 
   if (appSettings.app.requestProxyMode === RequestProxyMode.Kernel) {
-    const kernelProxy = useKernelApiStore().getProxyPort()
+    const kernelProxy = useKernelApiStore().getProxyEndpoint()
     if (!kernelProxy) return ''
-    if (kernelProxy.proxyType === 'socks') {
-      return `socks5://127.0.0.1:${kernelProxy.port}`
-    }
-    return `http://127.0.0.1:${kernelProxy.port}`
+
+    const { schema, host, port, username, password } = kernelProxy
+    const formattedHost = formatProxyHost(host)
+    const encodedUsername = encodeURIComponent(username)
+    const encodedPassword = password ? `:${encodeURIComponent(password)}` : ''
+    const auth = username || password ? `${encodedUsername}${encodedPassword}@` : ''
+
+    return `${schema}://${auth}${formattedHost}:${port}`
   }
 
   if (appSettings.app.requestProxyMode === RequestProxyMode.Custom) {

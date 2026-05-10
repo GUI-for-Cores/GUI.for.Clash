@@ -1,6 +1,7 @@
 import { Request } from '@/api/request'
 import { WebSockets } from '@/api/websocket'
 import { useProfilesStore } from '@/stores'
+import { formatProxyHost, normalizeProxyHost } from '@/utils'
 
 import type {
   CoreApiConfig,
@@ -30,6 +31,37 @@ export enum Api {
   GEO = '/configs/geo',
 }
 
+const resolveController = (controller: string, defaultPort: number) => {
+  const trimmed = controller.trim()
+  if (!trimmed) {
+    return {
+      host: '127.0.0.1',
+      port: defaultPort,
+    }
+  }
+
+  if (trimmed.startsWith('[')) {
+    const match = trimmed.match(/^\[([^\]]+)\](?::(\d+))?$/)
+    return {
+      host: normalizeProxyHost(match?.[1] || ''),
+      port: Number(match?.[2] || defaultPort),
+    }
+  }
+
+  const separatorIndex = trimmed.lastIndexOf(':')
+  if (separatorIndex === -1) {
+    return {
+      host: normalizeProxyHost(trimmed),
+      port: defaultPort,
+    }
+  }
+
+  return {
+    host: normalizeProxyHost(trimmed.slice(0, separatorIndex).trim()),
+    port: Number(trimmed.slice(separatorIndex + 1)) || defaultPort,
+  }
+}
+
 const setupCoreApi = (protocol: 'http' | 'ws') => {
   const { currentProfile: profile } = useProfilesStore()
 
@@ -38,9 +70,9 @@ const setupCoreApi = (protocol: 'http' | 'ws') => {
 
   if (profile) {
     const controller = profile.advancedConfig['external-controller'] || '127.0.0.1:20113'
-    const [, port = 20113] = controller.split(':')
+    const { host, port } = resolveController(controller, 20113)
     // TODO: tls
-    base = `${protocol}://127.0.0.1:${port}`
+    base = `${protocol}://${formatProxyHost(host)}:${port}`
     bearer = profile.advancedConfig.secret
   }
 
