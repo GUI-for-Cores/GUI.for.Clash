@@ -9,10 +9,11 @@ import components from './components'
 import directives from './directives'
 import i18n from './lang'
 import router from './router'
+import { setAppContext } from './utils'
 
 const app = createApp(App)
 
-window.appInstance = app
+setAppContext(app)
 
 app.use(createPinia())
 app.use(router)

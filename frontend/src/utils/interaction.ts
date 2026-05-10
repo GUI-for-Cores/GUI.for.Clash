@@ -1,7 +1,7 @@
 import { render, h, type VNode, nextTick } from 'vue'
 
 import i18n from '@/lang'
-import { APP_TITLE, normalizeErrorMessage, sampleID } from '@/utils'
+import { APP_TITLE, bindAppContext, normalizeErrorMessage, sampleID } from '@/utils'
 
 import ConfirmComp from '@/components/Confirm/index.vue'
 import MessageComp from '@/components/Message/index.vue'
@@ -30,10 +30,6 @@ interface MessageInstance {
   dom: HTMLDivElement
   vnode: VNode
   timer: number
-}
-
-const bindAppContext = (vnode: VNode) => {
-  vnode.appContext = window.appInstance._context
 }
 
 class Message {
