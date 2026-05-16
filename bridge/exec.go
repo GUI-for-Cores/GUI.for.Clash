@@ -74,6 +74,7 @@ func (a *App) ExecBackground(path string, args []string, outEvent string, endEve
 	}
 
 	done := make(chan struct{})
+	outputDone := make(chan struct{})
 	cmd := exec.Command(exePath, args...)
 	SetCmdWindowHidden(cmd)
 
@@ -129,38 +130,19 @@ func (a *App) ExecBackground(path string, args []string, outEvent string, endEve
 
 	if outEvent != "" {
 		if logPath != "" {
-			go tailAndEmitLogFile(a, logPath, outEvent, options, done)
+			go tailAndEmitLogFile(a, logPath, outEvent, options, done, outputDone)
 		} else {
-			scanAndEmit := func(reader io.Reader) {
-				scanner := bufio.NewScanner(reader)
-				scanner.Buffer(make([]byte, 64*1024), 1024*1024)
-				stopOutput := false
-				for scanner.Scan() {
-					var text string
-					if options.Convert {
-						text = decodeGB18030(scanner.Bytes())
-					} else {
-						text = scanner.Text()
-					}
-
-					if !stopOutput {
-						runtime.EventsEmit(a.Ctx, outEvent, text)
-
-						if options.StopOutputKeyword != "" && strings.Contains(text, options.StopOutputKeyword) {
-							stopOutput = true
-						}
-					}
-				}
-			}
-
-			go scanAndEmit(stdout)
+			go scanAndEmitOutput(a, stdout, outEvent, options, outputDone)
 		}
+	} else {
+		close(outputDone)
 	}
 
 	go func() {
-		defer close(done)
-
 		err := cmd.Wait()
+		close(done)
+		<-outputDone
+
 		if pidPath != "" {
 			_ = os.Remove(pidPath)
 		}
@@ -313,7 +295,34 @@ func getDarwinProcessRSS(pid int32) (uint64, error) {
 	return rss * 1024, nil
 }
 
-func tailAndEmitLogFile(a *App, path string, outEvent string, options ExecOptions, done <-chan struct{}) {
+func scanAndEmitOutput(a *App, reader io.Reader, outEvent string, options ExecOptions, outputDone chan<- struct{}) {
+	defer close(outputDone)
+
+	scanner := bufio.NewScanner(reader)
+	scanner.Buffer(make([]byte, 64*1024), 1024*1024)
+	stopOutput := false
+
+	for scanner.Scan() {
+		var text string
+		if options.Convert {
+			text = decodeGB18030(scanner.Bytes())
+		} else {
+			text = scanner.Text()
+		}
+
+		if !stopOutput {
+			runtime.EventsEmit(a.Ctx, outEvent, text)
+
+			if options.StopOutputKeyword != "" && strings.Contains(text, options.StopOutputKeyword) {
+				stopOutput = true
+			}
+		}
+	}
+}
+
+func tailAndEmitLogFile(a *App, path string, outEvent string, options ExecOptions, done <-chan struct{}, outputDone chan<- struct{}) {
+	defer close(outputDone)
+
 	offset := int64(0)
 	pending := ""
 	ticker := time.NewTicker(100 * time.Millisecond)

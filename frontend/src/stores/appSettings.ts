@@ -64,7 +64,7 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
     scheduledtasksView: View.Grid,
     windowStartState: WindowStartState.Normal,
     webviewGpuPolicy: WebviewGpuPolicy.OnDemand,
-    contentProtection: true,
+    contentProtection: false,
     width: 0,
     height: 0,
     exitOnClose: true,
