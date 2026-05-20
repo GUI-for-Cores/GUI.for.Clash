@@ -117,6 +117,7 @@ type AppSettings = {
   debugNoAnimation: boolean
   debugNoRounded: boolean
   debugBorder: boolean
+  debugUsePointer: boolean
   pages: string[]
 }
 
