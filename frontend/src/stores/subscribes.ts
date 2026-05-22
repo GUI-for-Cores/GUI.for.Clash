@@ -4,7 +4,7 @@ import { parse } from 'yaml'
 
 import { ReadFile, WriteFile, Requests } from '@/bridge'
 import { DefaultSubscribeScript, SubscribesFilePath } from '@/constant/app'
-import { PluginTriggerEvent, RequestMethod } from '@/enums/app'
+import { PluginTriggerEvent, RequestMethod, RequestProxyMode } from '@/enums/app'
 import { usePluginsStore, useProfilesStore } from '@/stores'
 import {
   sampleID,
@@ -17,6 +17,8 @@ import {
   asyncPool,
   eventBus,
   buildSmartRegExp,
+  GetRequestProxy,
+  migrateSubscribes,
 } from '@/utils'
 
 import type { Subscription } from '@/types/app'
@@ -27,6 +29,8 @@ export const useSubscribesStore = defineStore('subscribes', () => {
   const setupSubscribes = async () => {
     const data = await ignoredError(ReadFile, SubscribesFilePath)
     data && (subscribes.value = parse(data))
+
+    await migrateSubscribes(subscribes.value, saveSubscribes)
   }
 
   const saveSubscribes = () => {
@@ -100,6 +104,7 @@ export const useSubscribesStore = defineStore('subscribes', () => {
         autoTransformBody: false,
         options: {
           Insecure: s.inSecure,
+          Proxy: await GetRequestProxy(s.requestProxyMode, s.customProxy),
           Timeout: s.requestTimeout,
         },
       })
@@ -287,6 +292,8 @@ export const useSubscribesStore = defineStore('subscribes', () => {
       includeProtocol: '',
       excludeProtocol: '',
       proxyPrefix: '',
+      requestProxyMode: RequestProxyMode.System,
+      customProxy: '',
       disabled: false,
       inSecure: false,
       requestMethod: RequestMethod.Get,
