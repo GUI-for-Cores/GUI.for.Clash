@@ -83,6 +83,18 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
     config.value = await getConfigs()
   }
 
+  const resetConfig = () => {
+    config.value.port = 0
+    config.value['socks-port'] = 0
+    config.value['mixed-port'] = 0
+    config.value['interface-name'] = ''
+    config.value['allow-lan'] = false
+    config.value.mode = ''
+    config.value.tun.enable = false
+    config.value.tun.stack = ''
+    config.value.tun.device = ''
+  }
+
   const updateConfig = async (options: Record<string, any>) => {
     await setConfigs(options)
     await refreshConfig()
@@ -174,6 +186,7 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
     running.value = false
     needRestart.value = false
 
+    resetConfig()
     destroyWebsocket()
 
     await envStore.updateSystemProxyStatus()
