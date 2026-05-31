@@ -4,9 +4,8 @@ import { useI18n } from 'vue-i18n'
 import { EnhancedModeOptions, FakeipFilterMode } from '@/constant/kernel'
 import { DnsConfigDefaults } from '@/constant/profile'
 import { useBool } from '@/hooks'
-import { type ProfileType } from '@/stores'
 
-const fields = defineModel<ProfileType['dnsConfig']>({ default: DnsConfigDefaults() })
+const fields = defineModel<IProfile['dnsConfig']>({ default: DnsConfigDefaults() })
 
 const { t } = useI18n()
 const [showMore, toggleMore] = useBool(false)

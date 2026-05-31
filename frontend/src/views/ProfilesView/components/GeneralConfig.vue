@@ -3,9 +3,8 @@ import { useI18n } from 'vue-i18n'
 
 import { ModeOptions, LogLevelOptions } from '@/constant/kernel'
 import { GeneralConfigDefaults } from '@/constant/profile'
-import { type ProfileType } from '@/stores'
 
-const fields = defineModel<ProfileType['generalConfig']>({ default: GeneralConfigDefaults() })
+const fields = defineModel<IProfile['generalConfig']>({ default: GeneralConfigDefaults() })
 
 const { t } = useI18n()
 </script>

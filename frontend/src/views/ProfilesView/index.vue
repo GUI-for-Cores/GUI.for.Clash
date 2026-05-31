@@ -5,7 +5,6 @@ import { ClipboardSetText } from '@/bridge'
 import { DraggableOptions } from '@/constant/app'
 import { View } from '@/enums/app'
 import {
-  type ProfileType,
   useProfilesStore,
   useAppSettingsStore,
   useKernelApiStore,
@@ -113,7 +112,7 @@ const secondaryMenusList: Menu[] = [
   },
 ]
 
-const generateMenus = (profile: ProfileType) => {
+const generateMenus = (profile: IProfile) => {
   const moreMenus: Menu[] = secondaryMenusList.map((v) => ({
     ...v,
     handler: () => v.handler?.(profile.id),
@@ -171,7 +170,7 @@ const handleShowProfileForm = (id?: string, step = 0) => {
   modalApi.setContent(ProfileForm, { id, step }).open()
 }
 
-const handleDeleteProfile = async (p: ProfileType) => {
+const handleDeleteProfile = async (p: IProfile) => {
   const { profile } = appSettingsStore.app.kernel
   if (profile === p.id && kernelApiStore.running) {
     message.warn('profiles.shouldStop')
@@ -186,7 +185,7 @@ const handleDeleteProfile = async (p: ProfileType) => {
   }
 }
 
-const handleUseProfile = async (p: ProfileType) => {
+const handleUseProfile = async (p: IProfile) => {
   if (appSettingsStore.app.kernel.profile === p.id) return
 
   appSettingsStore.app.kernel.profile = p.id

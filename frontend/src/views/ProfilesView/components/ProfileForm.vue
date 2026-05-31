@@ -3,7 +3,7 @@ import { ref, inject, type Ref, computed, useTemplateRef, h } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { useBool } from '@/hooks'
-import { type ProfileType, useProfilesStore } from '@/stores'
+import { useProfilesStore } from '@/stores'
 import { deepClone, generateConfig, stringifyNoFolding, message, alert } from '@/utils'
 
 import Button from '@/components/Button/index.vue'
@@ -60,7 +60,7 @@ const stepItems = [
   { title: 'profile.step.mixin-script' },
 ]
 
-const profile = ref<ProfileType>(profilesStore.getProfileTemplate())
+const profile = ref<IProfile>(profilesStore.getProfileTemplate())
 
 const mixinAndScriptConfig = computed({
   get() {

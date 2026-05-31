@@ -3,9 +3,8 @@ import { useI18n } from 'vue-i18n'
 
 import { SnifferDefaults } from '@/constant/profile'
 import { useBool } from '@/hooks'
-import { type ProfileType } from '@/stores'
 
-const fields = defineModel<ProfileType['sniffer']>({ default: SnifferDefaults() })
+const fields = defineModel<IProfile['sniffer']>({ default: SnifferDefaults() })
 
 const { t } = useI18n()
 const [showMore, toggleMore] = useBool(false)

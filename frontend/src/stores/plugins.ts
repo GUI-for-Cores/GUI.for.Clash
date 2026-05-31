@@ -5,7 +5,7 @@ import { parse } from 'yaml'
 import { HttpGet, ReadFile, RemoveFile, Requests, WriteFile } from '@/bridge'
 import { PluginHubFilePath, PluginsFilePath } from '@/constant/app'
 import { PluginTrigger, PluginTriggerEvent, RequestMethod } from '@/enums/app'
-import { useAppSettingsStore, type ProfileType } from '@/stores'
+import { useAppSettingsStore } from '@/stores'
 import {
   omitArray,
   ignoredError,
@@ -741,7 +741,7 @@ export const usePluginsStore = defineStore('plugins', () => {
     }
   }
 
-  const onGenerateTrigger = async (config: Recordable, profile: ProfileType) => {
+  const onGenerateTrigger = async (config: Recordable, profile: IProfile) => {
     const { fnName, observers } = PluginsTriggerMap[PluginTrigger.OnGenerate]!
     if (observers.length === 0) return config
 
@@ -760,7 +760,7 @@ export const usePluginsStore = defineStore('plugins', () => {
     return config
   }
 
-  const onBeforeCoreStartTrigger = async (params: Recordable, profile: ProfileType) => {
+  const onBeforeCoreStartTrigger = async (params: Recordable, profile: IProfile) => {
     const { fnName, observers } = PluginsTriggerMap[PluginTrigger.OnBeforeCoreStart]!
     if (observers.length === 0) return params
 

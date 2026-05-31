@@ -7,16 +7,15 @@ import {
   GeoSiteMatcherOptions,
 } from '@/constant/kernel'
 import { AdvancedConfigDefaults } from '@/constant/profile'
-import { type ProfileType } from '@/stores'
 import { generateSecureKey } from '@/utils'
 
 interface Props {
-  profile: ProfileType
+  profile: IProfile
 }
 
 const props = defineProps<Props>()
 
-const fields = defineModel<ProfileType['advancedConfig']>({ default: AdvancedConfigDefaults() })
+const fields = defineModel<IProfile['advancedConfig']>({ default: AdvancedConfigDefaults() })
 
 const { t } = useI18n()
 </script>

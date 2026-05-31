@@ -10,22 +10,22 @@ import {
   BuiltInOutbound,
 } from '@/constant/kernel'
 import { RulesetBehavior, RulesetFormat, RuleType } from '@/enums/kernel'
-import { type ProfileType, useRulesetsStore, type RuleSet } from '@/stores'
+import { useRulesetsStore, type RuleSet } from '@/stores'
 import { deepClone, sampleID, generateRule, message } from '@/utils'
 
 interface Props {
-  proxyGroups: ProfileType['proxyGroupsConfig']
-  profile: ProfileType
+  proxyGroups: IProfile['proxyGroupsConfig']
+  profile: IProfile
 }
 
 const props = defineProps<Props>()
 
-const rules = defineModel<ProfileType['rulesConfig']>({ default: [] })
+const rules = defineModel<IProfile['rulesConfig']>({ default: [] })
 
 let updateRuleId = 0
 const showModal = ref(false)
 
-const fields = ref<ProfileType['rulesConfig'][number]>({
+const fields = ref<IProfile['rulesConfig'][number]>({
   id: sampleID(),
   type: RuleType.RuleSet,
   enable: true,
@@ -135,12 +135,12 @@ const handleUseRuleset = (ruleset: RuleSet) => {
   fields.value['no-resolve'] = ruleset.behavior === RulesetBehavior.Ipcidr
 }
 
-const hasLost = (r: ProfileType['rulesConfig'][0]) => {
+const hasLost = (r: IProfile['rulesConfig'][0]) => {
   if (BuiltInOutbound.includes(r.proxy)) return false
   return !props.profile.proxyGroupsConfig.find((v) => v.id === r.proxy)
 }
 
-const notSupport = (r: ProfileType['rulesConfig'][0]) => {
+const notSupport = (r: IProfile['rulesConfig'][0]) => {
   return (
     !props.profile.advancedConfig['geodata-mode'] &&
     [RuleType.Geoip, RuleType.Geosite].includes(r.type)

@@ -1,10 +1,9 @@
 import { SnifferDefaults } from '@/constant/profile'
 import { RequestProxyMode } from '@/enums/app'
 
-import type { ProfileType } from '@/stores'
 import type { Subscription } from '@/types/app'
 
-export const migrateProfiles = async (profiles: ProfileType[], save: () => Promise<string>) => {
+export const migrateProfiles = async (profiles: IProfile[], save: () => Promise<string>) => {
   let needSync = false
 
   profiles.forEach((profile) => {

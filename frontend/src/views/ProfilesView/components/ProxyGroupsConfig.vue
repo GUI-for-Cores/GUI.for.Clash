@@ -5,10 +5,10 @@ import { useI18n } from 'vue-i18n'
 import { DraggableOptions } from '@/constant/app'
 import { GroupsTypeOptions, StrategyOptions, BuiltInOutbound } from '@/constant/kernel'
 import { ProxyGroup } from '@/enums/kernel'
-import { type ProfileType, useSubscribesStore } from '@/stores'
+import { useSubscribesStore } from '@/stores'
 import { deepClone, sampleID, message } from '@/utils'
 
-type GroupsType = ProfileType['proxyGroupsConfig']
+type GroupsType = IProfile['proxyGroupsConfig']
 
 const groups = defineModel<GroupsType>({ default: [] })
 

@@ -4,12 +4,11 @@ import { useI18n } from 'vue-i18n'
 import { parse, stringify } from 'yaml'
 
 import { MixinConfigDefaults, ScriptConfigDefaults } from '@/constant/profile'
-import { type ProfileType } from '@/stores'
 import { message } from '@/utils'
 
 const model = defineModel<{
-  mixin: ProfileType['mixinConfig']
-  script: ProfileType['scriptConfig']
+  mixin: IProfile['mixinConfig']
+  script: IProfile['scriptConfig']
 }>({
   default: {
     mixin: MixinConfigDefaults(),
