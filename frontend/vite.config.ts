@@ -7,6 +7,11 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   base: './',
   plugins: [vue()],
+  server: {
+    watch: {
+      ignored: ['**/node_modules/**', '**/.git/**', '**/dist/**', '**/src/bridge/wailsjs/**'],
+    },
+  },
   resolve: {
     extensions: ['.ts', '.js'],
     alias: {
