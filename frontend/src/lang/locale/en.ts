@@ -39,6 +39,10 @@ export default {
     run: 'Run',
     refresh: 'Refresh',
     confirm: 'OK',
+    select: 'Select',
+    selectedCount: '{0} selected',
+    selectAtLeast: 'Select at least {0}',
+    maxSelectionExceeded: 'Selection exceeds the maximum limit',
     selectAll: 'Select All',
     http: 'Remote',
     file: 'Local',
@@ -379,6 +383,7 @@ export default {
     },
   },
   subscribes: {
+    select: 'Select Subscriptions',
     download: 'Download',
     upload: 'Upload',
     total: 'Total',
@@ -430,6 +435,7 @@ export default {
     },
   },
   profiles: {
+    select: 'Select Profiles',
     shouldStop: 'Unable to delete, this profile is in use.',
     empty: 'The profiles list is empty, Please{action}a profile first.',
     copytoClipboard: 'Generate config to clipboard',
@@ -459,6 +465,7 @@ export default {
     updating: 'Updating',
   },
   rulesets: {
+    select: 'Select Rulesets',
     hub: 'Ruleset-Hub',
     total: 'Number of rule-sets',
     noDesc: 'No description',
@@ -512,6 +519,7 @@ export default {
     restore: 'Reset to default',
   },
   plugins: {
+    select: 'Select Plugins',
     updating: 'Updating',
     empty: 'The plugin list is empty. Please{action}or import from the{import}first.',
     source: 'Source',
@@ -552,6 +560,7 @@ export default {
     'run::script': 'run::script',
   },
   scheduledtasks: {
+    select: 'Select Scheduled Tasks',
     logs: 'Logs',
     name: 'Plugin',
     duration: 'Duration',

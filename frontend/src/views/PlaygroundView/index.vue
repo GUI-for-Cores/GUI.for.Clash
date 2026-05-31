@@ -194,6 +194,51 @@ const handleRequestWithCancel = async () => {
 const handleNotify = () => {
   Notify('Notification', 'test')
 }
+
+const profiles = ref<string[]>([])
+const onProfileChange = (ids: string[], profiles: unknown[]) => {
+  console.log('profile change', ids, profiles)
+}
+
+const onProfileSubmit = (ids: string[], profiles: unknown[]) => {
+  console.log('profile submit', ids, profiles)
+}
+
+const subscribes = ref<string[]>([])
+const onSubscribeChange = (ids: string[], subscribes: unknown[]) => {
+  console.log('subscribe change', ids, subscribes)
+}
+
+const onSubscribeSubmit = (ids: string[], subscribes: unknown[]) => {
+  console.log('subscribe submit', ids, subscribes)
+}
+
+const rulesets = ref<string[]>([])
+const onRulesetChange = (ids: string[], rulesets: unknown[]) => {
+  console.log('ruleset change', ids, rulesets)
+}
+
+const onRulesetSubmit = (ids: string[], rulesets: unknown[]) => {
+  console.log('ruleset submit', ids, rulesets)
+}
+
+const plugins = ref<string[]>([])
+const onPluginChange = (ids: string[], plugins: unknown[]) => {
+  console.log('plugin change', ids, plugins)
+}
+
+const onPluginSubmit = (ids: string[], plugins: unknown[]) => {
+  console.log('plugin submit', ids, plugins)
+}
+
+const scheduledTasks = ref<string[]>([])
+const onScheduledTaskChange = (ids: string[], scheduledTasks: unknown[]) => {
+  console.log('scheduled task change', ids, scheduledTasks)
+}
+
+const onScheduledTaskSubmit = (ids: string[], scheduledTasks: unknown[]) => {
+  console.log('scheduled task submit', ids, scheduledTasks)
+}
 </script>
 
 <template>
@@ -216,8 +261,78 @@ const handleNotify = () => {
   <div>
     <KeyValueEditor v-model="kv" />
   </div>
-  <div>
-    <Select />
+  <div class="flex flex-col">
+    <ResourceSelect
+      v-model="profiles"
+      type="profile"
+      :cols="3"
+      :min="1"
+      :max="3"
+      title="profiles.select"
+      @change="onProfileChange"
+      @submit="onProfileSubmit"
+    >
+      <template #default="{ open, selected }">
+        {{ selected }}
+        <Button @click="open"> {{ $t('profiles.select') }} </Button>
+      </template>
+    </ResourceSelect>
+    <ResourceSelect
+      v-model="subscribes"
+      type="subscription"
+      :cols="3"
+      :min="1"
+      :max="3"
+      @change="onSubscribeChange"
+      @submit="onSubscribeSubmit"
+    >
+      <template #default="{ open, selected }">
+        {{ selected }}
+        <Button @click="open"> {{ $t('profiles.select') }} </Button>
+      </template>
+    </ResourceSelect>
+    <ResourceSelect
+      v-model="rulesets"
+      type="ruleset"
+      :cols="3"
+      :min="1"
+      :max="3"
+      @change="onRulesetChange"
+      @submit="onRulesetSubmit"
+    >
+      <template #default="{ open, selected }">
+        {{ selected }}
+        <Button @click="open"> {{ $t('rulesets.select') }} </Button>
+      </template>
+    </ResourceSelect>
+    <ResourceSelect
+      v-model="plugins"
+      type="plugin"
+      :cols="3"
+      :min="1"
+      :max="3"
+      @change="onPluginChange"
+      @submit="onPluginSubmit"
+    >
+      <template #default="{ open, selected }">
+        {{ selected }}
+        <Button @click="open"> {{ $t('plugins.select') }} </Button>
+      </template>
+    </ResourceSelect>
+    <ResourceSelect
+      v-model="scheduledTasks"
+      type="scheduledtask"
+      :cols="3"
+      :min="1"
+      :max="3"
+      @change="onScheduledTaskChange"
+      @submit="onScheduledTaskSubmit"
+    >
+      <template #default="{ open, selected }">
+        {{ selected }}
+        <Button @click="open"> {{ $t('scheduledtasks.select') }} </Button>
+      </template>
+    </ResourceSelect>
   </div>
   <div>
     <Tag color="red">red</Tag>
