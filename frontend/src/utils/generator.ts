@@ -2,7 +2,7 @@ import { parse } from 'yaml'
 
 import { ReadFile, WriteFile } from '@/bridge'
 import { BuiltInOutbound, CoreConfigFilePath } from '@/constant/kernel'
-import { LogLevel, ProxyGroup, RuleType } from '@/enums/kernel'
+import { ProxyGroup, RuleType } from '@/enums/kernel'
 import { useSubscribesStore, useRulesetsStore, usePluginsStore } from '@/stores'
 import { deepClone, APP_TITLE, deepAssign, stringifyNoFolding } from '@/utils'
 
@@ -402,10 +402,6 @@ export const generateConfigFile = async (
 
   const _config = await generateConfig(profile)
   const config = await beforeWrite(_config)
-
-  if (![LogLevel.Debug, LogLevel.Info].includes(config['log-level'])) {
-    config['log-level'] = LogLevel.Info
-  }
 
   await WriteFile(CoreConfigFilePath, header + stringifyNoFolding(config))
 }
