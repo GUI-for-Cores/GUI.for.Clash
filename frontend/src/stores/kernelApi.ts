@@ -35,6 +35,7 @@ import {
   getKernelRuntimeArgs,
   getKernelRuntimeEnv,
   eventBus,
+  sleep,
 } from '@/utils'
 
 import type { CoreApiConfig, CoreApiProxy } from '@/types/kernel'
@@ -128,7 +129,7 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
     }
   }
 
-  const runCoreProcess = async (isAlpha: boolean) => {
+  const runCoreProcess = async (isAlpha: boolean, tunEnabled: boolean) => {
     let stopped = false
     const pid = await ExecBackground(
       CoreWorkingDirectory + '/' + getKernelFileName(isAlpha),
@@ -151,6 +152,16 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
       const ok = await probeApiAvailability().catch(() => false)
       if (ok) break
       if (stopped) throw 'Startup failed. Check logs for details.'
+    }
+    const start = Date.now()
+    while (tunEnabled) {
+      const config = await getConfigs().catch(() => null)
+      if (config?.tun?.enable) break
+      if (Date.now() - start >= 5_000) {
+        message.warn('TUN mode failed to start. Please check administrator permissions.')
+        break
+      }
+      await sleep(500)
     }
     return pid
   }
@@ -211,7 +222,7 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
         pluginsStore.onBeforeCoreStartTrigger(config, profile),
       )
       const isAlpha = branch === Branch.Alpha
-      const pid = await runCoreProcess(isAlpha)
+      const pid = await runCoreProcess(isAlpha, profile.tunConfig.enable)
       pid && (await onCoreStarted(pid))
     } finally {
       starting.value = false
