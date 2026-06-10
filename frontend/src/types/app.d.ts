@@ -111,6 +111,8 @@ type AppSettings = {
   addGroupToMenu: boolean
   pluginSettings: Record<string, Record<string, any>>
   githubApiToken: string
+  githubDownloadAcceleration: boolean
+  githubDownloadMirror: string
   multipleInstance: boolean
   rollingRelease: boolean
   debugOutline: boolean
