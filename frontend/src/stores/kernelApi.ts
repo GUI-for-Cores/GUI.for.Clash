@@ -152,6 +152,7 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
       const ok = await probeApiAvailability().catch(() => false)
       if (ok) break
       if (stopped) throw 'Startup failed. Check logs for details.'
+      await sleep(500)
     }
     const start = Date.now()
     while (tunEnabled) {
