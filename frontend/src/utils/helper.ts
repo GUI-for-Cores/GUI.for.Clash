@@ -330,7 +330,7 @@ async function setLinuxSystemProxy(
         .join(','),
     ])
     await Promise.all([p1, p2, p3, p4, p5])
-  } else if (['GNOME', 'XFCE'].includes(desktop)) {
+  } else if (['GNOME', 'XFCE', 'DDE', 'Deepin'].includes(desktop)) {
     const p1 = ignoredError(Exec, 'gsettings', [
       'set',
       'org.gnome.system.proxy',
@@ -487,7 +487,7 @@ export const GetSystemProxy = async () => {
             return socks.replace(' ', ':')
           }
         }
-      } else if (['GNOME', 'XFCE'].includes(desktop)) {
+      } else if (['GNOME', 'XFCE', 'DDE', 'Deepin'].includes(desktop)) {
         const out = await Exec('gsettings', ['get', 'org.gnome.system.proxy', 'mode'])
         if (out.includes('none')) {
           return ''
@@ -559,7 +559,7 @@ export const GetSystemProxyBypass = async () => {
         .split(',')
         .map((v) => v.trim())
         .join(';')
-    } else if (['GNOME', 'XFCE'].includes(desktop)) {
+    } else if (['GNOME', 'XFCE', 'DDE', 'Deepin'].includes(desktop)) {
       const out = await ignoredError(Exec, 'gsettings', [
         'get',
         'org.gnome.system.proxy',
