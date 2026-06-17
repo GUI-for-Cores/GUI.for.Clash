@@ -73,6 +73,7 @@ type AppSettings = {
   requestProxyMode: RequestProxyMode
   customProxy: string
   proxyBypassList: string
+  darwinSystemProxyServices: string[]
   autoStartKernel: boolean
   autoRestartKernel: boolean
   userAgent: string

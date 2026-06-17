@@ -198,7 +198,7 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
 
     await envStore.updateSystemProxyStatus()
     if (envStore.systemProxy) {
-      await envStore.clearSystemProxy()
+      await envStore.clearSystemProxy().catch((err) => message.error(err))
     }
 
     resetConfig()

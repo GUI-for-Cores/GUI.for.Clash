@@ -155,6 +155,17 @@ if (envStore.env.os === OS.Windows) {
       <div class="text-16 font-bold">{{ $t('settings.autoSetSystemProxy') }}</div>
       <Switch v-model="appSettings.app.autoSetSystemProxy" />
     </div>
+    <div
+      v-platform="[OS.Darwin]"
+      :class="appSettings.app.darwinSystemProxyServices.length ? 'items-start' : 'items-center'"
+      class="px-8 py-12 flex justify-between"
+    >
+      <div class="text-16 font-bold">{{ $t('settings.darwinSystemProxyServices') }}</div>
+      <InputList
+        v-model="appSettings.app.darwinSystemProxyServices"
+        placeholder="Ethernet、Wi-Fi"
+      />
+    </div>
     <div class="px-8 pt-12 pb-8 flex flex-col gap-12">
       <div class="text-16 font-bold">
         {{ $t('settings.proxyBypassList') }}
