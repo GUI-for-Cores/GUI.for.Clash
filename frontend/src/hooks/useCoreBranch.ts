@@ -14,6 +14,7 @@ import {
   MakeDir,
   UnzipGZFile,
   FileExists,
+  FileSHA256,
   ReadDir,
   OpenDir,
 } from '@/bridge'
@@ -87,7 +88,7 @@ export const useCoreBranch = (isAlpha = false) => {
       const assetName = getKernelAssetFileName(isAlpha ? remoteVersion.value : tag_name, cpuLevel)
       const asset = assets.find((v: any) => v.name === assetName)
       if (!asset) throw 'Asset Not Found:' + assetName
-      if (asset.uploader.type !== 'Bot') {
+      if (asset.uploader.login !== 'github-actions[bot]') {
         await confirm('common.warning', 'settings.kernel.risk', {
           type: 'text',
           okText: 'settings.kernel.stillDownload',
@@ -114,6 +115,13 @@ export const useCoreBranch = (isAlpha = false) => {
         },
         { CancelId: downloadCacheFile },
       )
+
+      const expectedSHA256 = asset.digest.slice(7)
+      const actualSHA256 = await FileSHA256(downloadCacheFile)
+      if (actualSHA256 !== expectedSHA256) {
+        await ignoredError(RemoveFile, downloadCacheFile)
+        throw `SHA256 mismatch: ${assetName}, expected ${expectedSHA256}, got ${actualSHA256}`
+      }
 
       await ignoredError(MoveFile, CoreFilePath, CoreBakFilePath)
 
