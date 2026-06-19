@@ -14,7 +14,6 @@ import {
   MakeDir,
   UnzipGZFile,
   FileExists,
-  FileSHA256,
   ReadDir,
   OpenDir,
 } from '@/bridge'
@@ -113,15 +112,11 @@ export const useCoreBranch = (isAlpha = false) => {
           const txt = t('common.downloading') + ((progress / total) * 100).toFixed(2) + '%'
           downloadProgress.value = txt
         },
-        { CancelId: downloadCacheFile },
+        {
+          CancelId: downloadCacheFile,
+          Sha256: asset.digest.slice(7),
+        },
       )
-
-      const expectedSHA256 = asset.digest.slice(7)
-      const actualSHA256 = await FileSHA256(downloadCacheFile)
-      if (actualSHA256 !== expectedSHA256) {
-        await ignoredError(RemoveFile, downloadCacheFile)
-        throw `SHA256 mismatch: ${assetName}, expected ${expectedSHA256}, got ${actualSHA256}`
-      }
 
       await ignoredError(MoveFile, CoreFilePath, CoreBakFilePath)
 
