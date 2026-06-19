@@ -211,6 +211,7 @@ export default {
     rules: {
       insertionPoint: 'The new rule will be inserted here',
       addInsertionPoint: 'Add insertion point',
+      missingInsertionPoint: 'Please add an insertion point first',
       payload: 'Payload',
       proxy: 'Proxy',
       'no-resolve': 'No Resolve',
@@ -478,6 +479,7 @@ export default {
     empty: 'The ruleset list is empty. Please{action}or import from the{import}first.',
     rulesetCount: 'Ruleset Count',
     editRuleset: 'Edit Rules',
+    addToProfile: 'Add to Profile',
     selectRuleType: 'Select Rule Type',
   },
   plugin: {

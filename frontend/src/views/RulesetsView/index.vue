@@ -4,9 +4,16 @@ import { useI18n, I18nT } from 'vue-i18n'
 
 import { RemoveFile, WriteFile, OpenURI } from '@/bridge'
 import { DraggableOptions } from '@/constant/app'
+import { BuiltInOutbound } from '@/constant/kernel'
 import { View } from '@/enums/app'
-import { RulesetFormat } from '@/enums/kernel'
-import { type RuleSet, useRulesetsStore, useAppSettingsStore, useEnvStore } from '@/stores'
+import { RulesetBehavior, RulesetFormat, RuleType } from '@/enums/kernel'
+import {
+  type RuleSet,
+  useRulesetsStore,
+  useAppSettingsStore,
+  useEnvStore,
+  useProfilesStore,
+} from '@/stores'
 import {
   debounce,
   formatRelativeTime,
@@ -14,6 +21,9 @@ import {
   formatDate,
   stringifyNoFolding,
   message,
+  picker,
+  sampleID,
+  deepClone,
 } from '@/utils'
 
 import { useModal } from '@/components/Modal'
@@ -42,21 +52,12 @@ const yamlMenuList: Menu[] = [
   },
 ]
 
-const mrsMenuList: Menu[] = [
-  {
-    label: 'common.none',
-    handler: (id: string) => {
-      console.log(id)
-      message.info('common.none')
-    },
-  },
-]
-
 const { t } = useI18n()
 const [Modal, modalApi] = useModal({})
 const envStore = useEnvStore()
 const rulesetsStore = useRulesetsStore()
 const appSettingsStore = useAppSettingsStore()
+const profilesStore = useProfilesStore()
 
 const handleImportRuleset = async () => {
   modalApi.setProps({
@@ -139,10 +140,75 @@ const handleClearRuleset = async (id: string) => {
   }
 }
 
+const handleAddRulesetToProfile = async (id: string) => {
+  const ruleset = rulesetsStore.getRulesetById(id)
+  if (!ruleset) return
+
+  try {
+    const { items } = await picker.resource('profile', 'profiles.select', { min: 1, max: 1 })
+    const profile = items[0]
+    if (!profile) return
+
+    const insertionPointIndex = profile.rulesConfig.findIndex(
+      (rule) => rule.type === RuleType.InsertionPoint,
+    )
+
+    if (insertionPointIndex === -1) {
+      message.warn('kernel.rules.missingInsertionPoint')
+      return
+    }
+
+    if (profile.rulesConfig.some((rule) => rule.type === RuleType.RuleSet && rule.payload === id)) {
+      message.info('common.added')
+      return
+    }
+
+    const outboundOptions = [
+      ...BuiltInOutbound.map((outbound) => ({ label: outbound, value: outbound })),
+      ...profile.proxyGroupsConfig.map((group) => ({
+        label: group.name,
+        value: group.id,
+        description: group.type,
+      })),
+    ]
+    const target = await picker.single('kernel.rules.proxy', outboundOptions, [
+      profile.proxyGroupsConfig[0]?.id || BuiltInOutbound[0]!,
+    ])
+
+    if (!target) return
+
+    const nextProfile = deepClone(profile)
+    nextProfile.rulesConfig.splice(insertionPointIndex + 1, 0, {
+      id: sampleID(),
+      type: RuleType.RuleSet,
+      enable: true,
+      payload: ruleset.id,
+      proxy: target,
+      'no-resolve': ruleset.behavior === RulesetBehavior.Ipcidr,
+      'ruleset-name': '',
+      'ruleset-type': 'file',
+      'ruleset-behavior': ruleset.behavior,
+      'ruleset-format': ruleset.format,
+      'ruleset-proxy': '',
+      'ruleset-interval': 0,
+    })
+
+    await profilesStore.editProfile(nextProfile.id, nextProfile)
+    message.success('common.success')
+  } catch (error) {
+    message.error(error)
+  }
+}
+
 const generateMenus = (r: RuleSet) => {
+  const addToProfileMenu: Menu = {
+    label: 'rulesets.addToProfile',
+    handler: (id: string) => handleAddRulesetToProfile(id),
+  }
+
   return {
-    [RulesetFormat.Yaml]: yamlMenuList,
-    [RulesetFormat.Mrs]: mrsMenuList,
+    [RulesetFormat.Yaml]: [addToProfileMenu, ...yamlMenuList],
+    [RulesetFormat.Mrs]: [addToProfileMenu],
   }[r.format].map((v) => ({ ...v, handler: () => v.handler?.(r.id) }))
 }
 
