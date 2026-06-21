@@ -37,7 +37,12 @@ const envStore = useEnvStore()
       class="px-8 py-12 flex items-center justify-between gap-16"
     >
       <div class="text-16 font-bold">{{ $t('settings.systemProxyDNS') }}</div>
-      <Input v-model="appSettings.app.systemProxyDNS" editable placeholder="1.1.1.1,8.8.8.8" />
+      <Input
+        v-model="appSettings.app.systemProxyDNS"
+        clearable
+        editable
+        placeholder="1.1.1.1,8.8.8.8"
+      />
     </div>
     <div
       v-platform="[OS.Darwin, OS.Linux]"
@@ -47,6 +52,7 @@ const envStore = useEnvStore()
       <Input
         v-model="appSettings.app.systemDefaultDNS"
         editable
+        clearable
         placeholder="192.168.1.1,10.0.0.1"
       />
     </div>

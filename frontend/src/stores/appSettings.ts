@@ -231,6 +231,11 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
         envStore.setSystemProxy().catch((err) => message.error(err))
       }
     },
+    systemDNS() {
+      if (app.value.autoSetSystemDNS) {
+        envStore.setSystemDNS(envStore.systemDNSSet).catch((err) => message.error(err))
+      }
+    },
   }
 
   /* Apply AppSettings */
@@ -305,6 +310,15 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
     applyAppSettings.systemProxyBypass()
   }, 3000)
   watch(() => [app.value.proxyBypassList, app.value.systemProxyServices], setSystemProxyBypass)
+
+  /* Apply SystemDNS */
+  const setSystemDNS = debounce(() => {
+    applyAppSettings.systemDNS()
+  }, 3000)
+  watch(
+    () => [app.value.systemProxyServices, app.value.systemProxyDNS, app.value.systemDefaultDNS],
+    setSystemDNS,
+  )
 
   return { setupAppSettings, app, themeMode }
 })
