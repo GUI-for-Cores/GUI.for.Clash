@@ -20,7 +20,7 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const rules = defineModel<IProfile['rulesConfig']>({ default: [] })
+const rules = defineModel<IProfile['rulesConfig']>({ default: () => [] })
 
 let updateRuleId = 0
 const showModal = ref(false)

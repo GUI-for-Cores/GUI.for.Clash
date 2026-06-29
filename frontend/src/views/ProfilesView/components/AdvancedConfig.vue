@@ -15,7 +15,7 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const fields = defineModel<IProfile['advancedConfig']>({ default: AdvancedConfigDefaults() })
+const fields = defineModel<IProfile['advancedConfig']>({ default: AdvancedConfigDefaults })
 
 const { t } = useI18n()
 </script>

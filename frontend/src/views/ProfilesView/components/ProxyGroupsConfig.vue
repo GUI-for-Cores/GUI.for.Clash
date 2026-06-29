@@ -10,7 +10,7 @@ import { deepClone, sampleID, message } from '@/utils'
 
 type GroupsType = IProfile['proxyGroupsConfig']
 
-const groups = defineModel<GroupsType>({ default: [] })
+const groups = defineModel<GroupsType>({ default: () => [] })
 
 let updateGroupId = 0
 const showModal = ref(false)

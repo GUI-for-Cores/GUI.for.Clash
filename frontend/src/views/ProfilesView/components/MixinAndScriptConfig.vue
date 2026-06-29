@@ -10,10 +10,10 @@ const model = defineModel<{
   mixin: IProfile['mixinConfig']
   script: IProfile['scriptConfig']
 }>({
-  default: {
+  default: () => ({
     mixin: MixinConfigDefaults(),
     script: ScriptConfigDefaults(),
-  },
+  }),
 })
 
 const { t } = useI18n()

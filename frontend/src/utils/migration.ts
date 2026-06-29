@@ -35,7 +35,10 @@ export const migrateProfiles = async (profiles: IProfile[], save: () => Promise<
   if (needSync) await save()
 }
 
-export const migrateSubscribes = async (subscribes: Subscription[], save: () => Promise<string>) => {
+export const migrateSubscribes = async (
+  subscribes: Subscription[],
+  save: () => Promise<string>,
+) => {
   let needSync = false
 
   subscribes.forEach((subscribe) => {

@@ -13,7 +13,6 @@ import {
 import { RulesetBehavior, RulesetFormat, RuleType } from '@/enums/kernel'
 import { deepAssign, sampleID } from '@/utils'
 
-
 export const restoreProfile = (
   config: Record<string, any>,
   subID: string,

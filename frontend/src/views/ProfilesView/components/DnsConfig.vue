@@ -5,7 +5,7 @@ import { EnhancedModeOptions, FakeipFilterMode } from '@/constant/kernel'
 import { DnsConfigDefaults } from '@/constant/profile'
 import { useBool } from '@/hooks'
 
-const fields = defineModel<IProfile['dnsConfig']>({ default: DnsConfigDefaults() })
+const fields = defineModel<IProfile['dnsConfig']>({ default: DnsConfigDefaults })
 
 const { t } = useI18n()
 const [showMore, toggleMore] = useBool(false)

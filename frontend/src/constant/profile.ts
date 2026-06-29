@@ -2,7 +2,6 @@ import { ProxyGroup, RulesetBehavior, RulesetFormat, RuleType, TunStack } from '
 import i18n from '@/lang'
 import { generateSecureKey, sampleID } from '@/utils'
 
-
 import { DefaultTestURL } from './app'
 
 const { t } = i18n.global
