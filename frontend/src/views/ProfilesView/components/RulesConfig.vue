@@ -206,7 +206,7 @@ const showLost = () => message.warn('kernel.rules.notFound')
     </div>
     <div v-show="supportPayload" class="form-item">
       {{ t('kernel.rules.payload') }}
-      <CodeViewer
+      <CodeEditor
         v-if="fields.type === 'LOGIC'"
         v-model="fields.payload"
         editable
@@ -287,7 +287,7 @@ const showLost = () => message.warn('kernel.rules.notFound')
         {{ t('ruleset.behavior.name') }}
         <Select v-model="fields['ruleset-behavior']" :options="RulesetBehaviorOptions" />
       </div>
-      <CodeViewer v-model="fields['payload']" editable lang="yaml" />
+      <CodeEditor v-model="fields['payload']" editable lang="yaml" />
     </template>
   </Modal>
 </template>

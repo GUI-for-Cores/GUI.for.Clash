@@ -71,7 +71,7 @@ const markdownParser = new Marked({
     },
     code({ text, lang }) {
       const containerId = 'CodeViewer_' + sampleID()
-      const comp = h(CodeViewer, { editable: false, modelValue: text, lang: lang as any })
+      const comp = h(CodeViewer, { modelValue: text, lang })
       queueCustomComp(containerId, comp)
       return `<div id="${containerId}"></div>`
     },

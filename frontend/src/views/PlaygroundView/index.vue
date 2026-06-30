@@ -254,8 +254,11 @@ const onScheduledTaskSubmit = (ids: string[], scheduledTasks: unknown[]) => {
     />
   </div>
 
+  <h2>CodeEditor</h2>
+  <CodeEditor v-model="code" lang="javascript" editable />
+
   <h2>CodeViewer</h2>
-  <CodeViewer v-model="code" lang="javascript" editable />
+  <CodeViewer :model-value="code" lang="js" />
 
   <h2>Components</h2>
   <div>

@@ -79,5 +79,5 @@ defineExpose({ modalSlots })
 </script>
 
 <template>
-  <CodeViewer v-model="rulesetContent" lang="yaml" editable class="h-full" />
+  <CodeEditor v-model="rulesetContent" lang="yaml" editable class="h-full" />
 </template>

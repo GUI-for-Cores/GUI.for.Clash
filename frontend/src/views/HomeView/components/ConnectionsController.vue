@@ -384,7 +384,7 @@ onUnmounted(() => {
     max-width="80"
     mask-closable
   >
-    <CodeViewer v-model="details" />
+    <CodeEditor v-model="details" />
   </Modal>
 
   <Modal
