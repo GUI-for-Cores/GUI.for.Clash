@@ -8,7 +8,7 @@ import { ProxyGroup } from '@/enums/kernel'
 import { useSubscribesStore } from '@/stores'
 import { deepClone, sampleID, message } from '@/utils'
 
-type GroupsType = IProfile['proxyGroupsConfig']
+type GroupsType = App.Profile['proxyGroupsConfig']
 
 const groups = defineModel<GroupsType>({ default: () => [] })
 
@@ -162,7 +162,9 @@ const isInuse = (groupID: string, proxyID: string) => {
 }
 
 const isSupportInverval = computed(() =>
-  [ProxyGroup.UrlTest, ProxyGroup.Fallback, ProxyGroup.LoadBalance].includes(fields.value.type),
+  ([ProxyGroup.UrlTest, ProxyGroup.Fallback, ProxyGroup.LoadBalance] as App.ProxyGroup[]).includes(
+    fields.value.type,
+  ),
 )
 
 const hasLost = (g: GroupsType[0]) => {

@@ -9,10 +9,9 @@ import { ScheduledTasksType, PluginTriggerEvent } from '@/enums/app'
 import { useSubscribesStore, useRulesetsStore, usePluginsStore, useLogsStore } from '@/stores'
 import { ignoredError, stringifyNoFolding } from '@/utils'
 
-import type { ScheduledTask } from '@/types/app'
 
 export const useScheduledTasksStore = defineStore('scheduledtasks', () => {
-  const scheduledtasks = ref<ScheduledTask[]>([])
+  const scheduledtasks = ref<App.ScheduledTask[]>([])
   const cronJobsMap: Recordable<Cron> = {}
 
   const setupScheduledTasks = async () => {
@@ -74,7 +73,7 @@ export const useScheduledTasksStore = defineStore('scheduledtasks', () => {
     }
   }
 
-  const getTaskFn = (task: ScheduledTask) => {
+  const getTaskFn = (task: App.ScheduledTask) => {
     switch (task.type) {
       case ScheduledTasksType.UpdateSubscription: {
         const subscribesStore = useSubscribesStore()
@@ -110,13 +109,14 @@ export const useScheduledTasksStore = defineStore('scheduledtasks', () => {
         return withOutput([task.script], (script: string) => new window.AsyncFunction(script)())
       }
     }
+    throw new Error(`Unknown scheduled task type: ${task.type}`)
   }
 
   const saveScheduledTasks = () => {
     return WriteFile(ScheduledTasksFilePath, stringifyNoFolding(scheduledtasks.value))
   }
 
-  const addScheduledTask = async (s: ScheduledTask) => {
+  const addScheduledTask = async (s: App.ScheduledTask) => {
     scheduledtasks.value.push(s)
     try {
       cronJobsMap[s.id] = new Cron(s.cron, () => runScheduledTask(s.id))
@@ -146,7 +146,7 @@ export const useScheduledTasksStore = defineStore('scheduledtasks', () => {
     }
   }
 
-  const editScheduledTask = async (id: string, s: ScheduledTask) => {
+  const editScheduledTask = async (id: string, s: App.ScheduledTask) => {
     const idx = scheduledtasks.value.findIndex((v) => v.id === id)
     if (idx === -1) return
     const backup = scheduledtasks.value.splice(idx, 1, s)[0]!

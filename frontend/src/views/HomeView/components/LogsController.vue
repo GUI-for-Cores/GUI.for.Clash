@@ -17,7 +17,6 @@ import {
 
 import { type PickerItem } from '@/components/Picker/index.vue'
 
-import type { Menu } from '@/types/app'
 
 const logType = ref<'error' | 'warning' | 'info' | 'debug'>('info')
 const keywords = ref('')
@@ -39,7 +38,7 @@ const filteredLogs = computed(() => {
   })
 })
 
-const menus: Menu[] = (
+const menus: App.Menu[] = (
   [
     ['home.connections.addToDirect', 'direct'],
     ['home.connections.addToProxy', 'proxy'],

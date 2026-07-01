@@ -10,12 +10,12 @@ import { AdvancedConfigDefaults } from '@/constant/profile'
 import { generateSecureKey } from '@/utils'
 
 interface Props {
-  profile: IProfile
+  profile: App.Profile
 }
 
 const props = defineProps<Props>()
 
-const fields = defineModel<IProfile['advancedConfig']>({ default: AdvancedConfigDefaults })
+const fields = defineModel<App.Profile['advancedConfig']>({ default: AdvancedConfigDefaults })
 
 const { t } = useI18n()
 </script>

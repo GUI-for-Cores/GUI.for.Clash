@@ -7,8 +7,8 @@ import { MixinConfigDefaults, ScriptConfigDefaults } from '@/constant/profile'
 import { message } from '@/utils'
 
 const model = defineModel<{
-  mixin: IProfile['mixinConfig']
-  script: IProfile['scriptConfig']
+  mixin: App.Profile['mixinConfig']
+  script: App.Profile['scriptConfig']
 }>({
   default: () => ({
     mixin: MixinConfigDefaults(),

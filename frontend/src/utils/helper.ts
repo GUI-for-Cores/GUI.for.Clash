@@ -147,7 +147,7 @@ const requestProxyCache: { proxyPromise: Promise<string> | null; lastAccessTime:
   lastAccessTime: 0,
 }
 
-export const GetRequestProxy = async (mode?: RequestProxyMode, customProxy?: string) => {
+export const GetRequestProxy = async (mode?: App.RequestProxyMode, customProxy?: string) => {
   const appSettings = useAppSettingsStore()
   const requestProxyMode = mode ?? appSettings.app.requestProxyMode
 

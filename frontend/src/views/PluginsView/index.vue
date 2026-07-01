@@ -11,15 +11,13 @@ import { debounce, deepClone, message } from '@/utils'
 import Button from '@/components/Button/index.vue'
 import { useModal } from '@/components/Modal'
 
-import type { Menu, Plugin } from '@/types/app'
-
 import PluginChangelog from './components/PluginChangelog.vue'
 import PluginConfigurator from './components/PluginConfigurator.vue'
 import PluginForm from './components/PluginForm.vue'
 import PluginHub from './components/PluginHub.vue'
 import PluginView from './components/PluginView.vue'
 
-const menuList: Menu[] = [
+const menuList: App.Menu[] = [
   {
     label: 'plugins.reload',
     handler: async (id: string) => {
@@ -94,7 +92,7 @@ const handleUpdatePlugins = async () => {
   }
 }
 
-const handleUpdatePlugin = async (s: Plugin) => {
+const handleUpdatePlugin = async (s: App.Plugin) => {
   try {
     await pluginsStore.updatePlugin(s.id)
   } catch (error: any) {
@@ -103,7 +101,7 @@ const handleUpdatePlugin = async (s: Plugin) => {
   }
 }
 
-const handleDeletePlugin = async (p: Plugin) => {
+const handleDeletePlugin = async (p: App.Plugin) => {
   try {
     await pluginsStore.deletePlugin(p.id)
   } catch (error: any) {
@@ -112,7 +110,7 @@ const handleDeletePlugin = async (p: Plugin) => {
   }
 }
 
-const handleDisablePlugin = async (p: Plugin) => {
+const handleDisablePlugin = async (p: App.Plugin) => {
   const nextPlugin = deepClone(p)
   nextPlugin.disabled = !nextPlugin.disabled
 
@@ -141,7 +139,7 @@ const handleViewChangelog = (id: string) => {
   modalApi.setContent(PluginChangelog, { id }).open()
 }
 
-const handleOnRun = async (p: Plugin) => {
+const handleOnRun = async (p: App.Plugin) => {
   p.running = true
   try {
     await pluginsStore.manualTrigger(p.id, PluginTriggerEvent.OnManual)
@@ -151,8 +149,8 @@ const handleOnRun = async (p: Plugin) => {
   p.running = false
 }
 
-const generateMenus = (p: Plugin) => {
-  const builtInMenus: Menu[] = menuList.map((v) => ({ ...v, handler: () => v.handler?.(p.id) }))
+const generateMenus = (p: App.Plugin) => {
+  const builtInMenus: App.Menu[] = menuList.map((v) => ({ ...v, handler: () => v.handler?.(p.id) }))
 
   if (p.configuration.length) {
     builtInMenus.push({
@@ -171,7 +169,7 @@ const generateMenus = (p: Plugin) => {
     })
   }
 
-  const pluginMenus: Menu[] = Object.entries(p.menus).map(([title, fn]) => ({
+  const pluginMenus: App.Menu[] = Object.entries(p.menus).map(([title, fn]) => ({
     label: title,
     handler: async () => {
       try {

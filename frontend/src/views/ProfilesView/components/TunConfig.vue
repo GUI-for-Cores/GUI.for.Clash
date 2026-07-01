@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { StackOptions } from '@/constant/kernel'
 import { TunConfigDefaults } from '@/constant/profile'
 
-const fields = defineModel<IProfile['tunConfig']>({ default: TunConfigDefaults })
+const fields = defineModel<App.Profile['tunConfig']>({ default: TunConfigDefaults })
 
 const { t } = useI18n()
 </script>

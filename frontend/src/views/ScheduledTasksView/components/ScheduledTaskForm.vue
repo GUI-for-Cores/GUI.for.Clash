@@ -15,7 +15,6 @@ import { alert, deepClone, formatDate, isValidCron, message, sampleID } from '@/
 
 import Button from '@/components/Button/index.vue'
 
-import type { ScheduledTask } from '@/types/app'
 
 interface Props {
   id?: string
@@ -25,7 +24,7 @@ const props = defineProps<Props>()
 
 const loading = ref(false)
 
-const task = ref<ScheduledTask>({
+const task = ref<App.ScheduledTask>({
   id: sampleID(),
   name: '',
   type: ScheduledTasksType.RunScript,

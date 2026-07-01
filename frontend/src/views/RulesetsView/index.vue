@@ -8,7 +8,6 @@ import { BuiltInOutbound } from '@/constant/kernel'
 import { View } from '@/enums/app'
 import { RulesetBehavior, RulesetFormat, RuleType } from '@/enums/kernel'
 import {
-  type RuleSet,
   useRulesetsStore,
   useAppSettingsStore,
   useEnvStore,
@@ -28,13 +27,12 @@ import {
 
 import { useModal } from '@/components/Modal'
 
-import type { Menu } from '@/types/app'
 
 import RulesetForm from './components/RulesetForm.vue'
 import RulesetHub from './components/RulesetHub.vue'
 import RulesetView from './components/RulesetView.vue'
 
-const yamlMenuList: Menu[] = [
+const yamlMenuList: App.Menu[] = [
   {
     label: 'rulesets.editRuleset',
     handler: (id: string) => handleEditRulesetList(id),
@@ -102,7 +100,7 @@ const handleEditRulesetList = (id: string) => {
   modalApi.open()
 }
 
-const handleUpdateRuleset = async (r: RuleSet) => {
+const handleUpdateRuleset = async (r: App.RuleSet) => {
   try {
     await rulesetsStore.updateRuleset(r.id)
   } catch (error: any) {
@@ -111,7 +109,7 @@ const handleUpdateRuleset = async (r: RuleSet) => {
   }
 }
 
-const handleDeleteRuleset = async (r: RuleSet) => {
+const handleDeleteRuleset = async (r: App.RuleSet) => {
   try {
     await ignoredError(RemoveFile, r.path)
     await rulesetsStore.deleteRuleset(r.id)
@@ -121,7 +119,7 @@ const handleDeleteRuleset = async (r: RuleSet) => {
   }
 }
 
-const handleDisableRuleset = async (r: RuleSet) => {
+const handleDisableRuleset = async (r: App.RuleSet) => {
   r.disabled = !r.disabled
   rulesetsStore.editRuleset(r.id, r)
 }
@@ -200,8 +198,8 @@ const handleAddRulesetToProfile = async (id: string) => {
   }
 }
 
-const generateMenus = (r: RuleSet) => {
-  const addToProfileMenu: Menu = {
+const generateMenus = (r: App.RuleSet) => {
+  const addToProfileMenu: App.Menu = {
     label: 'rulesets.addToProfile',
     handler: (id: string) => handleAddRulesetToProfile(id),
   }

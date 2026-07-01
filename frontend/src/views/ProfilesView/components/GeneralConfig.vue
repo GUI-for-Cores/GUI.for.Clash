@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { ModeOptions, LogLevelOptions } from '@/constant/kernel'
 import { GeneralConfigDefaults } from '@/constant/profile'
 
-const fields = defineModel<IProfile['generalConfig']>({ default: GeneralConfigDefaults })
+const fields = defineModel<App.Profile['generalConfig']>({ default: GeneralConfigDefaults })
 
 const { t } = useI18n()
 </script>

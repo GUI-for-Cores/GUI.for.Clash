@@ -60,7 +60,7 @@ const stepItems = [
   { title: 'profile.step.mixin-script' },
 ]
 
-const profile = ref<IProfile>(profilesStore.getProfileTemplate())
+const profile = ref<App.Profile>(profilesStore.getProfileTemplate())
 
 const mixinAndScriptConfig = computed({
   get() {

@@ -18,10 +18,9 @@ import {
 
 import Button from '@/components/Button/index.vue'
 
-import type { Menu, Subscription } from '@/types/app'
 
 interface Props {
-  sub: Subscription
+  sub: App.Subscription
 }
 
 const props = defineProps<Props>()
@@ -59,10 +58,10 @@ const filteredProxies = computed(() => {
   })
 })
 
-const menus: Menu[] = [
+const menus: App.Menu[] = [
   {
     label: 'common.details',
-    handler: async (record: Subscription['proxies'][0]) => {
+    handler: async (record: App.Subscription['proxies'][0]) => {
       try {
         const proxy = await getProxyByName(record.name)
         details.value = stringifyNoFolding(proxy)
@@ -75,7 +74,7 @@ const menus: Menu[] = [
   },
   {
     label: 'common.copy',
-    handler: async (record: Subscription['proxies'][0]) => {
+    handler: async (record: App.Subscription['proxies'][0]) => {
       try {
         const proxy = await getProxyByName(record.name)
         await ClipboardSetText(stringifyNoFolding(proxy))
@@ -87,7 +86,7 @@ const menus: Menu[] = [
   },
   {
     label: 'common.edit',
-    handler: async (record: Subscription['proxies'][0]) => {
+    handler: async (record: App.Subscription['proxies'][0]) => {
       try {
         const proxy = await getProxyByName(record.name)
         details.value = stringifyNoFolding(proxy)

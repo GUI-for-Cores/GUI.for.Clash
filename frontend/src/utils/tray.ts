@@ -27,7 +27,6 @@ import {
   APP_VERSION,
 } from '@/utils'
 
-import type { MenuItem } from '@/types/app'
 
 const getTrayIcons = () => {
   const envStore = useEnvStore()
@@ -49,7 +48,7 @@ const getTrayIcons = () => {
   return icon
 }
 
-const generateUniqueEventsForMenu = (menus: MenuItem[]) => {
+const generateUniqueEventsForMenu = (menus: App.MenuItem[]) => {
   const { t } = i18n.global
   const MenuItemHandlerMap: Recordable<() => void> = {}
 
@@ -57,7 +56,7 @@ const generateUniqueEventsForMenu = (menus: MenuItem[]) => {
   EventsOn('onMenuItemClick', (id) => MenuItemHandlerMap[id]?.())
 
   let index = 0
-  function processMenu(menu: MenuItem) {
+  function processMenu(menu: App.MenuItem) {
     const _menu = { ...menu, text: t(menu.text || ''), tooltip: t(menu.tooltip || '') }
     const { event, children } = menu
 
@@ -84,10 +83,10 @@ const getTrayMenus = () => {
   const kernelApiStore = useKernelApiStore()
   const pluginsStore = usePluginsStore()
 
-  let pluginMenus: MenuItem[] = []
+  let pluginMenus: App.MenuItem[] = []
   let pluginMenusHidden = !appSettings.app.addPluginToMenu
 
-  let groupMenus: MenuItem[] = []
+  let groupMenus: App.MenuItem[] = []
   const groupMenusHidden = !appSettings.app.addGroupToMenu
 
   const { proxies } = kernelApiStore
@@ -176,7 +175,7 @@ const getTrayMenus = () => {
     })
   }
 
-  const trayMenus: MenuItem[] = [
+  const trayMenus: App.MenuItem[] = [
     {
       type: 'item',
       text: 'tray.showMainWindow',
