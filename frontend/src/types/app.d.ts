@@ -1,64 +1,17 @@
 declare namespace App {
   type OS = 'windows' | 'linux' | 'darwin'
-  type Lang = 'en' | 'zh'
   type Theme = 'auto' | 'light' | 'dark'
   type Color = 'default' | 'green' | 'purple' | 'custom'
   type View = 'grid' | 'list'
-  type WindowStartState = 0 | 2
-  type WebviewGpuPolicy = 0 | 1 | 2
-  type Branch = 'main' | 'alpha'
-  type ControllerCloseMode = 'all' | 'button'
+  type WindowStartState =
+    | 0 // Normal
+    | 2 // Minimised
+  type WebviewGpuPolicy =
+    | 0 // Always
+    | 1 // OnDemand
+    | 2 // Never
   type RequestProxyMode = 'global' | 'none' | 'system' | 'kernel' | 'custom'
-  type PluginTrigger =
-    | 'on::enabled'
-    | 'on::disabled'
-    | 'on::manual'
-    | 'on::subscribe'
-    | 'on::generate'
-    | 'on::startup'
-    | 'on::shutdown'
-    | 'on::ready'
-    | 'on::reload'
-    | 'on::core::started'
-    | 'on::core::stopped'
-    | 'on::before::core::start'
-    | 'on::before::core::stop'
-    | 'on::tray::update'
-  type ScheduledTasksType =
-    | 'update::subscription'
-    | 'update::ruleset'
-    | 'update::plugin'
-    | 'update::all::subscription'
-    | 'update::all::ruleset'
-    | 'update::all::plugin'
-    | 'run::plugin'
-    | 'run::script'
   type RequestMethod = 'GET' | 'POST' | 'DELETE' | 'PUT' | 'HEAD' | 'PATCH'
-
-  type ProxyGroup = 'select' | 'url-test' | 'fallback' | 'load-balance'
-  type RulesetBehavior = 'domain' | 'ipcidr' | 'classical'
-  type RulesetFormat = 'yaml' | 'mrs'
-  type RuleType =
-    | 'DOMAIN'
-    | 'DOMAIN-SUFFIX'
-    | 'DOMAIN-KEYWORD'
-    | 'DOMAIN-REGEX'
-    | 'IP-CIDR'
-    | 'IP-CIDR6'
-    | 'IP-ASN'
-    | 'SRC-IP-CIDR'
-    | 'SRC-PORT'
-    | 'DST-PORT'
-    | 'PROCESS-NAME'
-    | 'PROCESS-PATH'
-    | 'RULE-SET'
-    | 'LOGIC'
-    | 'GEOIP'
-    | 'GEOSITE'
-    | 'SCRIPT'
-    | 'MATCH'
-    | 'inline'
-    | 'InsertionPoint'
 
   interface AppEnv {
     appName: string
@@ -95,7 +48,7 @@ declare namespace App {
   }
 
   type AppSettings = {
-    lang: Lang | string
+    lang: 'en' | 'zh' | string
     theme: Theme
     color: Color
     primaryColor: string
@@ -131,7 +84,7 @@ declare namespace App {
     }
     kernel: {
       realMemoryUsage: boolean
-      branch: Branch
+      branch: 'main' | 'alpha'
       profile: string
       autoClose: boolean
       unAvailable: boolean
@@ -141,7 +94,7 @@ declare namespace App {
       testUrl: string
       testTimeout: number
       concurrencyLimit: number
-      controllerCloseMode: ControllerCloseMode
+      controllerCloseMode: 'all' | 'button'
       controllerSensitivity: number
       main: {
         env: Recordable
@@ -171,27 +124,6 @@ declare namespace App {
     pages: string[]
   }
 
-  interface PluginConfiguration {
-    id: string
-    title: string
-    description: string
-    key: string
-    component:
-      | 'CheckBox'
-      | 'CodeEditor'
-      | 'Input'
-      | 'InputList'
-      | 'KeyValueEditor'
-      | 'Radio'
-      | 'Select'
-      | 'MultipleSelect'
-      | 'Switch'
-      | 'ColorPicker'
-      | ''
-    value: any
-    options: any[]
-  }
-
   interface Plugin {
     id: string
     version: string
@@ -200,7 +132,22 @@ declare namespace App {
     type: 'Http' | 'File'
     url: string
     path: string
-    triggers: PluginTrigger[]
+    triggers: (
+      | 'on::enabled'
+      | 'on::disabled'
+      | 'on::manual'
+      | 'on::subscribe'
+      | 'on::generate'
+      | 'on::startup'
+      | 'on::shutdown'
+      | 'on::ready'
+      | 'on::reload'
+      | 'on::core::started'
+      | 'on::core::stopped'
+      | 'on::before::core::start'
+      | 'on::before::core::stop'
+      | 'on::tray::update'
+    )[]
     tags: string[]
     hasUI: boolean
     group: string
@@ -212,27 +159,32 @@ declare namespace App {
       plugins: Recordable
       scheduledtasks: Recordable
     }
-    configuration: PluginConfiguration[]
+    configuration: {
+      id: string
+      title: string
+      description: string
+      key: string
+      component:
+        | 'CheckBox'
+        | 'CodeEditor'
+        | 'Input'
+        | 'InputList'
+        | 'KeyValueEditor'
+        | 'Radio'
+        | 'Select'
+        | 'MultipleSelect'
+        | 'Switch'
+        | 'ColorPicker'
+        | ''
+      value: any
+      options: any[]
+    }[]
     disabled: boolean
     status: number // 0: Normal 1: Running 2: Stopped
     // Not Config
     updating?: boolean
     loading?: boolean
     running?: boolean
-  }
-
-  interface ScheduledTask {
-    id: string
-    name: string
-    type: ScheduledTasksType
-    subscriptions: string[]
-    rulesets: string[]
-    plugins: string[]
-    script: string
-    cron: string
-    notification: boolean
-    disabled: boolean
-    lastTime: number
   }
 
   interface Subscription {
@@ -289,6 +241,75 @@ declare namespace App {
     geoip: string
     list: { name: string; type: 'geosite' | 'geoip'; description: string; count: number }[]
   }
+
+  interface ScheduledTask {
+    id: string
+    name: string
+    type:
+      | 'update::subscription'
+      | 'update::ruleset'
+      | 'update::plugin'
+      | 'update::all::subscription'
+      | 'update::all::ruleset'
+      | 'update::all::plugin'
+      | 'run::plugin'
+      | 'run::script'
+    subscriptions: string[]
+    rulesets: string[]
+    plugins: string[]
+    script: string
+    cron: string
+    notification: boolean
+    disabled: boolean
+    lastTime: number
+  }
+
+  interface CustomActionApi {
+    h: typeof import('vue').h
+    ref: typeof import('vue').ref
+  }
+
+  type CustomActionProps = Recordable
+  type CustomActionSlot = import('vue').VNode | string | number | boolean
+  type CustomActionSlots = Recordable<
+    ((api: CustomActionApi) => CustomActionSlot) | CustomActionSlot
+  >
+
+  interface CustomAction<P = CustomActionProps, S = CustomActionSlots> {
+    id?: string
+    component: string
+    componentProps?: P | ((api: CustomActionApi) => P)
+    componentSlots?: S | ((api: CustomActionApi) => S)
+  }
+
+  type CustomActionFn = ((api: CustomActionApi) => CustomAction) & {
+    id?: string
+  }
+
+  type ProxyGroup = 'select' | 'url-test' | 'fallback' | 'load-balance'
+  type RulesetBehavior = 'domain' | 'ipcidr' | 'classical'
+  type RulesetFormat = 'yaml' | 'mrs'
+  type RuleType =
+    | 'DOMAIN'
+    | 'DOMAIN-SUFFIX'
+    | 'DOMAIN-KEYWORD'
+    | 'DOMAIN-REGEX'
+    | 'IP-CIDR'
+    | 'IP-CIDR6'
+    | 'IP-ASN'
+    | 'SRC-IP-CIDR'
+    | 'SRC-PORT'
+    | 'DST-PORT'
+    | 'PROCESS-NAME'
+    | 'PROCESS-PATH'
+    | 'RULE-SET'
+    | 'LOGIC'
+    | 'GEOIP'
+    | 'GEOSITE'
+    | 'SCRIPT'
+    | 'MATCH'
+    | 'inline'
+    | 'InsertionPoint'
 
   interface Profile {
     id: string
@@ -446,25 +467,5 @@ declare namespace App {
     scriptConfig: {
       code: string
     }
-  }
-
-  interface CustomActionApi {
-    h: typeof import('vue').h
-    ref: typeof import('vue').ref
-  }
-
-  type CustomActionProps = Recordable
-  type CustomActionSlot = import('vue').VNode | string | number | boolean
-  type CustomActionSlots = Recordable<((api: CustomActionApi) => CustomActionSlot) | CustomActionSlot>
-
-  interface CustomAction<P = CustomActionProps, S = CustomActionSlots> {
-    id?: string
-    component: string
-    componentProps?: P | ((api: CustomActionApi) => P)
-    componentSlots?: S | ((api: CustomActionApi) => S)
-  }
-
-  type CustomActionFn = ((api: CustomActionApi) => CustomAction) & {
-    id?: string
   }
 }

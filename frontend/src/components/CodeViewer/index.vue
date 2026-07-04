@@ -116,7 +116,8 @@ const onCopy = async () => {
 .code-block-code {
   font-family: monaco, Consolas, Menlo, Courier, monospace;
   font-size: 14px;
-  white-space: pre;
+  white-space: pre-wrap;
+  word-break: break-all;
 }
 
 :deep(.token.comment),

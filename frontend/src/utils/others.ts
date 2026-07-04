@@ -2,7 +2,10 @@ import { stringify } from 'yaml'
 
 import { OS } from '@/enums/app'
 import { useAppSettingsStore } from '@/stores'
+import appDts from '@/types/app.d.ts?raw'
 import { APP_TITLE, APP_VERSION, isValidIPv4, isValidIPv6 } from '@/utils'
+
+export const getAppDts = () => appDts
 
 export const deepClone = <T>(json: T): T => JSON.parse(JSON.stringify(json))
 
