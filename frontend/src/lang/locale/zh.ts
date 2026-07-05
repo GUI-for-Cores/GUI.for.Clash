@@ -54,6 +54,9 @@ export default {
     downloading: '下载中...',
     empty: '数据为空',
     pressAgainToClose: '再按一次关闭弹窗',
+    modalList: '模态框列表',
+    openAll: '打开所有',
+    minimizeAll: '最小化所有',
   },
   kernel: {
     port: 'HTTP(s)代理端口',

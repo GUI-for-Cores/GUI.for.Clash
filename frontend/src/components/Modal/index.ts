@@ -15,6 +15,7 @@ export const useModal = (options: Partial<ModalProps>, contents: ModalSlots = {}
   const open = ref(false)
   const props = ref(options)
   const slots = ref(contents)
+  const modalRef = ref<InstanceType<typeof Modal>>()
 
   if ('component' in options && options.component) {
     console.warn(
@@ -28,6 +29,7 @@ export const useModal = (options: Partial<ModalProps>, contents: ModalSlots = {}
       const mergedProps = computed(() => ({
         ...props.value,
         ...ctx.attrs,
+        ref: modalRef,
         open: open.value,
         'onUpdate:open': (val: boolean) => (open.value = val),
       }))
@@ -37,7 +39,13 @@ export const useModal = (options: Partial<ModalProps>, contents: ModalSlots = {}
 
   const api = {
     open: () => (open.value = true),
-    close: () => (open.value = false),
+    close: () => {
+      modalRef.value?.handleCancel()
+    },
+    destroy() {
+      this.patchProps({ destroyOnClose: true })
+      this.close()
+    },
     setProps(options: Partial<ModalProps> & Recordable) {
       props.value = options
       return this

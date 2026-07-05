@@ -13,10 +13,8 @@ import {
   ignoredError,
   formatDate,
   message,
+  modal,
 } from '@/utils'
-
-import { useModal } from '@/components/Modal'
-
 
 import ProxiesEditor from './components/ProxiesEditor.vue'
 import ProxiesView from './components/ProxiesView.vue'
@@ -45,8 +43,8 @@ const menuList: App.Menu[] = [
   {
     label: 'subscribes.script',
     handler: async (id: string) => {
-      modalApi.setProps({ title: 'common.edit', width: '90' })
-      modalApi.setContent(SubscribeScript, { id }).open()
+      const m = modal({ title: 'common.edit', width: '90' })
+      m.setContent(SubscribeScript, { id }).open()
     },
   },
   {
@@ -78,7 +76,6 @@ const menuList: App.Menu[] = [
 ]
 
 const { t } = useI18n()
-const [Modal, modalApi] = useModal({})
 const appStore = useAppStore()
 const subscribeStore = useSubscribesStore()
 const appSettingsStore = useAppSettingsStore()
@@ -134,11 +131,11 @@ const generateMenus = (subscription: App.Subscription) => {
 }
 
 const handleShowSubForm = (id?: string) => {
-  modalApi.setProps({
+  const m = modal({
     title: id ? 'common.edit' : 'common.add',
     minWidth: '70',
   })
-  modalApi.setContent(SubscribeForm, { id }).open()
+  m.setContent(SubscribeForm, { id }).open()
 }
 
 const handleUpdateSubs = async () => {
@@ -154,8 +151,8 @@ const handleUpdateSubs = async () => {
 const handleEditProxies = (id: string, editor = false) => {
   const sub = subscribeStore.getSubscribeById(id)
   if (sub) {
-    modalApi.setProps({ title: sub.name, height: '90', width: '90' })
-    modalApi.setContent(editor ? ProxiesEditor : ProxiesView, { sub }).open()
+    const m = modal({ title: sub.name, height: '90', width: '90' })
+    m.setContent(editor ? ProxiesEditor : ProxiesView, { sub }).open()
   }
 }
 
@@ -370,8 +367,6 @@ const onSortUpdate = debounce(subscribeStore.saveSubscribes, 1000)
       </template>
     </Card>
   </div>
-
-  <Modal />
 </template>
 
 <style lang="less" scoped>

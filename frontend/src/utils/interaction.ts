@@ -1,4 +1,4 @@
-import { render, h, type VNode, nextTick } from 'vue'
+import { render, h, type VNode } from 'vue'
 
 import i18n from '@/lang'
 import { APP_TITLE, bindAppContext, normalizeErrorMessage, sampleID } from '@/utils'
@@ -296,23 +296,31 @@ export const confirm = (
 }
 
 export const modal = (options: ModalProps = {}, slots: ModalSlots = {}) => {
-  const [Modal, api] = useModal(options, slots)
+  const id = 'Modal-' + sampleID()
+
+  const container = document.createElement('div')
+  container.id = id
+  container.dataset['title'] = options.title
+  document.body.appendChild(container)
+
+  const [Modal, api] = useModal(
+    {
+      ...options,
+      container: '#' + id,
+      afterDestroy() {
+        options.afterDestroy?.()
+        render(null, container)
+        container.remove()
+      },
+    },
+    slots,
+  )
   const vnode = h(Modal)
   bindAppContext(vnode)
 
-  const container = document.createElement('div')
-  document.body.appendChild(container)
   render(vnode, container)
 
-  const destroy = () => {
-    api.close()
-    nextTick(() => {
-      render(null, container)
-      container.remove()
-    })
-  }
-  const powerApi = { ...api, destroy }
-  return powerApi
+  return api
 }
 
 export const picker = new Picker()

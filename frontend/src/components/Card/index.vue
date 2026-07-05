@@ -23,15 +23,15 @@ const hasTitle = computed(() => {
   <div class="gui-card rounded-8 relative flex flex-col">
     <div v-if="hasTitle" class="card-header flex items-center break-all p-8">
       <slot name="title-prefix"></slot>
-      <div v-if="title" v-tips="title" class="card-header_title line-clamp-1 text-16 font-bold">
-        {{ title }}
+      <div v-if="title" v-tips="$t(title)" class="card-header_title line-clamp-1 text-16 font-bold">
+        {{ $t(title) }}
       </div>
       <slot name="title-suffix"></slot>
       <div class="card-header_extra flex items-center ml-auto">
         <slot name="extra"></slot>
       </div>
     </div>
-    <div v-if="subtitle" class="card-header_subtitle mx-8">{{ subtitle }}</div>
+    <div v-if="subtitle" class="card-header_subtitle mx-8">{{ $t(subtitle) }}</div>
     <div class="flex-1 px-8" :class="hasTitle ? 'pb-8' : ''">
       <slot></slot>
     </div>

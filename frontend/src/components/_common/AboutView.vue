@@ -34,7 +34,9 @@ const handleRestartApp = async () => {
   }
 }
 
-appStore.checkForUpdates()
+if (Date.now() - appStore.lastCheckTime > 60_000) {
+  appStore.checkForUpdates()
+}
 </script>
 
 <template>

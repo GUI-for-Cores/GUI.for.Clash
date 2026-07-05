@@ -3,11 +3,11 @@ export const IS_IN_MODAL = 'IS_IN_MODAL'
 </script>
 
 <script setup lang="ts">
-import { computed, provide, ref, watch } from 'vue'
+import { computed, markRaw, provide, ref, watch } from 'vue'
 
 import { useBool } from '@/hooks'
 import { useAppStore } from '@/stores'
-import { message } from '@/utils'
+import { message, sampleID } from '@/utils'
 
 export interface Props {
   title?: string
@@ -24,6 +24,8 @@ export interface Props {
   submitText?: string
   maskClosable?: boolean
   class?: string
+  container?: string
+  destroyOnClose?: boolean
   toolbar?: {
     maximize?: boolean
     minimize?: boolean
@@ -33,6 +35,7 @@ export interface Props {
   onCancel?: () => MaybePromise<boolean | void>
   beforeClose?: (isOk: boolean) => MaybePromise<boolean | void>
   afterClose?: (isOk: boolean) => void
+  afterDestroy?: () => void
 }
 
 export interface Slots {
@@ -61,6 +64,8 @@ const props = withDefaults(defineProps<Props>(), {
   submitText: 'common.save',
   maskClosable: false,
   class: undefined,
+  container: 'body',
+  destroyOnClose: true,
   toolbar: () => ({
     maximize: true,
     minimize: true,
@@ -69,19 +74,24 @@ const props = withDefaults(defineProps<Props>(), {
   onCancel: undefined,
   beforeClose: undefined,
   afterClose: undefined,
+  afterDestroy: undefined,
 })
 
 const open = defineModel<boolean>('open', { default: false })
 
+const hasOpened = ref(open.value)
 const cancelLoading = ref(false)
 const submitLoading = ref(false)
 
 const modalZindex = ref()
 const appStore = useAppStore()
 const [isMaximize, toggleMaximize] = useBool(false)
-// const [isMinimize, toggleMinimize] = useBool(false)
+const [isMinimize, toggleMinimize] = useBool(false)
 
-const handleAction = async (isOk: boolean) => {
+let resolveAfterLeave: () => void
+let afterLeavePromise: Promise<void>
+
+const handleAction = async (isOk: boolean, waitForAnimation = true) => {
   const loading = isOk ? submitLoading : cancelLoading
   const action = isOk ? props.onOk : props.onCancel
 
@@ -95,7 +105,22 @@ const handleAction = async (isOk: boolean) => {
   }
 
   open.value = false
+
+  if (waitForAnimation) {
+    afterLeavePromise = new Promise((r) => (resolveAfterLeave = r))
+    await afterLeavePromise
+  }
+
   props.afterClose?.(isOk)
+
+  if (props.destroyOnClose) {
+    props.afterDestroy?.()
+    removeMinimizedModal()
+  }
+}
+
+const onAfterLeave = () => {
+  resolveAfterLeave?.()
 }
 
 const handleSubmit = () => handleAction(true)
@@ -112,10 +137,15 @@ const contentStyle = computed(() => ({
   height: props.height + '%',
 }))
 
+const shouldRender = computed(() => open.value || isMinimize.value || hasOpened.value)
+
 let lastEscTime = 0
 let closeMessage: () => void
 
 const closeFn = () => {
+  if (isMinimize.value) {
+    return
+  }
   if (isMaximize.value) {
     toggleMaximize()
     return
@@ -136,11 +166,48 @@ const closeFn = () => {
   }
 }
 
+const minimizeModal = markRaw({
+  id: sampleID(),
+  title: () => props.title,
+  openFn: () => {
+    modalZindex.value = ++appStore.modalZIndexCounter
+    open.value = true
+    removeMinimizedModal()
+  },
+  minimizeFn: () => {
+    handleMinimize()
+  },
+  closeFn: () => {
+    handleAction(false, false)
+  },
+})
+
+const removeMinimizedModal = () => {
+  const idx = appStore.modalMinimized.findIndex((m) => m === minimizeModal)
+  if (idx !== -1) {
+    appStore.modalMinimized.splice(idx, 1)
+  }
+}
+
+const handleMinimize = () => {
+  const m = appStore.modalMinimized.includes(minimizeModal)
+  if (!m) {
+    appStore.modalMinimized.push(minimizeModal)
+  }
+  open.value = false
+  toggleMinimize()
+}
+
 watch(open, (v) => {
   if (v) {
+    hasOpened.value = true
+    isMinimize.value = false
     modalZindex.value = ++appStore.modalZIndexCounter
     appStore.modalStack.push(closeFn)
   } else {
+    if (!props.destroyOnClose) {
+      handleMinimize()
+    }
     closeMessage?.()
     const idx = appStore.modalStack.findIndex((fn) => fn === closeFn)
     if (idx !== -1) {
@@ -152,13 +219,16 @@ watch(open, (v) => {
 provide('cancel', handleCancel)
 provide('submit', handleSubmit)
 provide(IS_IN_MODAL, true)
+
+defineExpose({ handleCancel })
 </script>
 
 <template>
-  <Teleport to="body">
-    <Transition name="modal" :duration="200">
+  <Teleport :to="container">
+    <Transition name="modal" :duration="200" @after-leave="onAfterLeave">
       <div
-        v-if="open"
+        v-if="shouldRender"
+        v-show="open && !isMinimize"
         :style="{ zIndex: modalZindex }"
         class="gui-modal-mask fixed inset-0 flex items-center justify-center backdrop-blur-sm"
         style="--wails-draggable: drag"
@@ -181,7 +251,12 @@ provide(IS_IN_MODAL, true)
             </slot>
             <div class="ml-auto" style="--wails-draggable: false">
               <slot name="toolbar"></slot>
-              <!-- <Button v-if="toolbar.minimize" @click="toggleMinimize" icon="minimize" type="text" /> -->
+              <Button
+                v-if="toolbar.minimize"
+                icon="minimize2"
+                type="text"
+                @click="handleMinimize"
+              />
               <Button v-if="toolbar.maximize" type="text" @click="toggleMaximize">
                 <Icon
                   :class="{ maximize: isMaximize }"

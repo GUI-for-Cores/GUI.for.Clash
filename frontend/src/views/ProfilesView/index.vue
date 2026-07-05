@@ -20,15 +20,12 @@ import {
   stringifyNoFolding,
   message,
   alert,
+  modal,
 } from '@/utils'
-
-import { useModal } from '@/components/Modal'
-
 
 import ProfileForm from './components/ProfileForm.vue'
 
 const { t } = useI18n()
-const [Modal, modalApi] = useModal({})
 const appStore = useAppStore()
 const profilesStore = useProfilesStore()
 const subscribesStore = useSubscribesStore()
@@ -165,8 +162,8 @@ const generateMenus = (profile: App.Profile) => {
 }
 
 const handleShowProfileForm = (id?: string, step = 0) => {
-  modalApi.setProps({ minWidth: '70' })
-  modalApi.setContent(ProfileForm, { id, step }).open()
+  const m = modal({ title: id ? 'common.edit' : 'common.add', minWidth: '70' })
+  m.setContent(ProfileForm, { id, step }).open()
 }
 
 const handleDeleteProfile = async (p: App.Profile) => {
@@ -315,6 +312,4 @@ const onSortUpdate = debounce(profilesStore.saveProfiles, 1000)
       </div>
     </Card>
   </div>
-
-  <Modal />
 </template>

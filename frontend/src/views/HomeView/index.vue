@@ -5,9 +5,7 @@ import { useI18n } from 'vue-i18n'
 import logo from '@/assets/logo'
 import { ControllerCloseMode } from '@/enums/app'
 import { useAppSettingsStore, useProfilesStore, useKernelApiStore } from '@/stores'
-import { APP_TITLE, message, debounce } from '@/utils'
-
-import { useModal } from '@/components/Modal'
+import { APP_TITLE, message, debounce, modal } from '@/utils'
 
 import GroupsController from './components/GroupsController.vue'
 import KernelLogs from './components/KernelLogs.vue'
@@ -18,7 +16,6 @@ const showController = ref(false)
 const controllerRef = useTemplateRef('controllerRef')
 
 const { t } = useI18n()
-const [Modal, modalApi] = useModal({})
 
 const appSettingsStore = useAppSettingsStore()
 const profilesStore = useProfilesStore()
@@ -34,12 +31,11 @@ const handleStartKernel = async () => {
 }
 
 const handleShowQuickStart = () => {
-  modalApi.setProps({ title: 'subscribes.enterLink' })
-  modalApi.setContent(QuickStart).open()
+  modal({ title: 'subscribes.enterLink' }).setContent(QuickStart).open()
 }
 
 const handleShowKernelLogs = () => {
-  modalApi.setProps({
+  const m = modal({
     title: 'home.overview.viewlog',
     width: '90',
     height: '90',
@@ -47,7 +43,7 @@ const handleShowKernelLogs = () => {
     cancelText: 'common.close',
     maskClosable: true,
   })
-  modalApi.setContent(KernelLogs).open()
+  m.setContent(KernelLogs).open()
 }
 
 let scrollEventCount = 0
@@ -178,6 +174,4 @@ watch(showController, (v) => {
       />
     </template>
   </div>
-
-  <Modal />
 </template>

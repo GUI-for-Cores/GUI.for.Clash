@@ -2,7 +2,7 @@
 import * as Stores from '@/stores'
 import { message } from '@/utils'
 
-import { AboutView, CommandView } from '@/components'
+import { CommandView } from '@/components'
 
 interface Props {
   loading: boolean
@@ -20,19 +20,16 @@ const handleRestartCore = async () => {
     message.error(error instanceof Error ? error.message : String(error))
   }
 }
+
+const openAll = () => {
+  appStore.modalMinimized.forEach((m) => m.openFn())
+}
+const minimizeAll = () => {
+  appStore.modalMinimized.forEach((m) => m.minimizeFn())
+}
 </script>
 
 <template>
-  <Modal
-    v-model:open="appStore.showAbout"
-    :cancel="false"
-    :submit="false"
-    mask-closable
-    min-width="50"
-  >
-    <AboutView />
-  </Modal>
-
   <Menu
     v-model="appStore.menuShow"
     :position="appStore.menuPosition"
@@ -48,10 +45,38 @@ const handleRestartCore = async () => {
   <CommandView v-if="!loading" />
 
   <div
-    v-if="kernelApiStore.needRestart || kernelApiStore.restarting"
-    class="fixed right-32 bottom-32"
+    v-if="appStore.modalMinimized.length || kernelApiStore.needRestart || kernelApiStore.restarting"
+    class="fixed right-32 bottom-32 flex flex-col gap-8 z-9999"
   >
+    <Dropdown v-if="appStore.modalMinimized.length" placement="top">
+      <Button icon="adjust" class="shadow" />
+      <template #overlay>
+        <Card title="common.modalList">
+          <template v-if="false" #extra>
+            <Button size="small" type="link" @click="openAll">
+              {{ $t('common.openAll') }}
+            </Button>
+            <Button size="small" type="link" @click="minimizeAll">
+              {{ $t('common.minimizeAll') }}
+            </Button>
+          </template>
+          <div class="flex flex-col gap-4 p-4 min-w-128">
+            <div
+              v-for="modal in appStore.modalMinimized"
+              :key="modal.id"
+              class="flex items-center justify-between"
+            >
+              <Button class="flex-1" type="text" @click="modal.openFn">
+                {{ $t(modal.title()) }}
+              </Button>
+              <Button icon="close" type="text" size="small" @click="modal.closeFn" />
+            </div>
+          </div>
+        </Card>
+      </template>
+    </Dropdown>
     <Button
+      v-if="kernelApiStore.needRestart || kernelApiStore.restarting"
       v-tips="'home.overview.restart'"
       :loading="kernelApiStore.restarting"
       icon="restart"

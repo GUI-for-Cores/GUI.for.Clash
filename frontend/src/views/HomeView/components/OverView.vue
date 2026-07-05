@@ -5,9 +5,7 @@ import { useI18n } from 'vue-i18n'
 import { ProcessMemory } from '@/bridge'
 import { ModeOptions } from '@/constant/kernel'
 import { useEnvStore, useAppStore, useKernelApiStore, useAppSettingsStore } from '@/stores'
-import { formatBytes, handleChangeMode, message } from '@/utils'
-
-import { useModal } from '@/components/Modal'
+import { formatBytes, handleChangeMode, message, modal } from '@/utils'
 
 import CommonController from './CommonController.vue'
 import ConnectionsController from './ConnectionsController.vue'
@@ -25,7 +23,6 @@ const statistics = ref({
 })
 
 const { t } = useI18n()
-const [Modal, modalApi] = useModal({})
 const appStore = useAppStore()
 const envStore = useEnvStore()
 const appSettings = useAppSettingsStore()
@@ -50,7 +47,7 @@ const handleStopKernel = async () => {
 }
 
 const handleShowApiLogs = () => {
-  modalApi.setProps({
+  const m = modal({
     title: 'Logs',
     cancelText: 'common.close',
     width: '90',
@@ -58,11 +55,11 @@ const handleShowApiLogs = () => {
     submit: false,
     maskClosable: true,
   })
-  modalApi.setContent(LogsController).open()
+  m.setContent(LogsController).open()
 }
 
 const handleShowApiConnections = () => {
-  modalApi.setProps({
+  const m = modal({
     title: 'home.overview.connections',
     cancelText: 'common.close',
     width: '90',
@@ -70,7 +67,7 @@ const handleShowApiConnections = () => {
     submit: false,
     maskClosable: true,
   })
-  modalApi.setContent(ConnectionsController).open()
+  m.setContent(ConnectionsController).open()
 }
 
 const handleToggleRealMemoryUsage = () => {
@@ -78,14 +75,14 @@ const handleToggleRealMemoryUsage = () => {
 }
 
 const handleShowSettings = () => {
-  modalApi.setProps({
+  const m = modal({
     title: 'home.overview.settings',
     cancelText: 'common.close',
     width: '90',
     submit: false,
     maskClosable: true,
   })
-  modalApi.setContent(CommonController).open()
+  m.setContent(CommonController).open()
 }
 
 const onTunSwitchChange = async (enable: boolean) => {
@@ -263,6 +260,4 @@ onUnmounted(() => {
       </div>
     </div>
   </div>
-
-  <Modal />
 </template>
