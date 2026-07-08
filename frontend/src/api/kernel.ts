@@ -24,6 +24,7 @@ export enum Api {
   Configs = '/configs',
   Memory = '/memory',
   Proxies = '/proxies',
+  Providers = '/providers/proxies',
   ProxyDelay = '/proxies/{0}/delay',
   Connections = '/connections',
   Traffic = '/traffic',
@@ -125,6 +126,7 @@ export const probeApiAvailability = () => request.get('/version')
 export const getConfigs = () => request.get<CoreApiConfig>(Api.Configs)
 export const setConfigs = (body = {}) => request.patch<null>(Api.Configs, body)
 export const getProxies = () => request.get<CoreApiProxies>(Api.Proxies)
+export const getProviders = () => request.get<any>(Api.Providers)
 export const getConnections = () => request.get<CoreApiConnections>(Api.Connections)
 export const deleteConnection = (id: string) => request.delete<null>(Api.Connections + '/' + id)
 export const deleteGroupFixed = (group: string) => request.delete(Api.Proxies + '/' + group)
