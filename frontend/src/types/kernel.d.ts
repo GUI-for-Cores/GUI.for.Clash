@@ -22,6 +22,7 @@ export interface CoreApiProxy {
   type: string
   udp: boolean
   fixed: string
+  provider: string
   history: {
     delay: number
   }[]

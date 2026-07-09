@@ -26,6 +26,7 @@ export enum Api {
   Proxies = '/proxies',
   Providers = '/providers/proxies',
   ProxyDelay = '/proxies/{0}/delay',
+  ProviderProxyDelay = '/providers/proxies/{0}/{1}/healthcheck',
   Connections = '/connections',
   Traffic = '/traffic',
   Logs = '/logs',
@@ -133,11 +134,12 @@ export const deleteGroupFixed = (group: string) => request.delete(Api.Proxies + 
 export const useProxy = (group: string, proxy: string) => {
   return request.put<null>(Api.Proxies + '/' + group, { name: proxy })
 }
-export const getProxyDelay = (proxy: string, url: string, timeout: number) => {
-  return request.get<Record<string, number>>(Api.ProxyDelay.replace('{0}', proxy), {
-    url,
-    timeout,
-  })
+export const getProxyDelay = (provider: string, proxy: string, url: string, timeout: number) => {
+  const query = { url, timeout }
+  const path = provider
+    ? Api.ProviderProxyDelay.replace('{0}', provider).replace('{1}', proxy)
+    : Api.ProxyDelay.replace('{0}', proxy)
+  return request.get<Record<string, number>>(path, query)
 }
 export const updateGEO = () => request.post<{ message: string } | null>(Api.GEO)
 

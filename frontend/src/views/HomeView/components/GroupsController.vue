@@ -118,25 +118,26 @@ const handleGroupDelay = async (group: string) => {
     let success = 0
     let failure = 0
 
-    const delayTest = async (proxy: string) => {
+    const delayTest = async (name: string) => {
       index += 1
       update(`Testing... ${index} / ${_group.all.length}, success: ${success} failure: ${failure}`)
-      const _proxy = kernelApiStore.proxies[proxy]
+      const proxy = kernelApiStore.proxies[name]
       try {
-        loadingSet.value.add(proxy)
+        loadingSet.value.add(name)
         const { delay = 0 } = await getProxyDelay(
-          encodeURIComponent(proxy),
+          encodeURIComponent(proxy?.provider || ''),
+          encodeURIComponent(name),
           appSettings.app.kernel.testUrl || DefaultTestURL,
           appSettings.app.kernel.testTimeout || DefaultTestTimeout,
         )
         success += 1
-        _proxy && _proxy.history.push({ delay })
+        proxy && proxy.history.push({ delay })
       } catch {
         failure += 1
-        _proxy && _proxy.history.push({ delay: 0 })
+        proxy && proxy.history.push({ delay: 0 })
       }
       update(`Testing... ${index} / ${_group.all.length}, success: ${success} failure: ${failure}`)
-      loadingSet.value.delete(proxy)
+      loadingSet.value.delete(name)
     }
 
     loadingSet.value.add(group)
@@ -163,20 +164,21 @@ const handleGroupDelay = async (group: string) => {
   }
 }
 
-const handleProxyDelay = async (proxy: string) => {
-  loadingSet.value.add(proxy)
+const handleProxyDelay = async (name: string) => {
+  loadingSet.value.add(name)
   try {
+    const proxy = kernelApiStore.proxies[name]
     const { delay = 0 } = await getProxyDelay(
-      encodeURIComponent(proxy),
+      encodeURIComponent(proxy?.provider || ''),
+      encodeURIComponent(name),
       appSettings.app.kernel.testUrl || DefaultTestURL,
       appSettings.app.kernel.testTimeout || DefaultTestTimeout,
     )
-    const _proxy = kernelApiStore.proxies[proxy]
-    _proxy && _proxy.history.push({ delay })
+    proxy && proxy.history.push({ delay })
   } catch (error: any) {
-    message.error(error + ': ' + proxy)
+    message.error(error + ': ' + name)
   }
-  loadingSet.value.delete(proxy)
+  loadingSet.value.delete(name)
 }
 
 const handleRefresh = async () => {

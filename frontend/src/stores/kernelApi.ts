@@ -100,10 +100,11 @@ export const useKernelApiStore = defineStore('kernelApi', () => {
 
   const refreshProviderProxies = async () => {
     const [a, { proxies: b }] = await Promise.all([getProviders(), getProxies()])
-    for (const groupName in a.providers) {
-      if (!b[groupName]) {
-        for (const proxy of a.providers[groupName].proxies) {
+    for (const provider in a.providers) {
+      if (!b[provider]) {
+        for (const proxy of a.providers[provider].proxies) {
           if (!b[proxy.name]) {
+            proxy.provider = provider
             b[proxy.name] = proxy
           }
         }
