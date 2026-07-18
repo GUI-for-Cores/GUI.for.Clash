@@ -151,8 +151,11 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div>
-    <div class="flex items-center rounded-8 px-8 py-4" style="background-color: var(--card-bg)">
+  <div class="home-overview">
+    <div
+      class="overview-toolbar flex items-center rounded-8 px-8 py-4"
+      style="background-color: var(--card-bg)"
+    >
       <Button type="text" size="small" icon="settings" @click="handleShowSettings" />
       <Switch
         v-model="envStore.systemProxy"
@@ -198,32 +201,40 @@ onUnmounted(() => {
         @click="handleStopKernel"
       />
     </div>
-    <div class="flex mt-20 gap-12">
-      <Card :title="t('home.overview.realtimeTraffic')" class="flex-1">
-        <div class="py-8 text-12">
-          ↑ {{ formatBytes(statistics.upload) }}/s ↓ {{ formatBytes(statistics.download) }}/s
+    <div class="home-stats flex mt-20 gap-12">
+      <Card
+        :title="t('home.overview.realtimeTraffic')"
+        class="home-stat-card home-stat-card--realtime flex-1"
+      >
+        <div class="home-stat-card__value flex gap-8 py-8 text-12">
+          <span class="metric metric--upload">↑ {{ formatBytes(statistics.upload) }}/s</span>
+          <span class="metric metric--download">↓ {{ formatBytes(statistics.download) }}/s</span>
         </div>
       </Card>
-      <Card :title="t('home.overview.totalTraffic')" class="flex-1">
-        <div class="py-8 text-12">
-          ↑ {{ formatBytes(statistics.uploadTotal) }} ↓ {{ formatBytes(statistics.downloadTotal) }}
+      <Card
+        :title="t('home.overview.totalTraffic')"
+        class="home-stat-card home-stat-card--total flex-1"
+      >
+        <div class="home-stat-card__value flex gap-8 py-8 text-12">
+          <span class="metric metric--upload">↑ {{ formatBytes(statistics.uploadTotal) }}</span>
+          <span class="metric metric--download">↓ {{ formatBytes(statistics.downloadTotal) }}</span>
         </div>
       </Card>
       <Card
         :title="t('home.overview.connections')"
-        class="flex-1 cursor-pointer"
+        class="home-stat-card home-stat-card--connections flex-1 cursor-pointer"
         @click="handleShowApiConnections"
       >
-        <div class="py-8 text-12">
+        <div class="home-stat-card__value py-8 text-12">
           {{ statistics.connections.length }}
         </div>
       </Card>
       <Card
         :title="t('home.overview.memory')"
-        class="flex-1 cursor-pointer"
+        class="home-stat-card home-stat-card--memory flex-1 cursor-pointer"
         @click="handleToggleRealMemoryUsage"
       >
-        <div class="py-8 text-12">
+        <div class="home-stat-card__value py-8 text-12">
           {{ formatBytes(statistics.inuse) }}
           <span v-if="appSettings.app.kernel.realMemoryUsage">
             / ({{ formatBytes(statistics.memUsage) }})
@@ -231,9 +242,10 @@ onUnmounted(() => {
         </div>
       </Card>
     </div>
-    <div class="flex">
-      <div class="w-[60%]">
-        <div class="py-16 font-bold" style="color: var(--card-color)">
+    <div class="home-dashboard flex">
+      <div class="traffic-panel w-[60%]">
+        <div class="traffic-panel__art" aria-hidden="true"></div>
+        <div class="traffic-panel__title py-16 font-bold" style="color: var(--card-color)">
           {{ t('home.overview.traffic') }}
         </div>
         <TrafficChart
@@ -241,16 +253,17 @@ onUnmounted(() => {
           :legend="[t('home.overview.transmit'), t('home.overview.receive')]"
         />
       </div>
-      <div class="ml-12 flex-1">
-        <div class="py-16 font-bold" style="color: var(--card-color)">
+      <div class="mode-panel ml-12 flex-1">
+        <div class="mode-panel__title py-16 font-bold" style="color: var(--card-color)">
           {{ t('kernel.mode') }}
         </div>
-        <div class="flex flex-col gap-12">
+        <div class="mode-panel__list flex flex-col gap-12">
           <Card
             v-for="mode in ModeOptions"
             :key="mode.value"
             :selected="kernelApiStore.config.mode === mode.value"
             :title="t(mode.label)"
+            :class="['home-mode-card', `home-mode-card--${String(mode.value).toLowerCase()}`]"
             class="cursor-pointer"
             @click="handleChangeMode(mode.value as any)"
           >

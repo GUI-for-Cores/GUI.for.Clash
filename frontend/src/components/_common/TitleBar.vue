@@ -15,7 +15,6 @@ import { OS } from '@/enums/app'
 import { useAppSettingsStore, useKernelApiStore, useEnvStore, useAppStore } from '@/stores'
 import { APP_TITLE, APP_VERSION, debounce, exitApp, reloadApp } from '@/utils'
 
-
 const isPinned = ref(false)
 const isMaximised = ref(false)
 
@@ -67,19 +66,29 @@ onUnmounted(() => window.removeEventListener('resize', onResize))
 </script>
 
 <template>
-  <div v-menu="menus" class="flex items-center py-8 gap-8 px-12" style="--wails-draggable: drag">
-    <img v-if="!isDarwin" class="w-24 h-24" draggable="false" :src="logo" />
+  <div
+    v-menu="menus"
+    class="app-titlebar flex items-center py-8 gap-8 px-12"
+    style="--wails-draggable: drag"
+  >
+    <img v-if="!isDarwin" class="app-titlebar__logo w-24 h-24" draggable="false" :src="logo" />
 
     <div
       :class="isDarwin ? 'justify-center py-4 text-12' : 'text-14'"
       :style="{
         color: kernelApiStore.running ? 'var(--primary-color)' : 'var(--color)',
       }"
-      class="font-bold w-full h-full flex items-center duration-200"
+      class="app-titlebar__brand font-bold w-full h-full flex items-center duration-200"
       @dblclick="WindowToggleMaximise"
     >
-      {{ APP_TITLE }} {{ APP_VERSION }}
-      <CustomAction :actions="appStore.customActions.title_bar" />
+      <span class="app-titlebar__name">{{ APP_TITLE }}</span>
+      <span class="app-titlebar__version">{{ APP_VERSION }}</span>
+      <div
+        v-if="appStore.customActions.title_bar.length"
+        class="app-titlebar__custom-actions inline-flex items-center"
+      >
+        <CustomAction :actions="appStore.customActions.title_bar" />
+      </div>
       <Icon
         v-if="kernelApiStore.starting || kernelApiStore.stopping || kernelApiStore.restarting"
         :size="14"
@@ -93,15 +102,24 @@ onUnmounted(() => window.removeEventListener('resize', onResize))
       class="ml-auto flex items-center gap-4"
       style="--wails-draggable: disabled"
     >
-      <Button type="text" :icon="isPinned ? 'pinFill' : 'pin'" @click.stop="pinWindow" />
-      <Button icon="minimize" type="text" @click.stop="WindowMinimise" />
       <Button
+        class="window-control"
+        type="text"
+        :icon="isPinned ? 'pinFill' : 'pin'"
+        @click.stop="pinWindow"
+      />
+      <Button class="window-control" icon="minimize" type="text" @click.stop="WindowMinimise" />
+      <Button
+        class="window-control"
         :icon="isMaximised ? 'maximize2' : 'maximize'"
         type="text"
         @click.stop="WindowToggleMaximise"
       />
       <Button
-        :class="{ 'hover:!bg-red': appSettingsStore.app.exitOnClose }"
+        :class="[
+          'window-control window-control--close',
+          { 'hover:!bg-red': appSettingsStore.app.exitOnClose },
+        ]"
         :loading="appStore.isAppExiting || appStore.isAppReloading"
         icon="close"
         type="text"

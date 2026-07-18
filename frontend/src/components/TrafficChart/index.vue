@@ -99,6 +99,7 @@ watch(() => props.series, updateChart, { deep: true })
         v-for="i in 8"
         :key="i"
         :y="i * (height / 8) - 4"
+        class="traffic-chart__axis-label"
         style="font-size: 8px"
         x="4"
         fill="var(--primary-color)"
@@ -113,6 +114,7 @@ watch(() => props.series, updateChart, { deep: true })
         :x2="width - 2"
         :y2="i * (height / 8) - 7"
         :x1="padding"
+        class="traffic-chart__grid-line"
         stroke-dasharray="1 4"
         stroke="var(--color)"
       />
@@ -124,6 +126,7 @@ watch(() => props.series, updateChart, { deep: true })
           :points="point"
           :stroke="strokeColors[index]"
           :fill="fillColors[index]"
+          :class="index === 0 ? 'traffic-chart__series--upload' : 'traffic-chart__series--download'"
           stroke-width="2"
         />
       </template>

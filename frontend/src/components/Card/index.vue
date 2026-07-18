@@ -20,10 +20,14 @@ const hasTitle = computed(() => {
 </script>
 
 <template>
-  <div class="gui-card rounded-8 relative flex flex-col">
-    <div v-if="hasTitle" class="card-header flex items-center break-all p-8">
+  <div :class="{ 'is-selected': selected }" class="gui-card rounded-8 relative flex flex-col">
+    <div v-if="hasTitle" class="gui-card__header card-header flex items-center break-all p-8">
       <slot name="title-prefix"></slot>
-      <div v-if="title" v-tips="$t(title)" class="card-header_title line-clamp-1 text-16 font-bold">
+      <div
+        v-if="title"
+        v-tips="$t(title)"
+        class="gui-card__title card-header_title line-clamp-1 text-16 font-bold"
+      >
         {{ $t(title) }}
       </div>
       <slot name="title-suffix"></slot>
@@ -31,7 +35,9 @@ const hasTitle = computed(() => {
         <slot name="extra"></slot>
       </div>
     </div>
-    <div v-if="subtitle" class="card-header_subtitle mx-8">{{ $t(subtitle) }}</div>
+    <div v-if="subtitle" class="card-header_subtitle mx-8">
+      {{ $t(subtitle) }}
+    </div>
     <div class="flex-1 px-8" :class="hasTitle ? 'pb-8' : ''">
       <slot></slot>
     </div>
@@ -40,7 +46,7 @@ const hasTitle = computed(() => {
       :size="24"
       icon="selected"
       color="var(--primary-color)"
-      class="absolute right-8 bottom-4"
+      class="gui-card__state--selected absolute right-8 bottom-4"
     />
     <Icon
       v-if="disabled"
