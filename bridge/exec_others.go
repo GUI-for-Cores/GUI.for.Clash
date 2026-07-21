@@ -10,6 +10,10 @@ import (
 	"syscall"
 )
 
+func DecodeCommandOutput(data []byte) string {
+	return string(data)
+}
+
 func SetCmdWindowHidden(cmd *exec.Cmd) {
 }
 

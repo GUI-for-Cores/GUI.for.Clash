@@ -12,8 +12,6 @@ import (
 	"strings"
 	"sync"
 	"time"
-
-	"golang.org/x/text/encoding/simplifiedchinese"
 )
 
 type requestTransportKey struct {
@@ -96,11 +94,6 @@ func requestTransport(options RequestOptions) *http.Transport {
 	}
 
 	return value.(*http.Transport)
-}
-
-func decodeGB18030(data []byte) string {
-	decodeBytes, _ := simplifiedchinese.GB18030.NewDecoder().Bytes(data)
-	return string(decodeBytes)
 }
 
 func parseByteRange(s string, size int64) (start int64, end int64, err error) {

@@ -58,7 +58,7 @@ export const SwitchPermissions = async (enable: boolean) => {
         appPath,
         '/f',
       ]
-  await Exec('reg', args, { Convert: true })
+  await Exec('reg', args)
 }
 
 export const CheckPermissions = async () => {
@@ -74,7 +74,6 @@ export const CheckPermissions = async () => {
         '/t',
         'REG_SZ',
       ],
-      { Convert: true },
     )
     return out.includes('RunAsAdmin')
   } catch {
@@ -139,7 +138,7 @@ export const RunWithPowerShell = async (
     command += ' -Wait'
   }
   psArgs.push('-NoProfile', '-Command', command)
-  return await Exec('powershell', psArgs, { Convert: true, ...others })
+  return await Exec('powershell', psArgs, others)
 }
 
 const requestProxyCache: { proxyPromise: Promise<string> | null; lastAccessTime: number } = {
@@ -196,7 +195,7 @@ export const IsAutoStartEnabled = async () => {
   const { os } = useEnvStore().env
   let isAutoStart = false
   if (os === OS.Windows) {
-    isAutoStart = await Exec('Schtasks', ['/Query', '/TN', APP_TITLE, '/XML'], { Convert: true })
+    isAutoStart = await Exec('Schtasks', ['/Query', '/TN', APP_TITLE, '/XML'])
       .then(() => true)
       .catch(() => false)
   } else if (os === OS.Darwin) {

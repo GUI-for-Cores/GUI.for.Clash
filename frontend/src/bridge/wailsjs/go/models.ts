@@ -5,7 +5,6 @@ export namespace bridge {
 	    LogFile: string;
 	    StopOutputKeyword: string;
 	    WorkingDirectory: string;
-	    Convert: boolean;
 	    Env: Record<string, string>;
 	
 	    static createFrom(source: any = {}) {
@@ -18,7 +17,6 @@ export namespace bridge {
 	        this.LogFile = source["LogFile"];
 	        this.StopOutputKeyword = source["StopOutputKeyword"];
 	        this.WorkingDirectory = source["WorkingDirectory"];
-	        this.Convert = source["Convert"];
 	        this.Env = source["Env"];
 	    }
 	}

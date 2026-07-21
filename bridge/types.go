@@ -42,7 +42,6 @@ type ExecOptions struct {
 	LogFile           string
 	StopOutputKeyword string
 	WorkingDirectory  string
-	Convert           bool
 	Env               map[string]string
 }
 

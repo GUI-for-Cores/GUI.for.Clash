@@ -4,9 +4,12 @@ package bridge
 
 import (
 	"fmt"
+	"math"
 	"os"
 	"os/exec"
 	"syscall"
+	"unicode/utf16"
+	"unicode/utf8"
 	"unsafe"
 
 	"golang.org/x/sys/windows"
@@ -23,7 +26,38 @@ var (
 	procAttachConsole            = modKernel32.NewProc("AttachConsole")
 	procSetConsoleCtrlHandler    = modKernel32.NewProc("SetConsoleCtrlHandler")
 	procGenerateConsoleCtrlEvent = modKernel32.NewProc("GenerateConsoleCtrlEvent")
+	procGetOEMCP                 = modKernel32.NewProc("GetOEMCP")
 )
+
+func DecodeCommandOutput(data []byte) string {
+	if len(data) == 0 {
+		return ""
+	}
+	if utf8.Valid(data) {
+		return string(data)
+	}
+
+	codePage, _, _ := procGetOEMCP.Call()
+	if codePage == 0 || codePage > math.MaxUint32 {
+		return string(data)
+	}
+	if len(data) > math.MaxInt32 {
+		return string(data)
+	}
+
+	length, err := windows.MultiByteToWideChar(uint32(codePage), 0, &data[0], int32(len(data)), nil, 0)
+	if err != nil {
+		return string(data)
+	}
+
+	wide := make([]uint16, length)
+	length, err = windows.MultiByteToWideChar(uint32(codePage), 0, &data[0], int32(len(data)), &wide[0], length)
+	if err != nil {
+		return string(data)
+	}
+
+	return string(utf16.Decode(wide[:length]))
+}
 
 func SetCmdWindowHidden(cmd *exec.Cmd) {
 	cmd.SysProcAttr = &syscall.SysProcAttr{
