@@ -55,6 +55,8 @@ const handleImportRuleset = async () => {
     cancelText: 'common.close',
     height: '90',
     width: '90',
+    px: 0,
+    py: 0,
     submit: false,
     maskClosable: true,
   })

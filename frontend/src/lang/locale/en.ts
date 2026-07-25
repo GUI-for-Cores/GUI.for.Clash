@@ -759,6 +759,7 @@ export default {
     plugins: 'Plugins',
   },
   commands: {
+    title: 'Commands',
     noMatching: 'No matching commands',
   },
 }
