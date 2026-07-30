@@ -35,7 +35,3 @@ cd ..
 
 wails build
 ```
-
-## Stargazers over time
-
-[![Stargazers over time](https://starchart.cc/GUI-for-Cores/GUI.for.Clash.svg)](https://starchart.cc/GUI-for-Cores/GUI.for.Clash)
