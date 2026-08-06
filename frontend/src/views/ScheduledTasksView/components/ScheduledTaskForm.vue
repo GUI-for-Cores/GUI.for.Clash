@@ -15,7 +15,6 @@ import { alert, deepClone, formatDate, isValidCron, message, sampleID } from '@/
 
 import Button from '@/components/Button/index.vue'
 
-
 interface Props {
   id?: string
 }

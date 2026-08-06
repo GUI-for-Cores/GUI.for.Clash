@@ -5,7 +5,6 @@ import vMenu from '@/directives/menu'
 import useI18n from '@/lang'
 import { getValue } from '@/utils'
 
-
 export type Column = {
   title: string
   key: string

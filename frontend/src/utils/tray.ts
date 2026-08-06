@@ -27,7 +27,6 @@ import {
   APP_VERSION,
 } from '@/utils'
 
-
 const getTrayIcons = () => {
   const envStore = useEnvStore()
   const appSettings = useAppSettingsStore()

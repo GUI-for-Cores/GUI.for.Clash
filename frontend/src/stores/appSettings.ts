@@ -37,7 +37,6 @@ import i18n, { loadLocale } from '@/lang'
 import { useAppStore, useEnvStore } from '@/stores'
 import { debounce, updateTrayAndMenus, ignoredError, deepClone, message } from '@/utils'
 
-
 export const useAppSettingsStore = defineStore('app-settings', () => {
   const appStore = useAppStore()
   const envStore = useEnvStore()

@@ -5,7 +5,7 @@ import { parse } from 'yaml'
 import { CopyFile, ReadFile, WriteFile, HttpGet, Download } from '@/bridge'
 import { RulesetsFilePath, RulesetHubFilePath } from '@/constant/app'
 import { EmptyRuleSet } from '@/constant/kernel'
-import { RulesetBehavior, RulesetFormat } from '@/enums/kernel'
+import { RulesetFormat } from '@/enums/kernel'
 import {
   isValidPaylodYAML,
   ignoredError,

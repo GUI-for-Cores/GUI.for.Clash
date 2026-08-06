@@ -7,7 +7,6 @@ import { message } from '@/utils'
 
 import Button from '@/components/Button/index.vue'
 
-
 interface Props {
   id: string
 }

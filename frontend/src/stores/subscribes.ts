@@ -21,7 +21,6 @@ import {
   migrateSubscribes,
 } from '@/utils'
 
-
 export const useSubscribesStore = defineStore('subscribes', () => {
   const subscribes = ref<App.Subscription[]>([])
 

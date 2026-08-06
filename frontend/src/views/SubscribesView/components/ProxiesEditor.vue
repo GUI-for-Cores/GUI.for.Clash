@@ -9,7 +9,6 @@ import { deepClone, ignoredError, message, omitArray, sampleID, stringifyNoFoldi
 
 import Button from '@/components/Button/index.vue'
 
-
 interface Props {
   sub: App.Subscription
 }

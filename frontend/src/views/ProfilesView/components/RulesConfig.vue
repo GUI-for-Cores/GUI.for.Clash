@@ -48,12 +48,12 @@ const proxyOptions = computed(() => [
 const supportNoResolve = computed(() =>
   (
     [
-    RuleType.Geoip,
-    RuleType.IpCidr,
-    RuleType.IpCidr6,
-    RuleType.SCRIPT,
-    RuleType.RuleSet,
-    RuleType.IpAsn,
+      RuleType.Geoip,
+      RuleType.IpCidr,
+      RuleType.IpCidr6,
+      RuleType.SCRIPT,
+      RuleType.RuleSet,
+      RuleType.IpAsn,
     ] as App.RuleType[]
   ).includes(fields.value.type),
 )

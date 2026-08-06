@@ -6,7 +6,6 @@ import { OS } from '@/enums/app'
 import { useAppSettingsStore, useKernelApiStore } from '@/stores'
 import { formatProxyHost, ignoredError, updateTrayAndMenus } from '@/utils'
 
-
 export const useEnvStore = defineStore('env', () => {
   const appSettings = useAppSettingsStore()
   const kernelApiStore = useKernelApiStore()

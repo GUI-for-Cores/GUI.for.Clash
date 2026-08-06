@@ -64,17 +64,14 @@ export const SwitchPermissions = async (enable: boolean) => {
 export const CheckPermissions = async () => {
   const { appPath } = useEnvStore().env
   try {
-    const out = await Exec(
-      'reg',
-      [
-        'query',
-        'HKEY_CURRENT_USER\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers',
-        '/v',
-        appPath,
-        '/t',
-        'REG_SZ',
-      ],
-    )
+    const out = await Exec('reg', [
+      'query',
+      'HKEY_CURRENT_USER\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers',
+      '/v',
+      appPath,
+      '/t',
+      'REG_SZ',
+    ])
     return out.includes('RunAsAdmin')
   } catch {
     return false

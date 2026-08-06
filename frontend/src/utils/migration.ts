@@ -1,7 +1,6 @@
 import { SnifferDefaults } from '@/constant/profile'
 import { RequestProxyMode } from '@/enums/app'
 
-
 export const migrateProfiles = async (profiles: App.Profile[], save: () => Promise<string>) => {
   let needSync = false
 

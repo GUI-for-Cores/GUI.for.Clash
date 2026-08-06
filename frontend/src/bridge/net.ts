@@ -196,9 +196,7 @@ const requestWithBody = (method: Extract<App.RequestMethod, 'PUT' | 'POST' | 'PA
   }
 }
 
-const requestWithoutBody = (
-  methd: Extract<App.RequestMethod, 'GET' | 'HEAD' | 'DELETE'>,
-) => {
+const requestWithoutBody = (methd: Extract<App.RequestMethod, 'GET' | 'HEAD' | 'DELETE'>) => {
   return async <T = any>(
     url: string,
     headers: Request['headers'] = {},
