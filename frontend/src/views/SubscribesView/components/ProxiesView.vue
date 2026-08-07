@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { ref, computed, inject, h } from 'vue'
+import { ref, computed, inject, h, defineComponent } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { parse } from 'yaml'
 
 import { ClipboardSetText, ReadFile, WriteFile } from '@/bridge'
 import { DraggableOptions } from '@/constant/app'
-import { useBool } from '@/hooks'
 import { useSubscribesStore } from '@/stores'
 import {
   deepClone,
@@ -14,9 +13,12 @@ import {
   stringifyNoFolding,
   message,
   buildSmartRegExp,
+  modal,
 } from '@/utils'
 
 import Button from '@/components/Button/index.vue'
+import CodeEditor from '@/components/CodeEditor/index.vue'
+import CodeViewer from '@/components/CodeViewer/index.vue'
 
 interface Props {
   sub: App.Subscription
@@ -24,16 +26,11 @@ interface Props {
 
 const props = defineProps<Props>()
 
-let editId = ''
-const isEdit = ref(false)
 const loading = ref(false)
 const keywords = ref('')
 const proxyType = ref('')
-const details = ref()
 const allFieldsProxies = ref<any[]>([])
 const sub = ref(deepClone(props.sub))
-
-const [showDetails, toggleDetails] = useBool(false)
 
 const filteredProxyTypeOptions = computed(() => {
   const proxyProtocols = sub.value.proxies.reduce((p, c) => {
@@ -63,10 +60,21 @@ const menus: App.Menu[] = [
     handler: async (record: App.Subscription['proxies'][0]) => {
       try {
         const proxy = await getProxyByName(record.name)
-        details.value = stringifyNoFolding(proxy)
-        isEdit.value = false
-        toggleDetails()
-      } catch (error: any) {
+        const m = modal({
+          title: 'common.details',
+          cancelText: 'common.close',
+          maskClosable: true,
+          submit: false,
+        })
+        const comp = defineComponent(() => {
+          return () =>
+            h(CodeViewer, {
+              lang: 'yaml',
+              modelValue: stringifyNoFolding(proxy),
+            })
+        })
+        m.setContent(comp).open()
+      } catch (error) {
         message.error(error)
       }
     },
@@ -88,11 +96,25 @@ const menus: App.Menu[] = [
     handler: async (record: App.Subscription['proxies'][0]) => {
       try {
         const proxy = await getProxyByName(record.name)
-        details.value = stringifyNoFolding(proxy)
-        isEdit.value = true
-        editId = record.name
-        toggleDetails()
-      } catch (error: any) {
+        const text = ref('')
+        const m = modal({
+          title: 'common.edit',
+          cancelText: 'common.close',
+          onOk: () => onEditEnd(record.name, text.value),
+        })
+        const comp = defineComponent(() => {
+          return () =>
+            h(CodeEditor, {
+              lang: 'yaml',
+              editable: true,
+              modelValue: stringifyNoFolding(proxy),
+              'onUpdate:modelValue'(val) {
+                text.value = val
+              },
+            })
+        })
+        m.setContent(comp).open()
+      } catch (error) {
         message.error(error)
       }
     },
@@ -134,30 +156,42 @@ const handleSave = async () => {
 }
 
 const handleAdd = async () => {
-  editId = ''
-  details.value = ''
-  isEdit.value = true
-  toggleDetails()
+  const text = ref('')
+  const m = modal({
+    title: 'common.edit',
+    cancelText: 'common.close',
+    onOk: () => onEditEnd('', text.value),
+  })
+  const comp = defineComponent(() => {
+    return () =>
+      h(CodeEditor, {
+        lang: 'yaml',
+        editable: true,
+        modelValue: '',
+        'onUpdate:modelValue'(val) {
+          text.value = val
+        },
+      })
+  })
+  m.setContent(comp).open()
 }
 
-const onEditEnd = async () => {
+const onEditEnd = async (id: string, text: string) => {
   let proxy: any
   try {
-    proxy = parse(details.value)
+    proxy = parse(text)
 
     if (typeof proxy !== 'object') throw 'wrong format'
-  } catch (error: any) {
+  } catch (error) {
     console.log(error)
-    message.error(error.message || error)
-    // reopen
-    toggleDetails()
-    return
+    message.error(error)
+    return false
   }
 
   await initAllFieldsProxies()
 
-  const allFieldsProxiesIdx = allFieldsProxies.value.findIndex((v: any) => v.name === editId)
-  const subProxiesIdx = sub.value.proxies.findIndex((v) => v.name === editId)
+  const allFieldsProxiesIdx = allFieldsProxies.value.findIndex((v: any) => v.name === id)
+  const subProxiesIdx = sub.value.proxies.findIndex((v) => v.name === id)
 
   if (allFieldsProxiesIdx !== -1 && subProxiesIdx !== -1) {
     allFieldsProxies.value.splice(allFieldsProxiesIdx, 1, proxy)
@@ -215,56 +249,37 @@ defineExpose({ modalSlots })
 </script>
 
 <template>
-  <div class="h-full flex flex-col">
-    <div class="flex items-center">
-      <span class="mr-8">
-        {{ t('subscribes.proxies.type') }}
-        :
-      </span>
-      <Select v-model="proxyType" :options="filteredProxyTypeOptions" size="small" />
-      <Input
-        v-model="keywords"
-        :placeholder="t('subscribes.proxies.name')"
-        clearable
-        auto-size
-        size="small"
-        class="mx-8 flex-1"
-      />
-      <Button type="primary" size="small" @click="handleAdd">
-        {{ t('subscribes.proxies.add') }}
-      </Button>
-    </div>
+  <ModalContainer :empty="filteredProxies.length === 0">
+    <template #top>
+      <div class="flex items-center gap-8">
+        <Select v-model="proxyType" :options="filteredProxyTypeOptions" size="small" />
+        <Input
+          v-model="keywords"
+          :placeholder="t('subscribes.proxies.name')"
+          clearable
+          auto-size
+          size="small"
+          class="flex-1"
+        />
+        <Button type="primary" size="small" @click="handleAdd">
+          {{ t('subscribes.proxies.add') }}
+        </Button>
+      </div>
+    </template>
 
-    <Empty v-if="filteredProxies.length === 0" />
-
-    <div
-      v-else
-      v-draggable="[sub.proxies, DraggableOptions]"
-      class="grid grid-cols-4 gap-8 mt-8 overflow-y-auto"
-    >
-      <Card
-        v-for="proxy in filteredProxies"
-        :key="proxy.name"
-        v-menu="menus.map((v) => ({ ...v, handler: () => v.handler?.(proxy) }))"
-        :title="proxy.name"
-      >
-        <div class="text-12">
-          {{ proxy.type }}
-        </div>
-      </Card>
-    </div>
-  </div>
-
-  <Modal
-    v-model:open="showDetails"
-    :submit="isEdit"
-    :mask-closable="!isEdit"
-    :title="isEdit ? (details ? 'common.edit' : 'common.add') : 'common.details'"
-    :on-ok="onEditEnd"
-    cancel-text="common.close"
-    max-height="80"
-    max-width="80"
-  >
-    <CodeEditor v-model="details" :editable="isEdit" lang="yaml" />
-  </Modal>
+    <template #body>
+      <div v-draggable="[sub.proxies, DraggableOptions]" class="grid grid-cols-4 gap-8">
+        <Card
+          v-for="proxy in filteredProxies"
+          :key="proxy.name"
+          v-menu="menus.map((v) => ({ ...v, handler: () => v.handler?.(proxy) }))"
+          :title="proxy.name"
+        >
+          <div class="text-12">
+            {{ proxy.type }}
+          </div>
+        </Card>
+      </div>
+    </template>
+  </ModalContainer>
 </template>
