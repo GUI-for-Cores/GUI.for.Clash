@@ -65,6 +65,7 @@ const menus: App.Menu[] = [
           cancelText: 'common.close',
           maskClosable: true,
           submit: false,
+          py: 0,
         })
         const comp = defineComponent(() => {
           return () =>
