@@ -16,6 +16,7 @@ export enum TunStack {
   System = 'System',
   GVisor = 'gVisor',
   Mixed = 'Mixed',
+  Mips = 'mips',
 }
 
 export enum RulesetFormat {

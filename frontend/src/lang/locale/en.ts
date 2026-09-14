@@ -113,6 +113,7 @@ export default {
       gvisor: 'gVisor',
       mixed: 'Mixed',
       lwip: 'LWIP',
+      mips: 'Mips',
     },
     dns: {
       enable: 'Enable',

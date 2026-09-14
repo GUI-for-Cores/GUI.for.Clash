@@ -187,6 +187,7 @@ export const StackOptions = [
   { label: 'kernel.tun.system', value: TunStack.System },
   { label: 'kernel.tun.gvisor', value: TunStack.GVisor },
   { label: 'kernel.tun.mixed', value: TunStack.Mixed },
+  { label: 'kernel.tun.mips', value: TunStack.Mips },
 ]
 
 export const EnhancedModeOptions = [
