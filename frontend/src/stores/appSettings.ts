@@ -320,7 +320,13 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
               const width = Math.min(size.w * 2, availableWidth)
               const left = (window.screen as Screen & { availLeft?: number }).availLeft ?? 0
               WindowSetPosition(
-                Math.max(left, Math.min(position.x, left + availableWidth - width)),
+                Math.max(
+                  left,
+                  Math.min(
+                    Math.round(position.x + (size.w - width) / 2),
+                    left + availableWidth - width,
+                  ),
+                ),
                 position.y,
               )
               WindowSetSize(width, size.h)

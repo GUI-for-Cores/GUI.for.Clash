@@ -393,6 +393,11 @@ defineExpose({ handleCancel })
   transform: translateY(6px);
 }
 
+.modal-tab-leave-active {
+  visibility: hidden;
+  pointer-events: none;
+}
+
 .modal-enter-active .gui-modal-modal,
 .modal-leave-active .gui-modal-modal {
   transition:
