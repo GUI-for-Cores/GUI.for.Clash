@@ -7,7 +7,7 @@ import { json, jsonParseLinter } from '@codemirror/lang-json'
 import { yaml } from '@codemirror/lang-yaml'
 import { linter } from '@codemirror/lint'
 import { MergeView } from '@codemirror/merge'
-import { Compartment } from '@codemirror/state'
+import { Compartment, EditorSelection } from '@codemirror/state'
 import { oneDark } from '@codemirror/theme-one-dark'
 import { keymap, placeholder as Placeholder } from '@codemirror/view'
 import { EditorView, basicSetup } from 'codemirror'
@@ -79,8 +79,8 @@ const onChange = debounce((content: string) => {
 }, 300)
 
 const formatDoc = async (view: EditorView) => {
-  const content = view.state.doc.toString()
-  const cursor = view.state.selection.ranges[0]?.from || 0
+  const { doc, selection } = view.state
+  const content = doc.toString()
   try {
     const parser = { javascript: 'babel', yaml: 'yaml', json: 'json', css: 'css' }[props.lang]
     const plugins = {
@@ -89,8 +89,7 @@ const formatDoc = async (view: EditorView) => {
       json: [parserBabel, estreePlugin],
       css: [postcssPlugin],
     }[props.lang]
-    const { formatted, cursorOffset } = await prettier.formatWithCursor(content, {
-      cursorOffset: cursor,
+    const options = {
       parser,
       plugins,
       // https://github.com/GUI-for-Cores/Plugin-Hub/blob/main/.prettierrc.json
@@ -98,12 +97,29 @@ const formatDoc = async (view: EditorView) => {
       tabWidth: 2,
       singleQuote: true,
       printWidth: 160,
-      trailingComma: 'none',
-    })
+      trailingComma: 'none' as const,
+    }
+    // Map both ends of every selection, preserving its direction and main cursor.
+    const offsets = [...new Set(selection.ranges.flatMap(({ anchor, head }) => [anchor, head]))]
+    const results = await Promise.all(
+      offsets.map((cursorOffset) =>
+        prettier.formatWithCursor(content, { ...options, cursorOffset }),
+      ),
+    )
+    const formatted = results[0]!.formatted
+    const mappedOffsets = new Map(offsets.map((offset, i) => [offset, results[i]!.cursorOffset]))
+    // Formatting is asynchronous; don't overwrite newer edits or cursor movements.
+    if (view.state.doc !== doc || !view.state.selection.eq(selection)) return
     if (content !== formatted) {
       view.dispatch({
         changes: { from: 0, to: content.length, insert: formatted },
-        selection: { anchor: cursorOffset, head: cursorOffset },
+        selection: EditorSelection.create(
+          selection.ranges.map(({ anchor, head }) =>
+            EditorSelection.range(mappedOffsets.get(anchor)!, mappedOffsets.get(head)!),
+          ),
+          selection.mainIndex,
+        ),
+        scrollIntoView: true,
       })
     }
   } catch (error: any) {
@@ -131,6 +147,14 @@ onUnmounted(() => {
   clearTimeout(timer)
   const view = editorView || mergeView
   view?.destroy()
+})
+
+defineExpose({
+  format: async () => {
+    await editorReady
+    const view = editorView || mergeView?.b
+    if (view) await formatDoc(view)
+  },
 })
 
 const initEditor = () => {
