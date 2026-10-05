@@ -37,7 +37,14 @@ const circleStyle = computed(() => {
 </script>
 
 <template>
-  <div v-if="type === 'line'" class="gui-progress-line h-10 rounded-8 overflow-hidden">
+  <div
+    v-if="type === 'line'"
+    :aria-valuenow="Math.min(percent || 0, 100)"
+    aria-valuemax="100"
+    aria-valuemin="0"
+    class="gui-progress-line h-10 rounded-8 overflow-hidden"
+    role="progressbar"
+  >
     <div
       :style="innerStyle"
       :class="props.status"
@@ -46,8 +53,12 @@ const circleStyle = computed(() => {
   </div>
   <div
     v-if="type === 'circle'"
+    :aria-valuenow="Math.min(percent || 0, 100)"
     :style="circleStyle"
+    aria-valuemax="100"
+    aria-valuemin="0"
     class="gui-progress-circle relative rounded-full"
+    role="progressbar"
   ></div>
 </template>
 

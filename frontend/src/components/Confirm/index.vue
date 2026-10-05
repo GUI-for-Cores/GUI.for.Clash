@@ -50,7 +50,7 @@ const handleCancel = () => {
 
 <template>
   <Transition name="slide-down" appear>
-    <div class="gui-confirm flex flex-col p-8 rounded-8 shadow">
+    <div aria-modal="true" class="gui-confirm flex flex-col p-8 rounded-8 shadow" role="dialog">
       <div class="font-bold break-all px-4 py-8">{{ t(title) }}</div>
       <div
         v-if="options.type === 'markdown'"

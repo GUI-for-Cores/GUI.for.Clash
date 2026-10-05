@@ -50,12 +50,18 @@ const handleSelect = (val: string) => {
 </script>
 
 <template>
-  <div :class="[size]" class="gui-checkbox inline-flex rounded-8 overflow-hidden text-12">
+  <div
+    :class="[size]"
+    class="gui-checkbox inline-flex rounded-8 overflow-hidden text-12"
+    role="group"
+  >
     <div
       v-for="o in props.options"
       :key="o.value"
+      :aria-checked="isActive(o.value)"
       :class="{ active: isActive(o.value) }"
       class="gui-checkbox-button cursor-pointer px-12 py-6 transition duration-200 line-clamp-1 break-all"
+      role="checkbox"
       @click="handleSelect(o.value)"
     >
       {{ t(o.label) }}

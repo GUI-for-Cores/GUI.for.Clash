@@ -94,15 +94,17 @@ const emitUpdate = () => {
           <div class="flex items-center py-4 break-all">
             <span class="mr-auto">{{ item.value }}</span>
             <Button
-              icon="edit"
+              :aria-label="$t('common.edit')"
               :icon-size="14"
+              icon="edit"
               size="small"
               type="text"
               @click="handleEdit(item)"
             />
             <Button
-              icon="close"
+              :aria-label="$t('common.delete')"
               :icon-size="14"
+              icon="close"
               size="small"
               type="text"
               @click="handleDel(item)"
@@ -123,7 +125,13 @@ const emitUpdate = () => {
       @keydown.enter="handleAdd"
     >
       <template #suffix>
-        <Button :icon="editItem ? 'edit' : 'add'" size="small" type="primary" @click="handleAdd" />
+        <Button
+          :aria-label="editItem ? $t('common.edit') : $t('common.add')"
+          :icon="editItem ? 'edit' : 'add'"
+          size="small"
+          type="primary"
+          @click="handleAdd"
+        />
       </template>
     </Input>
   </div>

@@ -115,8 +115,9 @@ const handleClear = () => {
 
 <template>
   <Dropdown :trigger="['click']">
-    <template #default="{ toggle, close }">
+    <template #default="{ toggle, close, opened }">
       <div
+        :aria-expanded="opened"
         :class="{
           border,
           [size]: true,
@@ -125,6 +126,7 @@ const handleClear = () => {
           'min-h-30': size === 'default',
         }"
         class="gui-select cursor-pointer inline-flex items-center min-w-128 rounded-4 px-8"
+        role="combobox"
       >
         <span class="line-clamp-1 break-all">
           {{ t(displayLabel) }}
@@ -157,6 +159,8 @@ const handleClear = () => {
         <Button
           v-for="o in options"
           :key="o.value"
+          :aria-selected="isSelected(o.value)"
+          role="option"
           type="text"
           @click="
             () => {

@@ -107,19 +107,28 @@ onUnmounted(() => window.removeEventListener('resize', onResize))
       style="--wails-draggable: disabled"
     >
       <Button
+        :aria-label="isPinned ? $t('titlebar.unpin') : $t('titlebar.pin')"
+        :icon="isPinned ? 'pinFill' : 'pin'"
         class="window-control"
         type="text"
-        :icon="isPinned ? 'pinFill' : 'pin'"
         @click.stop="pinWindow"
       />
-      <Button class="window-control" icon="minimize" type="text" @click.stop="WindowMinimise" />
       <Button
+        :aria-label="$t('titlebar.minimize')"
         class="window-control"
+        icon="minimize"
+        type="text"
+        @click.stop="WindowMinimise"
+      />
+      <Button
+        :aria-label="isMaximised ? $t('titlebar.restore') : $t('titlebar.maximize')"
         :icon="isMaximised ? 'maximize2' : 'maximize'"
+        class="window-control"
         type="text"
         @click.stop="WindowToggleMaximise"
       />
       <Button
+        :aria-label="$t('titlebar.close')"
         :class="[
           'window-control window-control--close',
           { 'hover:!bg-red': appSettingsStore.app.exitOnClose },

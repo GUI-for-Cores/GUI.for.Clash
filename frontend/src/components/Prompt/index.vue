@@ -37,7 +37,7 @@ const handleCancel = () => {
 
 <template>
   <Transition name="slide-down" appear>
-    <div class="gui-confirm p-8 rounded-8 shadow max-w-[60%]">
+    <div aria-modal="true" class="gui-confirm p-8 rounded-8 shadow max-w-[60%]" role="dialog">
       <div class="font-bold break-all px-4 py-8">{{ t(title) }}</div>
       <Input
         v-model="value"

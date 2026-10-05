@@ -83,6 +83,7 @@ onUnmounted(() => document.removeEventListener('click', onClick))
       ref="menuRef"
       :style="menuPosition"
       class="gui-menu fixed z-9999 p-4 rounded-6 shadow flex flex-col gap-4 backdrop-blur-sm"
+      role="menu"
     >
       <template v-for="menu in menuList">
         <Divider v-if="menu.separator" :key="menu.label + '_divider'">{{ t(menu.label) }}</Divider>
@@ -91,6 +92,7 @@ onUnmounted(() => document.removeEventListener('click', onClick))
           :key="menu.label"
           type="text"
           size="small"
+          role="menuitem"
           @click="handleClick(menu)"
           @mouseenter="secondaryMenu = menu.children"
         >
@@ -106,12 +108,14 @@ onUnmounted(() => document.removeEventListener('click', onClick))
           ref="secondaryMenuRef"
           :style="secondaryMenuPosition"
           class="gui-menu absolute fixed z-999 p-4 rounded-6 shadow flex flex-col gap-4 backdrop-blur-sm"
+          role="menu"
         >
           <Button
             v-for="m in secondaryMenu"
             :key="m.label"
             type="text"
             size="small"
+            role="menuitem"
             @click.stop="handleClick(m)"
           >
             <Divider v-if="m.separator" :key="m.label + '_divider'" size="small">

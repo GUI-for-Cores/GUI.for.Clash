@@ -729,6 +729,12 @@ export default {
     latestVersion: 'Already the latest version',
   },
   titlebar: {
+    pin: 'Pin',
+    unpin: 'Unpin',
+    minimize: 'Minimize',
+    maximize: 'Maximize',
+    restore: 'Restore',
+    close: 'Close',
     resetSize: 'Reset Window',
     reload: 'Reload Window',
     restart: 'Restart App',

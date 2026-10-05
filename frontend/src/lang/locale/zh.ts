@@ -728,6 +728,12 @@ export default {
     latestVersion: '已经是最新版本了',
   },
   titlebar: {
+    pin: '置顶',
+    unpin: '取消置顶',
+    minimize: '最小化',
+    maximize: '最大化',
+    restore: '还原',
+    close: '关闭',
     resetSize: '重置窗口',
     reload: '重载界面',
     restart: '重启程序',

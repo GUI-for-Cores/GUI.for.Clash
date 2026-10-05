@@ -43,8 +43,14 @@ const handleJump = (page: number | 'prev' | 'next') => {
 </script>
 
 <template>
-  <div>
-    <Button icon="arrowLeft" type="text" :size="size" @click="handlePrev" />
+  <div role="navigation">
+    <Button
+      :aria-label="$t('common.prevStep')"
+      :size="size"
+      icon="arrowLeft"
+      type="text"
+      @click="handlePrev"
+    />
     <Button v-if="pages.length === 0" type="text" :size="size"> ... </Button>
     <Button
       v-for="item in pages"
@@ -56,6 +62,12 @@ const handleJump = (page: number | 'prev' | 'next') => {
     >
       {{ item === 'prev' || item === 'next' ? '...' : item }}
     </Button>
-    <Button icon="arrowRight" type="text" :size="size" @click="handleNext" />
+    <Button
+      :aria-label="$t('common.nextStep')"
+      :size="size"
+      icon="arrowRight"
+      type="text"
+      @click="handleNext"
+    />
   </div>
 </template>

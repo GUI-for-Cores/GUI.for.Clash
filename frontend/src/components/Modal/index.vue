@@ -218,6 +218,7 @@ const handleMinimize = () => {
 }
 
 const tabId = sampleID()
+const titleId = `modal-title-${tabId}`
 const tabEligible = computed(() => props.sideTab ?? props.toolbar.maximize !== false)
 const isSide = computed(() => tabEligible.value && appStore.modalSplitActive)
 const visible = computed(
@@ -304,9 +305,12 @@ defineExpose({ handleCancel })
         @click.self="onMaskClick"
       >
         <div
+          :aria-labelledby="title ? titleId : undefined"
           :style="contentStyle"
           :class="props.class"
+          aria-modal="true"
           class="gui-modal-modal transition duration-200 flex flex-col rounded-8 shadow"
+          role="dialog"
           style="--wails-draggable: false"
         >
           <div
@@ -316,7 +320,7 @@ defineExpose({ handleCancel })
             @dblclick.self="!isSide && toggleMaximize()"
           >
             <slot name="title">
-              <div v-if="title" class="font-bold">{{ $t(title) }}</div>
+              <div v-if="title" :id="titleId" class="font-bold">{{ $t(title) }}</div>
             </slot>
             <div class="ml-auto" style="--wails-draggable: false">
               <slot name="toolbar"></slot>

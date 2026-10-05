@@ -35,6 +35,8 @@ const toggle = () => {
 <template>
   <div
     v-tips.slow="label"
+    :aria-checked="model"
+    :aria-disabled="disabled || undefined"
     :class="[
       size,
       border,
@@ -43,6 +45,7 @@ const toggle = () => {
       { 'cursor-not-allowed': disabled },
     ]"
     class="gui-switch relative cursor-pointer h-24 inline-flex items-center text-12 duration-200"
+    role="switch"
     @click="toggle"
   >
     <div

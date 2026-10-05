@@ -41,6 +41,7 @@ watch(
     ref="domRef"
     :style="{ left: fixedPosition.x + 'px', top: fixedPosition.y + 'px' }"
     class="gui-tips fixed z-9999 duration-100 pointer-events-none shadow whitespace-pre-wrap text-center text-12 p-4 rounded-8 min-w-64 backdrop-blur-sm"
+    role="tooltip"
   >
     {{ t(message) }}
   </div>

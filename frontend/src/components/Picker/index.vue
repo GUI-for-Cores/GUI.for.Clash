@@ -85,15 +85,17 @@ const handleSelectAll = () => {
 
 <template>
   <Transition name="slide-down" appear>
-    <div class="gui-picker flex flex-col p-8 shadow rounded-8">
+    <div aria-modal="true" class="gui-picker flex flex-col p-8 shadow rounded-8" role="dialog">
       <div class="font-bold px-4 py-8">{{ t(title) }}</div>
 
       <div class="flex-1 overflow-auto">
         <div
           v-for="(o, i) in options"
           :key="i"
+          :aria-selected="isSelected(o.value)"
           :style="{ background: o.background }"
           class="item my-4 py-8 px-8 break-all"
+          role="option"
           @click="handleSelect(o)"
         >
           <div class="flex items-center justify-between leading-relaxed">

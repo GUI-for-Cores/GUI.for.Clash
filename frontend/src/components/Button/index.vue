@@ -9,6 +9,7 @@ interface Props {
   icon?: IconName
   loading?: boolean
   disabled?: boolean
+  role?: string
 }
 
 withDefaults(defineProps<Props>(), {
@@ -19,11 +20,14 @@ withDefaults(defineProps<Props>(), {
   icon: undefined,
   loading: false,
   disabled: false,
+  role: 'button',
 })
 </script>
 
 <template>
   <div
+    :role="role"
+    :aria-disabled="disabled || loading ? true : undefined"
     :class="[type, size, { 'pointer-events-none': disabled || loading }]"
     class="gui-button inline-flex items-center justify-center text-center align-middle rounded-6 text-14 text-nowrap cursor-pointer px-12 py-6 duration-200"
   >

@@ -48,11 +48,14 @@ const currentComponent = computed(() => {
       :class="{ 'justify-center mb-8': isTop, 'flex-col': !isTop }"
       :style="{ width: isTop ? 'auto' : tabWidth }"
       class="gui-tabs-tab flex"
+      role="tablist"
     >
       <Button
         v-for="tab in items"
         :key="tab.key"
+        :aria-selected="isActive(tab)"
         :type="isActive(tab) ? 'link' : 'text'"
+        role="tab"
         @click="handleChange(tab.key)"
       >
         {{ t(tab.tab) }}

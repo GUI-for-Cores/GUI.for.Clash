@@ -33,9 +33,11 @@ const handleClose = () => {
     <slot></slot>
     <Icon
       v-if="closeable"
+      :aria-label="$t('common.close')"
       :size="size === 'small' ? 12 : 14"
-      icon="close"
       class="ml-2"
+      icon="close"
+      role="button"
       @click="handleClose"
     />
   </div>

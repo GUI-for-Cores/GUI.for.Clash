@@ -30,7 +30,7 @@ const icon = computed(() => iconMap[props.icon] as any)
 
 <template>
   <Transition name="slide-down" appear>
-    <div class="gui-message flex items-center p-8 pl-16 rounded-8 my-4 shadow">
+    <div class="gui-message flex items-center p-8 pl-16 rounded-8 my-4 shadow" role="status">
       <Icon class="shrink-0" :icon="icon" />
       <div class="text-14 pl-12 break-all">{{ t(content) }}</div>
       <Button

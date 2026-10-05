@@ -154,7 +154,7 @@ onUnmounted(() => {
     @mouseleave="onMouseLeave"
     @click="onClick"
   >
-    <slot v-bind="{ open, close, toggle }"></slot>
+    <slot v-bind="{ open, close, toggle, opened: show }"></slot>
     <Transition name="overlay">
       <div
         v-show="show"
@@ -163,7 +163,7 @@ onUnmounted(() => {
         class="gui-dropdown-overlay fixed z-99 rounded-8 backdrop-blur-sm shadow overflow-y-auto"
         @click.stop
       >
-        <slot name="overlay" v-bind="{ open, close, toggle }"></slot>
+        <slot name="overlay" v-bind="{ open, close, toggle, opened: show }"></slot>
       </div>
     </Transition>
   </div>
