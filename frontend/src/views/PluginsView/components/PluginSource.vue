@@ -51,7 +51,9 @@ defineExpose({
           <Input v-model="source.name" editable />
         </div>
       </template>
-      <Input v-model="source.url" class="w-full" placeholder="https://" />
+      <template #default>
+        <Input v-model="source.url" class="w-full" placeholder="https://" />
+      </template>
     </Card>
     <Button icon="add" class="w-full" type="primary" @click="handleAddSource" />
   </div>

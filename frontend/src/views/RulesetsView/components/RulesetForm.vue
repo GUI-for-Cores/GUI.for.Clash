@@ -177,9 +177,7 @@ defineExpose({ modalSlots })
           v-model="ruleset.url"
           allow-paste
           :placeholder="
-            ruleset.type === 'Http'
-              ? 'http(s)://'
-              : 'data/local/{filename}.' + (ruleset.format === RulesetFormat.Mrs ? 'mrs' : 'yaml')
+            ruleset.type === 'Http' ? 'http(s)://' : 'data/local/{filename}.' + ruleset.format
           "
           class="w-full"
         />
