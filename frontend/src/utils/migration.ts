@@ -19,6 +19,10 @@ export const migrateProfiles = async (profiles: App.Profile[], save: () => Promi
       profile.dnsConfig['direct-nameserver'] = []
       needSync = true
     }
+    if (!profile.dnsConfig['proxy-server-nameserver']?.length) {
+      profile.dnsConfig['proxy-server-nameserver'] = ['https://223.5.5.5/dns-query#DIRECT']
+      needSync = true
+    }
     if ('global-client-fingerprint' in profile.advancedConfig) {
       delete profile.advancedConfig['global-client-fingerprint']
       needSync = true

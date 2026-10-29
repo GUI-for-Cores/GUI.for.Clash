@@ -86,7 +86,9 @@ export const DnsConfigDefaults = (): App.Profile['dnsConfig'] => ({
   'default-nameserver': [],
   nameserver: ['tls://8.8.8.8#' + t('kernel.proxyGroups.built-in.select')],
   'direct-nameserver': [],
-  'proxy-server-nameserver': [],
+  'proxy-server-nameserver': [
+    'https://223.5.5.5/dns-query#' + t('kernel.proxyGroups.built-in.direct'),
+  ],
   'nameserver-policy': {
     'rule-set:GEOSITE-CN': 'https://223.5.5.5/dns-query#' + t('kernel.proxyGroups.built-in.direct'),
     'rule-set:geolocation-!cn': 'tls://8.8.8.8#' + t('kernel.proxyGroups.built-in.select'),
