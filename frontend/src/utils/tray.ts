@@ -109,11 +109,13 @@ const getTrayMenus = () => {
       .map((group) => {
         const all = group.all
           .filter((proxy) => {
+            const history = proxies[proxy]?.history || []
+            const alive = (history[history.length - 1]?.delay || 0) > 0
             return (
               appSettings.app.kernel.unAvailable ||
               BuiltInOutbound.includes(proxy) ||
               proxies[proxy]?.all ||
-              proxies[proxy]?.alive
+              alive
             )
           })
           .map((proxy) => {

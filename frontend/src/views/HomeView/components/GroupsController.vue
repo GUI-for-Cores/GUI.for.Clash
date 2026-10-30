@@ -57,11 +57,13 @@ const groups = computed(() => {
     .map((group) => {
       const all = (group.all || [])
         .filter((proxy) => {
+          const history = proxies[proxy]?.history || []
+          const alive = (history[history.length - 1]?.delay ?? 0) > 0
           const condition1 =
             appSettings.app.kernel.unAvailable ||
             BuiltInOutbound.includes(proxy) ||
             proxies[proxy]?.all ||
-            proxies[proxy]?.alive
+            alive
           const keywords = filterKeywordsMap.value[group.name]
           const condition2 = keywords ? buildSmartRegExp(keywords, 'i').test(proxy) : true
           return condition1 && condition2
