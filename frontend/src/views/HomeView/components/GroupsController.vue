@@ -3,6 +3,7 @@ import { ref, computed, onActivated } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { getProxyDelay, deleteGroupFixed } from '@/api/kernel'
+import { HttpCancel } from '@/bridge'
 import {
   ControllerCloseModeOptions,
   DefaultCardColumns,
@@ -23,6 +24,7 @@ import {
   message,
   createAsyncPool,
   buildSmartRegExp,
+  sampleID,
 } from '@/utils'
 
 const expandedSet = ref<Set<string>>(new Set())
@@ -119,11 +121,15 @@ const handleGroupDelay = async (group: string) => {
     let index = 0
     let success = 0
     let failure = 0
+    let cancelled = false
+    const pendingRequests = new Set<string>()
 
     const delayTest = async (name: string) => {
       index += 1
       update(`Testing... ${index} / ${_group.all.length}, success: ${success} failure: ${failure}`)
       const proxy = kernelApiStore.proxies[name]
+      const cancelId = sampleID()
+      pendingRequests.add(cancelId)
       try {
         loadingSet.value.add(name)
         const { delay = 0 } = await getProxyDelay(
@@ -131,13 +137,17 @@ const handleGroupDelay = async (group: string) => {
           encodeURIComponent(name),
           appSettings.app.kernel.testUrl || DefaultTestURL,
           appSettings.app.kernel.testTimeout || DefaultTestTimeout,
+          cancelId,
         )
         success += 1
         proxy && proxy.history.push({ delay })
       } catch {
-        failure += 1
-        proxy && proxy.history.push({ delay: 0 })
+        if (!cancelled) {
+          failure += 1
+          proxy && proxy.history.push({ delay: 0 })
+        }
       }
+      pendingRequests.delete(cancelId)
       update(`Testing... ${index} / ${_group.all.length}, success: ${success} failure: ${failure}`)
       loadingSet.value.delete(name)
     }
@@ -153,7 +163,9 @@ const handleGroupDelay = async (group: string) => {
       destroy,
       success: msgSuccess,
     } = message.info('Testing...', 99999, () => {
+      cancelled = true
       controller.cancel()
+      pendingRequests.forEach((id) => HttpCancel(id))
       message.warn('common.canceled')
     })
     await run()

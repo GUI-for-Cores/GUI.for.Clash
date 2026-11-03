@@ -1,5 +1,6 @@
 import { Request } from '@/api/request'
 import { WebSockets } from '@/api/websocket'
+import { HttpGet } from '@/bridge'
 import { useProfilesStore } from '@/stores'
 import { formatProxyHost, normalizeProxyHost } from '@/utils'
 
@@ -134,12 +135,34 @@ export const deleteGroupFixed = (group: string) => request.delete(Api.Proxies + 
 export const useProxy = (group: string, proxy: string) => {
   return request.put<null>(Api.Proxies + '/' + group, { name: proxy })
 }
-export const getProxyDelay = (provider: string, proxy: string, url: string, timeout: number) => {
-  const query = { url, timeout }
+export const getProxyDelay = async (
+  provider: string,
+  proxy: string,
+  url: string,
+  timeout: number,
+  cancelId = '',
+) => {
+  setupCoreApi('http')
+  const query = new URLSearchParams({ url, timeout: String(timeout) }).toString()
   const path = provider
     ? Api.ProviderProxyDelay.replace('{0}', provider).replace('{1}', proxy)
     : Api.ProxyDelay.replace('{0}', proxy)
-  return request.get<Record<string, number>>(path, query)
+  const headers: Record<string, string> = {}
+  if (request.bearer) {
+    headers['Authorization'] = `Bearer ${request.bearer}`
+  }
+  const { status, body } = await HttpGet<any>(`${request.base}${path}?${query}`, headers, {
+    Proxy: '',
+    Timeout: request.timeout / 1000,
+    CancelId: cancelId,
+  })
+  if (status === 204) {
+    return null as unknown as Record<string, number>
+  }
+  if ([504, 401, 503].includes(status)) {
+    throw body?.message ?? body
+  }
+  return body as Record<string, number>
 }
 export const updateGEO = () => request.post<{ message: string } | null>(Api.GEO)
 
