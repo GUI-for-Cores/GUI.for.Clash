@@ -19,6 +19,13 @@ export enum TunStack {
   Mips = 'Mips',
 }
 
+export enum TunDnsMode {
+  Default = '',
+  Disabled = 'disabled',
+  Native = 'native',
+  Hijack = 'hijack',
+}
+
 export enum RulesetFormat {
   Yaml = 'yaml',
   Mrs = 'mrs',

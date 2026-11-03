@@ -275,6 +275,7 @@ export const generateConfig = async (originalProfile: App.Profile) => {
       'route-exclude-address': profile.tunConfig['route-exclude-address'].length
         ? profile.tunConfig['route-exclude-address']
         : undefined,
+      'dns-mode': profile.tunConfig['dns-mode'] || undefined,
     },
     dns: profile.dnsConfig,
     sniffer: profile.sniffer,

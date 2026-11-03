@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 
-import { StackOptions } from '@/constant/kernel'
+import { StackOptions, TunDnsModeOptions } from '@/constant/kernel'
 import { TunConfigDefaults } from '@/constant/profile'
 
 const fields = defineModel<App.Profile['tunConfig']>({ default: TunConfigDefaults })
@@ -46,6 +46,13 @@ const { t } = useI18n()
     <div class="form-item" :class="{ 'items-start': fields['dns-hijack'].length !== 0 }">
       {{ t('kernel.tun.dns-hijack') }}
       <InputList v-model="fields['dns-hijack']" />
+    </div>
+    <div class="form-item">
+      <div>
+        {{ t('kernel.tun.dns-mode') }}
+        <span class="font-normal text-12">({{ t('kernel.tun.dns-mode-tips') }})</span>
+      </div>
+      <Select v-model="fields['dns-mode']" :options="TunDnsModeOptions" />
     </div>
     <div class="form-item">
       {{ t('kernel.tun.device') }}

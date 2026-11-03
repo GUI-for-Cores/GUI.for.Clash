@@ -1,4 +1,11 @@
-import { ProxyGroup, RulesetBehavior, RulesetFormat, RuleType, TunStack } from '@/enums/kernel'
+import {
+  ProxyGroup,
+  RulesetBehavior,
+  RulesetFormat,
+  RuleType,
+  TunDnsMode,
+  TunStack,
+} from '@/enums/kernel'
 import i18n from '@/lang'
 import { generateSecureKey, sampleID } from '@/utils'
 
@@ -71,6 +78,7 @@ export const TunConfigDefaults = (): App.Profile['tunConfig'] => ({
   'route-exclude-address': [],
   'auto-detect-interface': true,
   'dns-hijack': ['any:53'],
+  'dns-mode': TunDnsMode.Default,
   device: '',
   mtu: 0,
   'strict-route': true,

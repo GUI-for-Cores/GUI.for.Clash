@@ -1,6 +1,6 @@
 import { SnifferDefaults } from '@/constant/profile'
 import { RequestProxyMode } from '@/enums/app'
-import { TunStack } from '@/enums/kernel'
+import { TunDnsMode, TunStack } from '@/enums/kernel'
 
 export const migrateProfiles = async (profiles: App.Profile[], save: () => Promise<string>) => {
   let needSync = false
@@ -35,6 +35,10 @@ export const migrateProfiles = async (profiles: App.Profile[], save: () => Promi
     }
     if ((profile.tunConfig.stack as string) === 'mips') {
       profile.tunConfig.stack = TunStack.Mips
+      needSync = true
+    }
+    if (typeof profile.tunConfig['dns-mode'] === 'undefined') {
+      profile.tunConfig['dns-mode'] = TunDnsMode.Default
       needSync = true
     }
   })

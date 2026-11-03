@@ -6,6 +6,7 @@ import {
   RulesetBehavior,
   RulesetFormat,
   RuleType,
+  TunDnsMode,
   TunStack,
 } from '@/enums/kernel'
 import { useEnvStore } from '@/stores'
@@ -188,6 +189,13 @@ export const StackOptions = [
   { label: 'kernel.tun.gvisor', value: TunStack.GVisor },
   { label: 'kernel.tun.mixed', value: TunStack.Mixed },
   { label: 'kernel.tun.mips', value: TunStack.Mips },
+]
+
+export const TunDnsModeOptions = [
+  { label: 'kernel.tun.dns-mode-default', value: TunDnsMode.Default },
+  { label: 'kernel.tun.dns-mode-disabled', value: TunDnsMode.Disabled },
+  { label: 'kernel.tun.dns-mode-native', value: TunDnsMode.Native },
+  { label: 'kernel.tun.dns-mode-hijack', value: TunDnsMode.Hijack },
 ]
 
 export const EnhancedModeOptions = [

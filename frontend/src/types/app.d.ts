@@ -370,6 +370,7 @@ declare namespace App {
       'route-exclude-address': string[]
       'auto-detect-interface': boolean
       'dns-hijack': string[]
+      'dns-mode': string
       device: string
       mtu: number
       'strict-route': boolean
