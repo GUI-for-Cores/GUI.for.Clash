@@ -550,6 +550,13 @@ export default {
     deprecated: 'Deprecated',
     newVersion: 'New',
     slogan: 'Make {0} work your way',
+    changes: {
+      title: 'Plugin-Hub Changes',
+      added: 'Added',
+      removed: 'Removed',
+      updated: 'Updated',
+      failed: 'Failed Sources',
+    },
     sourceConfig: {
       name: 'Plugin Source',
     },
