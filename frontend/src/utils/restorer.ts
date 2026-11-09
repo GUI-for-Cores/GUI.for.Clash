@@ -13,6 +13,36 @@ import {
 import { RulesetBehavior, RulesetFormat, RuleType } from '@/enums/kernel'
 import { deepAssign, sampleID } from '@/utils'
 
+// Rule types whose payload may contain commas; they take no params, so the proxy is the last item
+const CommaPayloadRules = [
+  'AND',
+  'OR',
+  'NOT',
+  'SUB-RULE',
+  'DOMAIN-REGEX',
+  'PROCESS-NAME-REGEX',
+  'PROCESS-PATH-REGEX',
+]
+const LogicRules = ['AND', 'OR', 'NOT']
+
+// Splits a rule the same way as mihomo (ParseRulePayload in rules/common/base.go)
+const parseRule = (rule: string) => {
+  const [rawType = '', ...items] = rule.split(',').map((v) => v.trim())
+  const type = rawType.toUpperCase()
+  if (type === RuleType.Match) {
+    return { type, payload: '', proxy: items[0] ?? '', noResolve: false }
+  }
+  if (CommaPayloadRules.includes(type)) {
+    const proxy = items.pop() ?? ''
+    const payload = items.join(',')
+    return LogicRules.includes(type)
+      ? { type: RuleType.Logic, payload: `${type},${payload}`, proxy, noResolve: false }
+      : { type, payload, proxy, noResolve: false }
+  }
+  const [payload = '', proxy = '', ...params] = items
+  return { type, payload, proxy, noResolve: params.includes('no-resolve') }
+}
+
 export const restoreProfile = (
   config: Record<string, any>,
   subID: string,
@@ -128,9 +158,9 @@ export const restoreProfile = (
       })
     } else if (field === 'rules') {
       config[field].forEach((rule: string, index: number) => {
-        const [type = '', payload = '', proxy = '', noResolve] = rule.split(',')
+        const { type, payload, proxy, noResolve } = parseRule(rule)
 
-        const _proxy = type === RuleType.Match ? getRuleProxy(payload) : getRuleProxy(proxy)
+        const _proxy = getRuleProxy(proxy)
 
         // Skip invalid rules：proxy missing
         if (!_proxy) {
@@ -149,7 +179,7 @@ export const restoreProfile = (
             enable: true,
             payload: provider.type == 'inline' ? stringify(provider.payload) : provider.url,
             proxy: _proxy,
-            'no-resolve': !!noResolve,
+            'no-resolve': noResolve,
             'ruleset-behavior': provider.behavior,
             'ruleset-format': provider.format || RulesetFormat.Yaml,
             'ruleset-type': provider.type || 'http',
@@ -168,9 +198,9 @@ export const restoreProfile = (
           id: index.toString(),
           type: type as RuleType,
           enable: true,
-          payload: type === 'MATCH' ? '' : payload,
+          payload,
           proxy: _proxy,
-          'no-resolve': !!noResolve,
+          'no-resolve': noResolve,
           'ruleset-behavior': RulesetBehavior.Domain,
           'ruleset-format': RulesetFormat.Mrs,
           'ruleset-type': 'http',
