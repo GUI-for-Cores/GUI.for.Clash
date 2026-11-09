@@ -116,6 +116,13 @@ export const restoreProfile = (
       ;(profile.advancedConfig as any)[field] = value
     } else if (field === 'dns') {
       profile.dnsConfig = deepAssign(profile.dnsConfig, value)
+      // Like hosts, the profile keeps a list of nameservers as a comma-separated string
+      const policy = profile.dnsConfig['nameserver-policy']
+      Object.entries<string | string[]>(policy).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+          policy[key] = value.join(',')
+        }
+      })
     } else if (field === 'tun') {
       profile.tunConfig = deepAssign(profile.tunConfig, value)
     } else if (field === 'hosts') {
