@@ -9,6 +9,7 @@ import { useBool } from '@/hooks'
 import { useAppSettingsStore, useKernelApiStore } from '@/stores'
 import {
   formatBytes,
+  formatProxyHost,
   formatRelativeTime,
   addToRuleSet,
   message,
@@ -66,7 +67,11 @@ const columns = computed(() =>
         hidden: !appSettingsStore.app.connections.visibility['metadata.host'],
         sort: (a, b) => b.metadata.host.localeCompare(a.metadata.host),
         customRender: ({ value, record }) => {
-          return (value || record.metadata.destinationIP) + ':' + record.metadata.destinationPort
+          return (
+            formatProxyHost(value || record.metadata.destinationIP) +
+            ':' +
+            record.metadata.destinationPort
+          )
         },
       },
       {
@@ -83,7 +88,7 @@ const columns = computed(() =>
         hidden: !appSettingsStore.app.connections.visibility['metadata.sourceIP'],
         sort: (a, b) => b.metadata.sourceIP.localeCompare(a.metadata.sourceIP),
         customRender: ({ value, record }) => {
-          return value + ':' + record.metadata.sourcePort
+          return formatProxyHost(value) + ':' + record.metadata.sourcePort
         },
       },
       {
@@ -93,7 +98,7 @@ const columns = computed(() =>
         hidden: !appSettingsStore.app.connections.visibility['metadata.remoteDestination'],
         sort: (a, b) => b.metadata.remoteDestination.localeCompare(a.metadata.remoteDestination),
         customRender: ({ value, record }) => {
-          return value + ':' + record.metadata.destinationPort
+          return formatProxyHost(value) + ':' + record.metadata.destinationPort
         },
       },
       {
