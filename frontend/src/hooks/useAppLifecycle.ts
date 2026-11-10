@@ -14,7 +14,11 @@ export const handleLaunchApp = async (args: string[]) => {
   let _name = sampleID()
 
   const url = new URL(arg)
-  if (url.pathname === '//install-config/' || url.hostname === 'import-remote-profile') {
+  if (
+    url.pathname === '//install-config/' ||
+    url.hostname === 'install-config' ||
+    url.hostname === 'import-remote-profile'
+  ) {
     _url = url.searchParams.get('url')
     _name = url.searchParams.get('name') || sampleID()
   } else if (url.pathname.startsWith('//import-remote-profile')) {
