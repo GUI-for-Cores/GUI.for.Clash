@@ -282,10 +282,8 @@ export const DefaultCoreConfig = () => {
 
   return {
     env: {
-      SAFE_PATHS: ['$APP_BASE_PATH/data/subscribes', '$APP_BASE_PATH/data/rulesets'].join(
-        separator,
-      ),
+      SAFE_PATHS: ['$APP_DATA_PATH/subscribes', '$APP_DATA_PATH/rulesets'].join(separator),
     },
-    args: ['-d', '$APP_BASE_PATH/$CORE_BASE_PATH'],
+    args: ['-d', CoreWorkingDirectory.replace('data', '$APP_DATA_PATH')],
   }
 }

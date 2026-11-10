@@ -323,7 +323,7 @@ const getTrayMenus = () => {
       type: 'item',
       text: 'tray.restart',
       tooltip: 'tray.restartTip',
-      event: RestartApp,
+      event: () => RestartApp(envStore.env.isPrivileged),
     },
     {
       type: 'item',

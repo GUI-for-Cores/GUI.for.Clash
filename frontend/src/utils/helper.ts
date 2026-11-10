@@ -34,6 +34,8 @@ import {
   confirm,
   APP_TITLE,
   getAutoStartConfiguration,
+  quoteWindowsArg,
+  utf16leBase64Encode,
 } from '@/utils'
 
 // Permissions Helper
@@ -131,10 +133,10 @@ export const RunWithPowerShell = async (
 ) => {
   const { admin = false, hidden = false, wait = true, ...others } = options
   const psArgs: string[] = []
-  let command = `Start-Process -FilePath "${path}"`
+  const literal = (s: string) => `'${s.replace(/'/g, "''")}'`
+  let command = `Start-Process -FilePath ${literal(path)}`
   if (args.length > 0) {
-    const argList = args.map((a) => `"${a.replace(/"/g, '""')}"`).join(',')
-    command += ` -ArgumentList ${argList}`
+    command += ` -ArgumentList ${literal(args.map(quoteWindowsArg).join(' '))}`
   }
   if (admin) {
     command += ' -Verb RunAs'
@@ -216,12 +218,18 @@ export const IsAutoStartEnabled = async () => {
   return isAutoStart
 }
 
-export const EnableAutoStart = async (delay = 10) => {
-  const { os, appPath, isPrivileged } = useEnvStore().env
-  const configuration = getAutoStartConfiguration(os, appPath, delay)
+export const EnableAutoStart = async () => {
+  const { os, appPath, args, isPrivileged } = useEnvStore().env
+  const { startupDelay, windowStartState } = useAppSettingsStore().app
+  const configuration = getAutoStartConfiguration(
+    os,
+    appPath,
+    [`--window-start-state=${windowStartState}`, ...args],
+    startupDelay,
+  )
   if (os === OS.Windows) {
     const xmlPath = await AbsolutePath('data/.cache/tasksch.xml')
-    await WriteFile(xmlPath, configuration)
+    await WriteFile(xmlPath, utf16leBase64Encode(configuration), { Mode: 'Binary' })
     const fn = isPrivileged ? Exec : RunWithPowerShell
     await fn('SchTasks', ['/Create', '/F', '/TN', APP_TITLE, '/XML', xmlPath], {
       admin: true,
@@ -411,6 +419,7 @@ export const processMagicVariables = (str: string) => {
   let result = str
   Object.entries({
     $APP_BASE_PATH: env.basePath,
+    $APP_DATA_PATH: env.dataDir,
     $CORE_BASE_PATH: CoreWorkingDirectory,
   }).forEach(([source, target]) => {
     result = result.replaceAll(source, target)
