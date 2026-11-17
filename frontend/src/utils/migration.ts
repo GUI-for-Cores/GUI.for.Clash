@@ -81,6 +81,10 @@ export const migrateAppSettings = async (
     settings.systemTitleBar = false
     needSync = true
   }
+  if (settings.kernel.listMode === undefined) {
+    settings.kernel.listMode = false
+    needSync = true
+  }
   if (typeof settings.windowStartState === 'number') {
     settings.windowStartState =
       settings.windowStartState === 2 ? WindowStartState.Minimised : WindowStartState.Normal

@@ -95,6 +95,7 @@ export const useAppSettingsStore = defineStore('app-settings', () => {
       autoClose: true,
       unAvailable: true,
       cardMode: true,
+      listMode: false,
       cardColumns: DefaultCardColumns,
       sortByDelay: false,
       testUrl: DefaultTestURL,
