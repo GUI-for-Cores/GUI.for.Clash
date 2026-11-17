@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref, computed, onActivated } from 'vue'
+import { ref, computed, watch, onActivated } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { parse } from 'yaml'
 
 import { getProxyDelay, deleteGroupFixed } from '@/api/kernel'
-import { HttpCancel } from '@/bridge'
+import { HttpCancel, ReadFile } from '@/bridge'
 import {
   ControllerCloseModeOptions,
   DefaultCardColumns,
@@ -12,11 +13,16 @@ import {
   DefaultTestTimeout,
   DefaultTestURL,
 } from '@/constant/app'
-import { BuiltInOutbound } from '@/constant/kernel'
+import { BuiltInOutbound, CoreConfigFilePath } from '@/constant/kernel'
 import { ControllerCloseMode } from '@/enums/app'
 import { ProxyGroupType } from '@/enums/kernel'
 import { useBool } from '@/hooks'
-import { useAppSettingsStore, useKernelApiStore } from '@/stores'
+import {
+  useAppSettingsStore,
+  useKernelApiStore,
+  useProfilesStore,
+  useSubscribesStore,
+} from '@/stores'
 import {
   ignoredError,
   sleep,
@@ -37,6 +43,132 @@ const { t } = useI18n()
 const [showMoreSettings, toggleMoreSettings] = useBool(false)
 const appSettings = useAppSettingsStore()
 const kernelApiStore = useKernelApiStore()
+const profilesStore = useProfilesStore()
+const subscribesStore = useSubscribesStore()
+
+type ProxyServerFields = { server?: unknown; port?: unknown }
+
+const proxyEndpoints = ref<Record<string, ProxyServerFields>>({})
+
+const cardMode = computed({
+  get: () => appSettings.app.kernel.cardMode && !appSettings.app.kernel.listMode,
+  set: (value: boolean) => {
+    appSettings.app.kernel.cardMode = value
+    if (value) appSettings.app.kernel.listMode = false
+  },
+})
+
+const listMode = computed({
+  get: () => !!appSettings.app.kernel.listMode,
+  set: (value: boolean) => {
+    appSettings.app.kernel.listMode = value
+    if (value) appSettings.app.kernel.cardMode = false
+  },
+})
+
+const formatProxyServer = (proxy?: ProxyServerFields | null) => {
+  if (!proxy || typeof proxy.server !== 'string') return ''
+  const server = proxy.server.trim()
+  if (!server) return ''
+  const portValue = proxy.port
+  if (typeof portValue !== 'number' && typeof portValue !== 'string') return server
+  const portText = String(portValue).trim()
+  if (!/^\d+$/.test(portText)) return server
+  const host = server.includes(':') && !server.startsWith('[') ? `[${server}]` : server
+  return `${host}:${portText}`
+}
+
+const proxyServerText = (proxy: ProxyServerFields & { name: string; all?: unknown }) => {
+  if (proxy.all) return ''
+  return formatProxyServer(proxyEndpoints.value[proxy.name]) || formatProxyServer(proxy)
+}
+
+const proxyListFromDocument = (document: unknown) => {
+  if (Array.isArray(document)) return document
+  if (document && typeof document === 'object' && 'proxies' in document) {
+    return (document as { proxies?: unknown }).proxies
+  }
+  return undefined
+}
+
+const assignProxyServers = (map: Record<string, ProxyServerFields>, list: unknown) => {
+  if (!Array.isArray(list)) return
+  for (const item of list) {
+    if (!item || typeof item !== 'object') continue
+    const proxy = item as { name?: unknown; server?: unknown; port?: unknown }
+    if (typeof proxy.name !== 'string' || !proxy.name) continue
+    if (typeof proxy.server !== 'string' || !proxy.server.trim()) continue
+    map[proxy.name] = { server: proxy.server, port: proxy.port }
+  }
+}
+
+const resolveProviderPath = (providerPath: string) => {
+  if (providerPath.startsWith('../')) return `data/${providerPath.slice(3)}`
+  return providerPath
+}
+
+let endpointLoadId = 0
+
+// Addresses live on the proxy config (subscription files and the generated core
+// config). The runtime proxy API does not include `server`.
+const loadProxyEndpoints = async () => {
+  const id = ++endpointLoadId
+  const map: Record<string, ProxyServerFields> = {}
+  const profile = profilesStore.currentProfile
+  const subIds = new Set<string>()
+  if (profile) {
+    for (const group of profile.proxyGroupsConfig) {
+      group.use.forEach((use) => subIds.add(use))
+      group.proxies.forEach((proxy) => {
+        if (proxy.type !== 'Built-In') subIds.add(proxy.type)
+      })
+    }
+  }
+  const subs = subIds.size
+    ? subscribesStore.subscribes.filter((sub) => subIds.has(sub.id))
+    : subscribesStore.subscribes
+  const paths = new Set(subs.map((sub) => sub.path).filter(Boolean))
+
+  let config: {
+    proxies?: unknown
+    'proxy-providers'?: Record<string, { type?: string; path?: string; payload?: unknown }>
+  } | null = null
+  try {
+    config = parse(await ReadFile(CoreConfigFilePath))
+  } catch {
+    config = null
+  }
+
+  const providers = config?.['proxy-providers']
+  if (providers && typeof providers === 'object') {
+    for (const provider of Object.values(providers)) {
+      if (provider?.type === 'file' && provider.path) {
+        paths.add(resolveProviderPath(provider.path))
+      }
+    }
+  }
+
+  const documents = await Promise.all(
+    [...paths].map(async (path) => {
+      try {
+        return parse(await ReadFile(path)) as unknown
+      } catch {
+        return undefined
+      }
+    }),
+  )
+  documents.forEach((document) => assignProxyServers(map, proxyListFromDocument(document)))
+
+  if (providers && typeof providers === 'object') {
+    for (const provider of Object.values(providers)) {
+      if (provider?.type === 'inline') assignProxyServers(map, provider.payload)
+    }
+  }
+  assignProxyServers(map, config?.proxies)
+
+  if (id !== endpointLoadId) return
+  proxyEndpoints.value = map
+}
 
 const groups = computed(() => {
   const { proxies } = kernelApiStore
@@ -199,6 +331,7 @@ const handleRefresh = async () => {
   loading.value = true
   await ignoredError(kernelApiStore.refreshConfig)
   await ignoredError(kernelApiStore.refreshProviderProxies)
+  if (listMode.value) await ignoredError(loadProxyEndpoints)
   await sleep(100)
   loading.value = false
 }
@@ -235,8 +368,26 @@ const handleResetMoreSettings = () => {
   message.success('common.success')
 }
 
+watch(
+  [
+    listMode,
+    () => {
+      const profile = profilesStore.currentProfile
+      const subs = subscribesStore.subscribes
+        .map((sub) => `${sub.id}:${sub.path}:${sub.updateTime}`)
+        .join('|')
+      return `${profile?.id || ''}:${subs}:${Object.keys(kernelApiStore.proxies).join('|')}`
+    },
+  ],
+  ([enabled]) => {
+    if (enabled) loadProxyEndpoints()
+  },
+  { immediate: true },
+)
+
 onActivated(() => {
   kernelApiStore.refreshProviderProxies()
+  if (listMode.value) loadProxyEndpoints()
 })
 </script>
 
@@ -248,7 +399,8 @@ onActivated(() => {
     >
       <Switch v-model="appSettings.app.kernel.autoClose" label="home.controller.autoClose" />
       <Switch v-model="appSettings.app.kernel.unAvailable" label="home.controller.unAvailable" />
-      <Switch v-model="appSettings.app.kernel.cardMode" label="home.controller.cardMode" />
+      <Switch v-model="cardMode" label="home.controller.cardMode" />
+      <Switch v-model="listMode" label="home.controller.listMode" />
       <Switch v-model="appSettings.app.kernel.sortByDelay" label="home.controller.sortBy" />
       <Button type="primary" size="small" @click="toggleMoreSettings"> ... </Button>
       <div class="ml-auto flex items-center">
@@ -330,8 +482,59 @@ onActivated(() => {
     <Transition name="expand">
       <div v-if="isExpanded(group.name)" class="py-8 px-4">
         <Empty v-if="group.all.length === 0" />
+        <div v-else-if="listMode" class="proxy-list">
+          <div class="proxy-list-head text-12">
+            <span class="proxy-col-selected">{{ t('home.controller.columns.selected') }}</span>
+            <span>{{ t('home.controller.columns.name') }}</span>
+            <span>{{ t('home.controller.columns.type') }}</span>
+            <span>{{ t('home.controller.columns.server') }}</span>
+            <span class="proxy-col-delay">{{ t('home.controller.columns.delay') }}</span>
+          </div>
+          <div
+            v-for="proxy in group.all"
+            :key="proxy.name"
+            :class="{ selected: proxy.name === group.now }"
+            class="proxy-row cursor-pointer"
+            @click="useProxyWithCatchError(group, proxy)"
+          >
+            <span class="proxy-col-selected">
+              <Icon
+                v-if="proxy.name === group.now"
+                :size="18"
+                icon="selected"
+                color="var(--primary-color)"
+              />
+            </span>
+            <span v-tips="proxy.name" class="proxy-col-name text-14 font-bold">
+              {{ proxy.name }}
+            </span>
+            <span class="proxy-col-type text-12">
+              {{ proxy.type }}<template v-if="proxy.udp"> :: udp</template>
+            </span>
+            <span
+              v-tips="proxyServerText(proxy)"
+              class="proxy-col-server text-12"
+              :style="proxyServerText(proxy) ? undefined : { color: 'gray' }"
+            >
+              {{ proxyServerText(proxy) || '--' }}
+            </span>
+            <span class="proxy-col-delay" @click.stop>
+              <Button
+                :style="{ color: delayColor(proxy.delay) }"
+                :loading="isLoading(proxy.name)"
+                type="text"
+                size="small"
+                @click.stop="handleProxyDelay(proxy.name)"
+              >
+                <div class="text-12">
+                  {{ proxy.delay ? proxy.delay + 'ms' : '--' }}
+                </div>
+              </Button>
+            </span>
+          </div>
+        </div>
         <div
-          v-else-if="appSettings.app.kernel.cardMode"
+          v-else-if="cardMode"
           :class="`grid-cols-${appSettings.app.kernel.cardColumns}`"
           class="grid gap-8"
         >
@@ -473,5 +676,76 @@ onActivated(() => {
   &-expanded {
     transform: rotate(0deg);
   }
+}
+
+.proxy-list {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1.4fr) max-content minmax(0, 1fr) max-content;
+  column-gap: 12px;
+  row-gap: 4px;
+  align-items: center;
+}
+
+.proxy-list-head,
+.proxy-row {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
+  align-items: center;
+  column-gap: 12px;
+  padding: 4px 12px;
+}
+
+.proxy-list-head {
+  color: gray;
+  padding-bottom: 0;
+}
+
+.proxy-row {
+  min-height: 36px;
+  color: var(--card-color);
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  transition:
+    box-shadow 0.2s,
+    background 0.2s;
+
+  &:hover {
+    box-shadow: 0 8px 8px rgba(0, 0, 0, 0.06);
+    background-color: var(--card-hover-bg);
+  }
+
+  &:active {
+    background-color: var(--card-active-bg);
+  }
+
+  &.selected {
+    box-shadow: inset 3px 0 0 var(--primary-color);
+  }
+
+  &.selected:hover {
+    box-shadow:
+      inset 3px 0 0 var(--primary-color),
+      0 8px 8px rgba(0, 0, 0, 0.06);
+  }
+}
+
+.proxy-col-name,
+.proxy-col-type,
+.proxy-col-server {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.proxy-col-selected {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+}
+
+.proxy-col-delay {
+  justify-self: end;
 }
 </style>

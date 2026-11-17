@@ -92,6 +92,7 @@ declare namespace App {
       autoClose: boolean
       unAvailable: boolean
       cardMode: boolean
+      listMode: boolean
       cardColumns: number
       sortByDelay: boolean
       testUrl: string
